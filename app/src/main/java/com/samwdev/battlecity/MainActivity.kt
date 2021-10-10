@@ -1,13 +1,15 @@
 package com.samwdev.battlecity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.samwdev.battlecity.core.Ticker
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -20,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BattleCityTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    BattleScene()
                 }
             }
         }
@@ -28,30 +30,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    val scope = rememberCoroutineScope()
+fun BattleScene() {
+    val ticker = remember { Ticker() }
     val text = remember { mutableStateOf(0L) }
-    DisposableEffect(key1 = "") {
-        onDispose {
 
-        }
+    LaunchedEffect(key1 = "start") {
+        ticker.start()
     }
 
-    LaunchedEffect(key1 = "aaa") {
-        val tick = Ticker()
-        tick.start()
-        tick.flow.collect { delta ->
+    LaunchedEffect(key1 = "ticker") {
+        ticker.flow.collect { delta ->
             text.value = delta
         }
     }
-
-    Text(text = "Hello $name! ${text.value}")
+    Text(text = "Hello! ${text.value}")
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     BattleCityTheme {
-        Greeting("Android")
+        BattleScene()
     }
 }
