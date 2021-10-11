@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
+import com.samwdev.battlecity.core.BulletHandler
 import com.samwdev.battlecity.core.Ticker
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.delay
@@ -34,6 +35,9 @@ class MainActivity : ComponentActivity() {
 fun BattleScene() {
     val ticker = remember {
         Ticker().also { it.start() }
+    }
+    val bulletHandler = remember {
+        BulletHandler(ticker).also { it.start() }
     }
     val text = remember { mutableStateOf(0L) }
 
