@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.samwdev.battlecity.core.Ticker
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
@@ -31,18 +32,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BattleScene() {
-    val ticker = remember { Ticker() }
-    val text = remember { mutableStateOf(0L) }
-
-    LaunchedEffect(key1 = "start") {
-        ticker.start()
+    val ticker = remember {
+        Ticker().also { it.start() }
     }
+    val text = remember { mutableStateOf(0L) }
 
     LaunchedEffect(key1 = "ticker") {
         ticker.flow.collect { delta ->
             text.value = delta
         }
     }
+
     Text(text = "Hello! ${text.value}")
 }
 
