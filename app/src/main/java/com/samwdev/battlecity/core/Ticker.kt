@@ -8,18 +8,16 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.coroutineContext
 import kotlin.coroutines.CoroutineContext
 
-class Ticker : CoroutineScope, LifecycleObserver {
+class Ticker : BaseHandler() {
     companion object {
         private const val MAX_FPS = 2
         private const val FRAME_DUR = (1000f / MAX_FPS).toLong()
     }
     private val _mutableStateFlow = MutableSharedFlow<Long>(0, onBufferOverflow = BufferOverflow.SUSPEND)
     val flow = _mutableStateFlow.asSharedFlow()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + Job()
 
     fun start() {
         launch(coroutineContext) {
@@ -36,10 +34,5 @@ class Ticker : CoroutineScope, LifecycleObserver {
                 delay(FRAME_DUR)
             }
         }
-    }
-
-    fun stop() {
-        logE("STOP")
-        coroutineContext[Job]?.cancel()
     }
 }
