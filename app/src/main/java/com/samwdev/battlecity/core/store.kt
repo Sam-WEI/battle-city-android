@@ -10,6 +10,6 @@ interface Reducer<S, A : Action> {
 
 }
 
-sealed class Action(open val type: String)
+sealed class Action
 
-data class StartGame(override val type: String) : Action(type)
+object StartGame : Action()
