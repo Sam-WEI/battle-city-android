@@ -1,4 +1,4 @@
-package com.samwdev.battlecity.components
+package com.samwdev.battlecity.components.playground
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation

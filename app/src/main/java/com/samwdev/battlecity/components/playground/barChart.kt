@@ -1,6 +1,5 @@
-// Ignore lint warnings in documentation snippets
 @file:Suppress("unused", "UNUSED_PARAMETER", "UNUSED_VARIABLE")
-package com.samwdev.battlecity.components
+package com.samwdev.battlecity.components.playground
 
 // ktlint-disable indent https://github.com/pinterest/ktlint/issues/967
 /*

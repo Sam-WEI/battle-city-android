@@ -1,4 +1,4 @@
-package com.samwdev.battlecity.components
+package com.samwdev.battlecity.components.playground
 
 import android.util.Log
 import androidx.compose.animation.*
@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
-fun GameScene() {
+fun Playground() {
     // MaterialTheme sets ContentAlpha.high as default
     Column {
         var topPadding by remember { mutableStateOf(10.dp) }

@@ -32,7 +32,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             Column(modifier = Modifier.fillMaxSize()) {
                 BattleField(modifier = Modifier.fillMaxWidth())
@@ -41,52 +40,15 @@ class MainActivity : ComponentActivity() {
                     onSteer = {  },
                     onFire = {  },
                 )
-//                Box(modifier = Modifier
-//                    .height(80.dp)
-//                    .fillMaxWidth()
-//                    .swipeToDismiss { }
-//                    .background(Color.Blue)) {
-//                    Text("This is a button")
-//                }
             }
         }
     }
-}
-
-@Composable
-fun BattleScene() {
-
-    val ticker = remember {
-        Ticker().also { /*it.start()*/ }
-    }
-    val bulletHandler = remember {
-        BulletHandler(ticker).also { /*it.start()*/ }
-    }
-    val text = remember { mutableStateOf(0L) }
-
-    LaunchedEffect(Unit) {
-//        ticker.flow.collect { delta ->
-//            text.value = delta
-//        }
-
-    }
-
-    val scope = rememberCoroutineScope()
-    LaunchedEffect(key1 = scope) {
-        launch(AndroidUiFrameClock(Choreographer.getInstance())) {
-            withFrameMillis {
-                logE("withFrameMillis: $it")
-            }
-        }
-    }
-
-    Text(text = "Hello! ${text.value}")
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     BattleCityTheme {
-        BattleScene()
+
     }
 }

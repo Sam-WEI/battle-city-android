@@ -20,7 +20,7 @@
 // Ignore lint warnings in documentation snippets
 @file:Suppress("unused", "UNUSED_PARAMETER", "UNUSED_VARIABLE")
 
-package com.samwdev.battlecity.components
+package com.samwdev.battlecity.components.playground
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
