@@ -36,8 +36,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Box(modifier = Modifier.fillMaxSize()) {
-                JoyStick(modifier = Modifier.align(Alignment.BottomStart)) {
-                    logI("  callback $it")
+                JoyStick(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 100.dp)
+                        .size(100.dp)
+                ) {
+                    logI("  callback ${it.x}")
                 }
 //                Box(modifier = Modifier
 //                    .height(80.dp)
