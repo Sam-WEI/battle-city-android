@@ -1,17 +1,18 @@
 package com.samwdev.battlecity.components
 
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitDragOrCancellation
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.drag
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Row
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -100,13 +101,18 @@ fun JoyStick(modifier: Modifier = Modifier, onChange: (Offset) -> Unit) {
 
 @Composable
 fun FireButton(modifier: Modifier = Modifier, onTap: () -> Unit) {
-    val color by remember { mutableStateOf(Color.LightGray) }
+    var pressed by remember { mutableStateOf(false) }
+    val transition = updateTransition(targetState = pressed, label = "button")
+    val color by transition.animateColor(label = "button_color") { if (it) Color.DarkGray else Color.Gray }
+
     Canvas(modifier = modifier.pointerInput(Unit) {
         coroutineScope {
             while (true) {
                 awaitPointerEventScope { awaitFirstDown() }
-
+                pressed = true
                 onTap()
+                awaitPointerEventScope { waitForUpOrCancellation() }
+                pressed = false
             }
         }
     }) {
