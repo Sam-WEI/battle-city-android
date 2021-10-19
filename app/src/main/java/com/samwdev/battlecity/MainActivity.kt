@@ -13,15 +13,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.AndroidUiFrameClock
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.components.Controller
-import com.samwdev.battlecity.components.GameScene
-import com.samwdev.battlecity.components.JoyStick
-import com.samwdev.battlecity.components.swipeToDismiss
+import com.samwdev.battlecity.components.*
 import com.samwdev.battlecity.core.BulletHandler
 import com.samwdev.battlecity.core.Ticker
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -36,9 +34,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                BattleField(modifier = Modifier.fillMaxWidth())
                 Controller(
-                    modifier = Modifier.align(Alignment.BottomStart),
+                    modifier = Modifier.padding(30.dp).fillMaxWidth(),
                     onSteer = {  },
                     onFire = {  },
                 )
