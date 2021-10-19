@@ -32,7 +32,7 @@ fun Controller(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         JoyStick(
             modifier = Modifier.size(100.dp),
