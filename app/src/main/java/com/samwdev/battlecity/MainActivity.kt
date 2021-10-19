@@ -25,6 +25,7 @@ import com.samwdev.battlecity.core.BulletHandler
 import com.samwdev.battlecity.core.Ticker
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.logE
+import com.samwdev.battlecity.utils.logI
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -35,7 +36,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Box(modifier = Modifier.fillMaxSize()) {
-                JoyStick(modifier = Modifier.align(Alignment.BottomStart))
+                JoyStick(modifier = Modifier.align(Alignment.BottomStart)) {
+                    logI("  callback $it")
+                }
 //                Box(modifier = Modifier
 //                    .height(80.dp)
 //                    .fillMaxWidth()
