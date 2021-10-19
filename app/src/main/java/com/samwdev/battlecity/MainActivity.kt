@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.AndroidUiFrameClock
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.components.Controller
 import com.samwdev.battlecity.components.GameScene
 import com.samwdev.battlecity.components.JoyStick
 import com.samwdev.battlecity.components.swipeToDismiss
@@ -36,14 +37,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Box(modifier = Modifier.fillMaxSize()) {
-                JoyStick(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 100.dp)
-                        .size(100.dp)
-                ) {
-                    logI("  callback ${it.x}")
-                }
+                Controller(
+                    modifier = Modifier.align(Alignment.BottomStart),
+                    onSteer = {  },
+                    onFire = {  },
+                )
 //                Box(modifier = Modifier
 //                    .height(80.dp)
 //                    .fillMaxWidth()

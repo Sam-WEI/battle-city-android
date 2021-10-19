@@ -6,19 +6,44 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.drag
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.*
 
 private val joyStickBgBrush = Brush.radialGradient(colors = listOf(Color.Gray, Color.LightGray))
+
+@Composable
+fun Controller(
+    modifier: Modifier = Modifier,
+    onSteer: (Offset) -> Unit,
+    onFire: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        JoyStick(
+            modifier = Modifier.size(100.dp),
+            onChange = onSteer
+        )
+        FireButton(
+            modifier = Modifier.size(60.dp),
+            onTap = onFire,
+        )
+    }
+}
 
 @Composable
 fun JoyStick(modifier: Modifier = Modifier, onChange: (Offset) -> Unit) {
@@ -68,5 +93,19 @@ fun JoyStick(modifier: Modifier = Modifier, onChange: (Offset) -> Unit) {
             center = drawPosition,
             radius = side / 6f,
         )
+    }
+}
+
+@Composable
+fun FireButton(modifier: Modifier = Modifier, onTap: () -> Unit) {
+    Canvas(modifier = modifier.pointerInput(Unit) {
+        coroutineScope {
+            while (true) {
+                awaitPointerEventScope { awaitFirstDown() }
+                onTap()
+            }
+        }
+    }) {
+        drawCircle(Color.LightGray)
     }
 }
