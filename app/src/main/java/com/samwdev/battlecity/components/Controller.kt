@@ -9,6 +9,8 @@ import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -98,14 +100,16 @@ fun JoyStick(modifier: Modifier = Modifier, onChange: (Offset) -> Unit) {
 
 @Composable
 fun FireButton(modifier: Modifier = Modifier, onTap: () -> Unit) {
+    val color by remember { mutableStateOf(Color.LightGray) }
     Canvas(modifier = modifier.pointerInput(Unit) {
         coroutineScope {
             while (true) {
                 awaitPointerEventScope { awaitFirstDown() }
+
                 onTap()
             }
         }
     }) {
-        drawCircle(Color.LightGray)
+        drawCircle(color)
     }
 }
