@@ -1,6 +1,7 @@
 package com.samwdev.battlecity.components
 
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
@@ -101,8 +102,7 @@ fun JoyStick(modifier: Modifier = Modifier, onChange: (Offset) -> Unit) {
 @Composable
 fun FireButton(modifier: Modifier = Modifier, onTap: () -> Unit) {
     var pressed by remember { mutableStateOf(false) }
-    val transition = updateTransition(targetState = pressed, label = "button")
-    val color by transition.animateColor(label = "button_color") { if (it) Color.DarkGray else Color.Gray }
+    val color by animateColorAsState(targetValue = if (pressed) Color.DarkGray else Color.Gray)
 
     Canvas(modifier = modifier.pointerInput(Unit) {
         coroutineScope {
