@@ -26,12 +26,15 @@ import com.samwdev.battlecity.core.Ticker
 import com.samwdev.battlecity.core.rememberGameState
 import com.samwdev.battlecity.ui.components.BattleField
 import com.samwdev.battlecity.ui.components.Controller
+import com.samwdev.battlecity.ui.components.battleCityController
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.logE
 import com.samwdev.battlecity.utils.logI
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.math.PI
+import kotlin.math.atan2
 import kotlin.math.roundToInt
 
 @ExperimentalAnimationApi
@@ -42,9 +45,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val tanksViewModel = TanksViewModel()
             val gameState = rememberGameState(tanksViewModel)
-            tanksViewModel.tanks.onEach {
-                logE("tanks $it")
-            }.launchIn(rememberCoroutineScope())
+            val controllerState = battleCityController()
+            val scope = rememberCoroutineScope()
 
             Column(modifier = Modifier.fillMaxSize()) {
                 BattleField(gameState = gameState, tanksViewModel = tanksViewModel, modifier = Modifier.fillMaxWidth())
@@ -52,12 +54,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .padding(30.dp)
                         .fillMaxWidth(),
-                    onSteer = { (x, y) ->
-//                        tanksViewModel.updateTank("player-1", (2 * x).roundToInt(), (2 * y).roundToInt())
-                        tanksViewModel.updateTank((5 * x).roundToInt(), (5 * y).roundToInt())
+                    onSteer = { offset ->
+                        tanksViewModel.updateTank((5 * offset.x).roundToInt(), (5 * offset.y).roundToInt())
+                        scope.launch {
+                            controllerState.setCurrentInput(offset = offset)
+                        }
                     },
                     onFire = {  },
                 )
+
+                Text(text = "ctrler State: ${controllerState.direction}", color = Color.Gray)
             }
         }
     }

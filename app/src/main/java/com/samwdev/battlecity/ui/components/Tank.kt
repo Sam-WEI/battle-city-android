@@ -14,9 +14,7 @@ import com.samwdev.battlecity.core.TankState
 import com.samwdev.battlecity.core.ticker
 
 @Composable
-fun Tank(tank: TankState) {
-    val tick by ticker()
-    Text(text = "tick: ${tick.uptimeMillis}. delta: ${tick.delta}", modifier = Modifier.offset(y = 40.dp))
+fun Tank(tank: TankState, count: Long) {
     Canvas(modifier = Modifier.size(50.dp, 50.dp)) {
         drawRect(Color.Black, topLeft = Offset(tank.x.toFloat(), tank.y.toFloat()), size = size)
     }
