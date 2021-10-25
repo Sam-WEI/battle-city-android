@@ -1,22 +1,21 @@
 package com.samwdev.battlecity.ui.components
 
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import com.samwdev.battlecity.core.Direction
 import kotlin.math.PI
 import kotlin.math.atan2
 
 @Composable
-fun battleCityController(): ControllerState {
+fun rememberBattleCityController(): ControllerState {
     return remember { ControllerState() }
 }
 
 class ControllerState {
-    var direction: Direction = Direction.Unspecified
+    var direction by mutableStateOf(Direction.Unspecified)
         private set
-    suspend fun setCurrentInput(offset: Offset) {
+
+    fun setCurrentInput(offset: Offset) {
         direction = getDirection(offset)
     }
 }
