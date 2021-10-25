@@ -53,6 +53,7 @@ dependencies {
     implementation(Library.ANDROIDX_APPCOMPAT)
     implementation(Library.MATERIAL)
     implementation(Library.COMPOSE_UI)
+    implementation(Library.ANDROIDX_LIFECYCLE_VIEW_MODEL)
     implementation("androidx.compose.material:material:${Library.composeVersion}")
     implementation("androidx.compose.ui:ui-tooling-preview:${Library.composeVersion}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
