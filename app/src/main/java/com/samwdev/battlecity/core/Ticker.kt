@@ -1,6 +1,7 @@
 package com.samwdev.battlecity.core
 
 import android.os.SystemClock
+import androidx.compose.runtime.*
 import androidx.lifecycle.LifecycleObserver
 import com.samwdev.battlecity.utils.logD
 import com.samwdev.battlecity.utils.logE
@@ -37,3 +38,16 @@ class Ticker : BaseHandler() {
     }
 }
 
+@Composable
+fun ticker(): State<Tick> {
+    var lastTick by remember { mutableStateOf(SystemClock.uptimeMillis()) }
+    return produceState(initialValue = Tick(SystemClock.uptimeMillis(), 0)) {
+        while (true) {
+            val now = withFrameMillis { it }
+            value = Tick(now, now - lastTick)
+            lastTick = now
+        }
+    }
+}
+
+data class Tick(val uptimeMillis: Long, val delta: Long)
