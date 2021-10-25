@@ -21,5 +21,5 @@ data class TankState(
 )
 
 enum class Direction {
-    Up, Down, Left, Right
+    Up, Down, Left, Right, Unspecified
 }

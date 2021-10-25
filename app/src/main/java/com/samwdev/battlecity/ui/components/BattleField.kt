@@ -17,6 +17,10 @@ fun BattleField(gameState: GameState, tanksViewModel: TanksViewModel, modifier: 
     val tanks by tanksViewModel.tanks.collectAsState()
     val tank by tanksViewModel.tank.collectAsState()
     val ticker by ticker()
+
+    val count by remember(ticker) {
+        derivedStateOf { ticker.uptimeMillis % 2 }
+    }
     LaunchedEffect(Unit) {
         launch {
             var last = withFrameMillis { it }
@@ -31,8 +35,8 @@ fun BattleField(gameState: GameState, tanksViewModel: TanksViewModel, modifier: 
         .fillMaxWidth()
         .aspectRatio(1f)
         .background(Color.Green)) {
-        Text(text = "tick: ${ticker.uptimeMillis}. delta: ${ticker.delta}")
-        Tank(tank = tank)
+        Text(text = "tick: ${ticker.uptimeMillis}. delta: ${ticker.delta}. count: ${count}")
+        Tank(tank = tank, count = count)
     }
 
 }
