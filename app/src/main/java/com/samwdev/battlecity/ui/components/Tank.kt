@@ -3,7 +3,10 @@ package com.samwdev.battlecity.ui.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
@@ -11,7 +14,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.TickState
 
 class TankState(
     x: Int = 0,
@@ -28,10 +30,7 @@ enum class Direction(val degree: Float) {
 }
 
 @Composable
-fun Tank(tank: TankState, tickState: TickState) {
-    val delta = remember(tickState.uptimeMillis / 10000) {
-        tickState.delta
-    }
+fun Tank(tank: TankState) {
     Canvas(
         modifier = Modifier.size(50.dp, 50.dp)
             .offset { IntOffset(tank.x, tank.y) }
