@@ -2,16 +2,10 @@ package com.samwdev.battlecity.core
 
 import android.os.SystemClock
 import androidx.compose.runtime.*
-import androidx.lifecycle.LifecycleObserver
 import com.samwdev.battlecity.utils.logD
-import com.samwdev.battlecity.utils.logE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.coroutineContext
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.*
 
 class Ticker : BaseHandler() {
     companion object {
@@ -56,28 +50,31 @@ fun rememberTickState(): TickState {
     return remember { TickState() }
 }
 
-class TickState {
+class TickState(tick: Tick = Tick.INITIAL) {
     companion object {
         private const val MAX_FPS = 1
     }
 
-    var uptimeMillis: Long by mutableStateOf(SystemClock.uptimeMillis())
-        private set
-    var delta: Long by mutableStateOf(0)
+    var lastTick: Tick by mutableStateOf(tick)
         private set
 
-//    private val continuation: Continuation<Unit> = Continuation()
+    val uptimeMillis: Long = lastTick.uptimeMillis
+    val delta: Long = lastTick.delta
 
-    fun update(now: Long) {
+    private val _tickFlow: MutableStateFlow<Tick> = MutableStateFlow(Tick.INITIAL)
+    val tickFlow: StateFlow<Tick> = _tickFlow
+
+    suspend fun update(now: Long) {
         if (now - uptimeMillis > 1000f / MAX_FPS) {
-            delta = now - uptimeMillis
-            uptimeMillis = now
+            val delta = now - uptimeMillis
+            lastTick = Tick(uptimeMillis, delta)
+            _tickFlow.emit(lastTick)
         }
     }
+}
 
-    suspend fun awaitTick(block: (delta: Long, uptimeMillis: Long) -> Unit) {
-        suspendCancellableCoroutine<Unit> { cont ->
-
-        }
+data class Tick(val uptimeMillis: Long, val delta: Long) {
+    companion object {
+        val INITIAL = Tick(0, 0)
     }
 }
