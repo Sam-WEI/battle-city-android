@@ -56,13 +56,19 @@ fun rememberTickState(): TickState {
 }
 
 class TickState {
+    companion object {
+        private const val MAX_FPS = 10
+    }
+
     var uptimeMillis: Long by mutableStateOf(SystemClock.uptimeMillis())
         private set
     var delta: Long by mutableStateOf(0)
         private set
 
     fun update(now: Long) {
-        delta = now - uptimeMillis
-        uptimeMillis = now
+        if (now - uptimeMillis > 1000f / MAX_FPS) {
+            delta = now - uptimeMillis
+            uptimeMillis = now
+        }
     }
 }
