@@ -13,9 +13,7 @@ import com.samwdev.battlecity.utils.logE
 import kotlinx.coroutines.launch
 
 @Composable
-fun BattleField(gameState: GameState, tanksViewModel: TanksViewModel, modifier: Modifier = Modifier) {
-    val tanks by tanksViewModel.tanks.collectAsState()
-    val tank by tanksViewModel.tank.collectAsState()
+fun BattleField(gameState: GameState, modifier: Modifier = Modifier) {
     val ticker by ticker()
 
     val count by remember(ticker) {
@@ -36,7 +34,7 @@ fun BattleField(gameState: GameState, tanksViewModel: TanksViewModel, modifier: 
         .aspectRatio(1f)
         .background(Color.Green)) {
         Text(text = "tick: ${ticker.uptimeMillis}. delta: ${ticker.delta}. count: ${count}")
-        Tank(tank = tank, count = count)
+        Tank(tank = gameState.tank, count = count)
     }
 
 }

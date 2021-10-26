@@ -26,8 +26,9 @@ private val joyStickBgColor = listOf(Color.Gray, Color.LightGray)
 @Composable
 fun Controller(
     modifier: Modifier = Modifier,
-    onSteer: (Offset) -> Unit,
-    onFire: () -> Unit,
+    controllerState: ControllerState = rememberControllerState(),
+    onSteer: (Offset) -> Unit = { controllerState.setCurrentInput(it) },
+    onFire: () -> Unit = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

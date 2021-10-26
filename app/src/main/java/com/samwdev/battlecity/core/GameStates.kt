@@ -4,15 +4,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.samwdev.battlecity.ui.components.ControllerState
+import com.samwdev.battlecity.ui.components.rememberControllerState
 
 @Composable
 fun rememberGameState(
-    tank: TanksViewModel = remember { TanksViewModel() },
-) = remember(tank) { GameState(tank.tanks.value) }
+    tank: TankState = remember { TankState(0, 0) },
+    controllerState: ControllerState = rememberControllerState(),
+) = remember {
+    GameState(
+        controllerState = controllerState,
+        tank = tank
+    )
+}
 
-data class GameState(
-    val tanks: Map<String, TankState>,
-)
+class GameState(
+    val controllerState: ControllerState,
+    val tanks: Map<String, TankState> = mapOf(),
+    val tank: TankState,
+) {
+    
+}
 
 data class TankState(
     val x: Int,
