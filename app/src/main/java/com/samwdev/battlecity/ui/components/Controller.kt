@@ -80,7 +80,11 @@ fun Controller(
 }
 
 @Composable
-fun JoyStick(modifier: Modifier = Modifier, onChange: (Offset) -> Unit) {
+fun JoyStick(
+    modifier: Modifier = Modifier,
+    idleRadiusFraction: Float = 0.15f,
+    onChange: (Offset) -> Unit,
+) {
     val joystickPosition = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     Canvas(
         modifier = modifier
@@ -116,7 +120,11 @@ fun JoyStick(modifier: Modifier = Modifier, onChange: (Offset) -> Unit) {
             val angle = atan2(x, y)
             Offset(sin(angle) * allowedRadius, cos(angle) * allowedRadius) + center
         }
-        onChange(Offset(x / allowedRadius, y / allowedRadius))
+        if (Offset(x, y).getDistanceSquared() < (idleRadiusFraction * side).pow(2)) {
+            onChange(Offset(0f, 0f))
+        } else {
+            onChange(Offset(x / allowedRadius, y / allowedRadius))
+        }
 
         drawCircle(
             brush = Brush.radialGradient(colors = joyStickBgColor, center = drawPosition, radius = 0.8f * side / 2),
