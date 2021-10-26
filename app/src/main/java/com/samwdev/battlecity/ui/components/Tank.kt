@@ -21,7 +21,7 @@ class TankState(
     direction: Direction = Direction.Up,
 ) {
     var x: Int by mutableStateOf(x)
-    var y: Int by mutableStateOf(x)
+    var y: Int by mutableStateOf(y)
     var direction: Direction by mutableStateOf(direction)
 }
 

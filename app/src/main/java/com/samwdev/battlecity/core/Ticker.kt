@@ -1,49 +1,9 @@
 package com.samwdev.battlecity.core
 
-import android.os.SystemClock
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.utils.logD
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
-
-class Ticker : BaseHandler() {
-    companion object {
-        private const val MAX_FPS = 2
-        private const val FRAME_DUR = (1000f / MAX_FPS).toLong()
-    }
-    private val _mutableStateFlow = MutableSharedFlow<Long>(0, onBufferOverflow = BufferOverflow.SUSPEND)
-    val flow = _mutableStateFlow.asSharedFlow()
-
-    fun start() {
-        launch(coroutineContext) {
-            var lastEmit = SystemClock.uptimeMillis()
-            var i = 0
-            while (isActive) {
-                val now = SystemClock.uptimeMillis()
-                val delta = now - lastEmit
-                if (delta > FRAME_DUR) {
-                    _mutableStateFlow.emit(delta)
-                    lastEmit = now
-                }
-                logD("ticking (${i++}): delta - ${delta}.")
-                delay(FRAME_DUR)
-            }
-        }
-    }
-}
-
-@Composable
-fun Ticker(
-    tickState: TickState = rememberTickState()
-) {
-    produceState(initialValue = tickState) {
-        while (true) {
-            val now = withFrameMillis { it }
-            tickState.update(now)
-        }
-    }
-}
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun rememberTickState(): TickState {
@@ -58,17 +18,26 @@ class TickState(tick: Tick = Tick.INITIAL) {
     var lastTick: Tick by mutableStateOf(tick)
         private set
 
-    val uptimeMillis: Long = lastTick.uptimeMillis
-    val delta: Long = lastTick.delta
+    val uptimeMillis: Long
+        get() = lastTick.uptimeMillis
+    val delta: Long
+        get() = lastTick.delta
 
     private val _tickFlow: MutableStateFlow<Tick> = MutableStateFlow(Tick.INITIAL)
     val tickFlow: StateFlow<Tick> = _tickFlow
 
     suspend fun update(now: Long) {
-        if (now - uptimeMillis > 1000f / MAX_FPS) {
-            val delta = now - uptimeMillis
-            lastTick = Tick(uptimeMillis, delta)
+        val delta = now - lastTick.uptimeMillis
+        if (delta > 1000f / MAX_FPS) {
+            lastTick = Tick(now, delta)
             _tickFlow.emit(lastTick)
+        }
+    }
+
+    suspend fun start(): Unit = coroutineScope {
+        while (true) {
+            val now = withFrameMillis { it }
+            update(now)
         }
     }
 }
