@@ -2,6 +2,7 @@ package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
 import com.samwdev.battlecity.ui.components.ControllerState
+import com.samwdev.battlecity.ui.components.TankState
 import com.samwdev.battlecity.ui.components.rememberControllerState
 
 @Composable
@@ -23,17 +24,3 @@ class GameState(
     val tanks: Map<String, TankState> = mapOf(),
     val tankState: TankState,
 )
-
-class TankState(
-    x: Int = 0,
-    y: Int = 0,
-    direction: Direction = Direction.Up,
-) {
-    var x: Int by mutableStateOf(x)
-    var y: Int by mutableStateOf(x)
-    var direction: Direction by mutableStateOf(direction)
-}
-
-enum class Direction {
-    Up, Down, Left, Right, Unspecified
-}

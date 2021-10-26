@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.coroutineContext
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 
 class Ticker : BaseHandler() {
@@ -57,7 +58,7 @@ fun rememberTickState(): TickState {
 
 class TickState {
     companion object {
-        private const val MAX_FPS = 10
+        private const val MAX_FPS = 1
     }
 
     var uptimeMillis: Long by mutableStateOf(SystemClock.uptimeMillis())
@@ -65,10 +66,18 @@ class TickState {
     var delta: Long by mutableStateOf(0)
         private set
 
+//    private val continuation: Continuation<Unit> = Continuation()
+
     fun update(now: Long) {
         if (now - uptimeMillis > 1000f / MAX_FPS) {
             delta = now - uptimeMillis
             uptimeMillis = now
+        }
+    }
+
+    suspend fun awaitTick(block: (delta: Long, uptimeMillis: Long) -> Unit) {
+        suspendCancellableCoroutine<Unit> { cont ->
+
         }
     }
 }

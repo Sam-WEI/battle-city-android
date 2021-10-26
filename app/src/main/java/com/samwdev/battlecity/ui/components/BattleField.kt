@@ -20,15 +20,19 @@ import kotlin.math.roundToInt
 fun BattleField(gameState: GameState, modifier: Modifier = Modifier) {
     Ticker(tickState = gameState.tickState)
 
-    LaunchedEffect(gameState.controllerState.currentOffset) {
+    LaunchedEffect(gameState.controllerState.direction) {
         // todo find another way
-        snapshotFlow { gameState.controllerState.currentOffset }
-            .filter { it != Offset.Unspecified }
+        snapshotFlow { gameState.controllerState.direction }
+            .filter { it != Direction.Unspecified }
             .collect {
                 logI("moving tank")
-                val (xo, yo) = it
-                gameState.tankState.x += (5 * xo).roundToInt()
-                gameState.tankState.y += (5 * yo).roundToInt()
+                gameState.tankState.direction = it
+                when (it) {
+                    Direction.Left -> gameState.tankState.x -= 1
+                    Direction.Up -> gameState.tankState.y -= 1
+                    Direction.Right -> gameState.tankState.x += 1
+                    Direction.Down -> gameState.tankState.y += 1
+                }
             }
     }
 
@@ -37,6 +41,7 @@ fun BattleField(gameState: GameState, modifier: Modifier = Modifier) {
         .aspectRatio(1f)
         .background(Color.Green)) {
         Text(text = "tick: ${gameState.tickState.uptimeMillis}. delta: ${gameState.tickState.delta}.")
+
         Tank(tank = gameState.tankState, tickState = gameState.tickState)
     }
 
