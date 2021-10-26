@@ -26,12 +26,12 @@ class TanksViewModel : ViewModel() {
     fun updateTank(id: String, dx: Int, dy: Int) {
         val oldTanks = _tanks.value
         val old = oldTanks[id]!!
-        oldTanks[id] = old.copy(x = old.x + dx, y = old.y + dy)
+//        oldTanks[id] = old.copy(x = old.x + dx, y = old.y + dy)
         _tanks.tryEmit(oldTanks)
     }
 
     fun updateTank(dx: Int, dy: Int) {
         val old = _tank.value
-        _tank.tryEmit(old.copy(x = old.x + dx, y = old.y + dy))
+//        _tank.tryEmit(old.copy(x = old.x + dx, y = old.y + dy))
     }
 }
