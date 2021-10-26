@@ -21,7 +21,10 @@ import kotlin.math.roundToInt
 
 @Composable
 fun BattleField(gameState: GameState, modifier: Modifier = Modifier) {
-    val tickState by gameState.tickState.tickFlow.collectAsState()
+    LaunchedEffect(Unit) {
+        gameState.tickState.start()
+    }
+
     LaunchedEffect(gameState.controllerState.direction) {
         // todo find another way
         snapshotFlow { gameState.controllerState.direction }

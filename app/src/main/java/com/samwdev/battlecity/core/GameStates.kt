@@ -8,7 +8,7 @@ import com.samwdev.battlecity.ui.components.rememberControllerState
 @Composable
 fun rememberGameState(
     tickState: TickState = rememberTickState(),
-    tank: TankState = remember { TankState(0, 0) },
+    tank: TankState = remember { TankState(0, 200) },
     controllerState: ControllerState = rememberControllerState(),
 ) = remember {
     GameState(
