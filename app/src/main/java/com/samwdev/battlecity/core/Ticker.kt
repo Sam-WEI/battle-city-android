@@ -39,15 +39,30 @@ class Ticker : BaseHandler() {
 }
 
 @Composable
-fun ticker(): State<Tick> {
-    var lastTick by remember { mutableStateOf(SystemClock.uptimeMillis()) }
-    return produceState(initialValue = Tick(SystemClock.uptimeMillis(), 0)) {
+fun Ticker(
+    tickState: TickState = rememberTickState()
+) {
+    produceState(initialValue = tickState) {
         while (true) {
             val now = withFrameMillis { it }
-            value = Tick(now, now - lastTick)
-            lastTick = now
+            tickState.update(now)
         }
     }
 }
 
-data class Tick(val uptimeMillis: Long, val delta: Long)
+@Composable
+fun rememberTickState(): TickState {
+    return remember { TickState() }
+}
+
+class TickState {
+    var uptimeMillis: Long by mutableStateOf(SystemClock.uptimeMillis())
+        private set
+    var delta: Long by mutableStateOf(0)
+        private set
+
+    fun update(now: Long) {
+        delta = now - uptimeMillis
+        uptimeMillis = now
+    }
+}
