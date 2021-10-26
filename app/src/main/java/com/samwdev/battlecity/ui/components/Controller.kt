@@ -17,9 +17,42 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.core.Direction
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.*
+
+@Composable
+fun rememberControllerState(): ControllerState {
+    return remember { ControllerState() }
+}
+
+class ControllerState {
+    var direction by mutableStateOf(Direction.Unspecified)
+        private set
+
+    var currentOffset by mutableStateOf(Offset.Unspecified)
+        private set
+
+    fun setCurrentInput(offset: Offset) {
+        currentOffset = offset
+        direction = getDirection(offset)
+    }
+}
+
+private fun getDirection(steerOffset: Offset): Direction {
+    val (x, y) = steerOffset
+    val angle = Math.toDegrees(atan2(y, x).toDouble())
+
+    return when {
+        x == 0f && y == 0f -> Direction.Unspecified
+        angle <= -45 && angle > -135 -> Direction.Up
+        angle <= -135 || angle > 135 -> Direction.Left
+        angle <= 135 && angle > 45 -> Direction.Down
+        angle <= 45 && angle > 0 || angle > -45 && angle <= 0 -> Direction.Right
+        else -> Direction.Unspecified
+    }
+}
 
 private val joyStickBgColor = listOf(Color.Gray, Color.LightGray)
 
