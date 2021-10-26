@@ -14,7 +14,11 @@ class ControllerState {
     var direction by mutableStateOf(Direction.Unspecified)
         private set
 
+    var currentOffset by mutableStateOf(Offset.Unspecified)
+        private set
+
     fun setCurrentInput(offset: Offset) {
+        currentOffset = offset
         direction = getDirection(offset)
     }
 }
