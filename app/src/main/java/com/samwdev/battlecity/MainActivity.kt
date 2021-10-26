@@ -16,7 +16,7 @@ import com.samwdev.battlecity.core.TanksViewModel
 import com.samwdev.battlecity.core.rememberGameState
 import com.samwdev.battlecity.ui.components.BattleField
 import com.samwdev.battlecity.ui.components.Controller
-import com.samwdev.battlecity.ui.components.rememberBattleCityController
+import com.samwdev.battlecity.ui.components.rememberControllerState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlin.math.roundToInt
 
@@ -29,9 +29,9 @@ class MainActivity : ComponentActivity() {
             val tanksViewModel = TanksViewModel()
             val gameState = rememberGameState(tanksViewModel)
             val scope = rememberCoroutineScope()
-            val controllerState = rememberBattleCityController()
 
             Column(modifier = Modifier.fillMaxSize()) {
+                val controllerState = rememberControllerState()
                 BattleField(gameState = gameState, tanksViewModel = tanksViewModel, modifier = Modifier.fillMaxWidth())
                 Controller(
                     modifier = Modifier
