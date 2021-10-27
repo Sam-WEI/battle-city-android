@@ -19,6 +19,7 @@ class TankState(
     x: Int = 0,
     y: Int = 0,
     direction: Direction = Direction.Up,
+    val speed: Float = 0.4f,
 ) {
     var x: Int by mutableStateOf(x)
     var y: Int by mutableStateOf(y)

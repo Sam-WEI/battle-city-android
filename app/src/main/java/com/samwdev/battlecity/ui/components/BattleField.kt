@@ -22,23 +22,7 @@ import kotlin.math.roundToInt
 @Composable
 fun BattleField(gameState: GameState, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
-        gameState.tickState.start()
-    }
-
-    LaunchedEffect(gameState.controllerState.direction) {
-        // todo find another way
-        snapshotFlow { gameState.controllerState.direction }
-            .filter { it != Direction.Unspecified }
-            .collect {
-                logI("moving tank")
-                gameState.tankState.direction = it
-                when (it) {
-                    Direction.Left -> gameState.tankState.x -= 1
-                    Direction.Up -> gameState.tankState.y -= 1
-                    Direction.Right -> gameState.tankState.x += 1
-                    Direction.Down -> gameState.tankState.y += 1
-                }
-            }
+        gameState.start()
     }
 
     Box(modifier = Modifier

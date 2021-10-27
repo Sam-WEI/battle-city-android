@@ -30,14 +30,14 @@ class ControllerState {
     var direction by mutableStateOf(Direction.Unspecified)
         private set
 
-    var currentOffset by mutableStateOf(Offset.Unspecified)
+    var offset by mutableStateOf(Offset.Unspecified)
         private set
 
     var firePressed by mutableStateOf(false)
         private set
 
     fun setSteerInput(offset: Offset) {
-        currentOffset = offset
+        this.offset = offset
         direction = getDirection(offset)
     }
 
