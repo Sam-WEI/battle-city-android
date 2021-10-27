@@ -33,9 +33,16 @@ class ControllerState {
     var currentOffset by mutableStateOf(Offset.Unspecified)
         private set
 
-    fun setCurrentInput(offset: Offset) {
+    var firePressed by mutableStateOf(false)
+        private set
+
+    fun setSteerInput(offset: Offset) {
         currentOffset = offset
         direction = getDirection(offset)
+    }
+
+    fun setFireInput(pressed: Boolean) {
+        firePressed = pressed
     }
 }
 
@@ -59,8 +66,8 @@ private val joyStickBgColor = listOf(Color.Gray, Color.LightGray)
 fun Controller(
     modifier: Modifier = Modifier,
     controllerState: ControllerState = rememberControllerState(),
-    onSteer: (Offset) -> Unit = { controllerState.setCurrentInput(it) },
-    onFire: () -> Unit = {},
+    onSteer: (Offset) -> Unit = { controllerState.setSteerInput(it) },
+    onFire: (Boolean) -> Unit = { controllerState.setFireInput(it) },
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -73,7 +80,7 @@ fun Controller(
         )
         FireButton(
             modifier = Modifier.size(60.dp),
-            onTap = onFire,
+            onPress = onFire,
         )
     }
 }
@@ -139,18 +146,19 @@ fun JoyStick(
 }
 
 @Composable
-fun FireButton(modifier: Modifier = Modifier, onTap: () -> Unit) {
-    var pressed by remember { mutableStateOf(false) }
-    val color by animateColorAsState(targetValue = if (pressed) Color.DarkGray else Color.Gray)
+fun FireButton(modifier: Modifier = Modifier, onPress: (Boolean) -> Unit) {
+    var pressing by remember { mutableStateOf(false) }
+    val color by animateColorAsState(targetValue = if (pressing) Color.DarkGray else Color.Gray)
 
     Canvas(modifier = modifier.pointerInput(Unit) {
         coroutineScope {
             while (true) {
                 awaitPointerEventScope { awaitFirstDown() }
-                pressed = true
-                onTap()
+                pressing = true
+                onPress(true)
                 awaitPointerEventScope { waitForUpOrCancellation() }
-                pressed = false
+                pressing = false
+                onPress(false)
             }
         }
     }) {
