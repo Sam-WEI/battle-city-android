@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:${Library.composeVersion}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.3.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     testImplementation(Library.JUNIT)
     androidTestImplementation(Library.ANDROIDX_TEST_JUNIT)
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
