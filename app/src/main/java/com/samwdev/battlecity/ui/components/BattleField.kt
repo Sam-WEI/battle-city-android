@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.utils.MapParser
 import com.samwdev.battlecity.utils.logI
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
@@ -24,13 +25,11 @@ fun BattleField(gameState: GameState, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
         gameState.start()
     }
-
     Box(modifier = Modifier
         .fillMaxWidth()
         .aspectRatio(1f)
         .background(Color.Green)) {
         Text(text = "tick: ${gameState.tickState.uptimeMillis}. delta: ${gameState.tickState.delta}.")
-
         Tank(tank = gameState.tankState)
     }
 
