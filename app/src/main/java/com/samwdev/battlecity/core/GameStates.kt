@@ -1,10 +1,10 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.ui.components.ControllerState
-import com.samwdev.battlecity.ui.components.Direction
-import com.samwdev.battlecity.ui.components.TankState
-import com.samwdev.battlecity.ui.components.rememberControllerState
+import com.samwdev.battlecity.entity.MapElements
+import com.samwdev.battlecity.entity.StageConfigJson
+import com.samwdev.battlecity.ui.components.*
+import com.samwdev.battlecity.utils.MapParser
 import com.samwdev.battlecity.utils.logE
 import com.samwdev.battlecity.utils.logI
 import kotlinx.coroutines.CoroutineScope
@@ -19,19 +19,25 @@ fun rememberGameState(
     tickState: TickState = rememberTickState(),
     tank: TankState = remember { TankState(0, 200) },
     controllerState: ControllerState = rememberControllerState(),
-) = remember {
-    GameState(
-        coroutineScope,
-        tickState = tickState,
-        controllerState = controllerState,
-        tankState = tank
-    )
+    stageConfigJson: StageConfigJson,
+): GameState {
+    val mapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map)
+    return remember {
+        GameState(
+            coroutineScope,
+            tickState = tickState,
+            controllerState = controllerState,
+            mapState = mapState,
+            tankState = tank
+        )
+    }
 }
 
 class GameState(
     private val coroutineScope: CoroutineScope,
     val tickState: TickState,
     val controllerState: ControllerState,
+    val mapState: MapState,
     val tanks: Map<String, TankState> = mapOf(),
     val tankState: TankState,
 ) {

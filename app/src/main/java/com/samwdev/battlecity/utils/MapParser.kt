@@ -3,12 +3,9 @@ package com.samwdev.battlecity.utils
 import android.graphics.Point
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.capitalize
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.samwdev.battlecity.entity.*
-import java.lang.IllegalArgumentException
-import java.util.*
 
 object MapParser {
     @Composable
@@ -28,7 +25,7 @@ object MapParser {
         val waters = mutableListOf<Int>()
         var eagle: Point? = null
         configJson.map.forEachIndexed { r, row ->
-            row.split(Regex("\\s+")).forEachIndexed { c, block ->
+            row.split(Regex("\\s+")).filter { it.isNotEmpty() }.forEachIndexed { c, block ->
                 when (block[0]) {
                     'E' -> {
                         // eagle

@@ -22,6 +22,7 @@ import com.samwdev.battlecity.ui.components.BattleField
 import com.samwdev.battlecity.ui.components.Controller
 import com.samwdev.battlecity.ui.components.rememberControllerState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import com.samwdev.battlecity.utils.MapParser
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val scope = rememberCoroutineScope()
-            val gameState = rememberGameState()
+            val gameState = rememberGameState(stageConfigJson = MapParser.parseJson(1))
 
             Column(modifier = Modifier.fillMaxSize()) {
                 BattleField(gameState = gameState, modifier = Modifier.fillMaxWidth())
