@@ -38,12 +38,12 @@ fun Tank(tank: TankState) {
             .rotate(tank.direction.degree)
     ) {
         drawRect(
-            color = Color.Black,
+            color = Color.Yellow,
             topLeft = Offset(0f, size.height / 5f),
 //            alpha = (tickState.uptimeMillis % 1500) / 3000f + 0.5f
         )
         drawRect(
-            color = Color.DarkGray,
+            color = Color.Yellow,
             topLeft = Offset(size.width / 2 - 24 / 2, 0f),
             size = Size(24f, size.height / 2)
         )

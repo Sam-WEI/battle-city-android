@@ -4,22 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.rememberBattleState
-import com.samwdev.battlecity.ui.components.BattleField
-import com.samwdev.battlecity.core.Controller
+import com.samwdev.battlecity.ui.components.BattleScreen
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.MapParser
 
@@ -29,19 +17,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val scope = rememberCoroutineScope()
-            val battleState = rememberBattleState(stageConfigJson = MapParser.parseJson(1))
-
-            Column(modifier = Modifier.fillMaxSize()) {
-                BattleField(battleState = battleState, modifier = Modifier.fillMaxWidth())
-                Controller(
-                    modifier = Modifier
-                        .padding(30.dp)
-                        .fillMaxWidth(),
-                    controllerState = battleState.controllerState,
-                )
-
-                Text(text = "direction: ${battleState.controllerState.direction}", color = Color.Gray, fontSize = 30.sp)
+            BattleCityTheme {
+                BattleScreen(MapParser.parseJson(1))
             }
         }
     }
