@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.ui.components.mu
 
 class TankState(
     x: Int = 0,
@@ -33,7 +34,7 @@ enum class Direction(val degree: Float) {
 @Composable
 fun Tank(tank: TankState) {
     Canvas(
-        modifier = Modifier.size(50.dp, 50.dp)
+        modifier = Modifier.size(1.mu, 1.mu)
             .offset { IntOffset(tank.x, tank.y) }
             .rotate(tank.direction.degree)
     ) {
