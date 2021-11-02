@@ -1,4 +1,4 @@
-package com.samwdev.battlecity.ui.components
+package com.samwdev.battlecity.core
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable

@@ -1,14 +1,10 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.entity.MapElements
 import com.samwdev.battlecity.entity.StageConfigJson
 import com.samwdev.battlecity.ui.components.*
 import com.samwdev.battlecity.utils.MapParser
-import com.samwdev.battlecity.utils.logE
-import com.samwdev.battlecity.utils.logI
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -20,11 +16,11 @@ fun rememberGameState(
     tank: TankState = remember { TankState(0, 200) },
     controllerState: ControllerState = rememberControllerState(),
     stageConfigJson: StageConfigJson,
-): GameState {
+): BattleState {
     val mapElements = remember(stageConfigJson) { MapParser.parse(stageConfigJson).map }
     val mapState = rememberMapState(mapElements = mapElements)
     return remember {
-        GameState(
+        BattleState(
             coroutineScope = coroutineScope,
             tickState = tickState,
             controllerState = controllerState,
@@ -34,7 +30,7 @@ fun rememberGameState(
     }
 }
 
-class GameState(
+class BattleState(
     private val coroutineScope: CoroutineScope,
     val tickState: TickState,
     val controllerState: ControllerState,

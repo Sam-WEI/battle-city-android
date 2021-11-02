@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.rememberGameState
 import com.samwdev.battlecity.ui.components.BattleField
-import com.samwdev.battlecity.ui.components.Controller
-import com.samwdev.battlecity.ui.components.rememberControllerState
+import com.samwdev.battlecity.core.Controller
+import com.samwdev.battlecity.core.rememberControllerState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.MapParser
 
