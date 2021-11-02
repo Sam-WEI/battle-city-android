@@ -21,10 +21,11 @@ fun rememberGameState(
     controllerState: ControllerState = rememberControllerState(),
     stageConfigJson: StageConfigJson,
 ): GameState {
-    val mapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map)
+    val mapElements = remember(stageConfigJson) { MapParser.parse(stageConfigJson).map }
+    val mapState = rememberMapState(mapElements = mapElements)
     return remember {
         GameState(
-            coroutineScope,
+            coroutineScope = coroutineScope,
             tickState = tickState,
             controllerState = controllerState,
             mapState = mapState,
