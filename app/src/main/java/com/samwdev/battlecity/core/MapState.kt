@@ -1,4 +1,4 @@
-package com.samwdev.battlecity.ui.components
+package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
 import com.samwdev.battlecity.entity.MapElements

@@ -1,4 +1,4 @@
-package com.samwdev.battlecity.ui.components
+package com.samwdev.battlecity.core
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
