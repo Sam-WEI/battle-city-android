@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun rememberGameState(
+fun rememberBattleState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     tickState: TickState = rememberTickState(),
     tank: TankState = remember { TankState(0, 200) },
