@@ -11,16 +11,16 @@ import androidx.compose.ui.graphics.Color
 import com.samwdev.battlecity.core.*
 
 @Composable
-fun BattleField(gameState: BattleState, modifier: Modifier = Modifier) {
+fun BattleField(battleState: BattleState, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
-        gameState.start()
+        battleState.start()
     }
     Box(modifier = Modifier
         .fillMaxWidth()
         .aspectRatio(1f)
         .background(Color.Green)) {
-        Text(text = "tick: ${gameState.tickState.uptimeMillis}. delta: ${gameState.tickState.delta}.")
-        Tank(tank = gameState.tankState)
+        Text(text = "tick: ${battleState.tickState.uptimeMillis}. delta: ${battleState.tickState.delta}.")
+        Tank(tank = battleState.tankState)
     }
 
 }

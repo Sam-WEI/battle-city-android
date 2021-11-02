@@ -17,10 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.rememberGameState
+import com.samwdev.battlecity.core.rememberBattleState
 import com.samwdev.battlecity.ui.components.BattleField
 import com.samwdev.battlecity.core.Controller
-import com.samwdev.battlecity.core.rememberControllerState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.MapParser
 
@@ -31,18 +30,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val scope = rememberCoroutineScope()
-            val gameState = rememberGameState(stageConfigJson = MapParser.parseJson(1))
+            val battleState = rememberBattleState(stageConfigJson = MapParser.parseJson(1))
 
             Column(modifier = Modifier.fillMaxSize()) {
-                BattleField(gameState = gameState, modifier = Modifier.fillMaxWidth())
+                BattleField(battleState = battleState, modifier = Modifier.fillMaxWidth())
                 Controller(
                     modifier = Modifier
                         .padding(30.dp)
                         .fillMaxWidth(),
-                    controllerState = gameState.controllerState,
+                    controllerState = battleState.controllerState,
                 )
 
-                Text(text = "direction: ${gameState.controllerState.direction}", color = Color.Gray, fontSize = 30.sp)
+                Text(text = "direction: ${battleState.controllerState.direction}", color = Color.Gray, fontSize = 30.sp)
             }
         }
     }
