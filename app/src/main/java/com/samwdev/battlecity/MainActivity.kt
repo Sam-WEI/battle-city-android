@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BattleCityTheme {
-                BattleScreen(MapParser.parseJson(13))
+                BattleScreen(MapParser.parseJson(14))
             }
         }
     }
