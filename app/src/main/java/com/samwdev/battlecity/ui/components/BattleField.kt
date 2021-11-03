@@ -7,10 +7,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toOffset
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.*
 import kotlin.math.roundToInt
@@ -32,8 +35,10 @@ fun BattleField(
         SteelLayer(mapState = battleState.mapState)
         IceLayer(mapState = battleState.mapState)
         WaterLayer(mapState = battleState.mapState)
+        EagleLayer(mapState = battleState.mapState)
 
         Tank(tank = battleState.tankState)
+
         TreeLayer(mapState = battleState.mapState)
 
         Text(
@@ -135,5 +140,17 @@ fun IceLayer(mapState: MapState) {
                 size = Size(el.sizeInMapUnit * mu.toPx(), el.sizeInMapUnit * mu.toPx()),
             )
         }
+    }
+}
+
+@Composable
+fun EagleLayer(mapState: MapState) {
+    val mu = LocalMapUnitDp.current
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        drawOval(
+            color = Color.Red,
+            topLeft = mapState.eagle.toOffset() * mu.toPx(),
+            size = Size(mu.toPx(), mu.toPx())
+        )
     }
 }
