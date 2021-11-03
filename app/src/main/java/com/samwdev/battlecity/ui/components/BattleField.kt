@@ -28,7 +28,6 @@ fun BattleField(
         .aspectRatio(1f)
         .background(Color.Black)
     ) {
-
         BrickLayer(mapState = battleState.mapState)
         SteelLayer(mapState = battleState.mapState)
         IceLayer(mapState = battleState.mapState)
@@ -71,7 +70,6 @@ private val LocalMapUnit = staticCompositionLocalOf<Float> {
 
 @Composable
 fun BrickLayer(mapState: MapState) {
-    logE("recomposing bricks")
     Box(modifier = Modifier.fillMaxSize()) {
         mapState.bricks.forEach { br ->
             val (x, y) = br.offsetInMapUnit
@@ -79,7 +77,7 @@ fun BrickLayer(mapState: MapState) {
                 modifier = Modifier
                     .offset(x.mu, y.mu)
                     .size(br.size)
-                    .background(Color.Red)
+                    .background(Color(97, 20 ,9))
             )
         }
     }
@@ -87,7 +85,6 @@ fun BrickLayer(mapState: MapState) {
 
 @Composable
 fun SteelLayer(mapState: MapState) {
-    logI("recomposing steels")
     Box(modifier = Modifier.fillMaxSize()) {
         mapState.steels.forEach { el ->
             val (x, y) = el.offsetInMapUnit
@@ -110,7 +107,7 @@ fun TreeLayer(mapState: MapState) {
                 modifier = Modifier
                     .offset(x.mu, y.mu)
                     .size(el.size)
-                    .background(Color.Green)
+                    .background(Color(78, 134, 22, 151))
             )
         }
     }
