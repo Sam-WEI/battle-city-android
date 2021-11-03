@@ -28,6 +28,8 @@ class MapState(
     var ices by mutableStateOf(mapElements.ices, policy = referentialEqualityPolicy())
         private set
 
+    val eagle = mapElements.eagle
+
     fun destroyBricks(indices: Set<BrickElement>) {
         bricks = bricks.filter { it !in indices }
     }
