@@ -10,10 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.entity.BrickElement
-import com.samwdev.battlecity.entity.MAP_BLOCK_COUNT
-import com.samwdev.battlecity.entity.SteelElement
-import com.samwdev.battlecity.entity.TreeElement
+import com.samwdev.battlecity.entity.*
 import kotlin.math.roundToInt
 
 @Composable
@@ -24,31 +21,26 @@ fun BattleField(
     LaunchedEffect(Unit) {
         battleState.start()
     }
-    val brickElements = remember(battleState.mapState.bricks) {
-        battleState.mapState.bricks.map { BrickElement(it) }
-    }
-    val steelElements = remember(battleState.mapState.steels) {
-        battleState.mapState.steels.map { SteelElement(it) }
-    }
-    val treeElements = remember(battleState.mapState.trees) {
-        battleState.mapState.trees.map { TreeElement(it) }
-    }
     Map(modifier = modifier
         .fillMaxWidth()
         .aspectRatio(1f)
         .background(Color.Black)
     ) {
-        TreeLayer(trees = treeElements)
-        BrickLayer(bricks = brickElements)
-        SteelLayer(steel = steelElements)
+
+        BrickLayer(bricks = battleState.mapState.bricks)
+        SteelLayer(steels = battleState.mapState.steels)
+        IceLayer(ices = battleState.mapState.ices)
+        WaterLayer(waters = battleState.mapState.waters)
+
+        Tank(tank = battleState.tankState)
+        TreeLayer(trees = battleState.mapState.trees)
+
         Text(
             text = "FPS: ${(1000f / battleState.tickState.delta).roundToInt()}",
             color = Color.Green,
             fontSize = 14.sp,
             modifier = Modifier.align(Alignment.TopEnd)
         )
-        Tank(tank = battleState.tankState)
-
     }
 }
 
@@ -90,9 +82,9 @@ fun BrickLayer(bricks: List<BrickElement>) {
 }
 
 @Composable
-fun SteelLayer(steel: List<SteelElement>) {
+fun SteelLayer(steels: List<SteelElement>) {
     Box(modifier = Modifier.fillMaxSize()) {
-        steel.forEach { el ->
+        steels.forEach { el ->
             val (x, y) = el.offsetInMapUnit
             Box(
                 modifier = Modifier.offset(x.mu, y.mu)
@@ -112,6 +104,34 @@ fun TreeLayer(trees: List<TreeElement>) {
                 modifier = Modifier.offset(x.mu, y.mu)
                     .size(el.size)
                     .background(Color.Green)
+            )
+        }
+    }
+}
+
+@Composable
+fun WaterLayer(waters: List<WaterElement>) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        waters.forEach { el ->
+            val (x, y) = el.offsetInMapUnit
+            Box(
+                modifier = Modifier.offset(x.mu, y.mu)
+                    .size(el.size)
+                    .background(Color.Blue)
+            )
+        }
+    }
+}
+
+@Composable
+fun IceLayer(ices: List<IceElement>) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        ices.forEach { el ->
+            val (x, y) = el.offsetInMapUnit
+            Box(
+                modifier = Modifier.offset(x.mu, y.mu)
+                    .size(el.size)
+                    .background(Color.White)
             )
         }
     }

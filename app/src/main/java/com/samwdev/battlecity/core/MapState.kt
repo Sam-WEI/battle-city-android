@@ -1,7 +1,9 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
+import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapElements
+import com.samwdev.battlecity.entity.SteelElement
 
 @Composable
 fun rememberMapState(mapElements: MapElements): MapState {
@@ -26,11 +28,11 @@ class MapState(
     var ices by mutableStateOf(mapElements.ices)
         private set
 
-    fun destroyBricks(indices: Set<Int>) {
+    fun destroyBricks(indices: Set<BrickElement>) {
         bricks = bricks.filter { it !in indices }
     }
 
-    fun destroySteels(indices: Set<Int>) {
+    fun destroySteels(indices: Set<SteelElement>) {
         steels = steels.filter { it !in indices }
     }
 }
