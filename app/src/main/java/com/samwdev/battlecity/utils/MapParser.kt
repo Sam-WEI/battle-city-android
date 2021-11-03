@@ -38,51 +38,51 @@ object MapParser {
                         // brick
                         val blockInfo = Integer.parseInt(block.substring(1), 16)
                         var brickBits = 0
-                        when {
-                            blockInfo or 0b0001 != 0 -> brickBits += 0xf000
-                            blockInfo or 0b0010 != 0 -> brickBits += 0x0f00
-                            blockInfo or 0b0100 != 0 -> brickBits += 0x00f0
-                            blockInfo or 0b1000 != 0 -> brickBits += 0x000f
-                        }
+                        if (blockInfo and 0b0001 != 0) { brickBits += 0xf000 }
+                        if (blockInfo and 0b0010 != 0) { brickBits += 0x0f00 }
+                        if (blockInfo and 0b0100 != 0) { brickBits += 0x00f0 }
+                        if (blockInfo and 0b1000 != 0) { brickBits += 0x000f }
+
                         val cellRow = 4 * r
                         val cellCol = 4 * c
                         val cellCountInARow = 4 * MAP_BLOCK_COUNT
 
-                        with ((brickBits shr 12) and 0xf) {
+                        ((brickBits shr 12) and 0xf).takeIf { it != 0 }?.let {
                             // 4 TL cells
                             val topLeftIndex = cellRow * cellCountInARow + cellCol
-                            if (this or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
-                            if (this or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
-                            if (this or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
-                            if (this or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
+                            if (it or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
+                            if (it or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
+                            if (it or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
+                            if (it or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
                         }
 
-                        with ((brickBits shr 8) and 0xf) {
+                        ((brickBits shr 8) and 0xf).takeIf { it != 0 }?.let {
                             // 4 TR cells
-                            val topLeftIndex = cellRow * cellCountInARow + 2
-                            if (this or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
-                            if (this or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
-                            if (this or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
-                            if (this or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
+                            val topLeftIndex = cellRow * cellCountInARow + cellCol + 2
+                            if (it or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
+                            if (it or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
+                            if (it or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
+                            if (it or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
                         }
 
-                        with ((brickBits shr 4) and 0xf) {
+                        ((brickBits shr 4) and 0xf).takeIf { it != 0 }?.let {
                             // 4 BL cells
                             val topLeftIndex = (cellRow + 2) * cellCountInARow + cellCol
-                            if (this or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
-                            if (this or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
-                            if (this or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
-                            if (this or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
+                            if (it or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
+                            if (it or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
+                            if (it or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
+                            if (it or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
                         }
 
-                        with (brickBits and 0xf) {
+                        ((brickBits shr 0) and 0xf).takeIf { it != 0 }?.let {
                             // 4 BR cells
                             val topLeftIndex = (cellRow + 2) * cellCountInARow + cellCol + 2
-                            if (this or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
-                            if (this or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
-                            if (this or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
-                            if (this or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
+                            if (it or 0b0001 != 0) { bricks.add(topLeftIndex + 0) }
+                            if (it or 0b0010 != 0) { bricks.add(topLeftIndex + 1) }
+                            if (it or 0b0100 != 0) { bricks.add(topLeftIndex + cellCountInARow) }
+                            if (it or 0b1000 != 0) { bricks.add(topLeftIndex + 1 + cellCountInARow) }
                         }
+
                     }
                     'T' -> {
                         // steel
@@ -90,11 +90,17 @@ object MapParser {
                         val cellRow = 2 * r
                         val cellCol = 2 * c
                         val cellCountInARow = 2 * MAP_BLOCK_COUNT
-                        when {
-                            blockInfo and 0b0001 != 0 -> steels.add(cellRow * cellCountInARow + cellCol)
-                            blockInfo and 0b0010 != 0 -> steels.add(cellRow * cellCountInARow + cellCol + 1)
-                            blockInfo and 0b0100 != 0 -> steels.add((cellRow + 1) * cellCountInARow + cellCol)
-                            blockInfo and 0b1000 != 0 -> steels.add((cellRow + 1) * cellCountInARow + cellCol + 1)
+                        if (blockInfo and 0b0001 != 0) {
+                            steels.add(cellRow * cellCountInARow + cellCol)
+                        }
+                        if (blockInfo and 0b0010 != 0) {
+                            steels.add(cellRow * cellCountInARow + cellCol + 1)
+                        }
+                        if (blockInfo and 0b0100 != 0) {
+                            steels.add((cellRow + 1) * cellCountInARow + cellCol)
+                        }
+                        if (blockInfo and 0b1000 != 0) {
+                            steels.add((cellRow + 1) * cellCountInARow + cellCol + 1)
                         }
                     }
                     'S' -> {
