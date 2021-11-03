@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.*
+import com.samwdev.battlecity.utils.logE
+import com.samwdev.battlecity.utils.logI
 import kotlin.math.roundToInt
 
 @Composable
@@ -27,13 +29,13 @@ fun BattleField(
         .background(Color.Black)
     ) {
 
-        BrickLayer(bricks = battleState.mapState.bricks)
-        SteelLayer(steels = battleState.mapState.steels)
-        IceLayer(ices = battleState.mapState.ices)
-        WaterLayer(waters = battleState.mapState.waters)
+        BrickLayer(mapState = battleState.mapState)
+        SteelLayer(mapState = battleState.mapState)
+        IceLayer(mapState = battleState.mapState)
+        WaterLayer(mapState = battleState.mapState)
 
         Tank(tank = battleState.tankState)
-        TreeLayer(trees = battleState.mapState.trees)
+        TreeLayer(mapState = battleState.mapState)
 
         Text(
             text = "FPS: ${(1000f / battleState.tickState.delta).roundToInt()}",
@@ -52,7 +54,7 @@ private fun Map(
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapUnit = maxWidth.value / MAP_BLOCK_COUNT
+        val mapUnit = remember(maxWidth, MAP_BLOCK_COUNT) { maxWidth.value / MAP_BLOCK_COUNT }
         CompositionLocalProvider(LocalMapUnit provides mapUnit) {
             content()
         }
@@ -68,12 +70,14 @@ private val LocalMapUnit = staticCompositionLocalOf<Float> {
 }
 
 @Composable
-fun BrickLayer(bricks: List<BrickElement>) {
+fun BrickLayer(mapState: MapState) {
+    logE("recomposing bricks")
     Box(modifier = Modifier.fillMaxSize()) {
-        bricks.take(15000).forEach { br ->
+        mapState.bricks.forEach { br ->
             val (x, y) = br.offsetInMapUnit
             Box(
-                modifier = Modifier.offset(x.mu, y.mu)
+                modifier = Modifier
+                    .offset(x.mu, y.mu)
                     .size(br.size)
                     .background(Color.Red)
             )
@@ -82,12 +86,14 @@ fun BrickLayer(bricks: List<BrickElement>) {
 }
 
 @Composable
-fun SteelLayer(steels: List<SteelElement>) {
+fun SteelLayer(mapState: MapState) {
+    logI("recomposing steels")
     Box(modifier = Modifier.fillMaxSize()) {
-        steels.forEach { el ->
+        mapState.steels.forEach { el ->
             val (x, y) = el.offsetInMapUnit
             Box(
-                modifier = Modifier.offset(x.mu, y.mu)
+                modifier = Modifier
+                    .offset(x.mu, y.mu)
                     .size(el.size)
                     .background(Color.Gray)
             )
@@ -96,12 +102,13 @@ fun SteelLayer(steels: List<SteelElement>) {
 }
 
 @Composable
-fun TreeLayer(trees: List<TreeElement>) {
+fun TreeLayer(mapState: MapState) {
     Box(modifier = Modifier.fillMaxSize()) {
-        trees.forEach { el ->
+        mapState.trees.forEach { el ->
             val (x, y) = el.offsetInMapUnit
             Box(
-                modifier = Modifier.offset(x.mu, y.mu)
+                modifier = Modifier
+                    .offset(x.mu, y.mu)
                     .size(el.size)
                     .background(Color.Green)
             )
@@ -110,12 +117,13 @@ fun TreeLayer(trees: List<TreeElement>) {
 }
 
 @Composable
-fun WaterLayer(waters: List<WaterElement>) {
+fun WaterLayer(mapState: MapState) {
     Box(modifier = Modifier.fillMaxSize()) {
-        waters.forEach { el ->
+        mapState.waters.forEach { el ->
             val (x, y) = el.offsetInMapUnit
             Box(
-                modifier = Modifier.offset(x.mu, y.mu)
+                modifier = Modifier
+                    .offset(x.mu, y.mu)
                     .size(el.size)
                     .background(Color.Blue)
             )
@@ -124,12 +132,13 @@ fun WaterLayer(waters: List<WaterElement>) {
 }
 
 @Composable
-fun IceLayer(ices: List<IceElement>) {
+fun IceLayer(mapState: MapState) {
     Box(modifier = Modifier.fillMaxSize()) {
-        ices.forEach { el ->
+        mapState.ices.forEach { el ->
             val (x, y) = el.offsetInMapUnit
             Box(
-                modifier = Modifier.offset(x.mu, y.mu)
+                modifier = Modifier
+                    .offset(x.mu, y.mu)
                     .size(el.size)
                     .background(Color.White)
             )

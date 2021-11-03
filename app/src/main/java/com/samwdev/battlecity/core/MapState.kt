@@ -13,19 +13,19 @@ fun rememberMapState(mapElements: MapElements): MapState {
 class MapState(
     mapElements: MapElements,
 ) {
-    var bricks by mutableStateOf(mapElements.bricks)
+    var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
         private set
 
-    var steels by mutableStateOf(mapElements.steels)
+    var steels by mutableStateOf(mapElements.steels, policy = referentialEqualityPolicy())
         private set
 
-    var trees by mutableStateOf(mapElements.trees)
+    var trees by mutableStateOf(mapElements.trees, policy = referentialEqualityPolicy())
         private set
 
-    var waters by mutableStateOf(mapElements.waters)
+    var waters by mutableStateOf(mapElements.waters, policy = referentialEqualityPolicy())
         private set
 
-    var ices by mutableStateOf(mapElements.ices)
+    var ices by mutableStateOf(mapElements.ices, policy = referentialEqualityPolicy())
         private set
 
     fun destroyBricks(indices: Set<BrickElement>) {
