@@ -51,6 +51,7 @@ class BattleState(
                     Direction.Right -> tankState.x += move
                     Direction.Up -> tankState.y -= move
                     Direction.Down -> tankState.y += move
+                    Direction.Unspecified -> {}
                 }
                 if (controllerState.direction != Direction.Unspecified) {
                     tankState.direction = controllerState.direction
