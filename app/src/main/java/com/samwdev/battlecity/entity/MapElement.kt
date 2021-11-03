@@ -2,7 +2,6 @@ package com.samwdev.battlecity.entity
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.ui.components.mu
@@ -10,7 +9,7 @@ import com.samwdev.battlecity.ui.components.mu
 const val MAP_BLOCK_COUNT = 13
 
 sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
-    val offset: IntOffset
+    val gridPosition: IntOffset
         get() {
             val row = index / (granularity * MAP_BLOCK_COUNT)
             val col = index % (granularity * MAP_BLOCK_COUNT)
@@ -18,11 +17,13 @@ sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
         }
 
     val offsetInMapUnit: Offset get() {
-        val (col, row) = offset
-        val rowF = row / granularity.toFloat()
-        val colF = col / granularity.toFloat()
+        val (x, y) = gridPosition
+        val rowF = y / granularity.toFloat()
+        val colF = x / granularity.toFloat()
         return Offset(colF, rowF)
     }
+
+    val sizeInMapUnit: Float get() = 1f / granularity
 
     val size: Dp @Composable get() = 1.mu / granularity.toFloat()
 }
