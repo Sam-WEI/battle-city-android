@@ -12,19 +12,23 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.ui.components.mu
 
-class TankState(
-    x: Int = 0,
-    y: Int = 0,
+class Tank(
+    x: Float = 0f,
+    y: Float = 0f,
     direction: Direction = Direction.Up,
-    val speed: Float = 0.4f,
+    val speed: Float = 0.01f,
 ) {
-    var x: Int by mutableStateOf(x)
-    var y: Int by mutableStateOf(y)
+    var x: Float by mutableStateOf(x)
+    var y: Float by mutableStateOf(y)
     var direction: Direction by mutableStateOf(direction)
+
+    fun getBulletStartPosition(): DpOffset {
+        return DpOffset.Zero
+    }
 }
 
 enum class Direction(val degree: Float) {
@@ -32,10 +36,10 @@ enum class Direction(val degree: Float) {
 }
 
 @Composable
-fun Tank(tank: TankState) {
+fun Tank(tank: Tank) {
     Canvas(
         modifier = Modifier.size(1.mu, 1.mu)
-            .offset { IntOffset(tank.x, tank.y) }
+            .offset(tank.x.mu, tank.y.mu)
             .rotate(tank.direction.degree)
     ) {
         drawRect(

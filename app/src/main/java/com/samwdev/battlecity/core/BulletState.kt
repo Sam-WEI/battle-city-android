@@ -9,7 +9,11 @@ class BulletState {
     var bullets by mutableStateOf<Map<Long, Bullet>>(mapOf(), policy = referentialEqualityPolicy())
         private set
 
-    fun addBullet(tankId: Long) {
+    fun onTick(tick: Tick) {
+
+    }
+
+    fun addBullet(tank: Tank) {
 
     }
 }
