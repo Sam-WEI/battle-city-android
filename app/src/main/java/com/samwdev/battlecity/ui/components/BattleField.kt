@@ -7,11 +7,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toOffset
 import com.samwdev.battlecity.core.*
@@ -37,7 +35,7 @@ fun BattleField(
         WaterLayer(mapState = battleState.mapState)
         EagleLayer(mapState = battleState.mapState)
 
-        Tank(tank = battleState.tankState)
+        Tank(tank = battleState.tank)
 
         TreeLayer(mapState = battleState.mapState)
 

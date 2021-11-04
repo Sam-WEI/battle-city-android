@@ -2,7 +2,6 @@ package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
 import com.samwdev.battlecity.entity.StageConfigJson
-import com.samwdev.battlecity.ui.components.*
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -13,7 +12,7 @@ import kotlin.math.roundToInt
 fun rememberBattleState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     tickState: TickState = rememberTickState(),
-    tank: TankState = remember { TankState(0, 200) },
+    tank: Tank = remember { Tank(0f, 0f) },
     controllerState: ControllerState = rememberControllerState(),
     stageConfigJson: StageConfigJson,
 ): BattleState {
@@ -25,7 +24,7 @@ fun rememberBattleState(
             tickState = tickState,
             controllerState = controllerState,
             mapState = mapState,
-            tankState = tank
+            tank = tank
         )
     }
 }
@@ -35,8 +34,8 @@ class BattleState(
     val tickState: TickState,
     val controllerState: ControllerState,
     val mapState: MapState,
-    val tanks: Map<String, TankState> = mapOf(),
-    val tankState: TankState,
+    val tanks: Map<String, Tank> = mapOf(),
+    val tank: Tank,
 ) {
     fun start() {
         coroutineScope.launch {
@@ -45,16 +44,20 @@ class BattleState(
 
         coroutineScope.launch {
             tickState.tickFlow.collect { tick ->
-                val move = (tankState.speed * tick.delta).roundToInt()
+                val move = tank.speed * tick.delta
                 when (controllerState.direction) {
-                    Direction.Left -> tankState.x -= move
-                    Direction.Right -> tankState.x += move
-                    Direction.Up -> tankState.y -= move
-                    Direction.Down -> tankState.y += move
+                    Direction.Left -> tank.x -= move
+                    Direction.Right -> tank.x += move
+                    Direction.Up -> tank.y -= move
+                    Direction.Down -> tank.y += move
                     Direction.Unspecified -> {}
                 }
                 if (controllerState.direction != Direction.Unspecified) {
-                    tankState.direction = controllerState.direction
+                    tank.direction = controllerState.direction
+                }
+
+                if (controllerState.firePressed) {
+
                 }
             }
         }
