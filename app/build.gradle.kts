@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-    id("kotlin-parcelize")
     kotlin("android")
 }
 
