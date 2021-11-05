@@ -12,7 +12,8 @@ import kotlin.math.roundToInt
 fun rememberBattleState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     tickState: TickState = rememberTickState(),
-    tank: Tank = remember { Tank(0f, 0f) },
+    tankState: TankState = rememberTankState(),
+    bulletState: BulletState = rememberBulletState(),
     controllerState: ControllerState = rememberControllerState(),
     stageConfigJson: StageConfigJson,
 ): BattleState {
@@ -24,7 +25,8 @@ fun rememberBattleState(
             tickState = tickState,
             controllerState = controllerState,
             mapState = mapState,
-            tank = tank
+            tankState = tankState,
+            bulletState = bulletState,
         )
     }
 }
@@ -34,8 +36,8 @@ class BattleState(
     val tickState: TickState,
     val controllerState: ControllerState,
     val mapState: MapState,
-    val tanks: Map<String, Tank> = mapOf(),
-    val tank: Tank,
+    val bulletState: BulletState,
+    val tankState: TankState,
 ) {
     fun start() {
         coroutineScope.launch {
@@ -44,6 +46,7 @@ class BattleState(
 
         coroutineScope.launch {
             tickState.tickFlow.collect { tick ->
+                val tank = tankState.tanks.values.first()
                 val move = tank.speed * tick.delta
                 when (controllerState.direction) {
                     Direction.Left -> tank.x -= move
