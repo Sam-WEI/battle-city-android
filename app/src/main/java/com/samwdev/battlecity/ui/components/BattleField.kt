@@ -12,8 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toOffset
-import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.entity.*
+import com.samwdev.battlecity.core.BattleState
+import com.samwdev.battlecity.core.MapState
+import com.samwdev.battlecity.core.Tank
+import com.samwdev.battlecity.entity.MAP_BLOCK_COUNT
 import kotlin.math.roundToInt
 
 @Composable
@@ -35,7 +37,9 @@ fun BattleField(
         WaterLayer(mapState = battleState.mapState)
         EagleLayer(mapState = battleState.mapState)
 
-        Tank(tank = battleState.tank)
+        battleState.tankState.tanks.forEach { (id, tank) ->
+            Tank(tank = tank)
+        }
 
         TreeLayer(mapState = battleState.mapState)
 

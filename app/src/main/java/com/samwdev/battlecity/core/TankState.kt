@@ -3,10 +3,7 @@ package com.samwdev.battlecity.core
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
@@ -15,6 +12,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.ui.components.mu
+
+@Composable
+fun rememberTankState(): TankState {
+    return remember {
+        TankState().apply { addTank() }
+    }
+}
+
+class TankState {
+    var tanks by mutableStateOf<Map<Int, Tank>>(mapOf(), policy = referentialEqualityPolicy())
+        private set
+
+    fun addTank() {
+        tanks = tanks.toMutableMap().apply {
+            put(1, Tank(0f, 0f))
+        }
+    }
+}
 
 class Tank(
     x: Float = 0f,
@@ -38,7 +53,8 @@ enum class Direction(val degree: Float) {
 @Composable
 fun Tank(tank: Tank) {
     Canvas(
-        modifier = Modifier.size(1.mu, 1.mu)
+        modifier = Modifier
+            .size(1.mu, 1.mu)
             .offset(tank.x.mu, tank.y.mu)
             .rotate(tank.direction.degree)
     ) {

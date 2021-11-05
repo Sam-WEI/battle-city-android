@@ -1,9 +1,11 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.referentialEqualityPolicy
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+
+@Composable
+fun rememberBulletState(): BulletState {
+    return remember { BulletState() }
+}
 
 class BulletState {
     var bullets by mutableStateOf<Map<Long, Bullet>>(mapOf(), policy = referentialEqualityPolicy())
