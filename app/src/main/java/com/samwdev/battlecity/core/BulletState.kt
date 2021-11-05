@@ -21,7 +21,7 @@ class BulletState {
 }
 
 data class Bullet(
-    val id: Long,
+    val id: Int,
     val direction: Direction,
     val speed: Float,
     val x: Float,

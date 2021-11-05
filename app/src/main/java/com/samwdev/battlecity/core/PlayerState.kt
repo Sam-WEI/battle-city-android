@@ -8,7 +8,7 @@ class PlayerState(
     val name: String = "player_1",
     lives: Int = 3,
     score: Int = 0,
-    tankId: Long,
+    tankId: Int,
 ) {
     var lives by mutableStateOf(lives)
         private set

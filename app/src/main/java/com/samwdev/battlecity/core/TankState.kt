@@ -29,6 +29,10 @@ class TankState {
             put(1, Tank(0f, 0f))
         }
     }
+
+    fun getTank(id: Int): Tank {
+        return tanks[id]!!
+    }
 }
 
 class Tank(
