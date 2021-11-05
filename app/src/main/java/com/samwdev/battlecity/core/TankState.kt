@@ -4,6 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
@@ -15,13 +17,20 @@ import com.samwdev.battlecity.ui.components.mu
 
 @Composable
 fun rememberTankState(): TankState {
-    return remember {
+    return rememberSaveable(saver = TankState.Saver()) {
         TankState().apply { addTank() }
     }
 }
 
-class TankState {
-    var tanks by mutableStateOf<Map<Int, Tank>>(mapOf(), policy = referentialEqualityPolicy())
+class TankState(initial: Map<Int, Tank> = mapOf()) {
+    companion object {
+        // todo to confirm this works as expected
+        fun Saver() = Saver<TankState, Map<Int, Tank>>(
+            save = { it.tanks },
+            restore = { TankState(it) }
+        )
+    }
+    var tanks by mutableStateOf<Map<Int, Tank>>(initial, policy = referentialEqualityPolicy())
         private set
 
     fun addTank() {
