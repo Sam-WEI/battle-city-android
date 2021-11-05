@@ -6,7 +6,6 @@ import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Composable
 fun rememberBattleState(
@@ -14,7 +13,7 @@ fun rememberBattleState(
     tickState: TickState = rememberTickState(),
     tankState: TankState = rememberTankState(),
     bulletState: BulletState = rememberBulletState(),
-    controllerState: ControllerState = rememberControllerState(),
+    handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
     stageConfigJson: StageConfigJson,
 ): BattleState {
     val mapElements = remember(stageConfigJson) { MapParser.parse(stageConfigJson).map }
@@ -23,7 +22,7 @@ fun rememberBattleState(
         BattleState(
             coroutineScope = coroutineScope,
             tickState = tickState,
-            controllerState = controllerState,
+            handheldControllerState = handheldControllerState,
             mapState = mapState,
             tankState = tankState,
             bulletState = bulletState,
@@ -34,7 +33,7 @@ fun rememberBattleState(
 class BattleState(
     private val coroutineScope: CoroutineScope,
     val tickState: TickState,
-    val controllerState: ControllerState,
+    val handheldControllerState: HandheldControllerState,
     val mapState: MapState,
     val bulletState: BulletState,
     val tankState: TankState,
@@ -48,18 +47,18 @@ class BattleState(
             tickState.tickFlow.collect { tick ->
                 val tank = tankState.tanks.values.first()
                 val move = tank.speed * tick.delta
-                when (controllerState.direction) {
+                when (handheldControllerState.direction) {
                     Direction.Left -> tank.x -= move
                     Direction.Right -> tank.x += move
                     Direction.Up -> tank.y -= move
                     Direction.Down -> tank.y += move
                     Direction.Unspecified -> {}
                 }
-                if (controllerState.direction != Direction.Unspecified) {
-                    tank.direction = controllerState.direction
+                if (handheldControllerState.direction != Direction.Unspecified) {
+                    tank.direction = handheldControllerState.direction
                 }
 
-                if (controllerState.firePressed) {
+                if (handheldControllerState.firePressed) {
 
                 }
             }

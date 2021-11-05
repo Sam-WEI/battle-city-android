@@ -22,11 +22,11 @@ import kotlinx.coroutines.launch
 import kotlin.math.*
 
 @Composable
-fun rememberControllerState(): ControllerState {
-    return remember { ControllerState() }
+fun rememberHandheldControllerState(): HandheldControllerState {
+    return remember { HandheldControllerState() }
 }
 
-class ControllerState {
+class HandheldControllerState {
     var direction by mutableStateOf(Direction.Unspecified)
         private set
 
@@ -63,11 +63,11 @@ private fun getDirection(steerOffset: Offset): Direction {
 private val joyStickBgColor = listOf(Color.Gray, Color.LightGray)
 
 @Composable
-fun Controller(
+fun HandheldController(
     modifier: Modifier = Modifier,
-    controllerState: ControllerState = rememberControllerState(),
-    onSteer: (Offset) -> Unit = { controllerState.setSteerInput(it) },
-    onFire: (Boolean) -> Unit = { controllerState.setFireInput(it) },
+    handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
+    onSteer: (Offset) -> Unit = { handheldControllerState.setSteerInput(it) },
+    onFire: (Boolean) -> Unit = { handheldControllerState.setFireInput(it) },
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
