@@ -1,27 +1,37 @@
 package com.samwdev.battlecity.core
 
+import android.os.Parcelable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.ui.components.mu
+import kotlinx.parcelize.Parcelize
 
 @Composable
 fun rememberTankState(): TankState {
-    return remember {
+    return rememberSaveable(saver = TankState.Saver()) {
         TankState().apply { addTank() }
     }
 }
 
-class TankState {
-    var tanks by mutableStateOf<Map<Int, Tank>>(mapOf(), policy = referentialEqualityPolicy())
+class TankState(initial: Map<Int, Tank> = mapOf()) {
+    companion object {
+        // todo to confirm this works as expected
+        fun Saver() = Saver<TankState, Map<Int, Tank>>(
+            save = { it.tanks },
+            restore = { TankState(it) }
+        )
+    }
+    var tanks by mutableStateOf<Map<Int, Tank>>(initial, policy = referentialEqualityPolicy())
         private set
 
     fun addTank() {
@@ -33,18 +43,33 @@ class TankState {
     fun getTank(id: Int): Tank? {
         return tanks[id]
     }
+
+    fun moveTank(id: Int, direction: Direction, distance: Float) {
+        val tank = tanks[id] ?: return
+        var (newX, newY) = tank
+        when (direction) {
+            Direction.Left -> newX -= distance
+            Direction.Right -> newX += distance
+            Direction.Up -> newY -= distance
+            Direction.Down -> newY += distance
+            Direction.Unspecified -> {}
+        }
+        val newTank = tank.copy(
+            x = newX, y = newY, direction = direction
+        )
+        tanks = tanks.toMutableMap().apply {
+            put(id, newTank)
+        }
+    }
 }
 
-class Tank(
-    x: Float = 0f,
-    y: Float = 0f,
-    direction: Direction = Direction.Up,
+@Parcelize
+data class Tank(
+    val x: Float = 0f,
+    val y: Float = 0f,
+    val direction: Direction = Direction.Up,
     val speed: Float = 0.01f,
-) {
-    var x: Float by mutableStateOf(x)
-    var y: Float by mutableStateOf(y)
-    var direction: Direction by mutableStateOf(direction)
-
+) : Parcelable {
     fun getBulletStartPosition(): DpOffset {
         return DpOffset.Zero
     }

@@ -16,16 +16,9 @@ class TankController(
 
     override fun onTick(tick: Tick) {
         val tank = tankState.getTank(_tankId) ?: return
-        val move = tank.speed * tick.delta
-        when (handheldControllerState.direction) {
-            Direction.Left -> tank.x -= move
-            Direction.Right -> tank.x += move
-            Direction.Up -> tank.y -= move
-            Direction.Down -> tank.y += move
-            Direction.Unspecified -> {}
-        }
         if (handheldControllerState.direction != Direction.Unspecified) {
-            tank.direction = handheldControllerState.direction
+            val move = tank.speed * tick.delta
+            tankState.moveTank(_tankId, handheldControllerState.direction, move)
         }
 
         if (handheldControllerState.firePressed) {
