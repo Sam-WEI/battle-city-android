@@ -60,7 +60,11 @@ class Tank(
 }
 
 enum class Direction(val degree: Float) {
-    Up(0f), Down(180f), Left(270f), Right(90f), Unspecified(Float.NaN)
+    Up(0f),
+    Down(180f),
+    Left(270f),
+    Right(90f),
+    Unspecified(Float.NaN)
 }
 
 @Composable
