@@ -5,6 +5,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 fun rememberTickState(): TickState {
@@ -19,6 +20,12 @@ class TickState(tick: Tick = Tick.INITIAL) {
     var lastTick: Tick by mutableStateOf(tick)
         private set
 
+    var fps: Int by mutableStateOf(0)
+        private set
+
+    private var lastUptime by mutableStateOf(lastTick.uptimeMillis)
+    private var tickCount by mutableStateOf(0)
+
     val uptimeMillis: Long
         get() = lastTick.uptimeMillis
     val delta: Long
@@ -32,6 +39,12 @@ class TickState(tick: Tick = Tick.INITIAL) {
         if (delta > 1000f / MAX_FPS) {
             lastTick = Tick(now, delta)
             _tickFlow.emit(lastTick)
+            tickCount++
+        }
+        (now - lastUptime).takeIf { it > 1000f }?.let { elapsed ->
+            fps = (tickCount.toFloat() / elapsed * 1000).roundToInt()
+            lastUptime = now
+            tickCount = 0
         }
     }
 
