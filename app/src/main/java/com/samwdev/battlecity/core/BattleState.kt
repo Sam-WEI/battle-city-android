@@ -26,6 +26,7 @@ fun rememberBattleState(
             mapState = mapState,
             tankState = tankState,
             bulletState = bulletState,
+            tankController = TankController(tankState, handheldControllerState),
         )
     }
 }
@@ -37,30 +38,16 @@ class BattleState(
     val mapState: MapState,
     val bulletState: BulletState,
     val tankState: TankState,
+    val tankController: TankController,
 ) {
     fun start() {
         coroutineScope.launch {
             tickState.start()
         }
-
+        tankController.setTankId(1)
         coroutineScope.launch {
             tickState.tickFlow.collect { tick ->
-                val tank = tankState.tanks.values.first()
-                val move = tank.speed * tick.delta
-                when (handheldControllerState.direction) {
-                    Direction.Left -> tank.x -= move
-                    Direction.Right -> tank.x += move
-                    Direction.Up -> tank.y -= move
-                    Direction.Down -> tank.y += move
-                    Direction.Unspecified -> {}
-                }
-                if (handheldControllerState.direction != Direction.Unspecified) {
-                    tank.direction = handheldControllerState.direction
-                }
-
-                if (handheldControllerState.firePressed) {
-
-                }
+                tankController.onTick(tick)
             }
         }
 

@@ -30,8 +30,8 @@ class TankState {
         }
     }
 
-    fun getTank(id: Int): Tank {
-        return tanks[id]!!
+    fun getTank(id: Int): Tank? {
+        return tanks[id]
     }
 }
 
