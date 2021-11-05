@@ -22,9 +22,6 @@ fun BattleField(
     battleState: BattleState,
     modifier: Modifier = Modifier,
 ) {
-    LaunchedEffect(Unit) {
-        battleState.start()
-    }
     Map(modifier = modifier
         .fillMaxWidth()
         .aspectRatio(1f)
