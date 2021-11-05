@@ -3,6 +3,7 @@ package com.samwdev.battlecity.ui.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,10 @@ import com.samwdev.battlecity.entity.StageConfigJson
 @Composable
 fun BattleScreen(stageConfigJson: StageConfigJson) {
     val battleState: BattleState = rememberBattleState(stageConfigJson = stageConfigJson)
+
+    LaunchedEffect(Unit) {
+        battleState.startBattle()
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         BattleField(

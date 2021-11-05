@@ -40,7 +40,7 @@ class BattleState(
     val tankState: TankState,
     val tankController: TankController,
 ) {
-    fun start() {
+    fun startBattle() {
         coroutineScope.launch {
             tickState.start()
         }
@@ -52,4 +52,9 @@ class BattleState(
         }
 
     }
+
+    fun spawnTank() {
+
+    }
+
 }

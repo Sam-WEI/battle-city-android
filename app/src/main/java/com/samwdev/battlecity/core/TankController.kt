@@ -7,14 +7,14 @@ import androidx.compose.runtime.setValue
 class TankController(
     private val tankState: TankState,
     private val handheldControllerState: HandheldControllerState,
-) {
+) : TickListener {
     private var _tankId: Int by mutableStateOf(-1)
 
     fun setTankId(id: Int) {
         _tankId = id
     }
 
-    fun onTick(tick: Tick) {
+    override fun onTick(tick: Tick) {
         val tank = tankState.getTank(_tankId) ?: return
         val move = tank.speed * tick.delta
         when (handheldControllerState.direction) {
