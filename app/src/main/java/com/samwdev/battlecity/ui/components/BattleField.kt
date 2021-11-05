@@ -16,7 +16,6 @@ import com.samwdev.battlecity.core.BattleState
 import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.Tank
 import com.samwdev.battlecity.entity.MAP_BLOCK_COUNT
-import kotlin.math.roundToInt
 
 @Composable
 fun BattleField(
@@ -44,7 +43,7 @@ fun BattleField(
         TreeLayer(mapState = battleState.mapState)
 
         Text(
-            text = "FPS: ${(1000f / battleState.tickState.delta).roundToInt()}",
+            text = "FPS ${battleState.tickState.fps}",
             color = Color.Green,
             fontSize = 14.sp,
             modifier = Modifier.align(Alignment.TopEnd)
