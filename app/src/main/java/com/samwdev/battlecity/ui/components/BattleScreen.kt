@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.BattleState
-import com.samwdev.battlecity.core.Controller
+import com.samwdev.battlecity.core.HandheldController
 import com.samwdev.battlecity.core.rememberBattleState
 import com.samwdev.battlecity.entity.StageConfigJson
 
@@ -23,14 +23,14 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
             battleState = battleState,
         )
         Box {
-            Controller(
+            HandheldController(
                 modifier = Modifier
                     .padding(30.dp)
                     .fillMaxWidth(),
-                controllerState = battleState.controllerState,
+                handheldControllerState = battleState.handheldControllerState,
             )
             Text(
-                text = "${battleState.controllerState.direction}",
+                text = "${battleState.handheldControllerState.direction}",
                 color = Color.Green,
                 fontSize = 20.sp,
                 modifier = Modifier.align(Alignment.TopStart)
