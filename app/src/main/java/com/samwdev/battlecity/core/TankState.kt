@@ -13,14 +13,17 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
+import com.samwdev.battlecity.entity.BotTankLevel
 import com.samwdev.battlecity.ui.components.mu
 
 @Composable
 fun rememberTankState(): TankState {
     return rememberSaveable(saver = TankState.Saver()) {
-        TankState().apply { addTank() }
+        TankState()
     }
 }
+
+private val playerSpawnPosition = Offset(4.5f, 12f)
 
 class TankState(initial: Map<Int, Tank> = mapOf()) {
     companion object {
@@ -29,14 +32,25 @@ class TankState(initial: Map<Int, Tank> = mapOf()) {
             save = { it.tanks },
             restore = { TankState(it) }
         )
+
     }
     var tanks by mutableStateOf<Map<Int, Tank>>(initial, policy = referentialEqualityPolicy())
         private set
 
-    fun addTank() {
+    private var nextId by mutableStateOf(1)
+
+    private fun addTank(id: Int, tank: Tank) {
         tanks = tanks.toMutableMap().apply {
-            put(1, Tank(0f, 0f))
+            put(id, tank)
         }
+    }
+
+    fun spawnPlayer(): Tank {
+        return Tank(
+            x = playerSpawnPosition.x,
+            y = playerSpawnPosition.y,
+            direction = Direction.Up,
+        ).also { addTank(nextId++, it) }
     }
 
     fun getTank(id: Int): Tank? {
@@ -48,6 +62,8 @@ class Tank(
     x: Float = 0f,
     y: Float = 0f,
     direction: Direction = Direction.Up,
+    level: BotTankLevel = BotTankLevel.Basic,
+    hp: Int = 1,
     val speed: Float = 0.01f,
 ) {
     var x: Float by mutableStateOf(x)
