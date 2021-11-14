@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toOffset
 import com.samwdev.battlecity.core.BattleState
+import com.samwdev.battlecity.core.Bullet
 import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.Tank
 import com.samwdev.battlecity.entity.MAP_BLOCK_COUNT
@@ -38,6 +39,10 @@ fun BattleField(
 
         battleState.tankState.tanks.forEach { (id, tank) ->
             Tank(tank = tank)
+        }
+
+        battleState.bulletState.bullets.forEach { (id, bullet) ->
+            Bullet(bullet)
         }
 
         TreeLayer(mapState = battleState.mapState)
@@ -70,7 +75,7 @@ private fun Map(
 val Int.mu: Dp @Composable get() = LocalMapUnitDp.current * this
 val Float.mu: Dp @Composable get() = LocalMapUnitDp.current * this
 
-private val LocalMapUnitDp = staticCompositionLocalOf<Dp> {
+val LocalMapUnitDp = staticCompositionLocalOf<Dp> {
     error("Not in Map composable or its child composable.")
 }
 

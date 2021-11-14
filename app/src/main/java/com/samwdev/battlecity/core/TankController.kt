@@ -3,9 +3,11 @@ package com.samwdev.battlecity.core
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.samwdev.battlecity.utils.logI
 
 class TankController(
     private val tankState: TankState,
+    private val bulletState: BulletState, // todo move out?
     private val handheldControllerState: HandheldControllerState,
 ) : TickListener {
     private var _tankId: Int by mutableStateOf(-1)
@@ -29,7 +31,7 @@ class TankController(
         }
 
         if (handheldControllerState.firePressed) {
-
+            bulletState.addBullet(tank)
         }
     }
 }

@@ -13,8 +13,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
 import com.samwdev.battlecity.ui.components.mu
+import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
 fun rememberTankState(): TankState {
@@ -25,21 +27,21 @@ fun rememberTankState(): TankState {
 
 private val playerSpawnPosition = Offset(4.5f, 12f)
 
-class TankState(initial: Map<Int, Tank> = mapOf()) {
+class TankState(initial: Map<TankId, Tank> = mapOf()) {
     companion object {
         // todo to confirm this works as expected
-        fun Saver() = Saver<TankState, Map<Int, Tank>>(
+        fun Saver() = Saver<TankState, Map<TankId, Tank>>(
             save = { it.tanks },
             restore = { TankState(it) }
         )
 
     }
-    var tanks by mutableStateOf<Map<Int, Tank>>(initial, policy = referentialEqualityPolicy())
+    var tanks by mutableStateOf<Map<TankId, Tank>>(initial, policy = referentialEqualityPolicy())
         private set
 
-    private var nextId by mutableStateOf(1)
+    private var nextId = AtomicInteger(0)
 
-    private fun addTank(id: Int, tank: Tank) {
+    private fun addTank(id: TankId, tank: Tank) {
         tanks = tanks.toMutableMap().apply {
             put(id, tank)
         }
@@ -47,18 +49,22 @@ class TankState(initial: Map<Int, Tank> = mapOf()) {
 
     fun spawnPlayer(): Tank {
         return Tank(
+            id = nextId.incrementAndGet(),
             x = playerSpawnPosition.x,
             y = playerSpawnPosition.y,
             direction = Direction.Up,
-        ).also { addTank(nextId++, it) }
+        ).also { addTank(nextId.get(), it) }
     }
 
-    fun getTank(id: Int): Tank? {
+    fun getTank(id: TankId): Tank? {
         return tanks[id]
     }
 }
 
+typealias TankId = Int
+
 class Tank(
+    val id: TankId,
     x: Float = 0f,
     y: Float = 0f,
     direction: Direction = Direction.Up,
@@ -71,7 +77,7 @@ class Tank(
     var direction: Direction by mutableStateOf(direction)
 
     fun getBulletStartPosition(): DpOffset {
-        return DpOffset.Zero
+        return DpOffset(x.dp, y.dp)
     }
 }
 

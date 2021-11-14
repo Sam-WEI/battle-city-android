@@ -26,7 +26,7 @@ fun rememberBattleState(
             mapState = mapState,
             tankState = tankState,
             bulletState = bulletState,
-            tankController = TankController(tankState, handheldControllerState),
+            tankController = TankController(tankState, bulletState, handheldControllerState),
         )
     }
 }
@@ -48,6 +48,7 @@ class BattleState(
         coroutineScope.launch {
             tickState.tickFlow.collect { tick ->
                 tankController.onTick(tick)
+                bulletState.onTick(tick)
             }
         }
 
