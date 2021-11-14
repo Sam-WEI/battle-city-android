@@ -1,24 +1,25 @@
 package com.samwdev.battlecity.core
 
-import android.os.Bundle
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
 import com.samwdev.battlecity.ui.components.mu
+import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
@@ -39,7 +40,7 @@ class TankState(initial: Map<TankId, Tank> = mapOf()) {
         )
 
     }
-    var tanks by mutableStateOf<Map<TankId, Tank>>(initial, policy = referentialEqualityPolicy())
+    var tanks by mutableStateOf<Map<TankId, Tank>>(initial)
         private set
 
     private var nextId = AtomicInteger(0)
@@ -62,52 +63,32 @@ class TankState(initial: Map<TankId, Tank> = mapOf()) {
     fun getTank(id: TankId): Tank? {
         return tanks[id]
     }
+
+    fun updateTank(id: TankId, tank: Tank) {
+        tanks = tanks.toMutableMap().apply {
+            put(id, tank)
+        }
+    }
 }
 
 typealias TankId = Int
 
-class Tank(
+@Parcelize
+data class Tank(
     val id: TankId,
-    x: Float = 0f,
-    y: Float = 0f,
-    direction: Direction = Direction.Up,
-    level: BotTankLevel = BotTankLevel.Basic,
-    hp: Int = 1,
+    val x: Float = 0f,
+    val y: Float = 0f,
+    val direction: Direction = Direction.Up,
+    val level: BotTankLevel = BotTankLevel.Basic,
+    val hp: Int = 1,
     val speed: Float = 0.01f,
 ) : Parcelable {
-    var x: Float by mutableStateOf(x)
-    var y: Float by mutableStateOf(y)
-    var direction: Direction by mutableStateOf(direction)
-
-    constructor(parcel: Parcel) : this(
-        parcel.readInt(),
-        parcel.readFloat(),
-        parcel.readFloat(),
-    )
+//    var x: Float by mutableStateOf(x)
+//    var y: Float by mutableStateOf(y)
+//    var direction: Direction by mutableStateOf(direction)
 
     fun getBulletStartPosition(): DpOffset {
         return DpOffset(x.dp, y.dp)
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
-        parcel.writeFloat(x)
-        parcel.writeFloat(y)
-        // todo
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Tank> {
-        override fun createFromParcel(parcel: Parcel): Tank {
-            return Tank(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Tank?> {
-            return arrayOfNulls(size)
-        }
     }
 }
 
