@@ -1,5 +1,8 @@
 package com.samwdev.battlecity.core
 
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -71,13 +74,40 @@ class Tank(
     level: BotTankLevel = BotTankLevel.Basic,
     hp: Int = 1,
     val speed: Float = 0.01f,
-) {
+) : Parcelable {
     var x: Float by mutableStateOf(x)
     var y: Float by mutableStateOf(y)
     var direction: Direction by mutableStateOf(direction)
 
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readFloat(),
+        parcel.readFloat(),
+    )
+
     fun getBulletStartPosition(): DpOffset {
         return DpOffset(x.dp, y.dp)
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
+        parcel.writeFloat(x)
+        parcel.writeFloat(y)
+        // todo
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Tank> {
+        override fun createFromParcel(parcel: Parcel): Tank {
+            return Tank(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Tank?> {
+            return arrayOfNulls(size)
+        }
     }
 }
 
