@@ -88,7 +88,7 @@ data class Tank(
 //    var direction: Direction by mutableStateOf(direction)
 
     fun getBulletStartPosition(): DpOffset {
-        return DpOffset(x.dp, y.dp)
+        return DpOffset(x.dp + 0.5f.dp, y.dp + 0.5f.dp)
     }
 }
 

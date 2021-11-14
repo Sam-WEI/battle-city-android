@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.ui.components.mu
 
 const val MAP_BLOCK_COUNT = 13
+const val PIXEL_IN_EACH_BLOCK = 16
 
 sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
     val gridPosition: IntOffset
