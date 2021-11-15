@@ -45,8 +45,8 @@ class BulletState : TickListener {
                 id = nextId.get(),
                 direction = tank.direction,
                 speed = 0.3f,
-                x = bulletOrigin.x.value,
-                y = bulletOrigin.y.value,
+                x = bulletOrigin.x,
+                y = bulletOrigin.y,
                 power = 1,
                 ownerTankId = tank.id,
             ))
@@ -59,9 +59,9 @@ typealias BulletId = Int
 data class Bullet(
     val id: BulletId,
     val direction: Direction,
-    val speed: Float,
-    val x: Float,
-    val y: Float,
+    val speed: MapPixel,
+    val x: MapPixel,
+    val y: MapPixel,
     val power: Int = 1,
     val ownerTankId: TankId,
 )

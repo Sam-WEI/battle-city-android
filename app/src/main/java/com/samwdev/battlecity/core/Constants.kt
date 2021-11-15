@@ -9,5 +9,7 @@ private const val MAP_PIXEL_IN_EACH_BLOCK = 16
 
 const val TANK_MAP_PIXEL = MAP_PIXEL_IN_EACH_BLOCK
 
-val Float.mpx get() = this * MAP_PIXEL_IN_EACH_BLOCK
-val Int.mpx get() = this * MAP_PIXEL_IN_EACH_BLOCK
+typealias MapPixel = Float
+
+val Float.mpx: MapPixel get() = this * MAP_PIXEL_IN_EACH_BLOCK
+val Int.mpx: MapPixel get() = this * MAP_PIXEL_IN_EACH_BLOCK.toFloat()
