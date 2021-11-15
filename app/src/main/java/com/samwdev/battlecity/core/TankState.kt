@@ -15,8 +15,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
 import com.samwdev.battlecity.ui.components.mpDp
 import kotlinx.parcelize.Parcelize
@@ -76,23 +74,23 @@ typealias TankId = Int
 @Parcelize
 data class Tank(
     val id: TankId,
-    val x: Float = 0f,
-    val y: Float = 0f,
+    val x: MapPixel = 0f,
+    val y: MapPixel = 0f,
     val direction: Direction = Direction.Up,
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,
-    val speed: Float = 0.09f,
+    val speed: MapPixel = 0.15f,
 ) : Parcelable {
 //    var x: Float by mutableStateOf(x)
 //    var y: Float by mutableStateOf(y)
 //    var direction: Direction by mutableStateOf(direction)
 
-    fun getBulletStartPosition(): DpOffset {
+    fun getBulletStartPosition(): Offset {
         return when (direction) {
-            Direction.Up -> DpOffset((x + 6).dp, y.dp)
-            Direction.Down -> DpOffset((x + 6).dp, (y + 1.mpx).dp)
-            Direction.Left -> DpOffset(x.dp , (y + 6).dp)
-            Direction.Right -> DpOffset((x + 1.mpx).dp, (y + 6).dp)
+            Direction.Up -> Offset(x + 6, y)
+            Direction.Down -> Offset(x + 6, y + 1.mpx)
+            Direction.Left -> Offset(x , y + 6)
+            Direction.Right -> Offset(x + 1.mpx, y + 6)
             Direction.Unspecified -> throw IllegalStateException()
         }
     }
