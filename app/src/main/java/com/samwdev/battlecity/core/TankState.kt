@@ -68,16 +68,16 @@ class TankState(initial: Map<TankId, Tank> = mapOf()) : TickListener {
         }
     }
 
-    fun startCoolDown(id: TankId) {
+    fun startCooldown(id: TankId) {
         val tank = tanks[id]!!
-        updateTank(id, tank.copy(fireCoolDown = tank.level.fireCoolDown))
+        updateTank(id, tank.copy(remainingCooldown = tank.getFireCooldown()))
     }
 
     override fun onTick(tick: Tick) {
         tanks = tanks.keys.associateWith { id ->
             val tank = tanks[id]!!
-            return@associateWith if (tank.fireCoolDown > 0) {
-                tank.copy(fireCoolDown = tank.fireCoolDown - tick.delta.toInt())
+            return@associateWith if (tank.remainingCooldown > 0) {
+                tank.copy(remainingCooldown = tank.remainingCooldown - tick.delta.toInt())
             } else {
                 tank
             }
@@ -92,7 +92,7 @@ data class Tank(
     val id: TankId,
     val x: MapPixel = 0f,
     val y: MapPixel = 0f,
-    val fireCoolDown: Int = 0,
+    val remainingCooldown: Int = 0,
     val direction: Direction = Direction.Up,
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,
@@ -111,6 +111,10 @@ data class Tank(
             Direction.Unspecified -> throw IllegalStateException()
         }
     }
+
+    fun getFireCooldown(): Int = level.fireCooldown
+
+    fun getMaxBulletLimit(): Int = 3
 }
 
 enum class Direction(val degree: Float) {
