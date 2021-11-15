@@ -3,7 +3,6 @@ package com.samwdev.battlecity.core
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.samwdev.battlecity.utils.logI
 
 class TankController(
     private val tankState: TankState,
@@ -36,8 +35,9 @@ class TankController(
 
         tankState.updateTank(_tankId, newTank)
 
-        if (handheldControllerState.firePressed) {
-            bulletState.addBullet(newTank)
+        if (handheldControllerState.firePressed && tank.fireCoolDown <= 0) {
+            bulletState.fire(newTank)
+            tankState.startCoolDown(newTank.id)
         }
     }
 }

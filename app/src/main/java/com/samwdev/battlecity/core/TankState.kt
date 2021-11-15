@@ -29,7 +29,7 @@ fun rememberTankState(): TankState {
 
 private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
 
-class TankState(initial: Map<TankId, Tank> = mapOf()) {
+class TankState(initial: Map<TankId, Tank> = mapOf()) : TickListener {
     companion object {
         // todo to confirm this works as expected
         fun Saver() = Saver<TankState, Map<TankId, Tank>>(
@@ -67,6 +67,22 @@ class TankState(initial: Map<TankId, Tank> = mapOf()) {
             put(id, tank)
         }
     }
+
+    fun startCoolDown(id: TankId) {
+        val tank = tanks[id]!!
+        updateTank(id, tank.copy(fireCoolDown = tank.level.fireCoolDown))
+    }
+
+    override fun onTick(tick: Tick) {
+        tanks = tanks.keys.associateWith { id ->
+            val tank = tanks[id]!!
+            return@associateWith if (tank.fireCoolDown > 0) {
+                tank.copy(fireCoolDown = tank.fireCoolDown - tick.delta.toInt())
+            } else {
+                tank
+            }
+        }
+    }
 }
 
 typealias TankId = Int
@@ -76,6 +92,7 @@ data class Tank(
     val id: TankId,
     val x: MapPixel = 0f,
     val y: MapPixel = 0f,
+    val fireCoolDown: Int = 0,
     val direction: Direction = Direction.Up,
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,

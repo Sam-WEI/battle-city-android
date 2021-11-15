@@ -45,7 +45,7 @@ class BulletState : TickListener {
         removeCollidedBullets()
     }
 
-    fun addBullet(tank: Tank) {
+    fun fire(tank: Tank) {
         bullets = bullets.toMutableMap().apply {
             val bulletOrigin = tank.getBulletStartPosition()
             put(nextId.incrementAndGet(), Bullet(
