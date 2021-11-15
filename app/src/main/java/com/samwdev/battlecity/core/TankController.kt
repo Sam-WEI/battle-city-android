@@ -36,8 +36,10 @@ class TankController(
         tankState.updateTank(_tankId, newTank)
 
         if (handheldControllerState.firePressed && tank.fireCoolDown <= 0) {
-            bulletState.fire(newTank)
-            tankState.startCoolDown(newTank.id)
+            if (bulletState.getBulletCountForTank(tank.id) < 1) {
+                bulletState.fire(newTank)
+                tankState.startCoolDown(newTank.id)
+            }
         }
     }
 }

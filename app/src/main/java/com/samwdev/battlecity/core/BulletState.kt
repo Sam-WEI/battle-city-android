@@ -64,6 +64,8 @@ class BulletState : TickListener {
         bullets = bullets.filter { it.key != bulletId }
     }
 
+    fun getBulletCountForTank(tankId: TankId) = bullets.count { it.value.ownerTankId == tankId }
+
     private fun handleCollisionWithBorder() {
         bullets.values.forEach { bullet ->
             if (bullet.x <= 0) {
