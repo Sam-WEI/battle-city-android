@@ -66,9 +66,8 @@ private fun Map(
     }
 }
 
-/** Map pixel in Dp */
-val Int.mpDp: Dp @Composable get() = LocalMapPixelDp.current * this
-val Float.mpDp: Dp @Composable get() = LocalMapPixelDp.current * this
+/** MapPixel to Dp */
+val MapPixel.mpx2dp: Dp @Composable get() = LocalMapPixelDp.current * this
 
 val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
     error("Not in Map composable or its child composable.")
@@ -82,7 +81,7 @@ fun BrickLayer(mapState: MapState) {
             drawRect(
                 color = Color(97, 20 ,9),
                 topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
+                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
             )
         }
     }
@@ -96,7 +95,7 @@ fun SteelLayer(mapState: MapState) {
             drawRect(
                 color = Color.Gray,
                 topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
+                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
             )
         }
     }
@@ -110,7 +109,7 @@ fun TreeLayer(mapState: MapState) {
             drawRect(
                 color = Color(78, 134, 22, 151),
                 topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
+                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
             )
         }
     }
@@ -124,7 +123,7 @@ fun WaterLayer(mapState: MapState) {
             drawRect(
                 color = Color.Blue,
                 topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
+                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
             )
         }
     }
@@ -138,7 +137,7 @@ fun IceLayer(mapState: MapState) {
             drawRect(
                 color = Color.White,
                 topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
+                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
             )
         }
     }
@@ -147,7 +146,7 @@ fun IceLayer(mapState: MapState) {
 @Composable
 fun EagleLayer(mapState: MapState) {
     val mpx = LocalMapPixelDp.current
-    val size = mapState.eagle.elementSizeInMapPixel.mpDp
+    val size = mapState.eagle.elementSize.mpx2dp
     Canvas(modifier = Modifier.fillMaxSize()) {
         drawOval(
             color = Color.Red,

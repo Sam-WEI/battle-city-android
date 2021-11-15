@@ -3,6 +3,7 @@ package com.samwdev.battlecity.entity
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.mpx
 
 sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
@@ -20,7 +21,7 @@ sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
         return Offset(colF.mpx, rowF.mpx)
     }
 
-    val elementSizeInMapPixel: Float get() = 1.mpx.toFloat() / granularity
+    val elementSize: MapPixel get() = 1.mpx / granularity
 }
 
 data class BrickElement(override val index: Int) : MapElement(index, 4) {
