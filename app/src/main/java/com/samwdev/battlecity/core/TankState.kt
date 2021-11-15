@@ -81,14 +81,20 @@ data class Tank(
     val direction: Direction = Direction.Up,
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,
-    val speed: Float = 0.06f,
+    val speed: Float = 0.09f,
 ) : Parcelable {
 //    var x: Float by mutableStateOf(x)
 //    var y: Float by mutableStateOf(y)
 //    var direction: Direction by mutableStateOf(direction)
 
     fun getBulletStartPosition(): DpOffset {
-        return DpOffset(x.dp + 0.5f.dp, y.dp + 0.5f.dp)
+        return when (direction) {
+            Direction.Up -> DpOffset((x + 6).dp, y.dp)
+            Direction.Down -> DpOffset((x + 6).dp, (y + 1.mpx).dp)
+            Direction.Left -> DpOffset(x.dp , (y + 6).dp)
+            Direction.Right -> DpOffset((x + 1.mpx).dp, (y + 6).dp)
+            Direction.Unspecified -> throw IllegalStateException()
+        }
     }
 }
 
