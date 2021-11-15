@@ -14,12 +14,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.BattleState
-import com.samwdev.battlecity.core.Bullet
-import com.samwdev.battlecity.core.MapState
-import com.samwdev.battlecity.core.Tank
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
-import com.samwdev.battlecity.core.MAP_PIXEL_IN_EACH_BLOCK
+import com.samwdev.battlecity.core.*
 
 @Composable
 fun BattleField(
@@ -64,7 +59,7 @@ private fun Map(
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapPixelInDp = remember(maxWidth) { maxWidth / (MAP_BLOCK_COUNT * MAP_PIXEL_IN_EACH_BLOCK) }
+        val mapPixelInDp = remember(maxWidth) { maxWidth / (MAP_BLOCK_COUNT.mpx) }
         CompositionLocalProvider(LocalMapPixelDp provides mapPixelInDp) {
             content()
         }

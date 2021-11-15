@@ -29,7 +29,7 @@ fun rememberTankState(): TankState {
     }
 }
 
-private val playerSpawnPosition = Offset(4.5f, 12f)
+private val playerSpawnPosition = Offset(4.5f.mpx, 12f.mpx)
 
 class TankState(initial: Map<TankId, Tank> = mapOf()) {
     companion object {
