@@ -49,6 +49,7 @@ class BattleState(
             tickState.tickFlow.collect { tick ->
                 tankController.onTick(tick)
                 bulletState.onTick(tick)
+                tankState.onTick(tick)
             }
         }
 
