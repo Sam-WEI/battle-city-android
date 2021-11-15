@@ -6,11 +6,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import com.samwdev.battlecity.ui.components.LocalMapUnitDp
-import com.samwdev.battlecity.ui.components.mu
+import com.samwdev.battlecity.ui.components.LocalMapPixelDp
+import com.samwdev.battlecity.ui.components.mpDp
 import java.util.concurrent.atomic.AtomicInteger
+
+private const val BULLET_COLLISION_SIZE_IN_MAP_PIXEL = 3
 
 @Composable
 fun rememberBulletState(): BulletState {
@@ -45,7 +46,7 @@ class BulletState : TickListener {
             put(nextId.incrementAndGet(), Bullet(
                 id = nextId.get(),
                 direction = tank.direction,
-                speed = 0.02f,
+                speed = 0.3f,
                 x = bulletOrigin.x.value,
                 y = bulletOrigin.y.value,
                 power = 1,
@@ -67,16 +68,11 @@ data class Bullet(
     val ownerTankId: TankId,
 )
 
-val defaultBullet = Bullet(
-    1, Direction.Down, 1f, 0.5f, 0.5f, 2, 1
-)
-
 @Composable
 fun Bullet(bullet: Bullet) {
-    val mu = LocalMapUnitDp.current.value
     Canvas(modifier = Modifier
-        .size(0.2f.mu, 0.2f.mu)
-        .offset(bullet.x.mu, bullet.y.mu)
+        .size(BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpDp, BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpDp)
+        .offset(bullet.x.mpDp, bullet.y.mpDp)
     ) {
         drawRect(Color.Red, topLeft = Offset.Zero, size = size)
     }
