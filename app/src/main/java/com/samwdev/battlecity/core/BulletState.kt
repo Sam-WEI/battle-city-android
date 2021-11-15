@@ -11,8 +11,6 @@ import com.samwdev.battlecity.ui.components.LocalMapPixelDp
 import com.samwdev.battlecity.ui.components.mpDp
 import java.util.concurrent.atomic.AtomicInteger
 
-private const val BULLET_COLLISION_SIZE_IN_MAP_PIXEL = 3
-
 @Composable
 fun rememberBulletState(): BulletState {
     return remember { BulletState() }

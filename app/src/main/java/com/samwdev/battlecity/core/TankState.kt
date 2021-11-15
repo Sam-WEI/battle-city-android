@@ -18,12 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
-import com.samwdev.battlecity.entity.MAP_PIXEL_IN_EACH_BLOCK
 import com.samwdev.battlecity.ui.components.mpDp
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
-
-const val TANK_MAP_PIXEL = MAP_PIXEL_IN_EACH_BLOCK
 
 @Composable
 fun rememberTankState(): TankState {
