@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import com.samwdev.battlecity.ui.components.LocalMapPixelDp
 import com.samwdev.battlecity.ui.components.mpx2dp
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -43,7 +46,7 @@ class BulletState : TickListener {
             put(nextId.incrementAndGet(), Bullet(
                 id = nextId.get(),
                 direction = tank.direction,
-                speed = 0.3f,
+                speed = 0.05f,
                 x = bulletOrigin.x,
                 y = bulletOrigin.y,
                 power = 1,
@@ -65,12 +68,27 @@ data class Bullet(
     val ownerTankId: TankId,
 )
 
+private val BulletColor = Color(0xFFADADAD)
+
 @Composable
 fun Bullet(bullet: Bullet) {
+    val oneMapPixel = 1f.mpx2dp
     Canvas(modifier = Modifier
-        .size(BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpx2dp, BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpx2dp)
+        .size(BULLET_COLLISION_SIZE.mpx2dp, BULLET_COLLISION_SIZE.mpx2dp)
         .offset(bullet.x.mpx2dp, bullet.y.mpx2dp)
+        .rotate(bullet.direction.degree)
     ) {
-        drawRect(Color.Red, topLeft = Offset.Zero, size = size)
+        // bullet body
+        drawRect(
+            color = BulletColor,
+            topLeft = Offset.Zero,
+            size = size,
+        )
+        // bullet tip
+        drawRect(
+            color = BulletColor,
+            topLeft = Offset(1f * oneMapPixel.toPx(), -1f * oneMapPixel.toPx()),
+            size = Size(oneMapPixel.toPx(), oneMapPixel.toPx())
+        )
     }
 }
