@@ -58,6 +58,16 @@ class TankState(initial: Map<TankId, Tank> = mapOf()) : TickListener {
         ).also { addTank(nextId.get(), it) }
     }
 
+    fun spawnBot(): Tank {
+        return Tank(
+            id = nextId.incrementAndGet(),
+            x = 0f,
+            y = 4f.grid2mpx,
+            direction = Direction.Right,
+            side = TankSide.Bot,
+        ).also { addTank(nextId.get(), it) }
+    }
+
     fun getTank(id: TankId): Tank? {
         return tanks[id]
     }
@@ -97,6 +107,7 @@ data class Tank(
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,
     val speed: MapPixel = 0.15f,
+    val side: TankSide = TankSide.Player,
 ) : Parcelable {
 //    var x: Float by mutableStateOf(x)
 //    var y: Float by mutableStateOf(y)
@@ -125,8 +136,14 @@ enum class Direction(val degree: Float) {
     Unspecified(Float.NaN)
 }
 
+enum class TankSide {
+    Player,
+    Bot,
+}
+
 @Composable
 fun Tank(tank: Tank) {
+    val color = if (tank.side == TankSide.Player) Color.Yellow else Color.LightGray
     Canvas(
         modifier = Modifier
             .size(TANK_MAP_PIXEL.mpx2dp, TANK_MAP_PIXEL.mpx2dp)
@@ -134,11 +151,11 @@ fun Tank(tank: Tank) {
             .rotate(tank.direction.degree)
     ) {
         drawRect(
-            color = Color.Yellow,
+            color = color,
             topLeft = Offset(0f, size.height / 5f),
         )
         drawRect(
-            color = Color.Yellow,
+            color = color,
             topLeft = Offset(size.width / 2 - 24 / 2, 0f),
             size = Size(24f, size.height / 2)
         )

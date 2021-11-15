@@ -13,6 +13,7 @@ fun rememberBattleState(
     tickState: TickState = rememberTickState(),
     tankState: TankState = rememberTankState(),
     bulletState: BulletState = rememberBulletState(),
+    botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
     stageConfigJson: StageConfigJson,
 ): BattleState {
@@ -27,6 +28,7 @@ fun rememberBattleState(
             tankState = tankState,
             bulletState = bulletState,
             tankController = TankController(tankState, bulletState, handheldControllerState),
+            botState = botState,
         )
     }
 }
@@ -39,6 +41,7 @@ class BattleState(
     val bulletState: BulletState,
     val tankState: TankState,
     val tankController: TankController,
+    val botState: BotState,
 ) {
     fun startBattle() {
         coroutineScope.launch {
@@ -50,6 +53,7 @@ class BattleState(
                 tankController.onTick(tick)
                 bulletState.onTick(tick)
                 tankState.onTick(tick)
+                botState.onTick(tick)
             }
         }
 
