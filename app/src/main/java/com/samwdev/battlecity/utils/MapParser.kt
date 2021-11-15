@@ -1,11 +1,10 @@
 package com.samwdev.battlecity.utils
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.IntOffset
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.entity.*
 
 object MapParser {

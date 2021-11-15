@@ -18,8 +18,8 @@ import com.samwdev.battlecity.core.BattleState
 import com.samwdev.battlecity.core.Bullet
 import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.Tank
-import com.samwdev.battlecity.entity.MAP_BLOCK_COUNT
-import com.samwdev.battlecity.entity.MAP_PIXEL_IN_EACH_BLOCK
+import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.core.MAP_PIXEL_IN_EACH_BLOCK
 
 @Composable
 fun BattleField(

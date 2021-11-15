@@ -2,11 +2,8 @@ package com.samwdev.battlecity.entity
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
-
-const val MAP_BLOCK_COUNT = 13
-
-/** The original game pixel count in each block  */
-const val MAP_PIXEL_IN_EACH_BLOCK = 16
+import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.core.MAP_PIXEL_IN_EACH_BLOCK
 
 sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
     val gridPosition: IntOffset
