@@ -24,6 +24,8 @@ class BulletState : TickListener {
     var bullets by mutableStateOf<Map<BulletId, Bullet>>(mapOf())
         private set
 
+    var collisions by mutableStateOf<Map<BulletId, Boolean>>(mapOf())
+
     override fun onTick(tick: Tick) {
         val newBullets = bullets.keys.associateWith { id ->
             val bullet = bullets[id]!!
@@ -38,6 +40,9 @@ class BulletState : TickListener {
 
         }
         bullets = newBullets
+
+        handleCollisionWithBorder()
+        removeCollidedBullets()
     }
 
     fun addBullet(tank: Tank) {
@@ -46,12 +51,47 @@ class BulletState : TickListener {
             put(nextId.incrementAndGet(), Bullet(
                 id = nextId.get(),
                 direction = tank.direction,
-                speed = 0.05f,
+                speed = 0.3f,
                 x = bulletOrigin.x,
                 y = bulletOrigin.y,
                 power = 1,
                 ownerTankId = tank.id,
             ))
+        }
+    }
+
+    fun removeBullet(bulletId: BulletId) {
+        bullets = bullets.filter { it.key != bulletId }
+    }
+
+    private fun handleCollisionWithBorder() {
+        bullets.values.forEach { bullet ->
+            if (bullet.x <= 0) {
+                collisions = collisions.toMutableMap().apply {
+                    put(bullet.id, true)
+                }
+            }
+            if (bullet.x >= MAP_BLOCK_COUNT.grid2mpx) {
+                collisions = collisions.toMutableMap().apply {
+                    put(bullet.id, true)
+                }
+            }
+            if (bullet.y <= 0) {
+                collisions = collisions.toMutableMap().apply {
+                    put(bullet.id, true)
+                }
+            }
+            if (bullet.y >= MAP_BLOCK_COUNT.grid2mpx) {
+                collisions = collisions.toMutableMap().apply {
+                    put(bullet.id, true)
+                }
+            }
+        }
+    }
+
+    private fun removeCollidedBullets() {
+        collisions.keys.forEach { id ->
+            removeBullet(id)
         }
     }
 }
