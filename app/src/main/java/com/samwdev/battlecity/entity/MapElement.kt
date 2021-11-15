@@ -4,7 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.MapPixel
-import com.samwdev.battlecity.core.mpx
+import com.samwdev.battlecity.core.grid2mpx
 
 sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
     val gridPosition: IntOffset
@@ -18,10 +18,10 @@ sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
         val (x, y) = gridPosition
         val rowF = y / granularity.toFloat()
         val colF = x / granularity.toFloat()
-        return Offset(colF.mpx, rowF.mpx)
+        return Offset(colF.grid2mpx, rowF.grid2mpx)
     }
 
-    val elementSize: MapPixel get() = 1.mpx / granularity
+    val elementSize: MapPixel get() = 1.grid2mpx / granularity
 }
 
 data class BrickElement(override val index: Int) : MapElement(index, 4) {

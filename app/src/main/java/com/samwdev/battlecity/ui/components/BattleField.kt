@@ -59,7 +59,7 @@ private fun Map(
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapPixelInDp = remember(maxWidth) { maxWidth / (MAP_BLOCK_COUNT.mpx) }
+        val mapPixelInDp = remember(maxWidth) { maxWidth / (MAP_BLOCK_COUNT.grid2mpx) }
         CompositionLocalProvider(LocalMapPixelDp provides mapPixelInDp) {
             content()
         }
@@ -69,6 +69,9 @@ private fun Map(
 /** MapPixel to Dp */
 val MapPixel.mpx2dp: Dp @Composable get() = LocalMapPixelDp.current * this
 
+/**
+ * Provides dp size for one MapPixel
+ */
 val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
     error("Not in Map composable or its child composable.")
 }

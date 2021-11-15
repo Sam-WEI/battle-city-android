@@ -27,7 +27,7 @@ fun rememberTankState(): TankState {
     }
 }
 
-private val playerSpawnPosition = Offset(4.5f.mpx, 12f.mpx)
+private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
 
 class TankState(initial: Map<TankId, Tank> = mapOf()) {
     companion object {
@@ -88,9 +88,9 @@ data class Tank(
     fun getBulletStartPosition(): Offset {
         return when (direction) {
             Direction.Up -> Offset(x + 6, y)
-            Direction.Down -> Offset(x + 6, y + 1.mpx)
+            Direction.Down -> Offset(x + 6, y + 1.grid2mpx)
             Direction.Left -> Offset(x , y + 6)
-            Direction.Right -> Offset(x + 1.mpx, y + 6)
+            Direction.Right -> Offset(x + 1.grid2mpx, y + 6)
             Direction.Unspecified -> throw IllegalStateException()
         }
     }
