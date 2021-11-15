@@ -16,7 +16,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import com.samwdev.battlecity.entity.BotTankLevel
-import com.samwdev.battlecity.ui.components.mpDp
+import com.samwdev.battlecity.ui.components.mpx2dp
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -108,14 +108,13 @@ enum class Direction(val degree: Float) {
 fun Tank(tank: Tank) {
     Canvas(
         modifier = Modifier
-            .size(TANK_MAP_PIXEL.mpDp, TANK_MAP_PIXEL.mpDp)
-            .offset(tank.x.mpDp, tank.y.mpDp)
+            .size(TANK_MAP_PIXEL.mpx2dp, TANK_MAP_PIXEL.mpx2dp)
+            .offset(tank.x.mpx2dp, tank.y.mpx2dp)
             .rotate(tank.direction.degree)
     ) {
         drawRect(
             color = Color.Yellow,
             topLeft = Offset(0f, size.height / 5f),
-//            alpha = (tickState.uptimeMillis % 1500) / 3000f + 0.5f
         )
         drawRect(
             color = Color.Yellow,

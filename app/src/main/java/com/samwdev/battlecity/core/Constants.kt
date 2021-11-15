@@ -1,13 +1,13 @@
 package com.samwdev.battlecity.core
 
-const val BULLET_COLLISION_SIZE_IN_MAP_PIXEL = 3
+const val BULLET_COLLISION_SIZE_IN_MAP_PIXEL: MapPixel = 3f
 
 const val MAP_BLOCK_COUNT = 13
 
 /** The original game pixel count in each block  */
-private const val MAP_PIXEL_IN_EACH_BLOCK = 16
+private const val MAP_PIXEL_IN_EACH_BLOCK: MapPixel = 16f
 
-const val TANK_MAP_PIXEL = MAP_PIXEL_IN_EACH_BLOCK
+const val TANK_MAP_PIXEL: MapPixel = MAP_PIXEL_IN_EACH_BLOCK
 
 typealias MapPixel = Float
 

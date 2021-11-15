@@ -7,8 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import com.samwdev.battlecity.ui.components.LocalMapPixelDp
-import com.samwdev.battlecity.ui.components.mpDp
+import com.samwdev.battlecity.ui.components.mpx2dp
 import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
@@ -69,8 +68,8 @@ data class Bullet(
 @Composable
 fun Bullet(bullet: Bullet) {
     Canvas(modifier = Modifier
-        .size(BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpDp, BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpDp)
-        .offset(bullet.x.mpDp, bullet.y.mpDp)
+        .size(BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpx2dp, BULLET_COLLISION_SIZE_IN_MAP_PIXEL.mpx2dp)
+        .offset(bullet.x.mpx2dp, bullet.y.mpx2dp)
     ) {
         drawRect(Color.Red, topLeft = Offset.Zero, size = size)
     }
