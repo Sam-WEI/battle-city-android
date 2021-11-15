@@ -24,7 +24,7 @@ object MapParser {
         val trees = mutableListOf<TreeElement>()
         val ices = mutableListOf<IceElement>()
         val waters = mutableListOf<WaterElement>()
-        var eagle: IntOffset? = null
+        var eagle: EagleElement? = null
         configJson.map.forEachIndexed { r, row ->
             row.split(Regex("\\s+")).filter { it.isNotEmpty() }.forEachIndexed { c, block ->
                 when (block[0]) {
@@ -33,7 +33,7 @@ object MapParser {
                         if (eagle != null) {
                             throw IllegalArgumentException("Eagle can only appear once.")
                         }
-                        eagle = IntOffset(c, r)
+                        eagle = EagleElement(r * MAP_BLOCK_COUNT + c)
                     }
                     'B' -> {
                         // brick

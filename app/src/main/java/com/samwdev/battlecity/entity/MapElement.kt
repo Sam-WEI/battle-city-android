@@ -1,13 +1,12 @@
 package com.samwdev.battlecity.entity
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
-import com.samwdev.battlecity.ui.components.mu
 
 const val MAP_BLOCK_COUNT = 13
-const val PIXEL_IN_EACH_BLOCK = 16
+
+/** The original game pixel count in each block  */
+const val MAP_PIXEL_IN_EACH_BLOCK = 16
 
 sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
     val gridPosition: IntOffset
@@ -17,16 +16,14 @@ sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
             return IntOffset(col, row)
         }
 
-    val offsetInMapUnit: Offset get() {
+    val offsetInMapPixel: Offset get() {
         val (x, y) = gridPosition
-        val rowF = y / granularity.toFloat()
-        val colF = x / granularity.toFloat()
+        val rowF = y / granularity.toFloat() * MAP_PIXEL_IN_EACH_BLOCK
+        val colF = x / granularity.toFloat() * MAP_PIXEL_IN_EACH_BLOCK
         return Offset(colF, rowF)
     }
 
-    val sizeInMapUnit: Float get() = 1f / granularity
-
-    val size: Dp @Composable get() = 1.mu / granularity.toFloat()
+    val elementSizeInMapPixel: Float get() = MAP_PIXEL_IN_EACH_BLOCK.toFloat() / granularity
 }
 
 data class BrickElement(override val index: Int) : MapElement(index, 4) {

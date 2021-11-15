@@ -14,12 +14,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toOffset
 import com.samwdev.battlecity.core.BattleState
 import com.samwdev.battlecity.core.Bullet
 import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.Tank
 import com.samwdev.battlecity.entity.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.entity.MAP_PIXEL_IN_EACH_BLOCK
 
 @Composable
 fun BattleField(
@@ -64,30 +64,30 @@ private fun Map(
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapUnit = remember(maxWidth, MAP_BLOCK_COUNT) { maxWidth / MAP_BLOCK_COUNT }
-        CompositionLocalProvider(LocalMapUnitDp provides mapUnit) {
+        val mapPixelInDp = remember(maxWidth) { maxWidth / (MAP_BLOCK_COUNT * MAP_PIXEL_IN_EACH_BLOCK) }
+        CompositionLocalProvider(LocalMapPixelDp provides mapPixelInDp) {
             content()
         }
     }
 }
 
-/** Map unit */
-val Int.mu: Dp @Composable get() = LocalMapUnitDp.current * this
-val Float.mu: Dp @Composable get() = LocalMapUnitDp.current * this
+/** Map pixel in Dp */
+val Int.mpDp: Dp @Composable get() = LocalMapPixelDp.current * this
+val Float.mpDp: Dp @Composable get() = LocalMapPixelDp.current * this
 
-val LocalMapUnitDp = staticCompositionLocalOf<Dp> {
+val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
     error("Not in Map composable or its child composable.")
 }
 
 @Composable
 fun BrickLayer(mapState: MapState) {
-    val mu = LocalMapUnitDp.current
+    val mpx = LocalMapPixelDp.current
     Canvas(modifier = Modifier.fillMaxSize()) {
         mapState.bricks.forEach { el ->
             drawRect(
                 color = Color(97, 20 ,9),
-                topLeft = el.offsetInMapUnit * mu.toPx(),
-                size = Size(el.sizeInMapUnit * mu.toPx(), el.sizeInMapUnit * mu.toPx()),
+                topLeft = el.offsetInMapPixel * mpx.toPx(),
+                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
             )
         }
     }
@@ -95,13 +95,13 @@ fun BrickLayer(mapState: MapState) {
 
 @Composable
 fun SteelLayer(mapState: MapState) {
-    val mu = LocalMapUnitDp.current
+    val mpx = LocalMapPixelDp.current
     Canvas(modifier = Modifier.fillMaxSize()) {
         mapState.steels.forEach { el ->
             drawRect(
                 color = Color.Gray,
-                topLeft = el.offsetInMapUnit * mu.toPx(),
-                size = Size(el.sizeInMapUnit * mu.toPx(), el.sizeInMapUnit * mu.toPx()),
+                topLeft = el.offsetInMapPixel * mpx.toPx(),
+                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
             )
         }
     }
@@ -109,13 +109,13 @@ fun SteelLayer(mapState: MapState) {
 
 @Composable
 fun TreeLayer(mapState: MapState) {
-    val mu = LocalMapUnitDp.current
+    val mpx = LocalMapPixelDp.current
     Canvas(modifier = Modifier.fillMaxSize()) {
         mapState.trees.forEach { el ->
             drawRect(
                 color = Color(78, 134, 22, 151),
-                topLeft = el.offsetInMapUnit * mu.toPx(),
-                size = Size(el.sizeInMapUnit * mu.toPx(), el.sizeInMapUnit * mu.toPx()),
+                topLeft = el.offsetInMapPixel * mpx.toPx(),
+                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
             )
         }
     }
@@ -123,13 +123,13 @@ fun TreeLayer(mapState: MapState) {
 
 @Composable
 fun WaterLayer(mapState: MapState) {
-    val mu = LocalMapUnitDp.current
+    val mpx = LocalMapPixelDp.current
     Canvas(modifier = Modifier.fillMaxSize()) {
         mapState.waters.forEach { el ->
             drawRect(
                 color = Color.Blue,
-                topLeft = el.offsetInMapUnit * mu.toPx(),
-                size = Size(el.sizeInMapUnit * mu.toPx(), el.sizeInMapUnit * mu.toPx()),
+                topLeft = el.offsetInMapPixel * mpx.toPx(),
+                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
             )
         }
     }
@@ -137,13 +137,13 @@ fun WaterLayer(mapState: MapState) {
 
 @Composable
 fun IceLayer(mapState: MapState) {
-    val mu = LocalMapUnitDp.current
+    val mpx = LocalMapPixelDp.current
     Canvas(modifier = Modifier.fillMaxSize()) {
         mapState.ices.forEach { el ->
             drawRect(
                 color = Color.White,
-                topLeft = el.offsetInMapUnit * mu.toPx(),
-                size = Size(el.sizeInMapUnit * mu.toPx(), el.sizeInMapUnit * mu.toPx()),
+                topLeft = el.offsetInMapPixel * mpx.toPx(),
+                size = Size(el.elementSizeInMapPixel * mpx.toPx(), el.elementSizeInMapPixel * mpx.toPx()),
             )
         }
     }
@@ -151,12 +151,13 @@ fun IceLayer(mapState: MapState) {
 
 @Composable
 fun EagleLayer(mapState: MapState) {
-    val mu = LocalMapUnitDp.current
+    val mpx = LocalMapPixelDp.current
+    val size = mapState.eagle.elementSizeInMapPixel.mpDp
     Canvas(modifier = Modifier.fillMaxSize()) {
         drawOval(
             color = Color.Red,
-            topLeft = mapState.eagle.toOffset() * mu.toPx(),
-            size = Size(mu.toPx(), mu.toPx())
+            topLeft = mapState.eagle.offsetInMapPixel * mpx.toPx(),
+            size = Size(size.toPx(), size.toPx())
         )
     }
 }

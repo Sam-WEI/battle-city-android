@@ -1,7 +1,5 @@
 package com.samwdev.battlecity.entity
 
-import androidx.compose.ui.unit.IntOffset
-
 data class StageConfigJson(
     val name: String,
     val difficulty: Int,
@@ -22,7 +20,7 @@ data class MapElements(
     val steels: List<SteelElement>,
     val waters: List<WaterElement>,
     val ices: List<IceElement>,
-    val eagle: IntOffset,
+    val eagle: EagleElement,
 )
 data class BotGroup(
     val level: BotTankLevel,

@@ -18,9 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
-import com.samwdev.battlecity.ui.components.mu
+import com.samwdev.battlecity.entity.MAP_PIXEL_IN_EACH_BLOCK
+import com.samwdev.battlecity.ui.components.mpDp
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
+
+const val TANK_MAP_PIXEL = MAP_PIXEL_IN_EACH_BLOCK
 
 @Composable
 fun rememberTankState(): TankState {
@@ -81,7 +84,7 @@ data class Tank(
     val direction: Direction = Direction.Up,
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,
-    val speed: Float = 0.01f,
+    val speed: Float = 0.06f,
 ) : Parcelable {
 //    var x: Float by mutableStateOf(x)
 //    var y: Float by mutableStateOf(y)
@@ -104,8 +107,8 @@ enum class Direction(val degree: Float) {
 fun Tank(tank: Tank) {
     Canvas(
         modifier = Modifier
-            .size(1.mu, 1.mu)
-            .offset(tank.x.mu, tank.y.mu)
+            .size(TANK_MAP_PIXEL.mpDp, TANK_MAP_PIXEL.mpDp)
+            .offset(tank.x.mpDp, tank.y.mpDp)
             .rotate(tank.direction.degree)
     ) {
         drawRect(
