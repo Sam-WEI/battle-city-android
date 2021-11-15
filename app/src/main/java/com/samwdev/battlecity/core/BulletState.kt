@@ -7,8 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntRect
 import com.samwdev.battlecity.ui.components.LocalMapPixelDp
 import com.samwdev.battlecity.ui.components.mpx2dp
 import java.util.concurrent.atomic.AtomicInteger
@@ -42,6 +44,7 @@ class BulletState : TickListener {
         bullets = newBullets
 
         handleCollisionWithBorder()
+        handleCollisionBetweenBullets()
         removeCollidedBullets()
     }
 
@@ -91,6 +94,22 @@ class BulletState : TickListener {
         }
     }
 
+    private fun handleCollisionBetweenBullets() {
+        val all = bullets.values.toList()
+        for (i in 0 until all.size - 1) {
+            val b1 = all[i]
+            for (j in i + 1 until all.size) {
+                val b2 = all[j]
+                if (b1.collisionBox.overlaps(b2.collisionBox)) {
+                    collisions = collisions.toMutableMap().apply {
+                        put(b1.id, true)
+                        put(b2.id, true)
+                    }
+                }
+            }
+        }
+    }
+
     private fun removeCollidedBullets() {
         collisions.keys.forEach { id ->
             removeBullet(id)
@@ -108,7 +127,9 @@ data class Bullet(
     val y: MapPixel,
     val power: Int = 1,
     val ownerTankId: TankId,
-)
+) {
+    val collisionBox: Rect = Rect(offset = Offset(x, y), size = Size(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE))
+}
 
 private val BulletColor = Color(0xFFADADAD)
 
