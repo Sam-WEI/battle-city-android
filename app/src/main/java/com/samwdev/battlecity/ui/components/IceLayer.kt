@@ -16,8 +16,8 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
-fun IceLayer(mapState: MapState) {
-    mapState.ices.forEach { el ->
+fun IceLayer(ices: List<IceElement>) {
+    ices.forEach { el ->
         IceBlock(element = el)
     }
 }

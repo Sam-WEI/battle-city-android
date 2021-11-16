@@ -18,7 +18,7 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun WaterLayer(mapState: MapState) {
+fun WaterLayer(waters: List<WaterElement>) {
     var frame by remember { mutableStateOf(0) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -26,7 +26,7 @@ fun WaterLayer(mapState: MapState) {
             delay(500)
         }
     }
-    mapState.waters.forEach { el ->
+    waters.forEach { el ->
         WaterBlock(element = el, frame = frame)
     }
 }

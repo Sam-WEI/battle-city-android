@@ -15,8 +15,8 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
-fun SteelLayer(mapState: MapState) {
-    mapState.steels.forEach { el ->
+fun SteelLayer(steels: List<SteelElement>) {
+    steels.forEach { el ->
         SteelBlock(element = el)
     }
 }
