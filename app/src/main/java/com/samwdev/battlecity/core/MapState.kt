@@ -12,7 +12,7 @@ fun rememberMapState(mapElements: MapElements): MapState {
 
 class MapState(
     mapElements: MapElements,
-) {
+) : TickListener {
     var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
         private set
 
@@ -29,6 +29,10 @@ class MapState(
         private set
 
     val eagle = mapElements.eagle
+
+    override fun onTick(tick: Tick) {
+
+    }
 
     fun destroyBricks(indices: Set<BrickElement>) {
         bricks = bricks.filter { it !in indices }
