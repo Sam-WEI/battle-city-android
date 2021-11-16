@@ -38,7 +38,6 @@ class BulletState : TickListener {
                 Direction.Down -> bullet.copy(y = bullet.y + delta)
                 Direction.Left ->  bullet.copy(x = bullet.x - delta)
                 Direction.Right ->  bullet.copy(x = bullet.x + delta)
-                Direction.Unspecified -> throw IllegalStateException("A bullet must have a direction.")
             }
 
         }
@@ -157,12 +156,10 @@ class BulletState : TickListener {
             Direction.Down -> rect.top - bottom
             Direction.Left -> left - rect.right
             Direction.Right -> rect.left - right
-            Direction.Unspecified -> throw IllegalStateException()
         }
         val flyOutDistance = when (direction) {
             Direction.Up, Direction.Down -> flyInDistance + rect.height
             Direction.Left, Direction.Right -> flyInDistance + rect.width
-            Direction.Unspecified -> throw IllegalStateException()
         }
         return (flyInDistance / speed).roundToLong() .. (flyOutDistance / speed).roundToLong()
     }
@@ -200,7 +197,6 @@ data class Bullet(
             Direction.Down -> currPos - Offset(0f, delta)
             Direction.Left -> currPos + Offset(delta, 0f)
             Direction.Right -> currPos - Offset(delta, 0f)
-            Direction.Unspecified -> throw IllegalStateException()
         }
         return copy(x = oldPos.x, y = oldPos.y)
     }
