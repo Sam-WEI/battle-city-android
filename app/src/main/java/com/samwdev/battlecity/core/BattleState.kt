@@ -10,15 +10,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun rememberBattleState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    stageConfigJson: StageConfigJson,
+    mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
     tickState: TickState = rememberTickState(),
     tankState: TankState = rememberTankState(),
-    bulletState: BulletState = rememberBulletState(),
+    bulletState: BulletState = rememberBulletState(mapState = mapState),
     botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
-    stageConfigJson: StageConfigJson,
 ): BattleState {
-    val mapElements = remember(stageConfigJson) { MapParser.parse(stageConfigJson).map }
-    val mapState = rememberMapState(mapElements = mapElements)
     return remember {
         BattleState(
             coroutineScope = coroutineScope,

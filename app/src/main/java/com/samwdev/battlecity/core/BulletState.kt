@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.ui.components.mpx2dp
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.max
@@ -17,11 +18,15 @@ import kotlin.math.min
 import kotlin.math.roundToLong
 
 @Composable
-fun rememberBulletState(): BulletState {
-    return remember { BulletState() }
+fun rememberBulletState(
+    mapState: MapState,
+): BulletState {
+    return remember { BulletState(mapState) }
 }
 
-class BulletState : TickListener {
+class BulletState(
+    private val mapState: MapState,
+) : TickListener {
     private val nextId: AtomicInteger = AtomicInteger(0)
 
     var bullets by mutableStateOf<Map<BulletId, Bullet>>(mapOf())
@@ -45,6 +50,7 @@ class BulletState : TickListener {
 
         handleCollisionWithBorder()
         handleCollisionBetweenBullets(tick)
+        handleCollisionWithBricks()
         removeCollidedBullets()
     }
 
@@ -148,6 +154,12 @@ class BulletState : TickListener {
                     }
                 }
             }
+        }
+    }
+
+    private fun handleCollisionWithBricks() {
+        bullets.values.forEach { bullet ->
+            BrickElement.getIndicesInRect(bullet.collisionBox)
         }
     }
 
