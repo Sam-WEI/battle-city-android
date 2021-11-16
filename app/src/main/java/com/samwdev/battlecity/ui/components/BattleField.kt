@@ -94,20 +94,6 @@ fun BrickLayer(mapState: MapState) {
 }
 
 @Composable
-fun SteelLayer(mapState: MapState) {
-    val mpx = LocalMapPixelDp.current
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        mapState.steels.forEach { el ->
-            drawRect(
-                color = Color.Gray,
-                topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
-            )
-        }
-    }
-}
-
-@Composable
 fun WaterLayer(mapState: MapState) {
     val mpx = LocalMapPixelDp.current
     Canvas(modifier = Modifier.fillMaxSize()) {
