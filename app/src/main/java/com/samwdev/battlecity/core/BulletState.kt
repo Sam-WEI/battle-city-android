@@ -136,7 +136,9 @@ class BulletState : TickListener {
                     if (b1Trajectory.overlaps(b2Trajectory)) {
                         // if the two bullets crossed, check if they have hit each other in between ticks
                         val collisionArea = b1Trajectory.intersect(b2Trajectory)
-                        val touched = (b1Flashback.flyTimeToPass(collisionArea) intersect b2Flashback.flyTimeToPass(collisionArea)).isNotEmpty()
+                        val b1tt = b1Flashback.travelTimeInArea(collisionArea)
+                        val b2tt = b2Flashback.travelTimeInArea(collisionArea)
+                        val touched = (b1tt intersect b2tt).isNotEmpty()
                         if (touched) {
                             collisions = collisions.toMutableMap().apply {
                                 put(b1.id, true)
@@ -149,18 +151,20 @@ class BulletState : TickListener {
         }
     }
 
-    private fun Bullet.flyTimeToPass(rect: Rect): LongRange {
+    private fun Bullet.travelTimeInArea(rect: Rect): LongRange {
         val flyInDistance = when (direction) {
             Direction.Up -> top - rect.bottom
             Direction.Down -> rect.top - bottom
             Direction.Left -> left - rect.right
             Direction.Right -> rect.left - right
-        }
+        }.coerceAtLeast(0f)
+        // when the bullet is already in the area, the distance will be negative, so set it 0.
+
         val flyOutDistance = when (direction) {
             Direction.Up, Direction.Down -> flyInDistance + rect.height
             Direction.Left, Direction.Right -> flyInDistance + rect.width
         }
-        return (flyInDistance / speed).roundToLong() .. (flyOutDistance / speed).roundToLong()
+        return (flyInDistance / speed).roundToLong()..(flyOutDistance / speed).roundToLong()
     }
 
     private fun removeCollidedBullets() {
