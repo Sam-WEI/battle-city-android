@@ -1,22 +1,25 @@
 package com.samwdev.battlecity.core
 
 import android.os.Parcelable
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
+import com.samwdev.battlecity.ui.components.LocalMapPixelDp
+import com.samwdev.battlecity.ui.components.Map
 import com.samwdev.battlecity.ui.components.mpx2dp
+import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import kotlinx.coroutines.delay
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -106,8 +109,9 @@ data class Tank(
     val direction: Direction = Direction.Up,
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,
-    val speed: MapPixel = 0.15f,
+    val speed: MapPixel = 0.05f,
     val side: TankSide = TankSide.Player,
+    val isMoving: Boolean = false,
 ) : Parcelable {
 //    var x: Float by mutableStateOf(x)
 //    var y: Float by mutableStateOf(y)
@@ -124,7 +128,7 @@ data class Tank(
 
     fun getFireCooldown(): Int = level.fireCooldown
 
-    fun getMaxBulletLimit(): Int = 3
+    fun getMaxBulletLimit(): Int = if (side == TankSide.Player) 3 else 1
 }
 
 enum class Direction(val degree: Float) {
@@ -145,20 +149,175 @@ enum class TankSide {
 @Composable
 fun Tank(tank: Tank) {
     val color = if (tank.side == TankSide.Player) Color.Yellow else Color.LightGray
-    Canvas(
+    val mpxDp = LocalMapPixelDp.current
+    var treadPattern: Int by remember {
+        mutableStateOf(0) // 0 or 1
+    }
+    val color1 = Color(227, 227, 137)
+    val color2 = Color(227, 145, 30)
+    val color3 = Color(96, 96, 0)
+
+    // todo make tank stateless
+    LaunchedEffect(tank.isMoving) {
+        if (tank.isMoving) {
+            while (true) {
+                treadPattern = (treadPattern + 1) % 2
+                delay(100)
+            }
+        }
+    }
+    PixelCanvas(
+        heightInMapPixel = TANK_MAP_PIXEL,
+        widthInMapPixel = TANK_MAP_PIXEL,
+        topLeftInMapPixel = Offset(tank.x, tank.y) ,
         modifier = Modifier
-            .size(TANK_MAP_PIXEL.mpx2dp, TANK_MAP_PIXEL.mpx2dp)
-            .offset(tank.x.mpx2dp, tank.y.mpx2dp)
             .rotate(tank.direction.degree)
     ) {
+        // left tread
+        translate(1f, 4f) {
+            drawRect(
+                color = color1,
+                topLeft = Offset(0f, 0f),
+                size = Size(3f, 11f),
+            )
+            drawRect(
+                color = color2,
+                topLeft = Offset(1f, 0f),
+                size = Size(2f, 11f),
+            )
+            drawRect(
+                color = color1,
+                topLeft = Offset(2f, 1f),
+                size = Size(1f, 9f),
+            )
+            for (i in treadPattern..10 step 2) {
+                val left = if (i == 0 || i == 10) 1 else 0
+                drawRect(
+                    color = color3,
+                    topLeft = Offset(left.toFloat(), i.toFloat()),
+                    size = Size(2f, 1f),
+                )
+            }
+        }
+
+        // right tread
+        translate(left = 11f, top = 4f) {
+            drawRect(
+                color = color1,
+                topLeft = Offset(0f, 0f),
+                size = Size(1f, 1f),
+            )
+            drawRect(
+                color = color3,
+                topLeft = Offset(0f, 1f),
+                size = Size(1f, 10f),
+            )
+            drawRect(
+                color = color2,
+                topLeft = Offset(1f, 0f),
+                size = Size(2f, 11f),
+            )
+            for (i in treadPattern..10 step 2) {
+                drawRect(
+                    color = color3,
+                    topLeft = Offset(1f, i.toFloat()),
+                    size = Size(2f, 1f),
+                )
+            }
+        }
+
+        translate(4f, 6f) {
+            // body
+            drawRect(
+                color = color1,
+                topLeft = Offset(0f, 1f),
+                size = Size(7f, 6f),
+            )
+            drawRect(
+                color = color1,
+                topLeft = Offset(1f, 0f),
+                size = Size(5f, 8f),
+            )
+            drawRect(
+                color = color2,
+                topLeft = Offset(2f, 0f),
+                size = Size(4f, 2f),
+            )
+            drawRect(
+                color = color2,
+                topLeft = Offset(4f, 2f),
+                size = Size(3f, 4f),
+            )
+            drawRect(
+                color = color2,
+                topLeft = Offset(3f, 3f),
+                size = Size(3f, 4f),
+            )
+            drawRect(
+                color = color2,
+                topLeft = Offset(1f, 2f),
+                size = Size(1f, 3f),
+            )
+            drawRect(
+                color = color2,
+                topLeft = Offset(2f, 5f),
+                size = Size(1f, 1f),
+            )
+            // body shadow
+            drawRect(
+                color = color3,
+                topLeft = Offset(4f, 0f),
+                size = Size(2f, 1f),
+            )
+            drawRect(
+                color = color3,
+                topLeft = Offset(6f, 1f),
+                size = Size(1f, 1f),
+            )
+            drawRect(
+                color = color3,
+                topLeft = Offset(4f, 3f),
+                size = Size(1f, 3f),
+            )
+            drawRect(
+                color = color3,
+                topLeft = Offset(3f, 5f),
+                size = Size(1f, 1f),
+            )
+            drawRect(
+                color = color3,
+                topLeft = Offset(0f, 6f),
+                size = Size(1f, 1f),
+            )
+            drawRect(
+                color = color3,
+                topLeft = Offset(6f, 6f),
+                size = Size(1f, 1f),
+            )
+            drawRect(
+                color = color3,
+                topLeft = Offset(1f, 7f),
+                size = Size(5f, 1f),
+            )
+        }
+
+        // barrel
         drawRect(
-            color = color,
-            topLeft = Offset(0f, size.height / 5f),
+            color = color1,
+            topLeft = Offset(7f, 2f),
+            size = Size(1f, 5f),
         )
-        drawRect(
-            color = color,
-            topLeft = Offset(size.width / 2 - 24 / 2, 0f),
-            size = Size(24f, size.height / 2)
-        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    BattleCityTheme {
+        Map(modifier = Modifier.size(1000.dp)) {
+            Tank(Tank(
+                id = 0,
+            ))
+        }
     }
 }
