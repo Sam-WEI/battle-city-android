@@ -26,11 +26,9 @@ class TankController(
             Direction.Right -> newX += move
             Direction.Up -> newY -= move
             Direction.Down -> newY += move
-            Direction.Unspecified -> {}
         }
-        if (handheldControllerState.direction != Direction.Unspecified) {
-            newDir = handheldControllerState.direction
-        }
+
+        handheldControllerState.direction?.let { newDir = it }
         val newTank = tank.copy(x = newX, y = newY, direction = newDir)
 
         tankState.updateTank(_tankId, newTank)

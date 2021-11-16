@@ -29,7 +29,7 @@ fun rememberHandheldControllerState(): HandheldControllerState {
 }
 
 class HandheldControllerState {
-    var direction by mutableStateOf(Direction.Unspecified)
+    var direction by mutableStateOf<Direction?>(null)
         private set
 
     var offset by mutableStateOf(Offset.Unspecified)
@@ -48,17 +48,16 @@ class HandheldControllerState {
     }
 }
 
-private fun getDirection(steerOffset: Offset): Direction {
+private fun getDirection(steerOffset: Offset): Direction? {
     val (x, y) = steerOffset
     val angle = Math.toDegrees(atan2(y, x).toDouble())
-
     return when {
-        x == 0f && y == 0f -> Direction.Unspecified
+        x == 0f && y == 0f -> null
         angle <= -45 && angle > -135 -> Direction.Up
         angle <= -135 || angle > 135 -> Direction.Left
         angle <= 135 && angle > 45 -> Direction.Down
         angle <= 45 && angle > 0 || angle > -45 && angle <= 0 -> Direction.Right
-        else -> Direction.Unspecified
+        else -> null
     }
 }
 

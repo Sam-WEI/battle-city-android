@@ -119,7 +119,6 @@ data class Tank(
             Direction.Down -> Offset(x + 6, y + 1.grid2mpx)
             Direction.Left -> Offset(x , y + 6)
             Direction.Right -> Offset(x + 1.grid2mpx, y + 6)
-            Direction.Unspecified -> throw IllegalStateException()
         }
     }
 
@@ -132,8 +131,7 @@ enum class Direction(val degree: Float) {
     Up(0f),
     Down(180f),
     Left(270f),
-    Right(90f),
-    Unspecified(Float.NaN);
+    Right(90f);
 
     fun isVertical(): Boolean = this == Up || this == Down
     fun isHorizontal(): Boolean = this == Left || this == Right
