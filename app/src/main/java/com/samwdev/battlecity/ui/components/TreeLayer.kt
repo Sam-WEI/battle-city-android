@@ -18,8 +18,8 @@ private val TreeColorDark = Color(12, 65, 0)
 private val TreeColorLight = Color(129, 208, 0)
 
 @Composable
-fun TreeLayer(mapState: MapState) {
-    mapState.trees.forEach { el ->
+fun TreeLayer(trees: List<TreeElement>) {
+    trees.forEach { el ->
         TreeBlock(element = el)
     }
 }

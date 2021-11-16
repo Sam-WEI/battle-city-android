@@ -26,11 +26,11 @@ fun BattleField(
         .aspectRatio(1f)
         .background(Color.Black)
     ) {
-        BrickLayer(mapState = battleState.mapState)
-        SteelLayer(mapState = battleState.mapState)
-        IceLayer(mapState = battleState.mapState)
-        WaterLayer(mapState = battleState.mapState)
-        EagleLayer(mapState = battleState.mapState)
+        BrickLayer(battleState.mapState.bricks)
+        SteelLayer(battleState.mapState.steels)
+        IceLayer(battleState.mapState.ices)
+        WaterLayer(battleState.mapState.waters)
+        EagleLayer(battleState.mapState)
 
         battleState.tankState.tanks.forEach { (id, tank) ->
             Tank(tank = tank)
@@ -40,7 +40,7 @@ fun BattleField(
             Bullet(bullet)
         }
 
-        TreeLayer(mapState = battleState.mapState)
+        TreeLayer(battleState.mapState.trees)
 
         Text(
             text = "FPS ${battleState.tickState.fps}",
