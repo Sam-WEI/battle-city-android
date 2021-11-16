@@ -133,7 +133,10 @@ enum class Direction(val degree: Float) {
     Down(180f),
     Left(270f),
     Right(90f),
-    Unspecified(Float.NaN)
+    Unspecified(Float.NaN);
+
+    fun isVertical(): Boolean = this == Up || this == Down
+    fun isHorizontal(): Boolean = this == Left || this == Right
 }
 
 enum class TankSide {

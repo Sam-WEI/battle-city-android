@@ -10,10 +10,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.IntRect
-import com.samwdev.battlecity.ui.components.LocalMapPixelDp
 import com.samwdev.battlecity.ui.components.mpx2dp
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToLong
 
 @Composable
 fun rememberBulletState(): BulletState {
@@ -44,7 +45,7 @@ class BulletState : TickListener {
         bullets = newBullets
 
         handleCollisionWithBorder()
-        handleCollisionBetweenBullets()
+        handleCollisionBetweenBullets(tick)
         removeCollidedBullets()
     }
 
@@ -94,7 +95,7 @@ class BulletState : TickListener {
         }
     }
 
-    private fun handleCollisionBetweenBullets() {
+    private fun handleCollisionBetweenBullets(tick: Tick) {
         val all = bullets.values.toList()
         for (i in 0 until all.size - 1) {
             val b1 = all[i]
@@ -105,9 +106,65 @@ class BulletState : TickListener {
                         put(b1.id, true)
                         put(b2.id, true)
                     }
+                } else {
+                    // when the fps is low or bullets too fast, they may miss the rect collision test.
+                    // this branch is to check possible bullet collision between ticks
+                    val b1Flashback = b1.getFlashbackBullet(tick.delta)
+                    val b2Flashback = b2.getFlashbackBullet(tick.delta)
+
+                    val b1Trajectory = b1Flashback.let {
+                        val left = min(it.x, b1.x)
+                        val right = max(it.x, b1.x)
+                        val top = min(it.y, b1.y)
+                        val bottom = max(it.y, b1.y)
+                        Rect(
+                            topLeft = Offset(left, top),
+                            bottomRight = Offset(right, bottom) + Offset(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE)
+                        )
+                    }
+
+                    val b2Trajectory = b2Flashback.let {
+                        val left = min(it.x, b2.x)
+                        val right = max(it.x, b2.x)
+                        val top = min(it.y, b2.y)
+                        val bottom = max(it.y, b2.y)
+                        Rect(
+                            topLeft = Offset(left, top),
+                            bottomRight = Offset(right, bottom) + Offset(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE)
+                        )
+                    }
+
+                    if (b1Trajectory.overlaps(b2Trajectory)) {
+                        // if the two bullets crossed, check if they have hit each other
+                        val collisionArea = b1Trajectory.intersect(b2Trajectory)
+                        val touched = (b1Flashback.flyTimeToPass(collisionArea) intersect b2Flashback.flyTimeToPass(collisionArea)).isNotEmpty()
+                        if (touched) {
+                            collisions = collisions.toMutableMap().apply {
+                                put(b1.id, true)
+                                put(b2.id, true)
+                            }
+                        }
+                    }
+
                 }
             }
         }
+    }
+
+    private fun Bullet.flyTimeToPass(rect: Rect): LongRange {
+        val flyInDistance = when (direction) {
+            Direction.Up -> top - rect.bottom
+            Direction.Down -> rect.top - bottom
+            Direction.Left -> left - rect.right
+            Direction.Right -> rect.left - right
+            Direction.Unspecified -> throw IllegalStateException()
+        }
+        val flyOutDistance = when (direction) {
+            Direction.Up, Direction.Down -> flyInDistance + rect.height
+            Direction.Left, Direction.Right -> flyInDistance + rect.width
+            Direction.Unspecified -> throw IllegalStateException()
+        }
+        return (flyInDistance / speed).roundToLong() .. (flyOutDistance / speed).roundToLong()
     }
 
     private fun removeCollidedBullets() {
@@ -129,6 +186,24 @@ data class Bullet(
     val ownerTankId: TankId,
 ) {
     val collisionBox: Rect = Rect(offset = Offset(x, y), size = Size(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE))
+
+    val left: MapPixel = x
+    val top: MapPixel = y
+    val right: MapPixel = x + BULLET_COLLISION_SIZE
+    val bottom: MapPixel = y + BULLET_COLLISION_SIZE
+
+    fun getFlashbackBullet(millisAgo: Long): Bullet {
+        val delta = millisAgo * speed
+        val currPos = Offset(x, y)
+        val oldPos = when (direction) {
+            Direction.Up -> currPos + Offset(0f, delta)
+            Direction.Down -> currPos - Offset(0f, delta)
+            Direction.Left -> currPos + Offset(delta, 0f)
+            Direction.Right -> currPos - Offset(delta, 0f)
+            Direction.Unspecified -> throw IllegalStateException()
+        }
+        return copy(x = oldPos.x, y = oldPos.y)
+    }
 }
 
 private val BulletColor = Color(0xFFADADAD)
