@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.entity
 
+import androidx.annotation.IntDef
+import androidx.annotation.IntRange
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntOffset
@@ -27,6 +29,8 @@ sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
 }
 
 data class BrickElement(override val index: Int) : MapElement(index, 4) {
+    val patternIndex: Int get() = (gridPosition.x + gridPosition.y) % 2
+
     companion object : MapElementHelper(4)
 }
 
