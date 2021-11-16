@@ -10,14 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.entity.TreeElement
 
 @Composable
 fun BattleField(
@@ -77,48 +74,6 @@ val MapPixel.mpx2dp: Dp @Composable get() = LocalMapPixelDp.current * this
  */
 val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
     error("Not in Map composable or its child composable.")
-}
-
-@Composable
-fun BrickLayer(mapState: MapState) {
-    val mpx = LocalMapPixelDp.current
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        mapState.bricks.forEach { el ->
-            drawRect(
-                color = Color(97, 20 ,9),
-                topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
-            )
-        }
-    }
-}
-
-@Composable
-fun WaterLayer(mapState: MapState) {
-    val mpx = LocalMapPixelDp.current
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        mapState.waters.forEach { el ->
-            drawRect(
-                color = Color.Blue,
-                topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
-            )
-        }
-    }
-}
-
-@Composable
-fun IceLayer(mapState: MapState) {
-    val mpx = LocalMapPixelDp.current
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        mapState.ices.forEach { el ->
-            drawRect(
-                color = Color.White,
-                topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
-            )
-        }
-    }
 }
 
 @Composable
