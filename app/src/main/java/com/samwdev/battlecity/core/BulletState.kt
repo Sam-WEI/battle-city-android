@@ -134,7 +134,7 @@ class BulletState : TickListener {
                     }
 
                     if (b1Trajectory.overlaps(b2Trajectory)) {
-                        // if the two bullets crossed, check if they have hit each other
+                        // if the two bullets crossed, check if they have hit each other in between ticks
                         val collisionArea = b1Trajectory.intersect(b2Trajectory)
                         val touched = (b1Flashback.flyTimeToPass(collisionArea) intersect b2Flashback.flyTimeToPass(collisionArea)).isNotEmpty()
                         if (touched) {
@@ -144,7 +144,6 @@ class BulletState : TickListener {
                             }
                         }
                     }
-
                 }
             }
         }
