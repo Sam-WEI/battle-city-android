@@ -52,7 +52,7 @@ fun BattleField(
 }
 
 @Composable
-private fun Map(
+fun Map(
     modifier: Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
