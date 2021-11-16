@@ -10,11 +10,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.entity.TreeElement
 
 @Composable
 fun BattleField(
@@ -97,20 +100,6 @@ fun SteelLayer(mapState: MapState) {
         mapState.steels.forEach { el ->
             drawRect(
                 color = Color.Gray,
-                topLeft = el.offsetInMapPixel * mpx.toPx(),
-                size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
-            )
-        }
-    }
-}
-
-@Composable
-fun TreeLayer(mapState: MapState) {
-    val mpx = LocalMapPixelDp.current
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        mapState.trees.forEach { el ->
-            drawRect(
-                color = Color(78, 134, 22, 151),
                 topLeft = el.offsetInMapPixel * mpx.toPx(),
                 size = Size(el.elementSize * mpx.toPx(), el.elementSize * mpx.toPx()),
             )
