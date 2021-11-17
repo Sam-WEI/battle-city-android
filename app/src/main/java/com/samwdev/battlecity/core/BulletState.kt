@@ -159,7 +159,13 @@ class BulletState(
 
     private fun handleCollisionWithBricks() {
         bullets.values.forEach { bullet ->
-            BrickElement.getIndicesInRect(bullet.collisionBox)
+            val bricksHit = BrickElement.getIndicesInRect(bullet.collisionBox, moveDirection = bullet.direction)
+            if (bricksHit.isNotEmpty()) {
+                val destroyed = mapState.destroyBricksIndex(bricksHit.toSet())
+                if (destroyed) {
+                    removeBullet(bullet.id)
+                }
+            }
         }
     }
 
