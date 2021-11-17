@@ -1,7 +1,10 @@
 package com.samwdev.battlecity.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.utils.logI
 
 @Composable
 fun BattleField(
@@ -105,11 +107,19 @@ fun Framer(
     tickState: TickState,
     framesDef: List<Int>,
     infinite: Boolean = false,
+    reverse: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val frameAcc = remember(framesDef) {
         var n = 0L
-        framesDef.map {
+        val realFrames = if (reverse) {
+            framesDef.toMutableList().apply {
+                addAll(framesDef.reversed().subList(1, framesDef.lastIndex))
+            }
+        } else {
+            framesDef
+        }
+        realFrames.map {
             n += it
             n
         }
@@ -130,7 +140,10 @@ fun Framer(
     while (frameAcc[currFrame] < elapsed) {
         currFrame++
     }
-    logI("curr: ${currFrame}")
+    if (currFrame > framesDef.lastIndex) {
+        // only happens when reverse is true
+        currFrame = framesDef.lastIndex - (currFrame + 1 - framesDef.size)
+    }
     CompositionLocalProvider(LocalFramer provides currFrame) {
         content()
     }
