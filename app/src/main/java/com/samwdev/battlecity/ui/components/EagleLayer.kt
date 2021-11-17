@@ -6,11 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.PixelCanvas
+import com.samwdev.battlecity.core.PixelDrawScope
 import com.samwdev.battlecity.entity.EagleElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
@@ -26,15 +26,15 @@ fun EagleLayer(eagleElement: EagleElement) {
     ) {
         drawHalfEagle()
         scale(scaleX = -1f, scaleY = 1f, pivot = Offset(eagleElement.elementSize / 2, 0f)) {
-            drawHalfEagle()
+            this@PixelCanvas.drawHalfEagle()
         }
-        drawRect(color = eagleColor, topLeft = Offset(6f, 2f), size = Size(1f, 1f))
-        drawRect(color = eagleColor, topLeft = Offset(9f, 3f), size = Size(1f, 1f))
-        drawRect(color = eagleColorEye, topLeft = Offset(8f, 3f), size = Size(1f, 1f))
+        drawPixelPoint(color = eagleColor, topLeft = Offset(6f, 2f))
+        drawPixelPoint(color = eagleColor, topLeft = Offset(9f, 3f))
+        drawPixelPoint(color = eagleColorEye, topLeft = Offset(8f, 3f))
     }
 }
 
-private fun DrawScope.drawHalfEagle() {
+private fun PixelDrawScope.drawHalfEagle() {
     drawRect(color = eagleColor, topLeft = Offset(7f, 2f), size = Size(1f, 13f))
     drawRect(color = eagleColor, topLeft = Offset(0f, 1f), size = Size(2f, 1f))
     drawRect(color = eagleColor, topLeft = Offset(1f, 2f), size = Size(2f, 1f))
@@ -48,9 +48,9 @@ private fun DrawScope.drawHalfEagle() {
     drawRect(color = eagleColor, topLeft = Offset(6f, 12f), size = Size(1f, 2f))
     drawRect(color = eagleColor, topLeft = Offset(4f, 13f), size = Size(2f, 2f))
     // red dots
-    drawRect(color = eagleColorEye, topLeft = Offset(3f, 6f), size = Size(1f, 1f))
-    drawRect(color = eagleColorEye, topLeft = Offset(4f, 7f), size = Size(1f, 1f))
-    drawRect(color = eagleColorEye, topLeft = Offset(6f, 8f), size = Size(1f, 1f))
+    drawPixelPoint(color = eagleColorEye, topLeft = Offset(3f, 6f))
+    drawPixelPoint(color = eagleColorEye, topLeft = Offset(4f, 7f))
+    drawPixelPoint(color = eagleColorEye, topLeft = Offset(6f, 8f))
 }
 
 @Preview
