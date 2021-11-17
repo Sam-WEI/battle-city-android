@@ -17,9 +17,13 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
 fun WaterLayer(waters: List<WaterElement>) {
-    val frame = LocalFramer.current
-    waters.forEach { el ->
-        WaterBlock(element = el, frame = frame)
+    Framer(
+        framesDef = listOf(700, 700),
+        infinite = true,
+    ) {
+        waters.forEach { el ->
+            WaterBlock(element = el, frame = LocalFramer.current)
+        }
     }
 }
 
