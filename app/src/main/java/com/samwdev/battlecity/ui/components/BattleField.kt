@@ -3,16 +3,14 @@ package com.samwdev.battlecity.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.utils.logI
 
 @Composable
 fun BattleField(
@@ -27,9 +25,14 @@ fun BattleField(
         BrickLayer(battleState.mapState.bricks)
         SteelLayer(battleState.mapState.steels)
         IceLayer(battleState.mapState.ices)
-        WaterLayer(battleState.mapState.waters)
+        Framer(
+            tickState = battleState.tickState,
+            framesDef = listOf(700, 700),
+            infinite = true,
+        ) {
+            WaterLayer(battleState.mapState.waters)
+        }
         EagleLayer(battleState.mapState.eagle)
-
         battleState.tankState.tanks.forEach { (id, tank) ->
             Tank(tank = tank)
         }
@@ -73,4 +76,56 @@ val MapPixel.mpx2dp: Dp @Composable get() = LocalMapPixelDp.current * this
  */
 val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
     error("Not in Map composable or its child composable.")
+}
+
+val LocalTick = compositionLocalOf<Tick> {
+    error("Error.")
+}
+
+@Composable
+fun TickAware(tickState: TickState, content: @Composable () -> Unit) {
+    val tick by tickState.tickFlow.collectAsState()
+    CompositionLocalProvider(LocalTick provides tick) {
+        content()
+    }
+}
+
+val LocalFramer = compositionLocalOf<Int> {
+    error("Error.")
+}
+
+@Composable
+fun Framer(
+    tickState: TickState,
+    framesDef: List<Int>,
+    infinite: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    val frameAcc = remember(framesDef) {
+        var n = 0L
+        framesDef.map {
+            n += it
+            n
+        }
+    }
+    var elapsed by remember { mutableStateOf(0L) }
+    val finished = !infinite && elapsed >= frameAcc.last()
+    var currFrame = 0
+
+    if (!finished) {
+        val tick by tickState.tickFlow.collectAsState()
+        elapsed += tick.delta
+        if (infinite) {
+            elapsed %= frameAcc.last()
+        } else {
+            elapsed = elapsed.coerceAtMost(frameAcc.last())
+        }
+    }
+    while (frameAcc[currFrame] < elapsed) {
+        currFrame++
+    }
+    logI("curr: ${currFrame}")
+    CompositionLocalProvider(LocalFramer provides currFrame) {
+        content()
+    }
 }

@@ -17,14 +17,12 @@ class TickState(tick: Tick = Tick.INITIAL) {
         private const val MAX_FPS = 100
     }
 
-    var lastTick: Tick by mutableStateOf(tick)
-        private set
-
+    private var lastTick: Tick = tick
     var fps: Int by mutableStateOf(0)
         private set
 
-    private var lastUptime by mutableStateOf(lastTick.uptimeMillis)
-    private var tickCount by mutableStateOf(0)
+    private var lastUptime = lastTick.uptimeMillis
+    private var tickCount = 0
 
     val uptimeMillis: Long
         get() = lastTick.uptimeMillis
