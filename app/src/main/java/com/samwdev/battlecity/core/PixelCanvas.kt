@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
 import com.samwdev.battlecity.ui.components.LocalMapPixelDp
@@ -20,7 +23,7 @@ fun PixelCanvas(
     widthInMapPixel: MapPixel = 1f.grid2mpx,
     heightInMapPixel: MapPixel = 1f.grid2mpx,
     topLeftInMapPixel: Offset = Offset.Zero,
-    onDraw: DrawScope.() -> Unit
+    onDraw: PixelDrawScope.() -> Unit
 ) {
     val mpxDp = LocalMapPixelDp.current
     Canvas(
@@ -30,7 +33,13 @@ fun PixelCanvas(
             .then(modifier)
     ) {
         scale(mpxDp.toPx(), pivot = Offset.Zero) {
-            this.onDraw()
+            PixelDrawScope(this).onDraw()
         }
+    }
+}
+
+class PixelDrawScope(private val drawScope: DrawScope) : DrawScope by drawScope {
+    fun drawPixelPoint(color: Color, topLeft: Offset) {
+        drawRect(color = color, topLeft = topLeft, size = Size(1f, 1f))
     }
 }
