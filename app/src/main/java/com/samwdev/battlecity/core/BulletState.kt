@@ -1,17 +1,10 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import com.samwdev.battlecity.entity.BrickElement
-import com.samwdev.battlecity.ui.components.mpx2dp
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.max
 import kotlin.math.min
@@ -50,7 +43,7 @@ class BulletState(
 
         handleCollisionWithBorder()
         handleCollisionBetweenBullets(tick)
-        handleCollisionWithBricks()
+        handleCollisionWithBricks(tick)
         removeCollidedBullets()
     }
 
@@ -63,7 +56,7 @@ class BulletState(
                 speed = 0.3f,
                 x = bulletOrigin.x,
                 y = bulletOrigin.y,
-                power = 1,
+                power = tank.bulletPower,
                 ownerTankId = tank.id,
             ))
         }
@@ -117,27 +110,8 @@ class BulletState(
                     val b1Flashback = b1.getFlashbackBullet(tick.delta)
                     val b2Flashback = b2.getFlashbackBullet(tick.delta)
 
-                    val b1Trajectory = b1Flashback.let {
-                        val left = min(it.x, b1.x)
-                        val right = max(it.x, b1.x)
-                        val top = min(it.y, b1.y)
-                        val bottom = max(it.y, b1.y)
-                        Rect(
-                            topLeft = Offset(left, top),
-                            bottomRight = Offset(right, bottom) + Offset(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE)
-                        )
-                    }
-
-                    val b2Trajectory = b2Flashback.let {
-                        val left = min(it.x, b2.x)
-                        val right = max(it.x, b2.x)
-                        val top = min(it.y, b2.y)
-                        val bottom = max(it.y, b2.y)
-                        Rect(
-                            topLeft = Offset(left, top),
-                            bottomRight = Offset(right, bottom) + Offset(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE)
-                        )
-                    }
+                    val b1Trajectory = b1Flashback.getTrajectory(b1)
+                    val b2Trajectory = b2Flashback.getTrajectory(b2)
 
                     if (b1Trajectory.overlaps(b2Trajectory)) {
                         // if the two bullets crossed, check if they have hit each other in between ticks
@@ -157,14 +131,18 @@ class BulletState(
         }
     }
 
-    private fun handleCollisionWithBricks() {
+    private fun handleCollisionWithBricks(tick: Tick) {
         bullets.values.forEach { bullet ->
-            val bricksHit = BrickElement.getIndicesInRect(bullet.collisionBox, moveDirection = bullet.direction)
-            if (bricksHit.isNotEmpty()) {
-                val destroyed = mapState.destroyBricksIndex(bricksHit.toSet())
-                if (destroyed) {
-                    removeBullet(bullet.id)
-                }
+            val trajectory = bullet.getTrajectory(tick.delta)
+            val impacted = BrickElement.getIndicesImpacted(
+                mapState.bricks,
+                trajectory,
+                bullet.explosionRadius / 2,
+                bullet.direction,
+            )
+            if (impacted.isNotEmpty()) {
+                mapState.destroyBricksIndex(impacted.toSet())
+                removeBullet(bullet.id)
             }
         }
     }
@@ -204,6 +182,7 @@ data class Bullet(
     val ownerTankId: TankId,
 ) {
     val collisionBox: Rect = Rect(offset = Offset(x, y), size = Size(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE))
+    var explosionRadius: MapPixel = BULLET_COLLISION_SIZE * power
 
     val left: MapPixel = x
     val top: MapPixel = y
@@ -219,6 +198,42 @@ data class Bullet(
             Direction.Left -> currPos + Offset(delta, 0f)
             Direction.Right -> currPos - Offset(delta, 0f)
         }
-        return copy(x = oldPos.x, y = oldPos.y)
+        return copy(x = oldPos.x.coerceAtLeast(0f), y = oldPos.y.coerceAtLeast(0f))
+    }
+
+    fun getTrajectory(vararg flashbackDeltas: Long): Rect {
+        val bullets = flashbackDeltas.map { getFlashbackBullet(it) }.toTypedArray()
+        return getTrajectory(*bullets)
+    }
+
+    /** Trajectory is the travel path calculated from the bullet's current and past positions */
+    fun getTrajectory(vararg flashbacks: Bullet): Rect {
+        val all = flashbacks.toMutableList().also { it.add(this) }
+        var left = Float.MAX_VALUE
+        var right = Float.MIN_VALUE
+        var top = Float.MAX_VALUE
+        var bottom = Float.MIN_VALUE
+        all.forEach {
+            left = min(left, it.x)
+            right = max(right, it.x)
+            top = min(top, it.y)
+            bottom = max(bottom, it.y)
+        }
+        right += BULLET_COLLISION_SIZE
+        bottom += BULLET_COLLISION_SIZE
+
+        val impactRadiusOffset = (explosionRadius - BULLET_COLLISION_SIZE) / 2
+        if (direction.isVertical()) {
+            left -= impactRadiusOffset
+            right += impactRadiusOffset
+        } else {
+            top -= impactRadiusOffset
+            bottom += impactRadiusOffset
+        }
+
+        return Rect(
+            topLeft = Offset(left, top),
+            bottomRight = Offset(right, bottom)
+        )
     }
 }
