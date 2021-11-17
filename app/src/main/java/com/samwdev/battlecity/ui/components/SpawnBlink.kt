@@ -19,6 +19,7 @@ fun SpawnBlink(tickState: TickState, topLeft: Offset) {
     Framer(
         tickState = tickState, framesDef = listOf(100, 100, 100, 100),
         infinite = true,
+        reverse = true,
     ) {
         val index = LocalFramer.current
         SpawnBlinkIndex(index = index, topLeft = topLeft)
