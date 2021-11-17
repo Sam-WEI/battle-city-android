@@ -1,25 +1,16 @@
 package com.samwdev.battlecity.core
 
 import android.os.Parcelable
-import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
-import com.samwdev.battlecity.ui.components.LocalTick
-import com.samwdev.battlecity.ui.components.Map
-import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.roundToInt
 
 @Composable
 fun rememberTankState(): TankState {
@@ -111,9 +102,7 @@ data class Tank(
     val side: TankSide = TankSide.Player,
     val isMoving: Boolean = false,
 ) : Parcelable {
-//    var x: Float by mutableStateOf(x)
-//    var y: Float by mutableStateOf(y)
-//    var direction: Direction by mutableStateOf(direction)
+    val bulletPower: Int get() = if (side == TankSide.Player) 3 else 1
 
     fun getBulletStartPosition(): Offset {
         return when (direction) {
