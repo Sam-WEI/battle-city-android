@@ -8,7 +8,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.PixelCanvas
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -64,8 +63,11 @@ private fun SteelBlock(element: SteelElement) {
 @Composable
 fun SteelPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp)) {
+        Map(modifier = Modifier.size(500.dp), sideBlockCount = 2) {
             SteelBlock(element = SteelElement(0))
+            SteelBlock(element = SteelElement(1))
+            SteelBlock(element = SteelElement(2))
+            SteelBlock(element = SteelElement(3))
         }
     }
 }
