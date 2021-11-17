@@ -33,8 +33,11 @@ fun BattleField(
             WaterLayer(battleState.mapState.waters)
         }
         EagleLayer(battleState.mapState.eagle)
-        battleState.tankState.tanks.forEach { (id, tank) ->
-            Tank(tank = tank)
+
+        TickAware(tickState = battleState.tickState) {
+            battleState.tankState.tanks.forEach { (id, tank) ->
+                Tank(tank = tank)
+            }
         }
 
         battleState.bulletState.bullets.forEach { (id, bullet) ->

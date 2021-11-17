@@ -1,7 +1,6 @@
 package com.samwdev.battlecity.core
 
 import android.os.Parcelable
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
@@ -15,13 +14,12 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.entity.BotTankLevel
-import com.samwdev.battlecity.ui.components.LocalMapPixelDp
+import com.samwdev.battlecity.ui.components.LocalTick
 import com.samwdev.battlecity.ui.components.Map
-import com.samwdev.battlecity.ui.components.mpx2dp
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
-import kotlinx.coroutines.delay
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.roundToInt
 
 @Composable
 fun rememberTankState(): TankState {
@@ -146,26 +144,24 @@ enum class TankSide {
     Bot,
 }
 
+private const val TreadPatternCycleDistance = 10
+
 @Composable
 fun Tank(tank: Tank) {
-    val color = if (tank.side == TankSide.Player) Color.Yellow else Color.LightGray
-    val mpxDp = LocalMapPixelDp.current
-    var treadPattern: Int by remember {
-        mutableStateOf(0) // 0 or 1
-    }
     val color1 = Color(227, 227, 137)
     val color2 = Color(227, 145, 30)
     val color3 = Color(96, 96, 0)
 
-    // todo make tank stateless
-    LaunchedEffect(tank.isMoving) {
-        if (tank.isMoving) {
-            while (true) {
-                treadPattern = (treadPattern + 1) % 2
-                delay(100)
-            }
-        }
+    var travelDistance by remember { mutableStateOf(0) }
+    var treadPattern: Int by remember { mutableStateOf(0) } // 0 or 1
+
+    if (tank.isMoving) {
+        // calculate tread pattern based on travel distance, so faster tank looks faster
+        travelDistance += (tank.speed * LocalTick.current.delta).roundToInt()
+        treadPattern = if (travelDistance % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance)
+            0 else 1
     }
+
     PixelCanvas(
         heightInMapPixel = TANK_MAP_PIXEL,
         widthInMapPixel = TANK_MAP_PIXEL,
