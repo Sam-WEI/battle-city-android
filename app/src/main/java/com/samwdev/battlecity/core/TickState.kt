@@ -1,6 +1,7 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
+import com.samwdev.battlecity.utils.logD
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,7 @@ fun rememberTickState(): TickState {
 
 class TickState(tick: Tick = Tick.INITIAL) {
     companion object {
-        private const val MAX_FPS = 3
+        private const val MAX_FPS = 10
     }
 
     private var lastTick: Tick = tick
@@ -36,6 +37,7 @@ class TickState(tick: Tick = Tick.INITIAL) {
         if (delta > 1000f / MAX_FPS) {
             lastTick = Tick(now, delta)
             _tickFlow.emit(lastTick)
+//            logD("tick: $delta")
             tickCount++
         }
         (now - lastUptime).takeIf { it > 1000f }?.let { elapsed ->

@@ -25,13 +25,18 @@ fun Tank(tank: Tank) {
     val color3 = Color(96, 96, 0)
 
     var travelDistance by remember { mutableStateOf(0) }
-    var treadPattern: Int by remember { mutableStateOf(0) } // 0 or 1
+    val treadPattern: Int by remember {
+        derivedStateOf {
+            // calculate tread pattern based on travel distance, so faster tank looks faster
+            if (travelDistance % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance) 0 else 1
+        }
+    }
 
     if (tank.isMoving) {
-        // calculate tread pattern based on travel distance, so faster tank looks faster
-        travelDistance += (tank.speed * LocalTick.current.delta).roundToInt()
-        treadPattern = if (travelDistance % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance)
-            0 else 1
+        val tick = LocalTick.current
+        travelDistance = remember(tick) {
+            travelDistance + (tank.speed * tick.delta).roundToInt()
+        }
     }
 
     PixelCanvas(
