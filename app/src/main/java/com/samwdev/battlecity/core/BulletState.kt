@@ -222,28 +222,3 @@ data class Bullet(
         return copy(x = oldPos.x, y = oldPos.y)
     }
 }
-
-private val BulletColor = Color(0xFFADADAD)
-
-@Composable
-fun Bullet(bullet: Bullet) {
-    val oneMapPixel = 1f.mpx2dp
-    Canvas(modifier = Modifier
-        .size(BULLET_COLLISION_SIZE.mpx2dp, BULLET_COLLISION_SIZE.mpx2dp)
-        .offset(bullet.x.mpx2dp, bullet.y.mpx2dp)
-        .rotate(bullet.direction.degree)
-    ) {
-        // bullet body
-        drawRect(
-            color = BulletColor,
-            topLeft = Offset.Zero,
-            size = size,
-        )
-        // bullet tip
-        drawRect(
-            color = BulletColor,
-            topLeft = Offset(1f * oneMapPixel.toPx(), -1f * oneMapPixel.toPx()),
-            size = Size(oneMapPixel.toPx(), oneMapPixel.toPx())
-        )
-    }
-}
