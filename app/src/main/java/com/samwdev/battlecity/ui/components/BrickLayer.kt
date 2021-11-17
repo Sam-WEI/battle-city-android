@@ -65,7 +65,7 @@ private fun BrickBlock(element: BrickElement) {
 @Composable
 fun BrickPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp)) {
+        Map(modifier = Modifier.size(500.dp), sideBlockCount = 3) {
             for (r in 0 until 8) {
                 for (c in 0 until 8) {
                     BrickBlock(element = BrickElement(r * BrickElement.countInOneLine + c))

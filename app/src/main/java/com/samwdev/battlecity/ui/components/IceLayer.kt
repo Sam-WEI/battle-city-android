@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.PixelCanvas
 import com.samwdev.battlecity.entity.IceElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -83,8 +82,10 @@ private fun IceBlock(element: IceElement) {
 @Composable
 fun IcePreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp)) {
+        Map(modifier = Modifier.size(500.dp), sideBlockCount = 4) {
             IceBlock(element = IceElement(0))
+            IceBlock(element = IceElement(1))
+            IceBlock(element = IceElement(2))
         }
     }
 }

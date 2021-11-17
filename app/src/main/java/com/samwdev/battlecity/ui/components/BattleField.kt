@@ -1,6 +1,5 @@
 package com.samwdev.battlecity.ui.components
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -10,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
@@ -30,7 +28,7 @@ fun BattleField(
         SteelLayer(battleState.mapState.steels)
         IceLayer(battleState.mapState.ices)
         WaterLayer(battleState.mapState.waters)
-        EagleLayer(battleState.mapState)
+        EagleLayer(battleState.mapState.eagle)
 
         battleState.tankState.tanks.forEach { (id, tank) ->
             Tank(tank = tank)
@@ -54,12 +52,13 @@ fun BattleField(
 @Composable
 fun Map(
     modifier: Modifier,
+    sideBlockCount: Int = MAP_BLOCK_COUNT,
     content: @Composable BoxScope.() -> Unit,
 ) {
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapPixelInDp = remember(maxWidth) { maxWidth / (MAP_BLOCK_COUNT.grid2mpx) }
+        val mapPixelInDp = remember(maxWidth) { maxWidth / (sideBlockCount.grid2mpx) }
         CompositionLocalProvider(LocalMapPixelDp provides mapPixelInDp) {
             content()
         }
@@ -74,17 +73,4 @@ val MapPixel.mpx2dp: Dp @Composable get() = LocalMapPixelDp.current * this
  */
 val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
     error("Not in Map composable or its child composable.")
-}
-
-@Composable
-fun EagleLayer(mapState: MapState) {
-    val mpx = LocalMapPixelDp.current
-    val size = mapState.eagle.elementSize.mpx2dp
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        drawOval(
-            color = Color.Red,
-            topLeft = mapState.eagle.offsetInMapPixel * mpx.toPx(),
-            size = Size(size.toPx(), size.toPx())
-        )
-    }
 }

@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.PixelCanvas
 import com.samwdev.battlecity.entity.TreeElement
 import com.samwdev.battlecity.entity.WaterElement
@@ -82,7 +81,7 @@ private fun WaterBlock(element: WaterElement, frame: Int) {
 @Composable
 fun WaterPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp)) {
+        Map(modifier = Modifier.size(500.dp), sideBlockCount = 3) {
             WaterBlock(element = WaterElement(0), frame = 0)
             WaterBlock(element = WaterElement(2), frame = 1)
         }
