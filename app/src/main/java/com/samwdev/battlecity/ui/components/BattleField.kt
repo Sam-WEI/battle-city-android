@@ -29,12 +29,7 @@ fun BattleField(
             BrickLayer(battleState.mapState.bricks)
             SteelLayer(battleState.mapState.steels)
             IceLayer(battleState.mapState.ices)
-            Framer(
-                framesDef = listOf(700, 700),
-                infinite = true,
-            ) {
-                WaterLayer(battleState.mapState.waters)
-            }
+            WaterLayer(battleState.mapState.waters)
             EagleLayer(battleState.mapState.eagle)
 
             battleState.tankState.tanks.forEach { (id, tank) ->
