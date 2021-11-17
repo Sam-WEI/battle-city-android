@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
@@ -14,7 +13,7 @@ fun rememberTickState(): TickState {
 
 class TickState(tick: Tick = Tick.INITIAL) {
     companion object {
-        private const val MAX_FPS = 100
+        private const val MAX_FPS = 120
     }
 
     private var lastTick: Tick = tick
