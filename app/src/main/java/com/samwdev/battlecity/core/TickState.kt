@@ -13,7 +13,7 @@ fun rememberTickState(): TickState {
 
 class TickState(tick: Tick = Tick.INITIAL) {
     companion object {
-        private const val MAX_FPS = 120
+        private const val MAX_FPS = 3
     }
 
     private var lastTick: Tick = tick

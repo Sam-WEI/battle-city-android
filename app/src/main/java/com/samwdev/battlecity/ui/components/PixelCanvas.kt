@@ -1,4 +1,4 @@
-package com.samwdev.battlecity.core
+package com.samwdev.battlecity.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
@@ -10,8 +10,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
-import com.samwdev.battlecity.ui.components.LocalMapPixelDp
-import com.samwdev.battlecity.ui.components.mpx2dp
+import com.samwdev.battlecity.core.MapPixel
+import com.samwdev.battlecity.core.grid2mpx
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
