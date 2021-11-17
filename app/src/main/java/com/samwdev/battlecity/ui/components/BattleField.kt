@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
@@ -45,6 +46,8 @@ fun BattleField(
         }
 
         TreeLayer(battleState.mapState.trees)
+
+        SpawnBlink(tickState = battleState.tickState, topLeft = Offset(0f, 0f))
 
         Text(
             text = "FPS ${battleState.tickState.fps}",
