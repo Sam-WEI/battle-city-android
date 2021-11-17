@@ -15,9 +15,9 @@ import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
-fun SpawnBlink(tickState: TickState, topLeft: Offset) {
+fun SpawnBlink(topLeft: Offset) {
     Framer(
-        tickState = tickState, framesDef = listOf(100, 100, 100, 100),
+        framesDef = listOf(100, 100, 100, 100),
         infinite = true,
         reverse = true,
     ) {

@@ -20,43 +20,42 @@ fun BattleField(
     battleState: BattleState,
     modifier: Modifier = Modifier,
 ) {
-    Map(modifier = modifier
-        .fillMaxWidth()
-        .aspectRatio(1f)
-        .background(Color.Black)
-    ) {
-        BrickLayer(battleState.mapState.bricks)
-        SteelLayer(battleState.mapState.steels)
-        IceLayer(battleState.mapState.ices)
-        Framer(
-            tickState = battleState.tickState,
-            framesDef = listOf(700, 700),
-            infinite = true,
+    TickAware(tickState = battleState.tickState) {
+        Map(modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .background(Color.Black)
         ) {
-            WaterLayer(battleState.mapState.waters)
-        }
-        EagleLayer(battleState.mapState.eagle)
+            BrickLayer(battleState.mapState.bricks)
+            SteelLayer(battleState.mapState.steels)
+            IceLayer(battleState.mapState.ices)
+            Framer(
+                framesDef = listOf(700, 700),
+                infinite = true,
+            ) {
+                WaterLayer(battleState.mapState.waters)
+            }
+            EagleLayer(battleState.mapState.eagle)
 
-        TickAware(tickState = battleState.tickState) {
             battleState.tankState.tanks.forEach { (id, tank) ->
                 Tank(tank = tank)
             }
+
+            battleState.bulletState.bullets.forEach { (id, bullet) ->
+                Bullet(bullet)
+            }
+
+            TreeLayer(battleState.mapState.trees)
+
+            SpawnBlink(topLeft = Offset(0f, 0f))
+
+            Text(
+                text = "FPS ${battleState.tickState.fps}",
+                color = Color.Green,
+                fontSize = 14.sp,
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
         }
-
-        battleState.bulletState.bullets.forEach { (id, bullet) ->
-            Bullet(bullet)
-        }
-
-        TreeLayer(battleState.mapState.trees)
-
-        SpawnBlink(tickState = battleState.tickState, topLeft = Offset(0f, 0f))
-
-        Text(
-            text = "FPS ${battleState.tickState.fps}",
-            color = Color.Green,
-            fontSize = 14.sp,
-            modifier = Modifier.align(Alignment.TopEnd)
-        )
     }
 }
 
@@ -104,7 +103,6 @@ val LocalFramer = compositionLocalOf<Int> {
 
 @Composable
 fun Framer(
-    tickState: TickState,
     framesDef: List<Int>,
     infinite: Boolean = false,
     reverse: Boolean = false,
@@ -129,7 +127,7 @@ fun Framer(
     var currFrame = 0
 
     if (!finished) {
-        val tick by tickState.tickFlow.collectAsState()
+        val tick = LocalTick.current
         elapsed += tick.delta
         if (infinite) {
             elapsed %= frameAcc.last()
