@@ -28,9 +28,9 @@ fun EagleLayer(eagleElement: EagleElement) {
         scale(scaleX = -1f, scaleY = 1f, pivot = Offset(eagleElement.elementSize / 2, 0f)) {
             this@PixelCanvas.drawHalfEagle()
         }
-        drawPixelPoint(color = eagleColor, topLeft = Offset(6f, 2f))
-        drawPixelPoint(color = eagleColor, topLeft = Offset(9f, 3f))
-        drawPixelPoint(color = eagleColorEye, topLeft = Offset(8f, 3f))
+        drawPixel(color = eagleColor, topLeft = Offset(6f, 2f))
+        drawPixel(color = eagleColor, topLeft = Offset(9f, 3f))
+        drawPixel(color = eagleColorEye, topLeft = Offset(8f, 3f))
     }
 }
 
@@ -48,9 +48,9 @@ private fun PixelDrawScope.drawHalfEagle() {
     drawRect(color = eagleColor, topLeft = Offset(6f, 12f), size = Size(1f, 2f))
     drawRect(color = eagleColor, topLeft = Offset(4f, 13f), size = Size(2f, 2f))
     // red dots
-    drawPixelPoint(color = eagleColorEye, topLeft = Offset(3f, 6f))
-    drawPixelPoint(color = eagleColorEye, topLeft = Offset(4f, 7f))
-    drawPixelPoint(color = eagleColorEye, topLeft = Offset(6f, 8f))
+    drawPixel(color = eagleColorEye, topLeft = Offset(3f, 6f))
+    drawPixel(color = eagleColorEye, topLeft = Offset(4f, 7f))
+    drawPixel(color = eagleColorEye, topLeft = Offset(6f, 8f))
 }
 
 @Preview
