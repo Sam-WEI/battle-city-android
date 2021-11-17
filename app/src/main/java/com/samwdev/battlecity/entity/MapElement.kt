@@ -1,10 +1,9 @@
 package com.samwdev.battlecity.entity
 
-import androidx.annotation.IntDef
-import androidx.annotation.IntRange
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntOffset
+import com.samwdev.battlecity.core.Direction
 import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
@@ -58,7 +57,7 @@ open class MapElementHelper(private val granularity: Int = 1) {
     val elementSize: MapPixel get() = 1.grid2mpx / granularity
     val countInOneLine: Int get() = MAP_BLOCK_COUNT * granularity
 
-    fun getIndicesInRect(rect: Rect): List<Int> {
+    fun getIndicesInRect(rect: Rect, moveDirection: Direction): List<Int> {
         val top: MapPixel = rect.top
         val right: MapPixel = rect.right
         val bottom: MapPixel = rect.bottom
@@ -69,10 +68,39 @@ open class MapElementHelper(private val granularity: Int = 1) {
         val col2 = ceil(right / elementSize).toInt()
         val row2 = ceil(bottom / elementSize).toInt()
 
+        val firstDimen: IntProgression
+        val secondDimen: IntProgression
+
         val ret = mutableListOf<Int>()
-        for (r in row1..row2) {
-            for (c in col1.. col2) {
-                ret.add(r * countInOneLine + c)
+        when (moveDirection) {
+            Direction.Up -> {
+                firstDimen = row2 downTo row1
+                secondDimen = col1..col2
+            }
+            Direction.Down -> {
+                firstDimen = row1..row2
+                secondDimen = col1..col2
+            }
+            Direction.Left -> {
+                firstDimen = col2 downTo col1
+                secondDimen = row1..row2
+            }
+            Direction.Right -> {
+                firstDimen = col1..col2
+                secondDimen = row1..row2
+            }
+        }
+        if (moveDirection.isHorizontal()) {
+            for (r in firstDimen) {
+                for (c in secondDimen) {
+                    ret.add(c * countInOneLine + r)
+                }
+            }
+        } else {
+            for (r in firstDimen) {
+                for (c in secondDimen) {
+                    ret.add(r * countInOneLine + c)
+                }
             }
         }
         return ret

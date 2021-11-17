@@ -38,6 +38,13 @@ class MapState(
         bricks = bricks.filter { it !in indices }
     }
 
+    fun destroyBricksIndex(indices: Set<Int>): Boolean {
+        val oldCount = bricks.count()
+        bricks = bricks.filter { it.index !in indices }
+        val newCount = bricks.count()
+        return newCount != oldCount
+    }
+
     fun destroySteels(indices: Set<SteelElement>) {
         steels = steels.filter { it !in indices }
     }
