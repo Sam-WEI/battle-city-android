@@ -1,5 +1,6 @@
 package com.samwdev.battlecity.core
 
+/** stands for the original game's pixel unit */
 typealias MapPixel = Float
 
 const val BULLET_COLLISION_SIZE: MapPixel = 3f
