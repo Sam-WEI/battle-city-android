@@ -44,7 +44,10 @@ class MapState(
         return newCount != oldCount
     }
 
-    fun destroySteels(indices: Set<Int>) {
+    fun destroySteels(indices: Set<Int>): Boolean {
+        val oldCount = steels.count()
         steels = steels.filter { it.index !in indices }
+        val newCount = steels.count()
+        return newCount != oldCount
     }
 }

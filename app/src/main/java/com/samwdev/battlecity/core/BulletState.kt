@@ -6,6 +6,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.SteelElement
+import com.samwdev.battlecity.entity.anyRealElements
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.max
 import kotlin.math.min
@@ -15,13 +16,15 @@ import kotlin.math.roundToLong
 fun rememberBulletState(
     mapState: MapState,
     explosionState: ExplosionState,
+    soundState: SoundState,
 ): BulletState {
-    return remember { BulletState(mapState, explosionState) }
+    return remember { BulletState(mapState, explosionState, soundState) }
 }
 
 class BulletState(
     private val mapState: MapState,
     private val explosionState: ExplosionState,
+    private val soundState: SoundState,
 ) : TickListener {
     private val nextId: AtomicInteger = AtomicInteger(0)
 
@@ -64,6 +67,7 @@ class BulletState(
                 ownerTankId = tank.id,
             ))
         }
+//        soundState.playSound(SoundEffect.BulletShot)
     }
 
     fun countBulletForTank(tankId: TankId) = bullets.count { it.value.ownerTankId == tankId }
@@ -98,11 +102,18 @@ class BulletState(
                 Direction.Right -> Offset(leftMost, bullet.center.y)
             }
             val firstImpactArea = bullet.getImpactedAreaIfExplodeAt(firstHitPoint)
-            val impactedBricks = BrickElement.getIndicesOverlappingRect(firstImpactArea, bullet.direction)
-            mapState.destroyBricksIndex(impactedBricks.toSet())
+            val brickIndices = BrickElement.getIndicesOverlappingRect(firstImpactArea, bullet.direction)
+            val destroyedSome = mapState.destroyBricksIndex(brickIndices.toSet())
+            if (destroyedSome) {
+                soundState.playSound(SoundEffect.BulletHitBrick)
+            }
+            val steelIndices = SteelElement.getIndicesOverlappingRect(firstImpactArea, bullet.direction)
+            val hitAnySteel = steelIndices.anyRealElements(mapState.steels)
+            if (hitAnySteel) {
+                soundState.playSound(SoundEffect.BulletHitSteel)
+            }
             if (bullet.power >= SteelElement.strength) {
-                val impactedSteels = SteelElement.getIndicesOverlappingRect(firstImpactArea, bullet.direction)
-                mapState.destroySteels(impactedSteels.toSet())
+                mapState.destroySteels(steelIndices.toSet())
             }
             explosionState.spawnExplosion(firstHitPoint, ExplosionAnimationSmall)
         }

@@ -74,6 +74,9 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         )
     }
 
+    /**
+     * This method returns the indices of the elements in the rect regardless of there actually is any elements in the rect.
+     */
     fun getIndicesOverlappingRect(rect: Rect, moveDirection: Direction): List<Int> {
         val top: MapPixel = rect.top
         val right: MapPixel = rect.right
@@ -108,9 +111,9 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
             }
         }
         if (moveDirection.isHorizontal()) {
-            for (r in firstDimen) {
-                for (c in secondDimen) {
-                    ret.add(c * countInOneLine + r)
+            for (c in firstDimen) {
+                for (r in secondDimen) {
+                    ret.add(r * countInOneLine + c)
                 }
             }
         } else {
@@ -123,6 +126,9 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         return ret
     }
 
+    /**
+     * Get the first actual hit point along the trajectory
+     */
     fun getHitPoint(
         realElements: List<MapElement>,
         trajectory: Rect,
@@ -205,3 +211,6 @@ interface MapElementProperties {
     /** Bullet power has to be no less than this value to destroy the element */
     val strength: Int get() = 1
 }
+
+fun List<Int>.anyRealElements(indices: List<MapElement>): Boolean =
+    toSet().let { set -> indices.any { it.index in set } }
