@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.entity.SteelElement
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.max
 import kotlin.math.min
@@ -44,6 +45,7 @@ class BulletState(
         handleCollisionWithBorder()
         handleCollisionBetweenBullets(tick)
         handleCollisionWithBricks(tick)
+        handleCollisionWithSteels(tick)
         removeCollidedBullets()
     }
 
@@ -142,6 +144,22 @@ class BulletState(
             )
             if (impacted.isNotEmpty()) {
                 mapState.destroyBricksIndex(impacted.toSet())
+                removeBullet(bullet.id)
+            }
+        }
+    }
+
+    private fun handleCollisionWithSteels(tick: Tick) {
+        bullets.values.forEach { bullet ->
+            val trajectory = bullet.getTrajectory(tick.delta)
+            val impacted = SteelElement.getIndicesImpacted(
+                mapState.steels,
+                trajectory,
+                bullet.explosionRadius / 2,
+                bullet.direction,
+            )
+            if (impacted.isNotEmpty()) {
+                mapState.destroySteels(impacted.toSet())
                 removeBullet(bullet.id)
             }
         }
