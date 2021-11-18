@@ -3,7 +3,6 @@ package com.samwdev.battlecity.core
 import androidx.compose.runtime.*
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapElements
-import com.samwdev.battlecity.entity.SteelElement
 
 @Composable
 fun rememberMapState(mapElements: MapElements): MapState {
