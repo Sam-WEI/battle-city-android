@@ -6,15 +6,20 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.entity.IceElement
+import com.samwdev.battlecity.core.BattleState
+import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.core.MapPixel
+import com.samwdev.battlecity.core.grid2mpx
 
 @Composable
 fun BattleField(
@@ -45,11 +50,11 @@ fun BattleField(
 
             SpawnBlink(topLeft = Offset(0f, 0f))
             SpawnBlink(topLeft = Offset(6f.grid2mpx, 0f))
-            Explosion(center = Offset(6.5f.grid2mpx, 12.5f.grid2mpx))
-            Explosion(center = Offset(6.5f.grid2mpx, 9.5f.grid2mpx))
-            Explosion(center = Offset(6.5f.grid2mpx, 6.5f.grid2mpx))
-            Explosion(center = Offset(6.5f.grid2mpx, 3.5f.grid2mpx))
-            Explosion(center = Offset(6.5f.grid2mpx, 0.5f.grid2mpx))
+
+            battleState.explosionState.explosions.forEach { (_, explosion) ->
+                Explosion(explosion = explosion)
+            }
+
             Text(
                 text = "FPS ${battleState.tickState.fps}",
                 color = Color.Green,
