@@ -45,7 +45,7 @@ fun BattleField(
 
             SpawnBlink(topLeft = Offset(0f, 0f))
             SpawnBlink(topLeft = Offset(6f.grid2mpx, 0f))
-
+            Explosion(center = Offset(4f.grid2mpx, 2f.grid2mpx))
             Text(
                 text = "FPS ${battleState.tickState.fps}",
                 color = Color.Green,
