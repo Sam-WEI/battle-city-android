@@ -31,7 +31,7 @@ class BulletState(
     var bullets by mutableStateOf<Map<BulletId, Bullet>>(mapOf())
         private set
 
-    var bulletHitPoints by mutableStateOf<Map<Bullet, List<Offset>>>(mapOf())
+    private var trajectoryCollisionInfo by mutableStateOf<Map<Bullet, List<TrajectoryCollisionInfo>>>(mapOf())
 
     override fun onTick(tick: Tick) {
         val newBullets = bullets.keys.associateWith { id ->
@@ -51,7 +51,7 @@ class BulletState(
         handleCollisionBetweenBullets(tick)
         handleCollisionWithBricks(tick)
         handleCollisionWithSteels(tick)
-        handleBulletHitPoints()
+        handleTrajectoryCollisionInfo()
     }
 
     fun fire(tank: Tank) {
@@ -67,7 +67,7 @@ class BulletState(
                 ownerTankId = tank.id,
             ))
         }
-//        soundState.playSound(SoundEffect.BulletShot)
+        soundState.playSound(SoundEffect.BulletShot)
     }
 
     fun countBulletForTank(tankId: TankId) = bullets.count { it.value.ownerTankId == tankId }
@@ -76,65 +76,70 @@ class BulletState(
         bullets = bullets.filter { it.value !in set }
     }
 
-    private fun addBulletHitPoint(bullet: Bullet, hitPoint: Offset) {
-        val oldList = bulletHitPoints.getOrElse(bullet) { emptyList() }
-        bulletHitPoints = bulletHitPoints.toMutableMap().apply {
-            put(bullet, oldList + hitPoint)
+    private fun addBulletTrajectoryCollision(trajectoryCollision: TrajectoryCollisionInfo) {
+        val oldList = trajectoryCollisionInfo.getOrElse(trajectoryCollision.bullet) { emptyList() }
+        trajectoryCollisionInfo = trajectoryCollisionInfo.toMutableMap().apply {
+            put(trajectoryCollision.bullet, oldList + trajectoryCollision)
         }
     }
 
-    private fun handleBulletHitPoints() {
-        bulletHitPoints.entries.forEach { (bullet, pts) ->
-            var leftMost = Float.MAX_VALUE
-            var rightMost = Float.MIN_VALUE
-            var topMost = Float.MAX_VALUE
-            var bottomMost = Float.MIN_VALUE
-            pts.forEach {
-                leftMost = min(leftMost, it.x)
-                rightMost = max(rightMost, it.x)
-                topMost = min(topMost, it.y)
-                bottomMost = max(bottomMost, it.y)
+    private fun handleTrajectoryCollisionInfo() {
+        trajectoryCollisionInfo.entries.forEach { (bullet, info) ->
+            var leftMostCollision: TrajectoryCollisionInfo? = null
+            var rightMostCollision: TrajectoryCollisionInfo? = null
+            var topMostCollision: TrajectoryCollisionInfo? = null
+            var bottomMostCollision: TrajectoryCollisionInfo? = null
+            info.forEach {
+                if (leftMostCollision == null || it.hitPoint.x < leftMostCollision!!.hitPoint.x) {
+                    leftMostCollision = it
+                }
+                if (rightMostCollision == null || it.hitPoint.x > rightMostCollision!!.hitPoint.x) {
+                    rightMostCollision = it
+                }
+                if (topMostCollision == null || it.hitPoint.y < topMostCollision!!.hitPoint.y) {
+                    topMostCollision = it
+                }
+                if (bottomMostCollision == null || it.hitPoint.y > bottomMostCollision!!.hitPoint.y) {
+                    bottomMostCollision = it
+                }
             }
+
             val firstHitPoint = when (bullet.direction) {
-                Direction.Up -> Offset(bullet.center.x, bottomMost)
-                Direction.Down -> Offset(bullet.center.x, topMost)
-                Direction.Left -> Offset(rightMost, bullet.center.y)
-                Direction.Right -> Offset(leftMost, bullet.center.y)
-            }
-            val firstImpactArea = bullet.getImpactedAreaIfExplodeAt(firstHitPoint)
-            val brickIndices = BrickElement.getIndicesOverlappingRect(firstImpactArea, bullet.direction)
-            val destroyedSome = mapState.destroyBricksIndex(brickIndices.toSet())
-            if (destroyedSome) {
+                Direction.Up -> bottomMostCollision
+                Direction.Down -> topMostCollision
+                Direction.Left -> rightMostCollision
+                Direction.Right -> leftMostCollision
+            }!!
+            val impactedArea = bullet.getImpactedAreaIfExplodeAt(firstHitPoint.hitPoint)
+            val brickIndices = BrickElement.getIndicesOverlappingRect(impactedArea, bullet.direction)
+            val hitAnyBricks = brickIndices.anyRealElements(mapState.bricks)
+            if (hitAnyBricks) {
+                mapState.destroyBricksIndex(brickIndices.toSet())
                 soundState.playSound(SoundEffect.BulletHitBrick)
             }
-            val steelIndices = SteelElement.getIndicesOverlappingRect(firstImpactArea, bullet.direction)
-            val hitAnySteel = steelIndices.anyRealElements(mapState.steels)
-            if (hitAnySteel) {
+            val steelIndices = SteelElement.getIndicesOverlappingRect(impactedArea, bullet.direction)
+            val hitAnySteels = steelIndices.anyRealElements(mapState.steels)
+            if (hitAnySteels) {
+                soundState.playSound(SoundEffect.BulletHitSteel)
+                if (bullet.power >= SteelElement.strength) {
+                    mapState.destroySteels(steelIndices.toSet())
+                }
+            }
+            if (firstHitPoint is HitBorder) {
                 soundState.playSound(SoundEffect.BulletHitSteel)
             }
-            if (bullet.power >= SteelElement.strength) {
-                mapState.destroySteels(steelIndices.toSet())
-            }
-            explosionState.spawnExplosion(firstHitPoint, ExplosionAnimationSmall)
+            explosionState.spawnExplosion(firstHitPoint.hitPoint, ExplosionAnimationSmall)
         }
-        removeCollidedBullets(bulletHitPoints.keys)
-        bulletHitPoints = emptyMap()
+        removeCollidedBullets(trajectoryCollisionInfo.keys)
+        trajectoryCollisionInfo = emptyMap()
     }
 
 
     private fun handleCollisionWithBorder() {
         bullets.values.forEach { bullet ->
-            if (bullet.x <= 0) {
-                addBulletHitPoint(bullet = bullet, hitPoint = Offset(0f, bullet.center.y))
-            }
-            if (bullet.x >= MAP_BLOCK_COUNT.grid2mpx) {
-                addBulletHitPoint(bullet = bullet, hitPoint = Offset(MAP_BLOCK_COUNT.grid2mpx, bullet.center.y))
-            }
-            if (bullet.y <= 0) {
-                addBulletHitPoint(bullet = bullet, hitPoint = Offset(bullet.center.x, 0f))
-            }
-            if (bullet.y >= MAP_BLOCK_COUNT.grid2mpx) {
-                addBulletHitPoint(bullet = bullet, hitPoint = Offset(bullet.center.x, MAP_BLOCK_COUNT.grid2mpx))
+            if (bullet.x <= 0 || bullet.x >= MAP_BLOCK_COUNT.grid2mpx || bullet.y <= 0 ||
+                bullet.y >= MAP_BLOCK_COUNT.grid2mpx) {
+                addBulletTrajectoryCollision(HitBorder(bullet))
             }
         }
     }
@@ -147,8 +152,7 @@ class BulletState(
                 val b2 = all[j]
                 if (b1.collisionBox.overlaps(b2.collisionBox)) {
                     val hitRect = b1.collisionBox.intersect(b2.collisionBox)
-                    addBulletHitPoint(bullet = b1, hitPoint = hitRect.center)
-                    addBulletHitPoint(bullet = b2, hitPoint = hitRect.center)
+                    addBulletTrajectoryCollision(HitBullet(bullet = b1, otherBullet = b2, hitPoint = hitRect.center))
                 } else {
                     // when the fps is low or bullets too fast, they may miss the rect collision test between ticks.
                     // this branch is to check possible bullet collision between ticks
@@ -165,8 +169,7 @@ class BulletState(
                         val b2tt = b2Flashback.travelTimeInArea(collisionArea)
                         val touched = (b1tt intersect b2tt).isNotEmpty()
                         if (touched) {
-                            addBulletHitPoint(bullet = b1, hitPoint = collisionArea.center)
-                            addBulletHitPoint(bullet = b2, hitPoint = collisionArea.center)
+                            addBulletTrajectoryCollision(HitBullet(bullet = b1, otherBullet = b2, hitPoint = collisionArea.center))
                         }
                     }
                 }
@@ -178,7 +181,7 @@ class BulletState(
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
             BrickElement.getHitPoint(mapState.bricks, trajectory, bullet.direction)?.let {
-                addBulletHitPoint(bullet = bullet, hitPoint = it)
+                addBulletTrajectoryCollision(HitBrick(bullet = bullet, hitPoint = it))
             }
         }
     }
@@ -187,7 +190,7 @@ class BulletState(
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
             SteelElement.getHitPoint(mapState.steels, trajectory, bullet.direction)?.let {
-                addBulletHitPoint(bullet = bullet, hitPoint = it)
+                addBulletTrajectoryCollision(HitSteel(bullet = bullet, hitPoint = it))
             }
         }
     }
@@ -222,8 +225,12 @@ data class Bullet(
 ) {
     val collisionBox: Rect = Rect(offset = Offset(x, y), size = Size(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE))
     val center: Offset = collisionBox.center
-
     var explosionRadius: MapPixel = BULLET_COLLISION_SIZE * power
+
+    val left: MapPixel = x
+    val top: MapPixel = y
+    val right: MapPixel = x + BULLET_COLLISION_SIZE
+    val bottom: MapPixel = y + BULLET_COLLISION_SIZE
 
     fun getImpactedAreaIfExplodeAt(hitPoint: Offset): Rect {
         val impactedAreaCenter = when (direction) {
@@ -234,11 +241,6 @@ data class Bullet(
         }
         return Rect(center = hitPoint, radius = explosionRadius)
     }
-
-    val left: MapPixel = x
-    val top: MapPixel = y
-    val right: MapPixel = x + BULLET_COLLISION_SIZE
-    val bottom: MapPixel = y + BULLET_COLLISION_SIZE
 
     fun getFlashbackBullet(millisAgo: Long): Bullet {
         val delta = millisAgo * speed
@@ -288,3 +290,34 @@ data class Bullet(
         )
     }
 }
+
+private val Bullet.borderHitPoint: Offset get() =
+    when (direction) {
+        Direction.Up -> Offset(center.x, 0f)
+        Direction.Down -> Offset(center.x, MAP_BLOCK_COUNT.grid2mpx)
+        Direction.Left -> Offset(0f, center.y)
+        Direction.Right -> Offset(MAP_BLOCK_COUNT.grid2mpx, center.y)
+    }
+
+private sealed class TrajectoryCollisionInfo(open val bullet: Bullet, open val hitPoint: Offset)
+
+private data class HitBorder(override val bullet: Bullet) :
+    TrajectoryCollisionInfo(bullet, bullet.borderHitPoint)
+
+private data class HitBrick(override val bullet: Bullet, override val hitPoint: Offset) :
+    TrajectoryCollisionInfo(bullet, hitPoint)
+
+private data class HitSteel(override val bullet: Bullet, override val hitPoint: Offset) :
+    TrajectoryCollisionInfo(bullet, hitPoint)
+
+private data class HitTank(
+    override val bullet: Bullet,
+    override val hitPoint: Offset,
+    val tank: Tank,
+) : TrajectoryCollisionInfo(bullet, hitPoint)
+
+private data class HitBullet(
+    override val bullet: Bullet,
+    val otherBullet: Bullet,
+    override val hitPoint: Offset,
+) : TrajectoryCollisionInfo(bullet, hitPoint)
