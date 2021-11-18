@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.entity.IceElement
 
 @Composable
 fun BattleField(
@@ -44,6 +45,7 @@ fun BattleField(
 
             SpawnBlink(topLeft = Offset(0f, 0f))
             SpawnBlink(topLeft = Offset(6f.grid2mpx, 0f))
+            IceBlock(IceElement(2))
 
             Text(
                 text = "FPS ${battleState.tickState.fps}",

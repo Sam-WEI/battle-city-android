@@ -28,29 +28,41 @@ sealed class MapElement(open val index: Int) : MapElementProperties {
 data class BrickElement(override val index: Int) : MapElement(index), MapElementProperties by BrickElement {
     val patternIndex: Int get() = (gridPosition.x + gridPosition.y) % 2
 
-    companion object : MapElementHelper(4)
+    companion object : MapElementHelper(4) {
+        operator fun invoke(row: Int, col: Int) = BrickElement(row * countInOneLine + col)
+    }
 }
 
 data class SteelElement(override val index: Int) : MapElement(index), MapElementProperties by SteelElement {
     override val strength: Int = 3
 
-    companion object : MapElementHelper(2)
+    companion object : MapElementHelper(2) {
+        operator fun invoke(row: Int, col: Int) = SteelElement(row * countInOneLine + col)
+    }
 }
 
 data class TreeElement(override val index: Int) : MapElement(index), MapElementProperties by TreeElement {
-    companion object : MapElementHelper(1)
+    companion object : MapElementHelper(1) {
+        operator fun invoke(row: Int, col: Int) = TreeElement(row * countInOneLine + col)
+    }
 }
 
 data class WaterElement(override val index: Int) : MapElement(index), MapElementProperties by WaterElement {
-    companion object : MapElementHelper(1)
+    companion object : MapElementHelper(1) {
+        operator fun invoke(row: Int, col: Int) = WaterElement(row * countInOneLine + col)
+    }
 }
 
 data class IceElement(override val index: Int) : MapElement(index), MapElementProperties by IceElement {
-    companion object : MapElementHelper(1)
+    companion object : MapElementHelper(1) {
+        operator fun invoke(row: Int, col: Int) = IceElement(row * countInOneLine + col)
+    }
 }
 
 data class EagleElement(override val index: Int) : MapElement(index), MapElementProperties by EagleElement {
-    companion object : MapElementHelper(1)
+    companion object : MapElementHelper(1) {
+        operator fun invoke(row: Int, col: Int) = EagleElement(row * countInOneLine + col)
+    }
 }
 
 open class MapElementHelper(override val granularity: Int) : MapElementProperties {
