@@ -14,19 +14,21 @@ import kotlin.math.roundToLong
 @Composable
 fun rememberBulletState(
     mapState: MapState,
+    explosionState: ExplosionState,
 ): BulletState {
-    return remember { BulletState(mapState) }
+    return remember { BulletState(mapState, explosionState) }
 }
 
 class BulletState(
     private val mapState: MapState,
+    private val explosionState: ExplosionState,
 ) : TickListener {
     private val nextId: AtomicInteger = AtomicInteger(0)
 
     var bullets by mutableStateOf<Map<BulletId, Bullet>>(mapOf())
         private set
 
-    var collisions by mutableStateOf<Map<BulletId, Boolean>>(mapOf())
+    var collisions by mutableStateOf<Map<BulletId, Bullet>>(mapOf())
 
     override fun onTick(tick: Tick) {
         val newBullets = bullets.keys.associateWith { id ->
@@ -68,29 +70,33 @@ class BulletState(
         bullets = bullets.filter { it.key != bulletId }
     }
 
+    fun addCollision(bullet: Bullet) {
+        removeBullet(bullet.id)
+        collisions = collisions.toMutableMap().apply {
+            put(bullet.id, bullet)
+        }
+
+        explosionState.spawnExplosion(
+            center = Offset(bullet.x, bullet.y),
+            animation = ExplosionAnimationSmall
+        )
+    }
+
     fun getBulletCountForTank(tankId: TankId) = bullets.count { it.value.ownerTankId == tankId }
 
     private fun handleCollisionWithBorder() {
         bullets.values.forEach { bullet ->
             if (bullet.x <= 0) {
-                collisions = collisions.toMutableMap().apply {
-                    put(bullet.id, true)
-                }
+                addCollision(bullet = bullet)
             }
             if (bullet.x >= MAP_BLOCK_COUNT.grid2mpx) {
-                collisions = collisions.toMutableMap().apply {
-                    put(bullet.id, true)
-                }
+                addCollision(bullet = bullet)
             }
             if (bullet.y <= 0) {
-                collisions = collisions.toMutableMap().apply {
-                    put(bullet.id, true)
-                }
+                addCollision(bullet = bullet)
             }
             if (bullet.y >= MAP_BLOCK_COUNT.grid2mpx) {
-                collisions = collisions.toMutableMap().apply {
-                    put(bullet.id, true)
-                }
+                addCollision(bullet = bullet)
             }
         }
     }
@@ -102,10 +108,8 @@ class BulletState(
             for (j in i + 1 until all.size) {
                 val b2 = all[j]
                 if (b1.collisionBox.overlaps(b2.collisionBox)) {
-                    collisions = collisions.toMutableMap().apply {
-                        put(b1.id, true)
-                        put(b2.id, true)
-                    }
+                    addCollision(bullet = b1)
+                    addCollision(bullet = b2)
                 } else {
                     // when the fps is low or bullets too fast, they may miss the rect collision test.
                     // this branch is to check possible bullet collision between ticks
@@ -122,10 +126,8 @@ class BulletState(
                         val b2tt = b2Flashback.travelTimeInArea(collisionArea)
                         val touched = (b1tt intersect b2tt).isNotEmpty()
                         if (touched) {
-                            collisions = collisions.toMutableMap().apply {
-                                put(b1.id, true)
-                                put(b2.id, true)
-                            }
+                            addCollision(bullet = b1)
+                            addCollision(bullet = b2)
                         }
                     }
                 }
@@ -144,7 +146,7 @@ class BulletState(
             )
             if (impacted.isNotEmpty()) {
                 mapState.destroyBricksIndex(impacted.toSet())
-                removeBullet(bullet.id)
+                addCollision(bullet)
             }
         }
     }
@@ -160,7 +162,7 @@ class BulletState(
             )
             if (impacted.isNotEmpty()) {
                 mapState.destroySteels(impacted.toSet())
-                removeBullet(bullet.id)
+                addCollision(bullet)
             }
         }
     }
@@ -182,7 +184,7 @@ class BulletState(
     }
 
     private fun removeCollidedBullets() {
-        collisions.keys.forEach { id ->
+        collisions.forEach { (id, bul) ->
             removeBullet(id)
         }
     }

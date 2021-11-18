@@ -8,27 +8,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.core.Explosion
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
-fun Explosion(center: Offset) {
-    Framer(framesDef = listOf(80, 50, 80, 50, 80), reverse = false, infinite = true) {
-        ExplosionFrame(center = center, index = LocalFramer.current)
-    }
+fun Explosion(explosion: Explosion) {
+    ExplosionFrame(center = explosion.centerOffset, pattern = explosion.currFrameUiPattern)
 }
 
 private const val ExpSide: MapPixel = 32f
 
 @Composable
-fun ExplosionFrame(center: Offset, index: Int) {
+fun ExplosionFrame(center: Offset, pattern: ExplosionUiPattern) {
     PixelCanvas(
         widthInMapPixel = ExpSide,
         heightInMapPixel = ExpSide,
         topLeftInMapPixel = center - Offset(ExpSide / 2, ExpSide / 2)
     ) {
-        drawExplosionPattern(PatternList[index])
+        drawExplosionPattern(pattern)
     }
 }
 
@@ -42,12 +41,13 @@ private val ColorMap = mapOf(
     'P' to ExpColorPurple,
 )
 
-private fun PixelDrawScope.drawExplosionPattern(patterns: List<String>) {
-    val width = patterns.first().length
-    val height = patterns.size
+private fun PixelDrawScope.drawExplosionPattern(pattern: ExplosionUiPattern) {
+    val frames = pattern.raw
+    val width = frames.first().length
+    val height = frames.size
     translate(left = (ExpSide - width) / 2f, top = (ExpSide - height) / 2f) {
         this as PixelDrawScope
-        for ((row, str) in patterns.withIndex()) {
+        for ((row, str) in frames.withIndex()) {
             if (str.isBlank()) continue
             for ((col, char) in str.withIndex()) {
                 if (char.isWhitespace()) continue
@@ -67,14 +67,23 @@ fun ExplosionPreview() {
         Map(modifier = Modifier.size(500.dp), sideBlockCount = 10) {
             repeat(5) { i ->
                 ExplosionFrame(
-                    center = Offset(5f.grid2mpx, (i * 2 + 1).grid2mpx), index = i
+                    center = Offset(5f.grid2mpx, (i * 2 + 1).grid2mpx),
+                    pattern = ExplosionUiPattern.values()[i]
                 )
             }
         }
     }
 }
 
-private val RawDataS0 = listOf(
+enum class ExplosionUiPattern(val raw: List<String>) {
+    Small0(RawDataSmall0),
+    Small1(RawDataSmall1),
+    Small2(RawDataSmall2),
+    Large0(RawDataLarge0),
+    Large1(RawDataLarge1),
+}
+
+private val RawDataSmall0 = listOf(
     "                ",
     "                ",
     "       W     W  ",
@@ -92,7 +101,7 @@ private val RawDataS0 = listOf(
     "                ",
 )
 
-private val RawDataS1 = listOf(
+private val RawDataSmall1 = listOf(
     "                ",
     "      P   W     ",
     " W  P WP WP   W ",
@@ -111,7 +120,7 @@ private val RawDataS1 = listOf(
     "                ",
 )
 
-private val RawDataS2 = listOf(
+private val RawDataSmall2 = listOf(
     "    P P    P  P ",
     " W   W  W P  WP ",
     " PPWW  WW   WP  ",
@@ -129,7 +138,7 @@ private val RawDataS2 = listOf(
     "        W P   P ",
 )
 
-private val RawDataB0 = listOf(
+private val RawDataLarge0 = listOf(
     "                                ",
     "                     W       W  ",
     "  W       W          W       W  ",
@@ -164,7 +173,7 @@ private val RawDataB0 = listOf(
     "                                ",
 )
 
-private val RawDataB1 = listOf(
+private val RawDataLarge1 = listOf(
     "W                               ",
     "PW   W             PPWW       W ",
     " PW   P     WPPP PWWWWPP    WP  ",
@@ -197,12 +206,4 @@ private val RawDataB1 = listOf(
     "  P P     WP   WWWWWWWPPW  P P  ",
     " W  P       W   WWPPWPPP    P W ",
     "W          W     PPP P         P",
-)
-
-private val PatternList = listOf(
-    RawDataS0,
-    RawDataS1,
-    RawDataS2,
-    RawDataB0,
-    RawDataB1,
 )

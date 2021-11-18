@@ -14,7 +14,8 @@ fun rememberBattleState(
     mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
     tickState: TickState = rememberTickState(),
     tankState: TankState = rememberTankState(),
-    bulletState: BulletState = rememberBulletState(mapState = mapState),
+    explosionState: ExplosionState = rememberExplosionState(),
+    bulletState: BulletState = rememberBulletState(mapState = mapState, explosionState = explosionState),
     botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
 ): BattleState {
@@ -25,6 +26,7 @@ fun rememberBattleState(
             handheldControllerState = handheldControllerState,
             mapState = mapState,
             tankState = tankState,
+            explosionState = explosionState,
             bulletState = bulletState,
             tankController = TankController(tankState, bulletState, handheldControllerState),
             botState = botState,
@@ -37,6 +39,7 @@ class BattleState(
     val tickState: TickState,
     val handheldControllerState: HandheldControllerState,
     val mapState: MapState,
+    val explosionState: ExplosionState,
     val bulletState: BulletState,
     val tankState: TankState,
     val tankController: TankController,
@@ -53,6 +56,7 @@ class BattleState(
                 bulletState.onTick(tick)
                 tankState.onTick(tick)
                 botState.onTick(tick)
+                explosionState.onTick(tick)
             }
         }
 
