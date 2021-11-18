@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +24,7 @@ private val iceColorGray = Color(173, 173, 173)
 private val iceColorDarkGray = Color(99, 99, 99)
 
 @Composable
-private fun IceBlock(element: IceElement) {
+fun IceBlock(element: IceElement) {
     PixelCanvas(
         widthInMapPixel = IceElement.elementSize,
         heightInMapPixel = IceElement.elementSize,
@@ -37,41 +36,36 @@ private fun IceBlock(element: IceElement) {
                 left = (ith % 2).toFloat() * partSize,
                 top = (ith / 2).toFloat() * partSize
             ) {
-                drawRect(color = iceColorGray, topLeft = Offset(0f, 0f), size = Size(partSize, partSize))
-                drawRect(color = iceColorDarkGray, topLeft = Offset(0f, 0f), size = Size(1f, 1f))
-                drawRect(color = iceColorDarkGray, topLeft = Offset(4f, 0f), size = Size(1f, 1f))
-                drawRect(color = iceColorDarkGray, topLeft = Offset(0f, 4f), size = Size(1f, 1f))
-                drawRect(color = iceColorWhite, topLeft = Offset(3f, 0f), size = Size(1f, 1f))
-                drawRect(color = iceColorWhite, topLeft = Offset(0f, 3f), size = Size(1f, 1f))
+                this@PixelCanvas.drawSquare(color = iceColorGray, topLeft = Offset(0f, 0f), side = partSize)
+                this@PixelCanvas.drawPixel(color = iceColorDarkGray, topLeft = Offset(0f, 0f))
+                this@PixelCanvas.drawPixel(color = iceColorDarkGray, topLeft = Offset(4f, 0f))
+                this@PixelCanvas.drawPixel(color = iceColorDarkGray, topLeft = Offset(0f, 4f))
+                this@PixelCanvas.drawPixel(color = iceColorWhite, topLeft = Offset(3f, 0f))
+                this@PixelCanvas.drawPixel(color = iceColorWhite, topLeft = Offset(0f, 3f))
 
-                for (i in 0 until partSize.toInt()) {
-                    drawRect(
-                        color = iceColorWhite,
-                        topLeft = Offset(i.toFloat(), partSize - 1 - i),
-                        size = Size(1f, 1f)
-                    )
-                }
-                for (i in 1 until partSize.toInt()) {
-                    drawRect(
-                        color = iceColorDarkGray,
-                        topLeft = Offset(i.toFloat(), partSize - i),
-                        size = Size(1f, 1f)
-                    )
-                }
-                for (i in 4 until partSize.toInt()) {
-                    drawRect(
-                        color = iceColorWhite,
-                        topLeft = Offset(i.toFloat(), partSize + 3 - i),
-                        size = Size(1f, 1f)
-                    )
-                }
-                for (i in 5 until partSize.toInt()) {
-                    drawRect(
-                        color = iceColorDarkGray,
-                        topLeft = Offset(i.toFloat(), partSize + 4 - i),
-                        size = Size(1f, 1f)
-                    )
-                }
+                this@PixelCanvas.drawDiagonalLine(
+                    color = iceColorWhite,
+                    end1 = Offset(0f, 7f),
+                    end2 = Offset(7f, 0f),
+                )
+
+                this@PixelCanvas.drawDiagonalLine(
+                    color = iceColorDarkGray,
+                    end1 = Offset(1f, 7f),
+                    end2 = Offset(7f, 1f),
+                )
+
+                this@PixelCanvas.drawDiagonalLine(
+                    color = iceColorWhite,
+                    end1 = Offset(4f, 7f),
+                    end2 = Offset(7f, 4f),
+                )
+
+                this@PixelCanvas.drawDiagonalLine(
+                    color = iceColorDarkGray,
+                    end1 = Offset(5f, 7f),
+                    end2 = Offset(7f, 5f),
+                )
             }
         }
     }
@@ -85,6 +79,7 @@ fun IcePreview() {
             IceBlock(element = IceElement(0))
             IceBlock(element = IceElement(1))
             IceBlock(element = IceElement(2))
+            IceBlock(element = IceElement(2, 2))
         }
     }
 }
