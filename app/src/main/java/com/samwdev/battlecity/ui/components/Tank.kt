@@ -75,11 +75,8 @@ fun Tank(tank: Tank) {
 
         // right tread
         translate(left = 11f, top = 4f) {
-            drawRect(
-                color = color1,
-                topLeft = Offset(0f, 0f),
-                size = Size(1f, 1f),
-            )
+            this as PixelDrawScope
+            drawPixel(color = color1, topLeft = Offset(0f, 0f))
             drawRect(
                 color = color3,
                 topLeft = Offset(0f, 1f),
@@ -100,6 +97,7 @@ fun Tank(tank: Tank) {
         }
 
         translate(4f, 6f) {
+            this as PixelDrawScope
             // body
             drawRect(
                 color = color1,
@@ -131,42 +129,23 @@ fun Tank(tank: Tank) {
                 topLeft = Offset(1f, 2f),
                 size = Size(1f, 3f),
             )
-            drawRect(
-                color = color2,
-                topLeft = Offset(2f, 5f),
-                size = Size(1f, 1f),
-            )
+            drawPixel(color = color2, topLeft = Offset(2f, 5f))
+
             // body shadow
             drawRect(
                 color = color3,
                 topLeft = Offset(4f, 0f),
                 size = Size(2f, 1f),
             )
-            drawRect(
-                color = color3,
-                topLeft = Offset(6f, 1f),
-                size = Size(1f, 1f),
-            )
+            drawPixel(color = color3, topLeft = Offset(6f, 1f))
             drawRect(
                 color = color3,
                 topLeft = Offset(4f, 3f),
                 size = Size(1f, 3f),
             )
-            drawRect(
-                color = color3,
-                topLeft = Offset(3f, 5f),
-                size = Size(1f, 1f),
-            )
-            drawRect(
-                color = color3,
-                topLeft = Offset(0f, 6f),
-                size = Size(1f, 1f),
-            )
-            drawRect(
-                color = color3,
-                topLeft = Offset(6f, 6f),
-                size = Size(1f, 1f),
-            )
+            drawPixel(color = color3, topLeft = Offset(3f, 5f))
+            drawPixel(color = color3, topLeft = Offset(0f, 6f))
+            drawPixel(color = color3, topLeft = Offset(6f, 6f))
             drawRect(
                 color = color3,
                 topLeft = Offset(1f, 7f),
@@ -175,10 +154,10 @@ fun Tank(tank: Tank) {
         }
 
         // barrel
-        drawRect(
+        drawVerticalLine(
             color = color1,
             topLeft = Offset(7f, 2f),
-            size = Size(1f, 5f),
+            length = 5f,
         )
     }
 }
