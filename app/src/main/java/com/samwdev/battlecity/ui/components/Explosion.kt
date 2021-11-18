@@ -14,7 +14,7 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
 fun Explosion(center: Offset) {
-    Framer(framesDef = listOf(1000, 800, 1000, 800, 1000), reverse = false, infinite = true) {
+    Framer(framesDef = listOf(80, 50, 80, 50, 80), reverse = false, infinite = true) {
         ExplosionFrame(center = center, index = LocalFramer.current)
     }
 }
