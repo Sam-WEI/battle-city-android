@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,31 +43,32 @@ private fun WaterBlock(element: WaterElement, frame: Int) {
                 left = (ith % 2).toFloat() * partSize,
                 top = (ith / 2).toFloat() * partSize
             ) {
-                drawRect(
+                this@PixelCanvas.drawSquare(
                     color = colorWater,
-                    size = Size(partSize, partSize)
+                    topLeft = Offset(0f, 0f),
+                    side = partSize
                 )
                 if (frame == 0) {
-                    drawRect(color = colorWaterGleam, topLeft = Offset(5f, 0f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(0f, 2f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(1f, 3f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(4f, 3f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(3f, 4f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(5f, 4f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(1f, 6f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(2f, 7f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(6f, 7f), size = Size(1f, 1f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(5f, 0f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(0f, 2f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 3f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(4f, 3f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 4f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(5f, 4f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 6f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 7f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(6f, 7f))
                 } else {
-                    drawRect(color = colorWaterGleam, topLeft = Offset(7f, 0f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(1f, 1f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(2f, 2f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(3f, 3f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(6f, 3f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(7f, 4f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(3f, 5f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(2f, 6f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(4f, 6f), size = Size(1f, 1f))
-                    drawRect(color = colorWaterGleam, topLeft = Offset(0f, 7f), size = Size(1f, 1f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(7f, 0f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 1f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 2f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 3f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(6f, 3f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(7f, 4f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 5f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 6f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(4f, 6f))
+                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(0f, 7f))
                 }
             }
         }

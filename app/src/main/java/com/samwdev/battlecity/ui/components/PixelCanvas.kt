@@ -53,6 +53,10 @@ class PixelDrawScope(private val drawScope: DrawScope) : DrawScope by drawScope 
         drawRect(color = color, topLeft = topLeft, size = Size(length, 1f))
     }
 
+    fun drawSquare(color: Color, topLeft: Offset, side: MapPixel) {
+        drawRect(color = color, topLeft = topLeft, size = Size(side, side))
+    }
+
     fun drawDiagonalLine(color: Color, end1: Offset, end2: Offset) {
         val left = min(end1.x, end2.x)
         val right = max(end1.x, end2.x)

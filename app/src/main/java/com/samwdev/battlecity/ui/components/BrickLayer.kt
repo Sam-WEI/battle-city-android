@@ -35,10 +35,10 @@ private fun BrickBlock(element: BrickElement) {
             size = Size(BrickElement.elementSize, BrickElement.elementSize)
         )
         if (element.patternIndex == 0) {
-            drawRect(
+            drawHorizontalLine(
                 color = brickColorDarkBrown,
                 topLeft = Offset(0f, 0f),
-                size = Size(BrickElement.elementSize, 1f)
+                length = BrickElement.elementSize,
             )
             drawRect(
                 color = brickColorLightBrown,
@@ -46,15 +46,15 @@ private fun BrickBlock(element: BrickElement) {
                 size = Size(BrickElement.elementSize, 2f)
             )
         } else {
-            drawRect(
+            drawSquare(
                 color = brickColorDarkBrown,
                 topLeft = Offset(1f, 0f),
-                size = Size(3f, 3f)
+                side = 3f
             )
-            drawRect(
+            drawSquare(
                 color = brickColorLightBrown,
                 topLeft = Offset(2f, 1f),
-                size = Size(2f, 2f)
+                side = 2f
             )
         }
     }

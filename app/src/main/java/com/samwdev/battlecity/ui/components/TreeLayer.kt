@@ -35,6 +35,7 @@ private fun TreeBlock(element: TreeElement) {
                 left = (ith % 2).toFloat() * partSize,
                 top = (ith / 2).toFloat() * partSize
             ) {
+                this as PixelDrawScope
                 // base color
                 drawRect(
                     color = TreeColorLight,
@@ -58,20 +59,18 @@ private fun TreeBlock(element: TreeElement) {
                     topLeft = Offset(0f, 1f),
                     size = Size(3f, 3f),
                 )
-                drawRect(
+                drawPixel(
                     color = TreeColorDark,
                     topLeft = Offset(4f, 1f),
-                    size = Size(1f, 1f),
                 )
                 drawRect(
                     color = TreeColorDark,
                     topLeft = Offset(3f, 2f),
                     size = Size(2f, 1f),
                 )
-                drawRect(
+                drawPixel(
                     color = TreeColorDark,
                     topLeft = Offset(6f, 1f),
-                    size = Size(1f, 1f),
                 )
                 drawRect(
                     color = TreeColorDark,
@@ -83,30 +82,26 @@ private fun TreeBlock(element: TreeElement) {
                     topLeft = Offset(0f, 4f),
                     size = Size(2f, 1f),
                 )
-                drawRect(
+                drawPixel(
                     color = TreeColorDark,
                     topLeft = Offset(3f, 4f),
-                    size = Size(1f, 1f),
                 )
-                drawRect(
+                drawPixel(
                     color = TreeColorDark,
                     topLeft = Offset(7f, 4f),
-                    size = Size(1f, 1f),
                 )
                 drawRect(
                     color = TreeColorDark,
                     topLeft = Offset(0f, 5f),
                     size = Size(3f, 1f),
                 )
-                drawRect(
+                drawPixel(
                     color = TreeColorDark,
                     topLeft = Offset(5f, 6f),
-                    size = Size(1f, 1f),
                 )
-                drawRect(
+                drawPixel(
                     color = TreeColorDark,
                     topLeft = Offset(3f, 7f),
-                    size = Size(1f, 1f),
                 )
             }
         }

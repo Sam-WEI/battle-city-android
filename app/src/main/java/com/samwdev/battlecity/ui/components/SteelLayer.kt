@@ -30,30 +30,28 @@ private fun SteelBlock(element: SteelElement) {
         heightInMapPixel = SteelElement.elementSize,
         topLeftInMapPixel = element.offsetInMapPixel,
     ) {
-        drawRect(
+        drawSquare(
             color = steelColorLight,
             topLeft = Offset(0f, 0f),
-            size = Size(SteelElement.elementSize, SteelElement.elementSize),
+            side = SteelElement.elementSize,
         )
-        drawRect(
+        drawSquare(
             color = steelColorDark,
             topLeft = Offset(2f, 2f),
-            size = Size(6f, 6f),
+            side = 6f,
         )
-        drawRect(
+        drawPixel(
             color = steelColorDark,
             topLeft = Offset(7f, 1f),
-            size = Size(1f, 1f),
         )
-        drawRect(
+        drawPixel(
             color = steelColorDark,
             topLeft = Offset(1f, 7f),
-            size = Size(1f, 1f),
         )
-        drawRect(
+        drawSquare(
             color = steelColorCenter,
             topLeft = Offset(2f, 2f),
-            size = Size(4f, 4f),
+            side = 4f,
         )
     }
 }
