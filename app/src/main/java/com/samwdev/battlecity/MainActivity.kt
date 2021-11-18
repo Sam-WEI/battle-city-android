@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var soundPlayer: SoundPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        soundPlayer = SoundPlayer()
+        soundPlayer = SoundPlayer.INSTANCE
         lifecycleScope.launchWhenStarted { soundPlayer.init(this@MainActivity) }
         lifecycleScope.launchWhenResumed { soundPlayer.resume() }
         setContent {

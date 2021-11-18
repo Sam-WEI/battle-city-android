@@ -10,18 +10,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun rememberBattleState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    soundState: SoundState = rememberSoundState(coroutine = coroutineScope),
     stageConfigJson: StageConfigJson,
     mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
     tickState: TickState = rememberTickState(),
     tankState: TankState = rememberTankState(),
     explosionState: ExplosionState = rememberExplosionState(),
-    bulletState: BulletState = rememberBulletState(mapState = mapState, explosionState = explosionState),
+    bulletState: BulletState = rememberBulletState(mapState = mapState, explosionState = explosionState, soundState = soundState),
     botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
 ): BattleState {
     return remember {
         BattleState(
             coroutineScope = coroutineScope,
+            soundState = soundState,
             tickState = tickState,
             handheldControllerState = handheldControllerState,
             mapState = mapState,
@@ -36,6 +38,7 @@ fun rememberBattleState(
 
 class BattleState(
     private val coroutineScope: CoroutineScope,
+    val soundState: SoundState,
     val tickState: TickState,
     val handheldControllerState: HandheldControllerState,
     val mapState: MapState,
@@ -52,6 +55,7 @@ class BattleState(
         tankController.setTankId(1)
         coroutineScope.launch {
             tickState.tickFlow.collect { tick ->
+                soundState.onTick(tick)
                 tankController.onTick(tick)
                 bulletState.onTick(tick)
                 tankState.onTick(tick)

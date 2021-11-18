@@ -6,9 +6,13 @@ import android.media.SoundPool
 import androidx.annotation.RawRes
 import com.samwdev.battlecity.R
 
-class SoundPlayer {
+class SoundPlayer private constructor() {
     private val soundIdMap = mutableMapOf<SoundEffect, Int>()
     private lateinit var soundPool: SoundPool
+
+    companion object {
+        val INSTANCE = SoundPlayer()
+    }
 
     suspend fun init(context: Context) {
         soundPool = SoundPool.Builder()
@@ -45,8 +49,8 @@ class SoundPlayer {
 }
 
 enum class SoundEffect(@RawRes val resId: Int) {
-    BulletHit1(R.raw.bullet_hit_1),
-    BulletHit2(R.raw.bullet_hit_2),
+    BulletHitSteel(R.raw.bullet_hit_steel),
+    BulletHitBrick(R.raw.bullet_hit_brick),
     BulletShot(R.raw.bullet_shot),
     Explosion1(R.raw.explosion_1),
     Explosion2(R.raw.explosion_2),
