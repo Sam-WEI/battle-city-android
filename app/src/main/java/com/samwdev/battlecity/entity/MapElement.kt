@@ -9,7 +9,7 @@ import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
 
-sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
+sealed class MapElement(open val index: Int) : MapElementProperties {
     val gridPosition: IntOffset
         get() {
             val row = index / (granularity * MAP_BLOCK_COUNT)
@@ -23,40 +23,37 @@ sealed class MapElement(open val index: Int, private val granularity: Int = 1) {
         val colF = x / granularity.toFloat()
         return Offset(colF.grid2mpx, rowF.grid2mpx)
     }
-
-    val elementSize: MapPixel get() = 1.grid2mpx / granularity
 }
 
-data class BrickElement(override val index: Int) : MapElement(index, 4) {
+data class BrickElement(override val index: Int) : MapElement(index), MapElementProperties by BrickElement {
     val patternIndex: Int get() = (gridPosition.x + gridPosition.y) % 2
 
     companion object : MapElementHelper(4)
 }
 
-data class SteelElement(override val index: Int) : MapElement(index, 2) {
+data class SteelElement(override val index: Int) : MapElement(index), MapElementProperties by SteelElement {
+    override val strength: Int = 3
+
     companion object : MapElementHelper(2)
 }
 
-data class TreeElement(override val index: Int) : MapElement(index) {
-    companion object : MapElementHelper()
+data class TreeElement(override val index: Int) : MapElement(index), MapElementProperties by TreeElement {
+    companion object : MapElementHelper(1)
 }
 
-data class WaterElement(override val index: Int) : MapElement(index) {
-    companion object : MapElementHelper()
+data class WaterElement(override val index: Int) : MapElement(index), MapElementProperties by WaterElement {
+    companion object : MapElementHelper(1)
 }
 
-data class IceElement(override val index: Int) : MapElement(index) {
-    companion object : MapElementHelper()
+data class IceElement(override val index: Int) : MapElement(index), MapElementProperties by IceElement {
+    companion object : MapElementHelper(1)
 }
 
-data class EagleElement(override val index: Int) : MapElement(index) {
-    companion object : MapElementHelper()
+data class EagleElement(override val index: Int) : MapElement(index), MapElementProperties by EagleElement {
+    companion object : MapElementHelper(1)
 }
 
-open class MapElementHelper(private val granularity: Int = 1) {
-    val elementSize: MapPixel get() = 1.grid2mpx / granularity
-    val countInOneLine: Int get() = MAP_BLOCK_COUNT * granularity
-
+open class MapElementHelper(override val granularity: Int) : MapElementProperties {
     fun getRectByIndex(index: Int): Rect {
         val row = index / (countInOneLine)
         val col = index % (countInOneLine)
@@ -143,4 +140,15 @@ open class MapElementHelper(private val granularity: Int = 1) {
         }
         return getIndicesOverlappingRect(impact, direction)
     }
+}
+
+interface MapElementProperties {
+    val granularity: Int
+
+    val elementSize: MapPixel get() = 1.grid2mpx / granularity
+
+    val countInOneLine: Int get() = MAP_BLOCK_COUNT * granularity
+
+    /** Bullet power has to be no less than this value to destroy the element */
+    val strength: Int get() = 1
 }

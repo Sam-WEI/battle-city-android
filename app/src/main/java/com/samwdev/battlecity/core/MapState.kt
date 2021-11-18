@@ -45,7 +45,7 @@ class MapState(
         return newCount != oldCount
     }
 
-    fun destroySteels(indices: Set<SteelElement>) {
-        steels = steels.filter { it !in indices }
+    fun destroySteels(indices: Set<Int>) {
+        steels = steels.filter { it.index !in indices }
     }
 }
