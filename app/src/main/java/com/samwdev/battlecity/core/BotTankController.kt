@@ -31,6 +31,13 @@ class BotTankController(
                     }
                 }
             }
+            is Stop -> {}
+            is Turn -> {
+                tankState.updateTank(tank.id, tank.copy(direction = command.direction))
+            }
+            is Proceed -> {
+                tankState.updateTank(tank.id, tank.move(tank.speed * tick.delta))
+            }
         }
     }
 }
