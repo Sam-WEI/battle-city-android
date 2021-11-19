@@ -3,9 +3,19 @@ package com.samwdev.battlecity.core
 import kotlin.random.Random
 import kotlin.random.nextInt
 
+private const val AiCd = 1000
+
 class BotAi : TickListener {
     private var command: AiCommand = Stop
+
+    private var cd: Int = AiCd
+
     override fun onTick(tick: Tick) {
+        if (cd > 0) {
+            cd -= tick.delta.toInt()
+            return
+        }
+        cd = AiCd
         when (Random.nextInt(0..100)) {
             in 0..60 -> {
                 command = Fire
