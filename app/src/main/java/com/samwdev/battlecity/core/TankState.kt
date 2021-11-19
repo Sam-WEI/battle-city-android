@@ -5,6 +5,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.entity.EagleElement
+import com.samwdev.battlecity.entity.SteelElement
+import com.samwdev.battlecity.entity.WaterElement
+import com.samwdev.battlecity.utils.*
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -75,7 +80,7 @@ class TankState(
             level = level,
             side = TankSide.Player,
             hp = getTankSpecs(TankSide.Player, level).maxHp,
-            timeToSpawn = 1500,
+            timeToSpawn = 500,
         ).also { addTank(nextId.get(), it) }
     }
 
@@ -133,10 +138,12 @@ class TankState(
     fun moveTank(id: TankId, direction: Direction, distance: MapPixel) {
         val tank = getTank(id)
         if (tank.direction != direction) {
+
             updateTank(id, tank.copy(direction = direction))
         } else {
-            // check collision
-            updateTank(id, tank.move(distance = distance, turnTo = direction))
+            // moving forward, check collision
+            val allowedRect = checkCollideWithBricks(tank.collisionBox, distance, tank.direction)
+            updateTank(id, tank.moveTo(rect = allowedRect))
         }
     }
 
@@ -145,16 +152,51 @@ class TankState(
         updateTank(id, tank.stop())
     }
 
+    fun startCooldown(id: TankId) {
+        val tank = tanks.getValue(id)
+        updateTank(id, tank.copy(remainingCooldown = tank.fireCooldown))
+    }
+
     private fun updateTank(id: TankId, tank: Tank) {
         tanks = tanks.toMutableMap().apply {
             put(id, tank)
         }
     }
 
-    fun startCooldown(id: TankId) {
-        val tank = tanks.getValue(id)
-        updateTank(id, tank.copy(remainingCooldown = tank.fireCooldown))
+    private fun checkCollideWithBricks(from: Rect, distance: MapPixel, movingDirection: Direction): Rect {
+        // todo fix jiggling when moving right and down
+        val toRect = from.move(distance, movingDirection)
+        val travelPath = from.getTravelPath(toRect)
+
+        val checks = mutableListOf<MoveRestriction>()
+        BrickElement.getHitPoint(mapState.bricks, travelPath, movingDirection)
+            ?.also { checks.add(MoveRestriction(it, movingDirection)) }
+        SteelElement.getHitPoint(mapState.steels, travelPath, movingDirection)
+            ?.also { checks.add(MoveRestriction(it, movingDirection)) }
+        WaterElement.getHitPoint(mapState.waters, travelPath, movingDirection)
+            ?.also { checks.add(MoveRestriction(it, movingDirection)) }
+        EagleElement.getHitPoint(mapState.eagle, travelPath, movingDirection)
+            ?.also { checks.add(MoveRestriction(it, movingDirection)) }
+
+        val mapRect = Rect(offset = Offset.Zero, size = Size(MAP_BLOCK_COUNT.grid2mpx, MAP_BLOCK_COUNT.grid2mpx))
+        if (mapRect.intersect(toRect) != toRect) {
+            // going out of bound
+            val boundary = when (movingDirection) {
+                Direction.Up -> 0f
+                Direction.Down -> MAP_BLOCK_COUNT.grid2mpx
+                Direction.Left -> 0f
+                Direction.Right -> MAP_BLOCK_COUNT.grid2mpx
+            }
+            checks.add(MoveRestriction(boundary, movingDirection))
+        }
+
+        if (checks.isEmpty()) {
+            // would collide with nothing
+            return toRect
+        }
+        return from.moveUpTo(checks.findMostRestrict())
     }
+
 }
 
 typealias TankId = Int
@@ -191,6 +233,7 @@ data class Tank(
         }
 }
 
+@Deprecated("delete")
 fun Tank.move(distance: MapPixel, turnTo: Direction? = null): Tank {
     var newX = x
     var newY = y
@@ -201,8 +244,11 @@ fun Tank.move(distance: MapPixel, turnTo: Direction? = null): Tank {
         Direction.Up -> newY -= distance
         Direction.Down -> newY += distance
     }
-    return copy(x = newX, y = newY, direction = newDir, isMoving = true)
+    return copy(x = newX, y = newY, direction = newDir, isMoving = distance > 0)
 }
+
+fun Tank.moveTo(rect: Rect, newDirection: Direction = direction): Tank =
+    copy(x = rect.left, y = rect.top, direction = newDirection, isMoving = rect != collisionBox)
 
 fun Tank.stop(): Tank = copy(isMoving = false)
 

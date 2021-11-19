@@ -126,6 +126,12 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         return ret
     }
 
+    fun getHitPoint(
+        realElement: MapElement,
+        trajectory: Rect,
+        direction: Direction,
+    ): Offset? = getHitPoint(listOf(realElement), trajectory, direction)
+
     /**
      * Get the first actual hit point along the trajectory
      */
@@ -137,7 +143,11 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         val indicesAlongTrajectory = getIndicesOverlappingRect(trajectory, moveDirection = direction)
         val realSet = realElements.map { it.index }.toSet()
 
-        // the first matching result is guaranteed one of the first hit elements in the direction
+        // the first matching element is guaranteed to be one of the first hit elements in the direction,
+        // so we can use it to get the hit point's dimension across the bullet flying direction,
+        // the other dimension will be the bullet's center.
+        // e.g, for a bullet flying right, the "left" of the first hit elements shares the x of the hit point,
+        // the bullet center's y is the y of the hit point.
         val firstHitIndex = indicesAlongTrajectory.find { it in realSet } ?: return null
         val (leftMost, topMost, rightMost, bottomMost) = getRectByIndex(firstHitIndex)
 

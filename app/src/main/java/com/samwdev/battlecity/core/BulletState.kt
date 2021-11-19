@@ -49,11 +49,11 @@ class BulletState(
         }
         bullets = newBullets
 
-        handleCollisionWithBorder()
-        handleCollisionBetweenBullets(tick)
-        handleCollisionWithBricks(tick)
-        handleCollisionWithSteels(tick)
-        handleCollisionWithTanks(tick)
+        checkCollisionWithBorder()
+        checkCollisionWithBullets(tick)
+        checkCollisionWithBricks(tick)
+        checkCollisionWithSteels(tick)
+        checkCollisionWithTanks(tick)
 
         handleTrajectoryCollisionInfo()
     }
@@ -150,7 +150,7 @@ class BulletState(
     }
 
 
-    private fun handleCollisionWithBorder() {
+    private fun checkCollisionWithBorder() {
         bullets.values.forEach { bullet ->
             if (bullet.x <= 0 || bullet.x >= MAP_BLOCK_COUNT.grid2mpx || bullet.y <= 0 ||
                 bullet.y >= MAP_BLOCK_COUNT.grid2mpx) {
@@ -159,7 +159,7 @@ class BulletState(
         }
     }
 
-    private fun handleCollisionBetweenBullets(tick: Tick) {
+    private fun checkCollisionWithBullets(tick: Tick) {
         val all = bullets.values.toList()
         for (i in 0 until all.size - 1) {
             val b1 = all[i]
@@ -194,7 +194,7 @@ class BulletState(
         }
     }
 
-    private fun handleCollisionWithBricks(tick: Tick) {
+    private fun checkCollisionWithBricks(tick: Tick) {
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
             BrickElement.getHitPoint(mapState.bricks, trajectory, bullet.direction)?.let {
@@ -203,7 +203,7 @@ class BulletState(
         }
     }
 
-    private fun handleCollisionWithSteels(tick: Tick) {
+    private fun checkCollisionWithSteels(tick: Tick) {
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
             SteelElement.getHitPoint(mapState.steels, trajectory, bullet.direction)?.let {
@@ -212,7 +212,7 @@ class BulletState(
         }
     }
 
-    private fun handleCollisionWithTanks(tick: Tick) {
+    private fun checkCollisionWithTanks(tick: Tick) {
         bullets.values.forEach { bullet ->
             tankState.tanks.filter { it.value.id != bullet.ownerTankId }
                 .forEach { (_, tank) ->
