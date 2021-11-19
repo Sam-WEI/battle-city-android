@@ -16,7 +16,7 @@ class TankController(
     }
 
     override fun onTick(tick: Tick) {
-        val tank = tankState.getTank(_tankId) ?: return
+        val tank = tankState.getTankOrNull(_tankId) ?: return
         val move = tank.speed * tick.delta
         var newX = tank.x
         var newY = tank.y

@@ -48,9 +48,6 @@ fun BattleField(
 
             TreeLayer(battleState.mapState.trees)
 
-            SpawnBlink(topLeft = Offset(0f, 0f))
-            SpawnBlink(topLeft = Offset(6f.grid2mpx, 0f))
-
             battleState.explosionState.explosions.forEach { (_, explosion) ->
                 Explosion(explosion = explosion)
             }

@@ -40,7 +40,7 @@ class BotState(
     fun spawnBot() {
         val botTank = tankState.spawnBot()
         bots = bots.toMutableMap().apply {
-            put(botTank.id, BotTankController(tankState = tankState, tank = botTank, bulletState = bulletState))
+            put(botTank.id, BotTankController(tankState = tankState, tankId = botTank.id, bulletState = bulletState))
         }
     }
 }
