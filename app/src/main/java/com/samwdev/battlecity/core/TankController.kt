@@ -17,6 +17,9 @@ class TankController(
 
     override fun onTick(tick: Tick) {
         var tank = tankState.getTankOrNull(_tankId) ?: return
+        if (tank.isSpawning) {
+            return
+        }
         val distance = tank.speed * tick.delta
 
         val newDir = handheldControllerState.direction

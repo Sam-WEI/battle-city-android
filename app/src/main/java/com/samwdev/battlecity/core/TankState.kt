@@ -160,6 +160,7 @@ data class Tank(
     val speed: MapPixel get() = specs.movingSpeed
     val fireCooldown: Int get() = specs.fireCooldown
     val maxBulletCount: Int get() = specs.maxBulletCount
+    val isSpawning: Boolean get() = timeToSpawn > 0
 
     val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
     val offset: Offset get() = Offset(x, y)
