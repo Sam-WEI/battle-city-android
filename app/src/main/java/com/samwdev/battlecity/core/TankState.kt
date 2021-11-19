@@ -69,13 +69,23 @@ class TankState(
     }
 
     fun spawnBot(): Tank {
+        val loc = getRandomSpawnLocation()
         return Tank(
             id = nextId.incrementAndGet(),
-            x = 0f,
-            y = 4f.grid2mpx,
+            x = loc.x,
+            y = loc.y,
             direction = Direction.Right,
             side = TankSide.Bot,
         ).also { addTank(nextId.get(), it) }
+    }
+
+    private fun getRandomSpawnLocation(): Offset {
+        return listOf(
+            Offset(0f.grid2mpx, 4f.grid2mpx),
+            Offset(0f.grid2mpx, 0f.grid2mpx),
+            Offset(6f.grid2mpx, 0f.grid2mpx),
+            Offset(12f.grid2mpx, 0f.grid2mpx),
+        ).random()
     }
 
     fun killTank(tankId: TankId) {
