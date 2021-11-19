@@ -20,15 +20,27 @@ class BotState(
         if (bots.size < 1) {
             spawnBot()
         }
+        clearDeadBots()
         bots.values.forEach { controller ->
             controller.onTick(tick)
         }
     }
 
-    fun spawnBot() {
-        val bot = tankState.spawnBot()
+    fun clearDeadBots() {
+        bots = bots.filter { tankState.isTankAlive(it.key) }
+    }
+
+    fun removeBot(tankId: TankId) {
         bots = bots.toMutableMap().apply {
-            put(bot.id, BotTankController(tankState = tankState, tankId = bot.id, bulletState = bulletState))
+            remove(tankId)
+        }
+        tankState.killTank(tankId)
+    }
+
+    fun spawnBot() {
+        val botTank = tankState.spawnBot()
+        bots = bots.toMutableMap().apply {
+            put(botTank.id, BotTankController(tankState = tankState, tank = botTank, bulletState = bulletState))
         }
     }
 }

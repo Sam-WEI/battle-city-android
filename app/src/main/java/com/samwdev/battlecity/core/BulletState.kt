@@ -120,8 +120,8 @@ class BulletState(
             val brickIndices = BrickElement.getIndicesOverlappingRect(impactArea, bullet.direction)
             val hitAnyBricks = brickIndices.anyRealElements(mapState.bricks)
             if (hitAnyBricks) {
-                mapState.destroyBricksIndex(brickIndices.toSet())
                 soundState.playSound(SoundEffect.BulletHitBrick)
+                mapState.destroyBricksIndex(brickIndices.toSet())
             }
             val steelIndices = SteelElement.getIndicesOverlappingRect(impactArea, bullet.direction)
             val hitAnySteels = steelIndices.anyRealElements(mapState.steels)
@@ -136,6 +136,7 @@ class BulletState(
                     soundState.playSound(SoundEffect.BulletHitSteel)
                 }
                 is HitTank -> {
+                    soundState.playSound(SoundEffect.BulletHitSteel)
                     tankState.hit(bullet, firstCollision.tank)
                 }
                 is HitBullet -> {

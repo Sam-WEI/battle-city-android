@@ -10,13 +10,15 @@ import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BotTankLevel
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.random.Random
 
 @Composable
 fun rememberTankState(
     explosionState: ExplosionState,
+    soundState: SoundState,
 ): TankState {
     return remember {
-        TankState(explosionState)
+        TankState(explosionState, soundState)
     }
 }
 
@@ -25,6 +27,7 @@ private val playerSpawnPosition = Offset(12f.grid2mpx, 4f.grid2mpx)
 
 class TankState(
     private val explosionState: ExplosionState,
+    private val soundState: SoundState,
 ) : TickListener {
     companion object {
         // todo to confirm this works as expected
@@ -75,8 +78,25 @@ class TankState(
         ).also { addTank(nextId.get(), it) }
     }
 
+    fun killTank(tankId: TankId) {
+        tanks = tanks.toMutableMap().apply { remove(tankId) }
+    }
+
+    fun isTankAlive(tankId: TankId):Boolean = tanks.any { it.key == tankId }
+
     fun hit(bullet: Bullet, tank: Tank) {
-        explosionState.spawnExplosion(tank.collisionBox.center, ExplosionAnimationBig)
+        // todo bullet from other player
+        val newHp = tank.hp - bullet.power
+        if (newHp <= 0) {
+            explosionState.spawnExplosion(tank.collisionBox.center, ExplosionAnimationBig)
+            soundState.playSound(SoundEffect.Explosion1)
+            killTank(tank.id)
+
+        } else {
+            tanks = tanks.toMutableMap().apply {
+                put(tank.id, tank.copy(hp = newHp))
+            }
+        }
     }
 
     fun getTank(id: TankId): Tank? {
