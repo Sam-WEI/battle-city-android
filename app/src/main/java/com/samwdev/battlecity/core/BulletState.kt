@@ -160,13 +160,14 @@ class BulletState(
 
     private fun handleCollisionBetweenBullets(tick: Tick) {
         val all = bullets.values.toList()
-        for (i in 0 until all.size - 2) {
+        for (i in 0 until all.size - 1) {
             val b1 = all[i]
             for (j in i + 1 until all.size) {
                 val b2 = all[j]
                 if (b1.collisionBox.overlaps(b2.collisionBox)) {
                     val hitRect = b1.collisionBox.intersect(b2.collisionBox)
                     addBulletTrajectoryCollision(HitBullet(bullet = b1, otherBullet = b2, hitPoint = hitRect.center))
+                    addBulletTrajectoryCollision(HitBullet(bullet = b2, otherBullet = b1, hitPoint = hitRect.center))
                 } else {
                     // when the fps is low or bullets too fast, they may miss the rect collision test between ticks.
                     // this branch is to check possible bullet collision between ticks
@@ -184,6 +185,7 @@ class BulletState(
                         val touched = (b1tt intersect b2tt).isNotEmpty()
                         if (touched) {
                             addBulletTrajectoryCollision(HitBullet(bullet = b1, otherBullet = b2, hitPoint = collisionArea.center))
+                            addBulletTrajectoryCollision(HitBullet(bullet = b2, otherBullet = b1, hitPoint = collisionArea.center))
                         }
                     }
                 }
@@ -303,14 +305,14 @@ data class Bullet(
         right += BULLET_COLLISION_SIZE
         bottom += BULLET_COLLISION_SIZE
 
-        val impactRadiusOffset = (explosionRadius - BULLET_COLLISION_SIZE) / 2
-        if (direction.isVertical()) {
-            left -= impactRadiusOffset
-            right += impactRadiusOffset
-        } else {
-            top -= impactRadiusOffset
-            bottom += impactRadiusOffset
-        }
+//        val impactRadiusOffset = (explosionRadius - BULLET_COLLISION_SIZE) / 2
+//        if (direction.isVertical()) {
+//            left -= impactRadiusOffset
+//            right += impactRadiusOffset
+//        } else {
+//            top -= impactRadiusOffset
+//            bottom += impactRadiusOffset
+//        }
 
         return Rect(
             topLeft = Offset(left, top),
