@@ -173,6 +173,19 @@ data class Tank(
         }
 }
 
+fun Tank.move(distance: MapPixel, turnTo: Direction? = null): Tank {
+    var newX = x
+    var newY = y
+    val newDir = turnTo ?: direction
+    when (direction) {
+        Direction.Left -> newX -= distance
+        Direction.Right -> newX += distance
+        Direction.Up -> newY -= distance
+        Direction.Down -> newY += distance
+    }
+    return copy(x = newX, y = newY, direction = newDir, isMoving = true)
+}
+
 enum class Direction(val degree: Float) {
     Up(0f),
     Down(180f),

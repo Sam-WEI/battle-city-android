@@ -16,31 +16,21 @@ class TankController(
     }
 
     override fun onTick(tick: Tick) {
-        val tank = tankState.getTankOrNull(_tankId) ?: return
-        val move = tank.speed * tick.delta
-        var newX = tank.x
-        var newY = tank.y
-        var newDir = tank.direction
-        when (handheldControllerState.direction) {
-            Direction.Left -> newX -= move
-            Direction.Right -> newX += move
-            Direction.Up -> newY -= move
-            Direction.Down -> newY += move
-        }
+        var tank = tankState.getTankOrNull(_tankId) ?: return
+        val distance = tank.speed * tick.delta
 
-        var isMoving = false
-        handheldControllerState.direction?.let {
-            newDir = it
-            isMoving = true
+        val newDir = handheldControllerState.direction
+        tank = if (newDir != null) {
+            tank.move(distance = distance, turnTo = newDir)
+        } else {
+            tank.copy(isMoving = false)
         }
-        val newTank = tank.copy(x = newX, y = newY, direction = newDir, isMoving = isMoving)
-
-        tankState.updateTank(_tankId, newTank)
+        tankState.updateTank(_tankId, tank)
 
         if (handheldControllerState.firePressed && tank.remainingCooldown <= 0) {
             if (bulletState.countBulletForTank(tank.id) < tank.maxBulletCount) {
-                bulletState.fire(newTank)
-                tankState.startCooldown(newTank.id)
+                bulletState.fire(tank)
+                tankState.startCooldown(_tankId)
             }
         }
     }
