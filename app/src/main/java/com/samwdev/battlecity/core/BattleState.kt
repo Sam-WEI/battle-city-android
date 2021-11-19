@@ -15,7 +15,7 @@ fun rememberBattleState(
     explosionState: ExplosionState = rememberExplosionState(),
     tickState: TickState = rememberTickState(),
     mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
-    tankState: TankState = rememberTankState(explosionState = explosionState, soundState = soundState),
+    tankState: TankState = rememberTankState(explosionState = explosionState, soundState = soundState, mapState = mapState),
     bulletState: BulletState = rememberBulletState(mapState = mapState, tankState = tankState, explosionState = explosionState, soundState = soundState),
     botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),

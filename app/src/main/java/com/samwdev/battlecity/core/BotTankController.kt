@@ -18,29 +18,23 @@ class BotTankController(
         }
 
         val command = botAi.getCommand()
-        val move = tank.speed * tick.delta
-        var newX = tank.x
-        var newY = tank.y
-        var newDir = tank.direction
-        val newTank = tank.copy(x = newX, y = newY, direction = newDir)
-
-        tankState.updateTank(tank.id, newTank)
+        val distance = tank.speed * tick.delta
 
         when (command) {
             is Fire -> {
                 if (tank.remainingCooldown <= 0) {
                     if (bulletState.countBulletForTank(tank.id) < tank.maxBulletCount) {
-                        bulletState.fire(newTank)
-                        tankState.startCooldown(newTank.id)
+                        bulletState.fire(tank)
+                        tankState.startCooldown(tank.id)
                     }
                 }
             }
             is Stop -> {}
             is Turn -> {
-                tankState.updateTank(tank.id, tank.copy(direction = command.direction))
+                tankState.moveTank(tank.id, command.direction, distance)
             }
             is Proceed -> {
-                tankState.updateTank(tank.id, tank.move(tank.speed * tick.delta))
+                tankState.moveTank(tank.id, tank.direction, distance)
             }
         }
     }

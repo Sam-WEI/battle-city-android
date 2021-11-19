@@ -12,9 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger
 fun rememberTankState(
     explosionState: ExplosionState,
     soundState: SoundState,
+    mapState: MapState,
 ): TankState {
     return remember {
-        TankState(explosionState, soundState)
+        TankState(explosionState, soundState, mapState)
     }
 }
 
@@ -24,6 +25,7 @@ private val playerSpawnPosition = Offset(12f.grid2mpx, 4f.grid2mpx)
 class TankState(
     private val explosionState: ExplosionState,
     private val soundState: SoundState,
+    private val mapState: MapState,
 ) : TickListener {
     companion object {
         // todo to confirm this works as expected
@@ -128,7 +130,22 @@ class TankState(
         return tanks.getValue(id)
     }
 
-    fun updateTank(id: TankId, tank: Tank) {
+    fun moveTank(id: TankId, direction: Direction, distance: MapPixel) {
+        val tank = getTank(id)
+        if (tank.direction != direction) {
+            updateTank(id, tank.copy(direction = direction))
+        } else {
+            // check collision
+            updateTank(id, tank.move(distance = distance, turnTo = direction))
+        }
+    }
+
+    fun stopTank(id: TankId) {
+        val tank = getTank(id)
+        updateTank(id, tank.stop())
+    }
+
+    private fun updateTank(id: TankId, tank: Tank) {
         tanks = tanks.toMutableMap().apply {
             put(id, tank)
         }
@@ -186,6 +203,8 @@ fun Tank.move(distance: MapPixel, turnTo: Direction? = null): Tank {
     }
     return copy(x = newX, y = newY, direction = newDir, isMoving = true)
 }
+
+fun Tank.stop(): Tank = copy(isMoving = false)
 
 enum class Direction(val degree: Float) {
     Up(0f),
