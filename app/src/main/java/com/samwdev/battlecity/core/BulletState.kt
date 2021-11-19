@@ -60,11 +60,11 @@ class BulletState(
 
     fun fire(tank: Tank) {
         bullets = bullets.toMutableMap().apply {
-            val bulletOrigin = tank.getBulletStartPosition()
+            val bulletOrigin = tank.bulletStartPosition
             put(nextId.incrementAndGet(), Bullet(
                 id = nextId.get(),
                 direction = tank.direction,
-                speed = 0.3f,
+                speed = tank.bulletSpeed,
                 x = bulletOrigin.x,
                 y = bulletOrigin.y,
                 power = tank.bulletPower,

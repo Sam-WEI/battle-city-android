@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.TANK_MAP_PIXEL
 import com.samwdev.battlecity.core.Tank
+import com.samwdev.battlecity.core.TankSide
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlin.math.roundToInt
 
@@ -175,11 +176,7 @@ private fun PixelDrawScope.drawTank(treadPattern: Int) {
 fun DefaultPreview() {
     BattleCityTheme {
         Map(modifier = Modifier.size(1000.dp)) {
-            Tank(
-                Tank(
-                    id = 0,
-                )
-            )
+            Tank(Tank(id = 0, side = TankSide.Player, hp = 1))
         }
     }
 }
