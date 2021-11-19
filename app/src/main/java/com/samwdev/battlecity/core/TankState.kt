@@ -20,7 +20,8 @@ fun rememberTankState(
     }
 }
 
-private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
+//private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
+private val playerSpawnPosition = Offset(12f.grid2mpx, 4f.grid2mpx)
 
 class TankState(
     private val explosionState: ExplosionState,

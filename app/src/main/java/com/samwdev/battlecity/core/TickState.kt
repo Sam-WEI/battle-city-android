@@ -40,7 +40,7 @@ class TickState(tick: Tick = Tick.INITIAL) {
                 _tickFlow.emit(newTick)
                 tickCount++
             }
-            lastTick = Tick(now, delta)
+            lastTick = newTick
 //            logD("tick: $delta")
         }
         (now - lastUptime).takeIf { it > 1000f }?.let { elapsed ->
