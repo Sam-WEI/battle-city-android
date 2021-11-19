@@ -2,15 +2,12 @@ package com.samwdev.battlecity.core
 
 import android.os.Parcelable
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BotTankLevel
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.random.Random
 
 @Composable
 fun rememberTankState(
@@ -43,14 +40,23 @@ class TankState(
     private var nextId = AtomicInteger(0)
 
     override fun onTick(tick: Tick) {
-        tanks = tanks.keys.associateWith { id ->
-            val tank = tanks[id]!!
-            return@associateWith if (tank.remainingCooldown > 0) {
-                tank.copy(remainingCooldown = tank.remainingCooldown - tick.delta.toInt())
-            } else {
-                tank
+        val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
+        tanks.forEach { (id, tank) ->
+            var remainingCooldown = tank.remainingCooldown
+            var timeToSpawn = tank.timeToSpawn
+            if (remainingCooldown > 0) {
+                remainingCooldown -= tick.delta.toInt()
             }
+            if (timeToSpawn > 0) {
+                timeToSpawn -= tick.delta.toInt()
+            }
+            val newTank = tank.copy(
+                remainingCooldown = remainingCooldown,
+                timeToSpawn = timeToSpawn,
+            )
+            newTanks[id] = newTank
         }
+        tanks = newTanks
     }
 
     private fun addTank(id: TankId, tank: Tank) {
@@ -64,7 +70,9 @@ class TankState(
             id = nextId.incrementAndGet(),
             x = playerSpawnPosition.x,
             y = playerSpawnPosition.y,
+            hp = 10000,
             direction = Direction.Up,
+            timeToSpawn = 1000,
         ).also { addTank(nextId.get(), it) }
     }
 
@@ -76,6 +84,7 @@ class TankState(
             y = loc.y,
             direction = Direction.Right,
             side = TankSide.Bot,
+            timeToSpawn = 1500,
         ).also { addTank(nextId.get(), it) }
     }
 
@@ -83,8 +92,8 @@ class TankState(
         return listOf(
             Offset(0f.grid2mpx, 4f.grid2mpx),
             Offset(0f.grid2mpx, 0f.grid2mpx),
-            Offset(6f.grid2mpx, 0f.grid2mpx),
-            Offset(12f.grid2mpx, 0f.grid2mpx),
+//            Offset(6f.grid2mpx, 0f.grid2mpx),
+//            Offset(12f.grid2mpx, 0f.grid2mpx),
         ).random()
     }
 
@@ -101,7 +110,6 @@ class TankState(
             explosionState.spawnExplosion(tank.collisionBox.center, ExplosionAnimationBig)
             soundState.playSound(SoundEffect.Explosion1)
             killTank(tank.id)
-
         } else {
             tanks = tanks.toMutableMap().apply {
                 put(tank.id, tank.copy(hp = newHp))
@@ -109,8 +117,12 @@ class TankState(
         }
     }
 
-    fun getTank(id: TankId): Tank? {
+    fun getTankOrNull(id: TankId): Tank? {
         return tanks[id]
+    }
+
+    fun getTank(id: TankId): Tank {
+        return tanks.getValue(id)
     }
 
     fun updateTank(id: TankId, tank: Tank) {
@@ -133,6 +145,7 @@ data class Tank(
     val x: MapPixel = 0f,
     val y: MapPixel = 0f,
     val remainingCooldown: Int = 0,
+    val timeToSpawn: Int = 0,
     val direction: Direction = Direction.Up,
     val level: BotTankLevel = BotTankLevel.Basic,
     val hp: Int = 1,
@@ -142,6 +155,7 @@ data class Tank(
 ) : Parcelable {
     val bulletPower: Int get() = if (side == TankSide.Player) 3 else 1
     val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
+    val offset: Offset get() = Offset(x, y)
 
     fun getBulletStartPosition(): Offset {
         return when (direction) {

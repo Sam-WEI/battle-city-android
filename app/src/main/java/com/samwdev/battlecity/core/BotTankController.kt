@@ -2,16 +2,17 @@ package com.samwdev.battlecity.core
 
 class BotTankController(
     private val tankState: TankState,
-    private val tank: Tank,
+    private val tankId: TankId,
     private val bulletState: BulletState, // todo move out?
 ) : TickListener {
     private val botAi: BotAi = BotAi()
 
     override fun onTick(tick: Tick) {
-        if (!tankState.isTankAlive(tank.id)) {
+        if (!tankState.isTankAlive(tankId)) {
             return
         }
         botAi.onTick(tick)
+        val tank = tankState.getTank(tankId)
         val command = botAi.getCommand()
         val move = tank.speed * tick.delta
         var newX = tank.x
@@ -25,7 +26,7 @@ class BotTankController(
             is Fire -> {
                 if (tank.remainingCooldown <= 0) {
                     if (bulletState.countBulletForTank(tank.id) < tank.getMaxBulletLimit()) {
-//                        bulletState.fire(newTank)
+                        bulletState.fire(newTank)
                         tankState.startCooldown(newTank.id)
                     }
                 }
