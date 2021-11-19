@@ -10,13 +10,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun rememberBattleState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    soundState: SoundState = rememberSoundState(coroutine = coroutineScope),
     stageConfigJson: StageConfigJson,
-    mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
-    tickState: TickState = rememberTickState(),
-    tankState: TankState = rememberTankState(),
+    soundState: SoundState = rememberSoundState(coroutine = coroutineScope),
     explosionState: ExplosionState = rememberExplosionState(),
-    bulletState: BulletState = rememberBulletState(mapState = mapState, explosionState = explosionState, soundState = soundState),
+    tickState: TickState = rememberTickState(),
+    mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
+    tankState: TankState = rememberTankState(explosionState),
+    bulletState: BulletState = rememberBulletState(mapState = mapState, tankState = tankState, explosionState = explosionState, soundState = soundState),
     botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
 ): BattleState {
