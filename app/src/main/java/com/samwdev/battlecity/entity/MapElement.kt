@@ -158,7 +158,7 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
     }
 
     @Deprecated("")
-    fun getImpactedArea(
+    fun getImpactArea(
         realElements: List<MapElement>,
         trajectory: Rect,
         impactDepth: MapPixel,
@@ -193,11 +193,11 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         impactDepth: MapPixel,
         direction: Direction,
     ): List<Int> {
-        val impactedArea = getImpactedArea(realElements, trajectory, impactDepth, direction)
-        if (impactedArea.isEmpty) {
+        val impactArea = getImpactArea(realElements, trajectory, impactDepth, direction)
+        if (impactArea.isEmpty) {
             return emptyList()
         }
-        return getIndicesOverlappingRect(impactedArea, direction)
+        return getIndicesOverlappingRect(impactArea, direction)
     }
 }
 

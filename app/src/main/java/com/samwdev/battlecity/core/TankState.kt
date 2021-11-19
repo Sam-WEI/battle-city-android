@@ -1,39 +1,53 @@
 package com.samwdev.battlecity.core
 
 import android.os.Parcelable
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BotTankLevel
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
-fun rememberTankState(): TankState {
-    return rememberSaveable(saver = TankState.Saver()) {
-        TankState()
+fun rememberTankState(
+    explosionState: ExplosionState,
+): TankState {
+    return remember {
+        TankState(explosionState)
     }
 }
 
 private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
 
-class TankState(initial: Map<TankId, Tank> = mapOf()) : TickListener {
+class TankState(
+    private val explosionState: ExplosionState,
+) : TickListener {
     companion object {
         // todo to confirm this works as expected
-        fun Saver() = Saver<TankState, Map<TankId, Tank>>(
-            save = { it.tanks },
-            restore = { TankState(it) }
-        )
+//        fun Saver() = Saver<TankState, Map<TankId, Tank>>(
+//            save = { it.tanks },
+//            restore = { TankState().apply { tanks = it } }
+//        )
 
     }
-    var tanks by mutableStateOf<Map<TankId, Tank>>(initial)
+    var tanks by mutableStateOf<Map<TankId, Tank>>(mapOf())
         private set
 
     private var nextId = AtomicInteger(0)
+
+    override fun onTick(tick: Tick) {
+        tanks = tanks.keys.associateWith { id ->
+            val tank = tanks[id]!!
+            return@associateWith if (tank.remainingCooldown > 0) {
+                tank.copy(remainingCooldown = tank.remainingCooldown - tick.delta.toInt())
+            } else {
+                tank
+            }
+        }
+    }
 
     private fun addTank(id: TankId, tank: Tank) {
         tanks = tanks.toMutableMap().apply {
@@ -60,6 +74,10 @@ class TankState(initial: Map<TankId, Tank> = mapOf()) : TickListener {
         ).also { addTank(nextId.get(), it) }
     }
 
+    fun hit(bullet: Bullet, tank: Tank) {
+        explosionState.spawnExplosion(tank.collisionBox.center, ExplosionAnimationBig)
+    }
+
     fun getTank(id: TankId): Tank? {
         return tanks[id]
     }
@@ -73,17 +91,6 @@ class TankState(initial: Map<TankId, Tank> = mapOf()) : TickListener {
     fun startCooldown(id: TankId) {
         val tank = tanks[id]!!
         updateTank(id, tank.copy(remainingCooldown = tank.getFireCooldown()))
-    }
-
-    override fun onTick(tick: Tick) {
-        tanks = tanks.keys.associateWith { id ->
-            val tank = tanks[id]!!
-            return@associateWith if (tank.remainingCooldown > 0) {
-                tank.copy(remainingCooldown = tank.remainingCooldown - tick.delta.toInt())
-            } else {
-                tank
-            }
-        }
     }
 }
 
@@ -103,6 +110,7 @@ data class Tank(
     val isMoving: Boolean = false,
 ) : Parcelable {
     val bulletPower: Int get() = if (side == TankSide.Player) 3 else 1
+    val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
 
     fun getBulletStartPosition(): Offset {
         return when (direction) {
