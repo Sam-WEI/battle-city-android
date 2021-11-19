@@ -160,7 +160,7 @@ class BulletState(
 
     private fun handleCollisionBetweenBullets(tick: Tick) {
         val all = bullets.values.toList()
-        for (i in 0 until all.size - 1) {
+        for (i in 0 until all.size - 2) {
             val b1 = all[i]
             for (j in i + 1 until all.size) {
                 val b2 = all[j]
