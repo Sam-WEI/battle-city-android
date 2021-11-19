@@ -13,6 +13,10 @@ class BotTankController(
         }
         botAi.onTick(tick)
         val tank = tankState.getTank(tankId)
+        if (tank.isSpawning) {
+            return
+        }
+
         val command = botAi.getCommand()
         val move = tank.speed * tick.delta
         var newX = tank.x
