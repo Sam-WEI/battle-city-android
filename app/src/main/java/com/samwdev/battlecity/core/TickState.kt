@@ -14,7 +14,7 @@ fun rememberTickState(): TickState {
 
 class TickState(tick: Tick = Tick.INITIAL) {
     companion object {
-        private const val MAX_FPS = 100
+        const val MAX_FPS = 120
     }
 
     private var lastTick: Tick = tick
@@ -30,13 +30,14 @@ class TickState(tick: Tick = Tick.INITIAL) {
         get() = lastTick.delta
 
     private var fixedDelta: Int? = null
+    var maxFps: Int = MAX_FPS
 
     private val _tickFlow: MutableStateFlow<Tick> = MutableStateFlow(Tick.INITIAL)
     val tickFlow: StateFlow<Tick> = _tickFlow
 
     suspend fun update(now: Long) {
         val delta = now - lastTick.uptimeMillis
-        if (delta > 1000f / MAX_FPS) {
+        if (delta > 1000f / maxFps) {
             val newTick = Tick(now, fixedDelta?.toLong() ?: delta)
             if (lastTick != Tick.INITIAL) {
                 _tickFlow.emit(newTick)
