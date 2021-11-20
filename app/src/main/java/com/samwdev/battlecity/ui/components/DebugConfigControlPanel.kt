@@ -114,11 +114,26 @@ fun DebugConfigControlPanel(
                     value = debugConfig.fixTickDelta,
                     onSwitch = { onConfigChange(debugConfig.copy(fixTickDelta = it)) }
                 )
+                if (debugConfig.fixTickDelta) {
+                    Text(
+                        text = "Locked tick: ${debugConfig.tickDelta}",
+                        fontSize = 14.sp
+                    )
+                    Slider(
+                        value = debugConfig.tickDelta.toFloat(),
+                        enabled = debugConfig.fixTickDelta,
+                        valueRange = 1f..100f,
+                        onValueChange = { onConfigChange(debugConfig.copy(tickDelta = it.roundToInt())) }
+                    )
+                }
+                Text(
+                    text = "Max FPS: ${debugConfig.maxFps}",
+                    fontSize = 14.sp
+                )
                 Slider(
-                    value = debugConfig.tickDelta.toFloat(),
-                    enabled = debugConfig.fixTickDelta,
-                    valueRange = 1f..50f,
-                    onValueChange = { onConfigChange(debugConfig.copy(tickDelta = it.roundToInt())) }
+                    value = debugConfig.maxFps.toFloat(),
+                    valueRange = 1f..150f,
+                    onValueChange = { onConfigChange(debugConfig.copy(maxFps = it.roundToInt())) }
                 )
             }
         }

@@ -97,10 +97,9 @@ class TankState(
 
     private fun getRandomSpawnLocation(): Offset {
         return listOf(
-            Offset(0f.grid2mpx, 4f.grid2mpx),
             Offset(0f.grid2mpx, 0f.grid2mpx),
-//            Offset(6f.grid2mpx, 0f.grid2mpx),
-//            Offset(12f.grid2mpx, 0f.grid2mpx),
+            Offset(6f.grid2mpx, 0f.grid2mpx),
+            Offset(12f.grid2mpx, 0f.grid2mpx),
         ).random()
     }
 

@@ -9,5 +9,5 @@ data class DebugConfig(
     val showPivotBox: Boolean = false,
     val fixTickDelta: Boolean = false,
     val tickDelta: Int = 10,
-    val maxFps: Int = Int.MAX_VALUE,
+    val maxFps: Int = TickState.MAX_FPS,
 )
