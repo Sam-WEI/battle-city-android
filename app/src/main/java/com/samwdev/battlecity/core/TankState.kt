@@ -110,15 +110,18 @@ class TankState(
 
     fun hit(bullet: Bullet, tank: Tank) {
         // todo bullet from other player
-        val newHp = tank.hp - bullet.power
-        if (newHp <= 0) {
+        val updatedTank = tank.hitBy(bullet)
+        if (updatedTank.isDead) {
             explosionState.spawnExplosion(tank.collisionBox.center, ExplosionAnimationBig)
-            soundState.playSound(SoundEffect.Explosion1)
-            killTank(tank.id)
-        } else {
-            tanks = tanks.toMutableMap().apply {
-                put(tank.id, tank.copy(hp = newHp))
+            if (tank.side == TankSide.Bot) {
+                soundState.playSound(SoundEffect.Explosion1)
+            } else {
+                soundState.playSound(SoundEffect.Explosion2)
             }
+            killTank(tank.id)
+        }
+        tanks = tanks.toMutableMap().apply {
+            put(tank.id, updatedTank)
         }
     }
 

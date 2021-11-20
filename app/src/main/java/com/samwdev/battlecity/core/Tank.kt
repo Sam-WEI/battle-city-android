@@ -31,6 +31,8 @@ data class Tank(
     val fireCooldown: Int get() = specs.fireCooldown
     val maxBulletCount: Int get() = specs.maxBulletCount
     val isSpawning: Boolean get() = timeToSpawn > 0
+    val isAlive: Boolean get() = hp > 0
+    val isDead: Boolean get() = !isAlive
 
     val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
     val pivotBox: Rect get() {
@@ -75,6 +77,10 @@ fun Tank.moveTo(rect: Rect, newDirection: Direction = direction): Tank =
     copy(x = rect.left, y = rect.top, direction = newDirection, isMoving = rect != collisionBox)
 
 fun Tank.stop(): Tank = copy(isMoving = false)
+
+fun Tank.hitBy(bullet: Bullet): Tank {
+    return copy(hp = hp - 1)
+}
 
 enum class Direction(val degree: Float) {
     Up(0f),
