@@ -123,9 +123,10 @@ fun DebugConfigControlPanel(
                         value = debugConfig.tickDelta.toFloat(),
                         enabled = debugConfig.fixTickDelta,
                         valueRange = 1f..100f,
-                        onValueChange = { onConfigChange(debugConfig.copy(tickDelta = it.roundToInt())) }
+                        onValueChange = { onConfigChange(debugConfig.copy(tickDelta = it.toInt())) }
                     )
                 }
+
                 Text(
                     text = "Max FPS: ${debugConfig.maxFps}",
                     fontSize = 14.sp
@@ -133,7 +134,17 @@ fun DebugConfigControlPanel(
                 Slider(
                     value = debugConfig.maxFps.toFloat(),
                     valueRange = 1f..150f,
-                    onValueChange = { onConfigChange(debugConfig.copy(maxFps = it.roundToInt())) }
+                    onValueChange = { onConfigChange(debugConfig.copy(maxFps = it.toInt())) }
+                )
+
+                Text(
+                    text = "Max bot: ${debugConfig.maxBot}",
+                    fontSize = 14.sp
+                )
+                Slider(
+                    value = debugConfig.maxBot.toFloat(),
+                    valueRange = 0f..50f,
+                    onValueChange = { onConfigChange(debugConfig.copy(maxBot = it.toInt())) }
                 )
             }
         }
@@ -173,7 +184,8 @@ private fun ControlPanelPreview() {
         Box(modifier = Modifier.wrapContentSize()) {
             DebugConfigControlPanel(
                 debugConfig = DebugConfig(
-                    showFps = true
+                    showFps = true,
+                    fixTickDelta = true,
                 ),
                 onConfigChange = {}
             )
