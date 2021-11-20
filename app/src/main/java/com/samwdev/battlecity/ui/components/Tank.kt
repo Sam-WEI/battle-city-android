@@ -18,18 +18,17 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlin.math.roundToInt
 
 
-private const val TreadPatternCycleDistance = 10
+private const val TreadPatternCycleDistance = 5
 
 @Composable
 fun Tank(tank: Tank) {
     var travelDistance by remember { mutableStateOf(0) }
-    val treadPattern: Int by remember {
+    val treadPattern: Int by remember(travelDistance) {
         derivedStateOf {
             // calculate tread pattern based on travel distance, so faster tank looks faster
             if (travelDistance % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance) 0 else 1
         }
     }
-
     if (tank.isMoving) {
         val tick = LocalTick.current
         travelDistance = remember(tick) {
