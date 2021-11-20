@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import kotlin.math.roundToInt
 
 @ExperimentalAnimationApi
 @Composable
@@ -38,7 +39,9 @@ fun DebugConfigControlToggle(
         }
 
         AnimatedVisibility(
-            modifier = modifier.align(Alignment.BottomEnd).padding(bottom = 50.dp),
+            modifier = modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 50.dp),
             visible = showDebugPanel
         ) {
             DebugConfigControlPanel(
@@ -63,7 +66,7 @@ fun DebugConfigControlPanel(
         modifier = Modifier
             .padding(12.dp)
             .wrapContentSize(),
-        backgroundColor = Color.White,
+        backgroundColor = MaterialTheme.colors.surface,
         elevation = 4.dp,
     ) {
         Box {
@@ -105,6 +108,18 @@ fun DebugConfigControlPanel(
                     value = debugConfig.showPivotBox,
                     onSwitch = { onConfigChange(debugConfig.copy(showPivotBox = it)) }
                 )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Lock tick",
+                    value = debugConfig.fixTickDelta,
+                    onSwitch = { onConfigChange(debugConfig.copy(fixTickDelta = it)) }
+                )
+                Slider(
+                    value = debugConfig.tickDelta.toFloat(),
+                    enabled = debugConfig.fixTickDelta,
+                    valueRange = 1f..50f,
+                    onValueChange = { onConfigChange(debugConfig.copy(tickDelta = it.roundToInt())) }
+                )
             }
         }
     }
@@ -125,7 +140,6 @@ private fun DebugConfigSwitch(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Switch(
-            colors = SwitchDefaults.colors(uncheckedTrackColor = Color.Gray),
             checked = value,
             onCheckedChange = onSwitch,
         )
@@ -133,7 +147,8 @@ private fun DebugConfigSwitch(
         Text(
             text = label,
             fontSize = 14.sp,
-            color = Color.Black,
+            color = MaterialTheme.colors.
+            onSurface,
         )
     }
 }

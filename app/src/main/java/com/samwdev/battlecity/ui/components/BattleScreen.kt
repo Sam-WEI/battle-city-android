@@ -21,6 +21,14 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
         battleState.startBattle()
     }
 
+    SideEffect {
+        if (debugConfig.fixTickDelta) {
+            battleState.tickState.fixTickDelta(debugConfig.tickDelta)
+        } else {
+            battleState.tickState.cancelFixTickDelta()
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth()) {
             CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
@@ -40,14 +48,16 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
         }
 
         DebugConfigControlToggle(
-            modifier = Modifier.wrapContentSize().align(Alignment.BottomEnd),
+            modifier = Modifier
+                .wrapContentSize()
+                .align(Alignment.BottomEnd),
             debugConfig = debugConfig,
             onConfigChange = { debugConfig = it }
         )
     }
 }
 
-val LocalDebugConfig = staticCompositionLocalOf { DebugConfig() }
+val LocalDebugConfig = compositionLocalOf { DebugConfig() }
 
 @Preview
 @Composable

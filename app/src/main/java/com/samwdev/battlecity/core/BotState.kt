@@ -18,7 +18,7 @@ class BotState(
 
     override fun onTick(tick: Tick) {
         if (bots.size < 1) {
-//            spawnBot()
+            spawnBot()
         }
         clearDeadBots()
         bots.values.forEach { controller ->

@@ -29,13 +29,15 @@ class TickState(tick: Tick = Tick.INITIAL) {
     val delta: Long
         get() = lastTick.delta
 
+    private var fixedDelta: Int? = null
+
     private val _tickFlow: MutableStateFlow<Tick> = MutableStateFlow(Tick.INITIAL)
     val tickFlow: StateFlow<Tick> = _tickFlow
 
     suspend fun update(now: Long) {
         val delta = now - lastTick.uptimeMillis
         if (delta > 1000f / MAX_FPS) {
-            val newTick = Tick(now, delta)
+            val newTick = Tick(now, fixedDelta?.toLong() ?: delta)
             if (lastTick != Tick.INITIAL) {
                 _tickFlow.emit(newTick)
                 tickCount++
@@ -55,6 +57,14 @@ class TickState(tick: Tick = Tick.INITIAL) {
             val now = withFrameMillis { it }
             update(now)
         }
+    }
+
+    fun fixTickDelta(delta: Int) {
+        fixedDelta = delta
+    }
+
+    fun cancelFixTickDelta() {
+        fixedDelta = null
     }
 }
 
