@@ -221,7 +221,6 @@ class BulletState(
             tankState.tanks.filter { (it.value.id != bullet.ownerTankId) && (friendlyFire || bullet.side != it.value.side) }
                 .forEach { (_, tank) ->
                     val trajectory = bullet.getTrajectory(tick.delta)
-                    // todo should use tank's last position
                     if (trajectory.overlaps(tank.collisionBox)) {
                         val intersect = trajectory.intersect(tank.collisionBox)
                         val impactPoint = when (bullet.direction) {
