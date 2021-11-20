@@ -92,6 +92,12 @@ fun DebugConfigControlPanel(
                 )
                 DebugConfigSwitch(
                     modifier = Modifier.fillMaxWidth(),
+                    label = "Bot friendly fire",
+                    value = debugConfig.friendlyFire,
+                    onSwitch = { onConfigChange(debugConfig.copy(friendlyFire = it)) }
+                )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
                     label = "Show brick index",
                     value = debugConfig.showBrickIndex,
                     onSwitch = { onConfigChange(debugConfig.copy(showBrickIndex = it)) }

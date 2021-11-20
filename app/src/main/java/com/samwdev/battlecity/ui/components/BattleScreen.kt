@@ -28,6 +28,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
     SideEffect {
         battleState.tickState.maxFps = debugConfig.maxFps
         battleState.botState.maxBot = debugConfig.maxBot
+        battleState.bulletState.friendlyFire = debugConfig.friendlyFire
         if (debugConfig.fixTickDelta) {
             battleState.tickState.fixTickDelta(debugConfig.tickDelta)
         } else {
