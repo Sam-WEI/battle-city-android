@@ -7,6 +7,7 @@ data class DebugConfig(
     val showBrickIndex: Boolean = false,
     val showSteelIndex: Boolean = false,
     val showPivotBox: Boolean = false,
-    val fixedTickDelta: Int = -1,
+    val fixTickDelta: Boolean = false,
+    val tickDelta: Int = 10,
     val maxFps: Int = Int.MAX_VALUE,
 )
