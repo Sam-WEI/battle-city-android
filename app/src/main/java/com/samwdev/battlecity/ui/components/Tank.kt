@@ -29,13 +29,11 @@ fun Tank(tank: Tank) {
             if (travelDistance % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance) 0 else 1
         }
     }
-    if (tank.isMoving) {
-        val tick = LocalTick.current
-        travelDistance = remember(tick) {
-            travelDistance + (tank.speed * tick.delta).roundToInt()
-        }
+    travelDistance = remember(tank.x, tank.y, tank.direction) {
+        // 0.03f is considered as normal moving speed,
+        // this way, faster tanks accumulate distance faster. Not accurate but works.
+        travelDistance + 1 * (tank.speed / 0.03f).roundToInt()
     }
-
     if (LocalDebugConfig.current.showPivotBox) {
         PixelCanvas(
             heightInMapPixel = tank.pivotBox.height.grid2mpx,
