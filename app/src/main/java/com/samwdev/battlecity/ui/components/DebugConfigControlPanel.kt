@@ -1,0 +1,148 @@
+package com.samwdev.battlecity.ui.components
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.samwdev.battlecity.core.DebugConfig
+import com.samwdev.battlecity.ui.theme.BattleCityTheme
+
+@Composable
+fun DebugConfigControlToggle(
+    modifier: Modifier = Modifier,
+    debugConfig: DebugConfig,
+    onConfigChange: (DebugConfig) -> Unit,
+) {
+    var showDebugPanel by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        IconButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = { showDebugPanel = !showDebugPanel },
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Build,
+                tint = Color.LightGray,
+                contentDescription = null,
+            )
+        }
+
+        if (showDebugPanel) {
+            DebugConfigControlPanel(
+                modifier = Modifier.align(Alignment.TopStart),
+                debugConfig = debugConfig,
+                onConfigChange = onConfigChange,
+                onClose = { showDebugPanel = false }
+            )
+        }
+    }
+}
+
+@Composable
+fun DebugConfigControlPanel(
+    modifier: Modifier = Modifier,
+    debugConfig: DebugConfig,
+    onConfigChange: (DebugConfig) -> Unit,
+    onClose: () -> Unit = {},
+) {
+    Card(
+        modifier = Modifier
+            .padding(12.dp)
+            .wrapContentSize(),
+        backgroundColor = Color.White,
+        elevation = 4.dp,
+    ) {
+        Box {
+            IconButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onClick = onClose
+            ) {
+                Icon(Icons.Default.Close, contentDescription = null)
+            }
+
+            Column(
+                modifier = modifier
+                    .padding(24.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = "Debug", fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(8.dp))
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Show FPS",
+                    value = debugConfig.showFps,
+                    onSwitch = { onConfigChange(debugConfig.copy(showFps = it)) }
+                )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Show brick index",
+                    value = debugConfig.showBrickIndex,
+                    onSwitch = { onConfigChange(debugConfig.copy(showBrickIndex = it)) }
+                )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Show steel index",
+                    value = debugConfig.showSteelIndex,
+                    onSwitch = { onConfigChange(debugConfig.copy(showSteelIndex = it)) }
+                )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Show tank pivot box",
+                    value = debugConfig.showPivotBox,
+                    onSwitch = { onConfigChange(debugConfig.copy(showPivotBox = it)) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DebugConfigSwitch(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: Boolean,
+    onSwitch: (Boolean) -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Switch(
+            colors = SwitchDefaults.colors(uncheckedTrackColor = Color.Gray),
+            checked = value,
+            onCheckedChange = onSwitch,
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = label,
+            fontSize = 14.sp,
+            color = Color.Black,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ControlPanelPreview() {
+    BattleCityTheme {
+        Box(modifier = Modifier.wrapContentSize()) {
+            DebugConfigControlPanel(
+                debugConfig = DebugConfig(
+                    showFps = true
+                ),
+                onConfigChange = {}
+            )
+        }
+    }
+}

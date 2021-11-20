@@ -12,14 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.BattleState
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
-import com.samwdev.battlecity.core.MapPixel
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.*
 
 @Composable
 fun BattleField(
@@ -51,13 +47,14 @@ fun BattleField(
             battleState.explosionState.explosions.forEach { (_, explosion) ->
                 Explosion(explosion = explosion)
             }
-
-            Text(
-                text = "FPS ${battleState.tickState.fps}",
-                color = Color.Green,
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.TopEnd)
-            )
+            if (LocalDebugConfig.current.showFps) {
+                Text(
+                    text = "FPS ${battleState.tickState.fps}",
+                    color = Color.Green,
+                    fontSize = 14.sp,
+                    modifier = Modifier.align(Alignment.TopEnd)
+                )
+            }
         }
     }
 }
