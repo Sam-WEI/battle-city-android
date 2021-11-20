@@ -58,7 +58,7 @@ data class IceElement(override val index: Int) : MapElement(index), MapElementPr
     }
 }
 
-data class EagleElement(override val index: Int, val destroyed: Boolean = false) : MapElement(index), MapElementProperties by EagleElement {
+data class EagleElement(override val index: Int, val dead: Boolean = false) : MapElement(index), MapElementProperties by EagleElement {
     companion object : MapElementHelper(1) {
         operator fun invoke(row: Int, col: Int, destroyed: Boolean = false) = EagleElement(row * countInOneLine + col, destroyed)
     }

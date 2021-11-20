@@ -23,7 +23,7 @@ fun EagleLayer(eagleElement: EagleElement) {
         heightInMapPixel = eagleElement.elementSize,
         topLeftInMapPixel = eagleElement.offsetInMapPixel,
     ) {
-        if (!eagleElement.destroyed) {
+        if (!eagleElement.dead) {
             drawHalfEagle()
             scale(scaleX = -1f, scaleY = 1f, pivot = Offset(eagleElement.elementSize / 2, 0f)) {
                 this@PixelCanvas.drawHalfEagle()
