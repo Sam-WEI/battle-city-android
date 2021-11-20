@@ -109,7 +109,7 @@ fun getTankSpecs(side: TankSide, level: TankLevel) =
             TankLevel.Level2 -> PlayerLevel2Specs
             TankLevel.Level3 -> PlayerLevel3Specs
             TankLevel.Level4 -> PlayerLevel4Specs
-        }.copy(maxHp = 100, bulletPower = 3) // todo revert
+        }.copy(maxHp = 100) // todo revert
     } else {
         when (level) {
             TankLevel.Level1 -> BotLevel1Specs
