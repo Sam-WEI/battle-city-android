@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
+@ExperimentalAnimationApi
 @Composable
 fun DebugConfigControlToggle(
     modifier: Modifier = Modifier,
@@ -22,10 +25,9 @@ fun DebugConfigControlToggle(
     onConfigChange: (DebugConfig) -> Unit,
 ) {
     var showDebugPanel by remember { mutableStateOf(false) }
-
     Box(modifier = modifier) {
         IconButton(
-            modifier = Modifier.align(Alignment.BottomEnd),
+            modifier = modifier.align(Alignment.BottomEnd),
             onClick = { showDebugPanel = !showDebugPanel },
         ) {
             Icon(
@@ -35,15 +37,19 @@ fun DebugConfigControlToggle(
             )
         }
 
-        if (showDebugPanel) {
+        AnimatedVisibility(
+            modifier = modifier.align(Alignment.BottomEnd).padding(bottom = 50.dp),
+            visible = showDebugPanel
+        ) {
             DebugConfigControlPanel(
-                modifier = Modifier.align(Alignment.TopStart),
+            modifier = Modifier.align(Alignment.TopStart),
                 debugConfig = debugConfig,
                 onConfigChange = onConfigChange,
                 onClose = { showDebugPanel = false }
             )
         }
     }
+
 }
 
 @Composable
