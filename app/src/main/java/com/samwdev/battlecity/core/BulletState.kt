@@ -75,7 +75,9 @@ class BulletState(
                 side = tank.side,
             ))
         }
-        soundState.playSound(SoundEffect.BulletShot)
+        if (tank.side == TankSide.Player) {
+            soundState.playSound(SoundEffect.BulletShot)
+        }
     }
 
     fun countBulletForTank(tankId: TankId) = bullets.count { it.value.ownerTankId == tankId }
@@ -124,23 +126,33 @@ class BulletState(
             val brickIndices = BrickElement.getIndicesOverlappingRect(impactArea, bullet.direction)
             val hitAnyBricks = brickIndices.anyRealElements(mapState.bricks)
             if (hitAnyBricks) {
-                soundState.playSound(SoundEffect.BulletHitBrick)
+                if (bullet.side == TankSide.Player) {
+                    soundState.playSound(SoundEffect.BulletHitBrick)
+                }
                 mapState.destroyBricksIndex(brickIndices.toSet())
             }
             val steelIndices = SteelElement.getIndicesOverlappingRect(impactArea, bullet.direction)
             val hitAnySteels = steelIndices.anyRealElements(mapState.steels)
             if (hitAnySteels) {
-                soundState.playSound(SoundEffect.BulletHitSteel)
+                if (bullet.side == TankSide.Player) {
+                    soundState.playSound(SoundEffect.BulletHitSteel)
+                }
                 if (bullet.power >= SteelElement.strength) {
                     mapState.destroySteels(steelIndices.toSet())
                 }
             }
             when (firstCollision) {
                 is HitBorder -> {
-                    soundState.playSound(SoundEffect.BulletHitSteel)
+                    if (bullet.side == TankSide.Player) {
+                        soundState.playSound(SoundEffect.BulletHitSteel)
+                    }
                 }
                 is HitTank -> {
-                    soundState.playSound(SoundEffect.BulletHitSteel)
+                    if (bullet.side == TankSide.Player
+                        && firstCollision.tank.side == TankSide.Bot
+                        && firstCollision.tank.hitBy(bullet).isAlive) {
+                        soundState.playSound(SoundEffect.BulletHitSteel) // todo should be a special dink sound
+                    }
                     tankState.hit(bullet, firstCollision.tank)
                 }
                 is HitBullet -> {
@@ -283,6 +295,10 @@ data class Bullet(
     val bottom: MapPixel = y + BULLET_COLLISION_SIZE
 
     fun getImpactAreaIfHitAt(hitPoint: Offset): Rect {
+//        when (direction) {
+//            Direction.Up ->
+//            Direction.Down ->
+//        }
         // todo rework
         return Rect(center = hitPoint, radius = explosionRadius)
     }
