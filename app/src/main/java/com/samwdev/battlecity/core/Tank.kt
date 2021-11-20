@@ -50,6 +50,13 @@ data class Tank(
         }
 }
 
+fun Tank.turn(into: Direction): Tank {
+    if (into == direction) { return this }
+    val newX = if (into.isVertical()) pivotBox.left else x
+    val newY = if (into.isVertical()) y else pivotBox.top
+    return copy(direction = into, x = newX, y = newY)
+}
+
 @Deprecated("delete")
 fun Tank.move(distance: MapPixel, turnTo: Direction? = null): Tank {
     var newX = x
@@ -96,7 +103,7 @@ fun getTankSpecs(side: TankSide, level: TankLevel) =
             TankLevel.Level2 -> PlayerLevel2Specs
             TankLevel.Level3 -> PlayerLevel3Specs
             TankLevel.Level4 -> PlayerLevel4Specs
-        }.copy(maxHp = 10, bulletPower = 3) // todo revert
+        }.copy(maxHp = 100, bulletPower = 3) // todo revert
     } else {
         when (level) {
             TankLevel.Level1 -> BotLevel1Specs

@@ -187,25 +187,27 @@ private fun PixelDrawScope.drawTank(treadPattern: Int) {
 @Composable
 fun DefaultPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
-            Tank(Tank(id = 0, side = TankSide.Player, hp = 1))
+        CompositionLocalProvider(LocalDebugConfig provides DebugConfig(showPivotBox = true)) {
+            Map(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
+                Tank(Tank(id = 0, side = TankSide.Player, hp = 1))
 
-            for (i in 0 until 7) {
-                val x = 3f + 0.2f * i
-                val y = i.toFloat()
-                val tank = Tank(
-                    id = 1,
-                    x = x.grid2mpx,
-                    y = y.grid2mpx,
-                    direction = Direction.Right,
-                    side = TankSide.Player,
-                    hp = 1)
-                Tank(tank)
-                Text(text = "tank x = $x", Modifier.offset((x + 1).grid2mpx.mpx2dp, y.grid2mpx.mpx2dp))
-                Text(text = "pivot x = ${tank.pivotBox.left / 1f.grid2mpx}", Modifier.offset((x + 1).grid2mpx.mpx2dp, (y + 0.5f).grid2mpx.mpx2dp))
+                for (i in 0 until 7) {
+                    val x = 3f + 0.2f * i
+                    val y = i.toFloat()
+                    val tank = Tank(
+                        id = 1,
+                        x = x.grid2mpx,
+                        y = y.grid2mpx,
+                        direction = Direction.Right,
+                        side = TankSide.Player,
+                        hp = 1)
+                    Tank(tank)
+                    Text(text = "tank x = $x", Modifier.offset((x + 1).grid2mpx.mpx2dp, y.grid2mpx.mpx2dp))
+                    Text(text = "pivot x = ${tank.pivotBox.left / 1f.grid2mpx}", Modifier.offset((x + 1).grid2mpx.mpx2dp, (y + 0.5f).grid2mpx.mpx2dp))
+                }
+                Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 1.7f.grid2mpx, side = TankSide.Player, hp = 1))
+                Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 3.8f.grid2mpx, side = TankSide.Player, hp = 1))
             }
-            Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 1.7f.grid2mpx, side = TankSide.Player, hp = 1))
-            Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 3.8f.grid2mpx, side = TankSide.Player, hp = 1))
         }
     }
 }
