@@ -15,7 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.core.BattleState
+import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.core.MapPixel
+import com.samwdev.battlecity.core.grid2mpx
 
 @Composable
 fun BattleField(
@@ -34,11 +37,11 @@ fun BattleField(
             WaterLayer(battleState.mapState.waters)
             EagleLayer(battleState.mapState.eagle)
 
-            battleState.tankState.tanks.forEach { (id, tank) ->
+            battleState.tankState.tanks.forEach { (_, tank) ->
                 Tank(tank = tank)
             }
 
-            battleState.bulletState.bullets.forEach { (id, bullet) ->
+            battleState.bulletState.bullets.forEach { (_, bullet) ->
                 Bullet(bullet)
             }
 

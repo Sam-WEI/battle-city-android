@@ -39,6 +39,8 @@ class TankState(
     var tanks by mutableStateOf<Map<TankId, Tank>>(mapOf())
         private set
 
+    val aliveTanks: Sequence<Tank> get() = tanks.values.asSequence().filter { it.isAlive }
+
     private var nextId = AtomicInteger(0)
 
     override fun onTick(tick: Tick) {
@@ -106,11 +108,13 @@ class TankState(
         tanks = tanks.toMutableMap().apply { remove(tankId) }
     }
 
-    fun isTankAlive(tankId: TankId):Boolean = tanks.any { it.key == tankId }
+    fun isTankAlive(tankId: TankId):Boolean = tanks[tankId]?.isAlive == true
 
     fun hit(bullet: Bullet, tank: Tank) {
         // todo bullet from other player
         val updatedTank = tank.hitBy(bullet)
+        updateTank(tank.id, updatedTank)
+
         if (updatedTank.isDead) {
             explosionState.spawnExplosion(tank.collisionBox.center, ExplosionAnimationBig)
             if (tank.side == TankSide.Bot) {
@@ -119,9 +123,6 @@ class TankState(
                 soundState.playSound(SoundEffect.Explosion2)
             }
             killTank(tank.id)
-        }
-        tanks = tanks.toMutableMap().apply {
-            put(tank.id, updatedTank)
         }
     }
 
