@@ -162,8 +162,6 @@ private fun DebugConfigSwitch(
         Text(
             text = label,
             fontSize = 14.sp,
-            color = MaterialTheme.colors.
-            onSurface,
         )
     }
 }

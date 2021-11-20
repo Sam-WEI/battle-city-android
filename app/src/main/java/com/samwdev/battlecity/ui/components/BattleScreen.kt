@@ -1,7 +1,9 @@
 package com.samwdev.battlecity.ui.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +25,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
 
     SideEffect {
         battleState.tickState.maxFps = debugConfig.maxFps
+        battleState.botState.maxBot = debugConfig.maxBot
         if (debugConfig.fixTickDelta) {
             battleState.tickState.fixTickDelta(debugConfig.tickDelta)
         } else {
@@ -38,7 +41,10 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
                     battleState = battleState,
                 )
             }
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .background(MaterialTheme.colors.background)
+            ) {
                 HandheldController(
                     modifier = Modifier
                         .padding(horizontal = 30.dp, vertical = 60.dp)

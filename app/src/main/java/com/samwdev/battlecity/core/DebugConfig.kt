@@ -10,4 +10,6 @@ data class DebugConfig(
     val fixTickDelta: Boolean = false,
     val tickDelta: Int = 10,
     val maxFps: Int = TickState.MAX_FPS,
+    val maxBot: Int = 2,
+    val friendlyFire: Boolean = false,
 )
