@@ -17,7 +17,9 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 @Composable
 fun BattleScreen(stageConfigJson: StageConfigJson) {
     val battleState: BattleState = rememberBattleState(stageConfigJson = stageConfigJson)
-    var debugConfig: DebugConfig by remember { mutableStateOf(DebugConfig(showFps = true)) }
+    var debugConfig: DebugConfig by remember {
+        mutableStateOf(DebugConfig(showFps = true, showPivotBox = true))
+    }
 
     LaunchedEffect(Unit) {
         battleState.startBattle()

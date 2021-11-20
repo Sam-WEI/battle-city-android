@@ -7,6 +7,7 @@ import androidx.compose.ui.geometry.Size
 import kotlinx.parcelize.Parcelize
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 typealias TankId = Int
 
@@ -23,6 +24,7 @@ data class Tank(
     val remainingCooldown: Int = 0,
     val timeToSpawn: Int = 0,
 ) : Parcelable {
+    val offset: Offset get() = Offset(x, y)
     val bulletPower: Int get() = specs.bulletPower
     val bulletSpeed: MapPixel get() = specs.bulletSpeed
     val speed: MapPixel get() = specs.movingSpeed
@@ -31,7 +33,12 @@ data class Tank(
     val isSpawning: Boolean get() = timeToSpawn > 0
 
     val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
-    val offset: Offset get() = Offset(x, y)
+    val pivotBox: Rect get() {
+        val halfBlock = 0.5f.grid2mpx.toInt() // 8
+        val pbx = (x / halfBlock).roundToInt() * halfBlock.toFloat()
+        val pby = (y / halfBlock).roundToInt() * halfBlock.toFloat()
+        return Rect(Offset(pbx, pby), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
+    }
 
     val bulletStartPosition: Offset
         get() =

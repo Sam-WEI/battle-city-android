@@ -1,8 +1,11 @@
 package com.samwdev.battlecity.ui.components
 
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -10,9 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.TANK_MAP_PIXEL
-import com.samwdev.battlecity.core.Tank
-import com.samwdev.battlecity.core.TankSide
+import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlin.math.roundToInt
 
@@ -33,6 +34,17 @@ fun Tank(tank: Tank) {
         val tick = LocalTick.current
         travelDistance = remember(tick) {
             travelDistance + (tank.speed * tick.delta).roundToInt()
+        }
+    }
+
+    if (LocalDebugConfig.current.showPivotBox) {
+        PixelCanvas(
+            heightInMapPixel = tank.pivotBox.height.grid2mpx,
+            widthInMapPixel = tank.pivotBox.width.grid2mpx,
+            topLeftInMapPixel = Offset(tank.pivotBox.left, tank.pivotBox.top),
+            modifier = Modifier.clipToBounds()
+        ) {
+            drawSquare(Color(0x55FF0000), topLeft = Offset.Zero, side = tank.pivotBox.width)
         }
     }
 
@@ -175,8 +187,25 @@ private fun PixelDrawScope.drawTank(treadPattern: Int) {
 @Composable
 fun DefaultPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(1000.dp)) {
+        Map(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
             Tank(Tank(id = 0, side = TankSide.Player, hp = 1))
+
+            for (i in 0 until 7) {
+                val x = 3f + 0.2f * i
+                val y = i.toFloat()
+                val tank = Tank(
+                    id = 1,
+                    x = x.grid2mpx,
+                    y = y.grid2mpx,
+                    direction = Direction.Right,
+                    side = TankSide.Player,
+                    hp = 1)
+                Tank(tank)
+                Text(text = "tank x = $x", Modifier.offset((x + 1).grid2mpx.mpx2dp, y.grid2mpx.mpx2dp))
+                Text(text = "pivot x = ${tank.pivotBox.left / 1f.grid2mpx}", Modifier.offset((x + 1).grid2mpx.mpx2dp, (y + 0.5f).grid2mpx.mpx2dp))
+            }
+            Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 1.7f.grid2mpx, side = TankSide.Player, hp = 1))
+            Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 3.8f.grid2mpx, side = TankSide.Player, hp = 1))
         }
     }
 }
