@@ -1,5 +1,6 @@
 package com.samwdev.battlecity.ui.components
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,6 +11,7 @@ import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.StageConfigJson
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
+@ExperimentalAnimationApi
 @Composable
 fun BattleScreen(stageConfigJson: StageConfigJson) {
     val battleState: BattleState = rememberBattleState(stageConfigJson = stageConfigJson)
@@ -38,7 +40,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
         }
 
         DebugConfigControlToggle(
-            modifier = Modifier.fillMaxWidth().height(400.dp).align(Alignment.BottomEnd),
+            modifier = Modifier.wrapContentSize().align(Alignment.BottomEnd),
             debugConfig = debugConfig,
             onConfigChange = { debugConfig = it }
         )
@@ -60,7 +62,6 @@ private fun BattleStatePreview() {
                     handheldControllerState = HandheldControllerState(),
                 )
             }
-            DebugConfigControlPanel(debugConfig = DebugConfig(), onConfigChange = {})
         }
     }
 }
