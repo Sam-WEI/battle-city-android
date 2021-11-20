@@ -276,92 +276,14 @@ class BulletState(
     }
 }
 
-typealias BulletId = Int
-
-data class Bullet(
-    val id: BulletId,
-    val direction: Direction,
-    val speed: MapPixel,
-    val x: MapPixel,
-    val y: MapPixel,
-    val power: Int = 1,
-    val ownerTankId: TankId,
-    val side: TankSide,
-) {
-    val collisionBox: Rect = Rect(offset = Offset(x, y), size = Size(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE))
-    val center: Offset = collisionBox.center
-    var explosionRadius: MapPixel = BULLET_COLLISION_SIZE * power
-
-    val left: MapPixel = x
-    val top: MapPixel = y
-    val right: MapPixel = x + BULLET_COLLISION_SIZE
-    val bottom: MapPixel = y + BULLET_COLLISION_SIZE
-
-    fun getImpactAreaIfHitAt(hitPoint: Offset): Rect {
-//        when (direction) {
-//            Direction.Up ->
-//            Direction.Down ->
-//        }
-        // todo rework
-        return Rect(center = hitPoint, radius = explosionRadius)
-    }
-
-    fun getFlashbackBullet(millisAgo: Long): Bullet {
-        val delta = millisAgo * speed
-        val currPos = Offset(x, y)
-        val oldPos = when (direction) {
-            Direction.Up -> currPos + Offset(0f, delta)
-            Direction.Down -> currPos - Offset(0f, delta)
-            Direction.Left -> currPos + Offset(delta, 0f)
-            Direction.Right -> currPos - Offset(delta, 0f)
+private val Bullet.hitPointIfHitBorder: Offset
+    get() =
+        when (direction) {
+            Direction.Up -> Offset(center.x, 0f)
+            Direction.Down -> Offset(center.x, MAP_BLOCK_COUNT.grid2mpx)
+            Direction.Left -> Offset(0f, center.y)
+            Direction.Right -> Offset(MAP_BLOCK_COUNT.grid2mpx, center.y)
         }
-        return copy(x = oldPos.x.coerceAtLeast(0f), y = oldPos.y.coerceAtLeast(0f))
-    }
-
-    fun getTrajectory(vararg flashbackDeltas: Long): Rect {
-        val bullets = flashbackDeltas.map { getFlashbackBullet(it) }.toTypedArray()
-        return getTrajectory(*bullets)
-    }
-
-    /** Trajectory is the travel path calculated from the bullet's current and past positions */
-    fun getTrajectory(vararg flashbacks: Bullet): Rect {
-        val all = flashbacks.toMutableList().also { it.add(this) }
-        var left = Float.MAX_VALUE
-        var right = Float.MIN_VALUE
-        var top = Float.MAX_VALUE
-        var bottom = Float.MIN_VALUE
-        all.forEach {
-            left = min(left, it.x)
-            right = max(right, it.x)
-            top = min(top, it.y)
-            bottom = max(bottom, it.y)
-        }
-        right += BULLET_COLLISION_SIZE
-        bottom += BULLET_COLLISION_SIZE
-
-//        val impactRadiusOffset = (explosionRadius - BULLET_COLLISION_SIZE) / 2
-//        if (direction.isVertical()) {
-//            left -= impactRadiusOffset
-//            right += impactRadiusOffset
-//        } else {
-//            top -= impactRadiusOffset
-//            bottom += impactRadiusOffset
-//        }
-
-        return Rect(
-            topLeft = Offset(left, top),
-            bottomRight = Offset(right, bottom)
-        )
-    }
-}
-
-private val Bullet.hitPointIfHitBorder: Offset get() =
-    when (direction) {
-        Direction.Up -> Offset(center.x, 0f)
-        Direction.Down -> Offset(center.x, MAP_BLOCK_COUNT.grid2mpx)
-        Direction.Left -> Offset(0f, center.y)
-        Direction.Right -> Offset(MAP_BLOCK_COUNT.grid2mpx, center.y)
-    }
 
 private sealed class TrajectoryCollisionInfo(open val bullet: Bullet, open val hitPoint: Offset)
 
