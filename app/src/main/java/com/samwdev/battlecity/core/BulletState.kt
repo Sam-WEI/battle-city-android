@@ -30,6 +30,7 @@ class BulletState(
     private val soundState: SoundState,
 ) : TickListener {
     private val nextId: AtomicInteger = AtomicInteger(0)
+    var friendlyFire = false
 
     var bullets by mutableStateOf<Map<BulletId, Bullet>>(mapOf())
         private set
@@ -71,6 +72,7 @@ class BulletState(
                 y = bulletOrigin.y,
                 power = tank.bulletPower,
                 ownerTankId = tank.id,
+                side = tank.side,
             ))
         }
         soundState.playSound(SoundEffect.BulletShot)
@@ -216,7 +218,7 @@ class BulletState(
 
     private fun checkCollisionWithTanks(tick: Tick) {
         bullets.values.forEach { bullet ->
-            tankState.tanks.filter { it.value.id != bullet.ownerTankId }
+            tankState.tanks.filter { (it.value.id != bullet.ownerTankId) && (friendlyFire || bullet.side != it.value.side) }
                 .forEach { (_, tank) ->
                     val trajectory = bullet.getTrajectory(tick.delta)
                     // todo should use tank's last position
@@ -270,6 +272,7 @@ data class Bullet(
     val y: MapPixel,
     val power: Int = 1,
     val ownerTankId: TankId,
+    val side: TankSide,
 ) {
     val collisionBox: Rect = Rect(offset = Offset(x, y), size = Size(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE))
     val center: Offset = collisionBox.center
@@ -281,6 +284,7 @@ data class Bullet(
     val bottom: MapPixel = y + BULLET_COLLISION_SIZE
 
     fun getImpactAreaIfHitAt(hitPoint: Offset): Rect {
+        // todo rework
         return Rect(center = hitPoint, radius = explosionRadius)
     }
 
