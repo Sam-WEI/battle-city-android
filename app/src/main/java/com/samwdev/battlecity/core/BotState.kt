@@ -14,10 +14,11 @@ class BotState(
     private val tankState: TankState,
     private val bulletState: BulletState,
 ) : TickListener {
+    var maxBot: Int = 1
     var bots by mutableStateOf<Map<TankId, BotTankController>>(mapOf())
 
     override fun onTick(tick: Tick) {
-        if (bots.size < 1) {
+        if (bots.size < maxBot) {
             spawnBot()
         }
         clearDeadBots()
