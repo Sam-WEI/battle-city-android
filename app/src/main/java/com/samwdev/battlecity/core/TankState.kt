@@ -134,8 +134,7 @@ class TankState(
     fun moveTank(id: TankId, direction: Direction, distance: MapPixel) {
         val tank = getTank(id)
         if (tank.direction != direction) {
-
-            updateTank(id, tank.copy(direction = direction))
+            updateTank(id, tank.turn(into = direction))
         } else {
             // moving forward, check collision
             val allowedRect = checkCollideIfMoving(tank.collisionBox, distance, tank.direction)
