@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.entity.EagleElement
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.anyRealElements
 import java.util.concurrent.atomic.AtomicInteger
@@ -54,6 +55,7 @@ class BulletState(
         checkCollisionWithBricks(tick)
         checkCollisionWithSteels(tick)
         checkCollisionWithTanks(tick)
+        checkCollisionWithEagle(tick)
 
         handleTrajectoryCollisionInfo()
     }
@@ -229,6 +231,15 @@ class BulletState(
                         addBulletTrajectoryCollision(HitTank(bullet = bullet, hitPoint = impactPoint,tank = tank))
                     }
                 }
+        }
+    }
+
+    private fun checkCollisionWithEagle(tick: Tick) {
+        bullets.values.forEach { bullet ->
+            val trajectory = bullet.getTrajectory(tick.delta)
+            EagleElement.getHitPoint(mapState.eagle, trajectory, bullet.direction)?.let {
+                mapState.destroyEagle()
+            }
         }
     }
 

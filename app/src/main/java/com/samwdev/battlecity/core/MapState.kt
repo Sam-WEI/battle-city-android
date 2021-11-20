@@ -27,7 +27,7 @@ class MapState(
     var ices by mutableStateOf(mapElements.ices, policy = referentialEqualityPolicy())
         private set
 
-    val eagle = mapElements.eagle
+    var eagle by mutableStateOf(mapElements.eagle, policy = referentialEqualityPolicy())
 
     override fun onTick(tick: Tick) {
 
@@ -49,5 +49,9 @@ class MapState(
         steels = steels.filter { it.index !in indices }
         val newCount = steels.count()
         return newCount != oldCount
+    }
+
+    fun destroyEagle() {
+        eagle = eagle.copy(dead = true)
     }
 }
