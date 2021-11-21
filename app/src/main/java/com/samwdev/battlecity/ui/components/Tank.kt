@@ -1,5 +1,6 @@
 package com.samwdev.battlecity.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
@@ -38,7 +39,7 @@ fun Tank(tank: Tank) {
             widthInMapPixel = tank.pivotBox.width.grid2mpx,
             heightInMapPixel = tank.pivotBox.height.grid2mpx
         ) {
-            drawSquare(Color(0x55ffffff), topLeft = Offset.Zero, side = tank.pivotBox.width)
+            drawSquare(Color(0x5599ffff), topLeft = Offset.Zero, side = tank.pivotBox.width)
         }
     }
 
@@ -97,7 +98,7 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int, frame: Int = 0) {
 private fun TankPreview() {
     BattleCityTheme {
         CompositionLocalProvider(LocalDebugConfig provides DebugConfig(showPivotBox = true)) {
-            Map(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
+            Map(modifier = Modifier.size(500.dp).background(Color.DarkGray), sideBlockCount = 8) {
                 for (i in 0 until 7) {
                     val x = 3f + 0.2f * i
                     val y = i.toFloat()
