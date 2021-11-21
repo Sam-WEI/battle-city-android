@@ -148,12 +148,22 @@ class BulletState(
                     }
                 }
                 is HitTank -> {
+                    val afterHit = firstCollision.tank.hitBy(bullet)
                     if (bullet.side == TankSide.Player
                         && firstCollision.tank.side == TankSide.Bot
-                        && firstCollision.tank.hitBy(bullet).isAlive) {
+                        && afterHit.isAlive) {
                         soundState.playSound(SoundEffect.BulletHitSteel) // todo should be a special dink sound
                     }
                     tankState.hit(bullet, firstCollision.tank)
+
+                    if (afterHit.isDead) {
+                        explosionState.spawnExplosion(firstCollision.tank.collisionBox.center, ExplosionAnimationBig)
+                        if (firstCollision.tank.side == TankSide.Bot) {
+                            soundState.playSound(SoundEffect.Explosion1)
+                        } else {
+                            soundState.playSound(SoundEffect.Explosion2)
+                        }
+                    }
                 }
                 is HitBullet -> {
 
@@ -255,6 +265,7 @@ class BulletState(
             val trajectory = bullet.getTrajectory(tick.delta)
             EagleElement.getHitPoint(mapState.eagle, trajectory, bullet.direction)?.let {
                 mapState.destroyEagle()
+                addBulletTrajectoryCollision(HitEagle(bullet = bullet, hitPoint = it))
             }
         }
     }
@@ -294,6 +305,9 @@ private data class HitBrick(override val bullet: Bullet, override val hitPoint: 
     TrajectoryCollisionInfo(bullet, hitPoint)
 
 private data class HitSteel(override val bullet: Bullet, override val hitPoint: Offset) :
+    TrajectoryCollisionInfo(bullet, hitPoint)
+
+private data class HitEagle(override val bullet: Bullet, override val hitPoint: Offset) :
     TrajectoryCollisionInfo(bullet, hitPoint)
 
 private data class HitTank(

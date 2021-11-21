@@ -116,12 +116,6 @@ class TankState(
         updateTank(tank.id, updatedTank)
 
         if (updatedTank.isDead) {
-            explosionState.spawnExplosion(tank.collisionBox.center, ExplosionAnimationBig)
-            if (tank.side == TankSide.Bot) {
-                soundState.playSound(SoundEffect.Explosion1)
-            } else {
-                soundState.playSound(SoundEffect.Explosion2)
-            }
             killTank(tank.id)
         }
     }
