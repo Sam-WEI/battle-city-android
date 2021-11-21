@@ -4,10 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import com.samwdev.battlecity.entity.BrickElement
-import com.samwdev.battlecity.entity.EagleElement
-import com.samwdev.battlecity.entity.SteelElement
-import com.samwdev.battlecity.entity.WaterElement
+import com.samwdev.battlecity.entity.*
 import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
@@ -101,7 +98,7 @@ class TankState(
         }
     }
 
-    fun spawnBot(level: TankLevel = TankLevel.Level1): Tank {
+    fun spawnBot(level: TankLevel = TankLevel.Level1, powerUp: PowerUp? = null): Tank {
         val loc = getRandomSpawnLocation()
         return Tank(
             id = nextId.incrementAndGet(),
@@ -111,6 +108,7 @@ class TankState(
             level = level,
             direction = Direction.Right,
             side = TankSide.Bot,
+            powerUp = powerUp,
             timeToSpawn = 1500,
         ).also { addTank(nextId.get(), it) }
     }
