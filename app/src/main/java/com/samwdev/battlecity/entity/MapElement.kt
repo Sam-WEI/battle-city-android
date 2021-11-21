@@ -23,6 +23,8 @@ sealed class MapElement(open val index: Int) : MapElementProperties {
         val colF = x / granularity.toFloat()
         return Offset(colF.grid2mpx, rowF.grid2mpx)
     }
+
+    val rect: Rect get() = Rect(offset = offsetInMapPixel, size = Size(elementSize, elementSize))
 }
 
 data class BrickElement(override val index: Int) : MapElement(index), MapElementProperties by BrickElement {
