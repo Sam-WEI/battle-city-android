@@ -53,7 +53,6 @@ fun PixelDrawScope.drawBotTankLevel1(treadPattern: Int) {
                 drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, y.toFloat()), length = 2f)
             }
         }
-
     }
     // body
     translate(4f, 3f) {
@@ -135,6 +134,41 @@ fun PixelDrawScope.drawBotTankLevel2(treadPattern: Int) {
     }
 }
 
+fun PixelDrawScope.drawBotTankLevel3(treadPattern: Int) {
+    // level 3 looks similar to level 1, do changes above it
+    drawBotTankLevel1(treadPattern)
+    // barrel head
+    drawHorizontalLine(color = BotTankWhite, topLeft = Offset(6f, 0f), length = 2f)
+    drawPixel(color = BotTankGray, topLeft = Offset(8f, 0f))
+    translate(4f, 3f) {
+        this as PixelDrawScope
+        drawPixel(color = BotTankWhite, topLeft = Offset(1f, 10f))
+        drawVerticalLine(color = BotTankWhite, topLeft = Offset(2f, 9f), 2f)
+        drawPixel(color = BotTankGray, topLeft = Offset(2f, 11f))
+        drawPixel(color = BotTankWhite, topLeft = Offset(3f, 11f))
+
+        drawPixel(color = BotTankBlue, topLeft = Offset(4f, 11f))
+        drawPixel(color = BotTankBlue, topLeft = Offset(5f, 10f))
+    }
+    // left tread update
+    translate(1f, 3f) {
+        this as PixelDrawScope
+        drawPixel(color = BotTankWhite, topLeft = Offset(0f, 11f))
+        drawHorizontalLine(color = BotTankGray, topLeft = Offset(1f, 11f), length = 2f)
+        if (treadPattern == 0) {
+            drawHorizontalLine(color = BotTankBlue, topLeft = Offset(0f, 11f), length = 2f)
+        }
+    }
+    // right tread update
+    translate(11f, 3f) {
+        this as PixelDrawScope
+        drawHorizontalLine(color = BotTankGray, topLeft = Offset(0f, 11f), length = 3f)
+        if (treadPattern == 0) {
+            drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, 11f), length = 2f)
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun BotTankPreview() {
@@ -156,6 +190,14 @@ private fun BotTankPreview() {
                 x = 0f.grid2mpx,
                 y = 1f.grid2mpx,
                 level = TankLevel.Level2,
+                side = TankSide.Bot,
+                hp = 1)
+            )
+            TankTreadsPreview(tank = Tank(
+                id = 0,
+                x = 0f.grid2mpx,
+                y = 2f.grid2mpx,
+                level = TankLevel.Level3,
                 side = TankSide.Bot,
                 hp = 1)
             )
