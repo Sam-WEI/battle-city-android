@@ -123,7 +123,6 @@ fun PixelDrawScope.drawPlayerTankLevel1(treadPattern: Int, palette: TankColorPal
             size = Size(5f, 1f),
         )
     }
-
     // barrel
     drawVerticalLine(
         color = color1,
@@ -132,31 +131,46 @@ fun PixelDrawScope.drawPlayerTankLevel1(treadPattern: Int, palette: TankColorPal
     )
 }
 
+fun PixelDrawScope.drawPlayerTankLevel2(treadPattern: Int, palette: TankColorPalette) {
+
+}
+
+fun PixelDrawScope.drawPlayerTankLevel3(treadPattern: Int, palette: TankColorPalette) {
+
+}
+
+fun PixelDrawScope.drawPlayerTankLevel4(treadPattern: Int, palette: TankColorPalette) {
+
+}
+
+
 @Preview
 @Composable
 private fun PlayerTankPreview() {
     BattleCityTheme {
         Map(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
-            TankTreadsPreview(
-                tank = Tank(
-                    id = 0,
-                    x = 0f.grid2mpx, y = 0f.grid2mpx,
-                    level = TankLevel.Level1,
-                    side = TankSide.Player,
-                    hp = 1,
-                ),
-                palette = PlayerYellowPalette
-            )
-            TankTreadsPreview(
-                tank = Tank(
-                    id = 0,
-                    x = 0f.grid2mpx, y = 1f.grid2mpx,
-                    level = TankLevel.Level1,
-                    side = TankSide.Player,
-                    hp = 1,
-                ),
-                palette = PlayerGreenPalette
-            )
+            TankLevel.values().forEachIndexed { index, tankLevel ->
+                TankTreadsPreview(
+                    tank = Tank(
+                        id = 0,
+                        x = 0f.grid2mpx, y = index.toFloat().grid2mpx,
+                        level = tankLevel,
+                        side = TankSide.Player,
+                        hp = 1,
+                    ),
+                    palette = PlayerYellowPalette
+                )
+                TankTreadsPreview(
+                    tank = Tank(
+                        id = 0,
+                        x = 2f.grid2mpx, y = index.toFloat().grid2mpx,
+                        level = tankLevel,
+                        side = TankSide.Player,
+                        hp = 1,
+                    ),
+                    palette = PlayerGreenPalette
+                )
+            }
         }
     }
 }
