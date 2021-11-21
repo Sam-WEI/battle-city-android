@@ -3,6 +3,7 @@ package com.samwdev.battlecity.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -169,51 +170,63 @@ fun PixelDrawScope.drawBotTankLevel3(treadPattern: Int) {
     }
 }
 
-fun PixelDrawScope.drawBotTankLevel4(treadPattern: Int) {
+private val BotLevel4ColorGrayPalette = Triple(BotTankWhite, BotTankGray, BotTankBlue)
+private val BotLevel4ColorGreenPalette = Triple(Color(172, 246, 199), Color(0, 129, 43), Color(0, 72, 0))
+private val BotLevel4ColorYellowPalette = Triple(Color(227, 227, 137), Color(227, 145, 30), Color(96, 96, 0))
+private val HpToFlashColorMap = mapOf(
+    1 to listOf(BotLevel4ColorGrayPalette, BotLevel4ColorGrayPalette),
+    2 to listOf(BotLevel4ColorGreenPalette, BotLevel4ColorYellowPalette),
+    3 to listOf(BotLevel4ColorGrayPalette, BotLevel4ColorYellowPalette),
+    4 to listOf(BotLevel4ColorGrayPalette, BotLevel4ColorGreenPalette),
+)
+
+fun PixelDrawScope.drawBotTankLevel4(treadPattern: Int, hp: Int, colorFrame: Int) {
+    val colorPalette = HpToFlashColorMap[hp]?.get(colorFrame) ?: BotLevel4ColorGrayPalette
+    
     translate(1f, 0f) {
         this as PixelDrawScope
-        drawRect(color = BotTankGray, topLeft = Offset(0f, 0f), size = Size(3f, 15f))
-        drawVerticalLine(color = BotTankWhite, topLeft = Offset(0f, 0f), length = 15f)
+        drawRect(color = colorPalette.second, topLeft = Offset(0f, 0f), size = Size(3f, 15f))
+        drawVerticalLine(color = colorPalette.first, topLeft = Offset(0f, 0f), length = 15f)
         for (y in treadPattern..14 step 2) {
-            drawHorizontalLine(color = BotTankBlue, topLeft = Offset(0f, y.toFloat()), length = 2f)
+            drawHorizontalLine(color = colorPalette.third, topLeft = Offset(0f, y.toFloat()), length = 2f)
         }
         if (treadPattern == 0) {
-            drawPixel(color = BotTankGray, topLeft = Offset(0f, 0f))
+            drawPixel(color = colorPalette.second, topLeft = Offset(0f, 0f))
         }
     }
     translate(11f, 0f) {
         this as PixelDrawScope
-        drawRect(color = BotTankGray, topLeft = Offset(0f, 0f), size = Size(3f, 15f))
-        drawPixel(color = BotTankWhite, topLeft = Offset(0f, 0f))
-        drawVerticalLine(color = BotTankBlue, topLeft = Offset(0f, 3f), length = 10f)
-        drawPixel(color = BotTankBlue, topLeft = Offset(0f, 14f))
+        drawRect(color = colorPalette.second, topLeft = Offset(0f, 0f), size = Size(3f, 15f))
+        drawPixel(color = colorPalette.first, topLeft = Offset(0f, 0f))
+        drawVerticalLine(color = colorPalette.third, topLeft = Offset(0f, 3f), length = 10f)
+        drawPixel(color = colorPalette.third, topLeft = Offset(0f, 14f))
         for (y in treadPattern..14 step 2) {
-            drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, y.toFloat()), length = 2f)
+            drawHorizontalLine(color = colorPalette.third, topLeft = Offset(1f, y.toFloat()), length = 2f)
         }
     }
     translate(4f, 1f) {
         this as PixelDrawScope
-        drawRect(color = BotTankGray, topLeft = Offset(0f, 0f), size = Size(7f, 12f))
-        drawHorizontalLine(color = BotTankBlue, topLeft = Offset(0f, 12f), length = 7f)
-        drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, 11f), length = 5f)
-        drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, 0f), length = 5f)
-        drawPixel(color = BotTankGray, topLeft = Offset(3f, 13f))
+        drawRect(color = colorPalette.second, topLeft = Offset(0f, 0f), size = Size(7f, 12f))
+        drawHorizontalLine(color = colorPalette.third, topLeft = Offset(0f, 12f), length = 7f)
+        drawHorizontalLine(color = colorPalette.third, topLeft = Offset(1f, 11f), length = 5f)
+        drawHorizontalLine(color = colorPalette.third, topLeft = Offset(1f, 0f), length = 5f)
+        drawPixel(color = colorPalette.second, topLeft = Offset(3f, 13f))
 
-        drawVerticalLine(color = BotTankWhite, topLeft = Offset(0f, 2f), length = 9f)
-        drawVerticalLine(color = BotTankWhite, topLeft = Offset(1f, 4f), length = 2f)
-        drawHorizontalLine(color = BotTankWhite, topLeft = Offset(1f, 5f), length = 5f)
-        drawVerticalLine(color = BotTankBlue, topLeft = Offset(4f, 1f), length = 4f)
-        drawVerticalLine(color = BotTankWhite, topLeft = Offset(5f, 3f), length = 3f)
+        drawVerticalLine(color = colorPalette.first, topLeft = Offset(0f, 2f), length = 9f)
+        drawVerticalLine(color = colorPalette.first, topLeft = Offset(1f, 4f), length = 2f)
+        drawHorizontalLine(color = colorPalette.first, topLeft = Offset(1f, 5f), length = 5f)
+        drawVerticalLine(color = colorPalette.third, topLeft = Offset(4f, 1f), length = 4f)
+        drawVerticalLine(color = colorPalette.first, topLeft = Offset(5f, 3f), length = 3f)
 
-        drawRect(color = BotTankWhite, topLeft = Offset(3f, 7f), size = Size(2f, 2f))
-        drawVerticalLine(color = BotTankBlue, topLeft = Offset(2f, 7f), length = 2f)
-        drawVerticalLine(color = BotTankBlue, topLeft = Offset(3f, 6f), length = 2f)
-        drawVerticalLine(color = BotTankBlue, topLeft = Offset(6f, 4f), length = 7f)
+        drawRect(color = colorPalette.first, topLeft = Offset(3f, 7f), size = Size(2f, 2f))
+        drawVerticalLine(color = colorPalette.third, topLeft = Offset(2f, 7f), length = 2f)
+        drawVerticalLine(color = colorPalette.third, topLeft = Offset(3f, 6f), length = 2f)
+        drawVerticalLine(color = colorPalette.third, topLeft = Offset(6f, 4f), length = 7f)
     }
     // barrel
-    drawVerticalLine(color = BotTankWhite, topLeft = Offset(6f, 0f), length = 2f)
-    drawVerticalLine(color = BotTankWhite, topLeft = Offset(7f, 0f), length = 6f)
-    drawVerticalLine(color = BotTankGray, topLeft = Offset(8f, 0f), length = 2f)
+    drawVerticalLine(color = colorPalette.first, topLeft = Offset(6f, 0f), length = 2f)
+    drawVerticalLine(color = colorPalette.first, topLeft = Offset(7f, 0f), length = 6f)
+    drawVerticalLine(color = colorPalette.second, topLeft = Offset(8f, 0f), length = 2f)
 
 }
 
