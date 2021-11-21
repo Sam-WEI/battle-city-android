@@ -152,6 +152,12 @@ fun DebugConfigControlPanel(
                     valueRange = 0f..50f,
                     onValueChange = { onConfigChange(debugConfig.copy(maxBot = it.toInt())) }
                 )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Who is your daddy",
+                    value = debugConfig.whoIsYourDaddy,
+                    onSwitch = { onConfigChange(debugConfig.copy(whoIsYourDaddy = it)) }
+                )
             }
         }
     }

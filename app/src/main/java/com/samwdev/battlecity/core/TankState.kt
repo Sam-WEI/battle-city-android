@@ -17,14 +17,13 @@ fun rememberTankState(
     mapState: MapState,
 ): TankState {
     return remember {
-        TankState(explosionState, soundState, mapState)
+        TankState(soundState, mapState)
     }
 }
 
 private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
 
 class TankState(
-    private val explosionState: ExplosionState,
     private val soundState: SoundState,
     private val mapState: MapState,
 ) : TickListener {
@@ -45,6 +44,14 @@ class TankState(
 
     var playerTankId: TankId = NOT_AN_ID
         private set
+    var whoIsYourDaddy: Boolean = false
+        set(value) {
+            field = value
+            if (playerTankId == NOT_AN_ID) {
+                return
+            }
+            updateTank(playerTankId, getTank(playerTankId).copy(hp = if (value) Int.MAX_VALUE else 1))
+        }
 
     override fun onTick(tick: Tick) {
         val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
@@ -166,6 +173,9 @@ class TankState(
     }
 
     private fun updateTank(id: TankId, tank: Tank) {
+        if (id == NOT_AN_ID) {
+            return
+        }
         tanks = tanks.toMutableMap().apply {
             put(id, tank)
         }
