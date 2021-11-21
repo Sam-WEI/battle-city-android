@@ -51,7 +51,11 @@ fun Tank(tank: Tank) {
             modifier = Modifier
                 .rotate(tank.direction.degree)
         ) {
-            drawTank(treadPattern)
+            if (tank.side == TankSide.Player) {
+                drawTank(treadPattern)
+            } else {
+                drawBotTank(treadPattern)
+            }
         }
     } else {
         SpawnBlink(topLeft = tank.offset)
@@ -180,12 +184,10 @@ private fun PixelDrawScope.drawTank(treadPattern: Int) {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+private fun TankPreview() {
     BattleCityTheme {
         CompositionLocalProvider(LocalDebugConfig provides DebugConfig(showPivotBox = true)) {
             Map(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
-                Tank(Tank(id = 0, side = TankSide.Player, hp = 1))
-
                 for (i in 0 until 7) {
                     val x = 3f + 0.2f * i
                     val y = i.toFloat()
@@ -200,8 +202,9 @@ fun DefaultPreview() {
                     Text(text = "tank x = $x", Modifier.offset((x + 1).grid2mpx.mpx2dp, y.grid2mpx.mpx2dp))
                     Text(text = "pivot x = ${tank.pivotBox.left / 1f.grid2mpx}", Modifier.offset((x + 1).grid2mpx.mpx2dp, (y + 0.5f).grid2mpx.mpx2dp))
                 }
-                Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 1.7f.grid2mpx, side = TankSide.Player, hp = 1))
-                Tank(Tank(id = 1, x = 1.5f.grid2mpx, y = 3.8f.grid2mpx, side = TankSide.Player, hp = 1))
+                Tank(Tank(id = 0, x = 0f.grid2mpx, y = 0f.grid2mpx, side = TankSide.Player, level = TankLevel.Level1, hp = 1, direction = Direction.Up))
+                Tank(Tank(id = 0, x = 1f.grid2mpx, y = 0f.grid2mpx, side = TankSide.Bot, level = TankLevel.Level1, hp = 1, direction = Direction.Up))
+
             }
         }
     }
