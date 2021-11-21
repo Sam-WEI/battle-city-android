@@ -169,6 +169,54 @@ fun PixelDrawScope.drawBotTankLevel3(treadPattern: Int) {
     }
 }
 
+fun PixelDrawScope.drawBotTankLevel4(treadPattern: Int) {
+    translate(1f, 0f) {
+        this as PixelDrawScope
+        drawRect(color = BotTankGray, topLeft = Offset(0f, 0f), size = Size(3f, 15f))
+        drawVerticalLine(color = BotTankWhite, topLeft = Offset(0f, 0f), length = 15f)
+        for (y in treadPattern..14 step 2) {
+            drawHorizontalLine(color = BotTankBlue, topLeft = Offset(0f, y.toFloat()), length = 2f)
+        }
+        if (treadPattern == 0) {
+            drawPixel(color = BotTankGray, topLeft = Offset(0f, 0f))
+        }
+    }
+    translate(11f, 0f) {
+        this as PixelDrawScope
+        drawRect(color = BotTankGray, topLeft = Offset(0f, 0f), size = Size(3f, 15f))
+        drawPixel(color = BotTankWhite, topLeft = Offset(0f, 0f))
+        drawVerticalLine(color = BotTankBlue, topLeft = Offset(0f, 3f), length = 10f)
+        drawPixel(color = BotTankBlue, topLeft = Offset(0f, 14f))
+        for (y in treadPattern..14 step 2) {
+            drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, y.toFloat()), length = 2f)
+        }
+    }
+    translate(4f, 1f) {
+        this as PixelDrawScope
+        drawRect(color = BotTankGray, topLeft = Offset(0f, 0f), size = Size(7f, 12f))
+        drawHorizontalLine(color = BotTankBlue, topLeft = Offset(0f, 12f), length = 7f)
+        drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, 11f), length = 5f)
+        drawHorizontalLine(color = BotTankBlue, topLeft = Offset(1f, 0f), length = 5f)
+        drawPixel(color = BotTankGray, topLeft = Offset(3f, 13f))
+
+        drawVerticalLine(color = BotTankWhite, topLeft = Offset(0f, 2f), length = 9f)
+        drawVerticalLine(color = BotTankWhite, topLeft = Offset(1f, 4f), length = 2f)
+        drawHorizontalLine(color = BotTankWhite, topLeft = Offset(1f, 5f), length = 5f)
+        drawVerticalLine(color = BotTankBlue, topLeft = Offset(4f, 1f), length = 4f)
+        drawVerticalLine(color = BotTankWhite, topLeft = Offset(5f, 3f), length = 3f)
+
+        drawRect(color = BotTankWhite, topLeft = Offset(3f, 7f), size = Size(2f, 2f))
+        drawVerticalLine(color = BotTankBlue, topLeft = Offset(2f, 7f), length = 2f)
+        drawVerticalLine(color = BotTankBlue, topLeft = Offset(3f, 6f), length = 2f)
+        drawVerticalLine(color = BotTankBlue, topLeft = Offset(6f, 4f), length = 7f)
+    }
+    // barrel
+    drawVerticalLine(color = BotTankWhite, topLeft = Offset(6f, 0f), length = 2f)
+    drawVerticalLine(color = BotTankWhite, topLeft = Offset(7f, 0f), length = 6f)
+    drawVerticalLine(color = BotTankGray, topLeft = Offset(8f, 0f), length = 2f)
+
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun BotTankPreview() {
@@ -198,6 +246,14 @@ private fun BotTankPreview() {
                 x = 0f.grid2mpx,
                 y = 2f.grid2mpx,
                 level = TankLevel.Level3,
+                side = TankSide.Bot,
+                hp = 1)
+            )
+            TankTreadsPreview(tank = Tank(
+                id = 0,
+                x = 0f.grid2mpx,
+                y = 3f.grid2mpx,
+                level = TankLevel.Level4,
                 side = TankSide.Bot,
                 hp = 1)
             )
