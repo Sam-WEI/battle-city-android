@@ -51,36 +51,39 @@ fun Tank(tank: Tank) {
 
 @Composable
 fun TankWithTreadPattern(tank: Tank, treadPattern: Int) {
-    PixelCanvas(
-        modifier = when (tank.direction) {
-            Direction.Up -> Modifier
-            Direction.Down -> Modifier.scale(1f, -1f)
-            Direction.Left -> Modifier
-                .scale(1f, -1f)
-                .rotate(Direction.Left.degree)
-            Direction.Right -> Modifier.rotate(Direction.Right.degree)
-        },
-        topLeftInMapPixel = Offset(tank.x, tank.y),
-        widthInMapPixel = TANK_MAP_PIXEL,
-        heightInMapPixel = TANK_MAP_PIXEL
-    ) {
-        when (tank.side) {
-            TankSide.Player -> {
-                when (tank.level) {
-                    TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern)
-                    TankLevel.Level2 -> drawPlayerTankLevel1(treadPattern)
-                    TankLevel.Level3 -> drawPlayerTankLevel1(treadPattern)
-                    TankLevel.Level4 -> drawPlayerTankLevel1(treadPattern)
+    Framer(framesDef = listOf(40, 40), infinite = true) {
+        // todo no need for framer if not power-up tank or level 4 hp 1
+        val frame = LocalFramer.current
+        PixelCanvas(
+            modifier = when (tank.direction) {
+                Direction.Up -> Modifier
+                Direction.Down -> Modifier.scale(1f, -1f)
+                Direction.Left -> Modifier
+                    .scale(1f, -1f)
+                    .rotate(Direction.Left.degree)
+                Direction.Right -> Modifier.rotate(Direction.Right.degree)
+            },
+            topLeftInMapPixel = Offset(tank.x, tank.y),
+            widthInMapPixel = TANK_MAP_PIXEL,
+            heightInMapPixel = TANK_MAP_PIXEL
+        ) {
+            when (tank.side) {
+                TankSide.Player -> {
+                    when (tank.level) {
+                        TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern)
+                        TankLevel.Level2 -> drawPlayerTankLevel1(treadPattern)
+                        TankLevel.Level3 -> drawPlayerTankLevel1(treadPattern)
+                        TankLevel.Level4 -> drawPlayerTankLevel1(treadPattern)
+                    }
                 }
-            }
-            TankSide.Bot -> {
-                when (tank.level) {
-                    TankLevel.Level1 -> drawBotTankLevel1(treadPattern)
-                    TankLevel.Level2 -> drawBotTankLevel2(treadPattern)
-                    TankLevel.Level3 -> drawBotTankLevel3(treadPattern)
-                    TankLevel.Level4 -> drawBotTankLevel4(treadPattern)
+                TankSide.Bot -> {
+                    when (tank.level) {
+                        TankLevel.Level1 -> drawBotTankLevel1(treadPattern)
+                        TankLevel.Level2 -> drawBotTankLevel2(treadPattern)
+                        TankLevel.Level3 -> drawBotTankLevel3(treadPattern)
+                        TankLevel.Level4 -> drawBotTankLevel4(treadPattern, tank.hp, frame)
+                    }
                 }
-
             }
         }
     }
