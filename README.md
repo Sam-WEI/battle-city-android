@@ -1,16 +1,32 @@
 ## Features
-[ ] AI
+[x] Joystick 
+[x] Map elements
+[x] Water animation
+[x] Tank treads animation
+[x] Bullet collision test
+[x] Explosion animation
+[x] Tank collision with map elements
+[ ] Tank collision with tanks
+[x] Spawn blink
+[ ] Spawn shield
+[ ] Power-ups
+[ ] Drive on ice
+[x] Debug control panel
 [ ] Map selection
 [ ] HUD
 [ ] Scoreboard
+[ ] Font
+[ ] Menu screens
+[ ] Map editor
+[ ] AI
+[ ] Online
 
 ## Details:
 [ ] bullets have aoe affect on surface.
 [ ] collision between bullets doesn't explode
-[ ] level 3+ shoots 2 bullets at a time
-[ ] level 4 bullets crack 1 layer of steel of 2 layers of brick
+[x] level 3+ shoots 2 bullets at a time
+[x] level 4 bullets crack 1 layer of steel or 2 layers of brick
 [ ] all level 4 bots change color scheme simultaneously every 10 seconds.
-[ ] level 4 bots have different color schemes.
-green -> yellow -> yellow -> gray -> die
-gray -> gray -> green -> gray -> die
+[ ] level 4 bots have different color schemes: (1) green -> yellow -> yellow -> gray -> die. (2) gray -> gray -> green -> gray -> die
 [ ] level 4 bots with power-up flash gray-red
+[ ] tank ui mirror
