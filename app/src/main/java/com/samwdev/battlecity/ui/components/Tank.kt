@@ -20,6 +20,20 @@ import kotlin.math.roundToInt
 
 private const val TreadPatternCycleDistance = 5
 
+private val BotColorNormalPalette = TankColorPalette(Color.White, Color(163, 163, 163), Color(0, 58, 65))
+private val BotColorWithPowerUpPalette = TankColorPalette(Color.White, Color(172, 43, 30), Color(80, 0, 112))
+
+private val BotLevel4ColorGreenPalette = TankColorPalette(Color(172, 246, 199), Color(0, 129, 43), Color(0, 72, 0))
+private val BotLevel4ColorYellowPalette = TankColorPalette(Color(227, 227, 137), Color(227, 145, 30), Color(96, 96, 0))
+private val BotLevel4HpToFlashingPaletteMap = mapOf(
+    1 to listOf(BotColorNormalPalette, BotColorNormalPalette),
+    2 to listOf(BotLevel4ColorGreenPalette, BotLevel4ColorYellowPalette),
+    3 to listOf(BotColorNormalPalette, BotLevel4ColorYellowPalette),
+    4 to listOf(BotColorNormalPalette, BotLevel4ColorGreenPalette),
+)
+
+data class TankColorPalette(val light: Color, val medium: Color, val dark: Color)
+
 @Composable
 fun Tank(tank: Tank) {
     var travelDistance by remember { mutableStateOf(0f) }
@@ -44,13 +58,27 @@ fun Tank(tank: Tank) {
     }
 
     if (tank.timeToSpawn <= 0) {
-        if (tank.side == TankSide.Bot && tank.level == TankLevel.Level4 && tank.hp != 1) {
+        if (tank.side == TankSide.Bot && tank.level == TankLevel.Level4 && tank.hp > 1) {
             Framer(framesDef = listOf(40, 40), infinite = true) {
-                val frame = LocalFramer.current
-                TankWithTreadPattern(tank = tank, treadPattern = treadPattern, frame = frame)
+                val hp = tank.hp.coerceIn(1..4)
+                TankWithTreadPattern(
+                    tank = tank,
+                    treadPattern = treadPattern,
+                    palette = BotLevel4HpToFlashingPaletteMap.getValue(hp)[LocalFramer.current]
+                )
+            }
+        } else if (tank.withPowerUp) {
+            Framer(framesDef = listOf(140, 140), infinite = true) {
+                TankWithTreadPattern(
+                    tank = tank,
+                    treadPattern = treadPattern,
+                    palette = if (LocalFramer.current == 0) {
+                        BotColorNormalPalette
+                    } else { BotColorWithPowerUpPalette }
+                )
             }
         } else {
-            TankWithTreadPattern(tank = tank, treadPattern = treadPattern)
+            TankWithTreadPattern(tank = tank, treadPattern = treadPattern, BotColorNormalPalette)
         }
     } else {
         SpawnBlink(topLeft = tank.offset)
@@ -58,7 +86,7 @@ fun Tank(tank: Tank) {
 }
 
 @Composable
-fun TankWithTreadPattern(tank: Tank, treadPattern: Int, frame: Int = 0) {
+fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalette) {
     PixelCanvas(
         modifier = when (tank.direction) {
             Direction.Up -> Modifier
@@ -83,10 +111,10 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int, frame: Int = 0) {
             }
             TankSide.Bot -> {
                 when (tank.level) {
-                    TankLevel.Level1 -> drawBotTankLevel1(treadPattern)
-                    TankLevel.Level2 -> drawBotTankLevel2(treadPattern)
-                    TankLevel.Level3 -> drawBotTankLevel3(treadPattern)
-                    TankLevel.Level4 -> drawBotTankLevel4(treadPattern, tank.hp, frame)
+                    TankLevel.Level1 -> drawBotTankLevel1(treadPattern, palette)
+                    TankLevel.Level2 -> drawBotTankLevel2(treadPattern, palette)
+                    TankLevel.Level3 -> drawBotTankLevel3(treadPattern, palette)
+                    TankLevel.Level4 -> drawBotTankLevel4(treadPattern, palette)
                 }
             }
         }
