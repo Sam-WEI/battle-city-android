@@ -63,7 +63,6 @@ class BattleState(
                 explosionState.onTick(tick)
             }
         }
-
-        tankState.spawnPlayer()
+        tankState.spawnPlayer(TankLevel.Level4)
     }
 }
