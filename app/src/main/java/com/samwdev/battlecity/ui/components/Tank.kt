@@ -63,7 +63,9 @@ fun Tank(tank: Tank) {
 
     if (tank.timeToSpawn <= 0) {
         when (tank.side) {
-            TankSide.Player -> TankWithTreadPattern(tank = tank, treadPattern = treadPattern, PlayerGreenPalette)
+            TankSide.Player -> {
+                TankWithTreadPattern(tank = tank, treadPattern = treadPattern, PlayerGreenPalette)
+            }
             TankSide.Bot -> {
                 if (tank.level == TankLevel.Level4 && tank.hp > 1) {
                     Framer(framesDef = listOf(40, 40), infinite = true) {
@@ -111,9 +113,9 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalett
             TankSide.Player -> {
                 when (tank.level) {
                     TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern, palette)
-                    TankLevel.Level2 -> drawPlayerTankLevel1(treadPattern, palette)
-                    TankLevel.Level3 -> drawPlayerTankLevel1(treadPattern, palette)
-                    TankLevel.Level4 -> drawPlayerTankLevel1(treadPattern, palette)
+                    TankLevel.Level2 -> drawPlayerTankLevel2(treadPattern, palette)
+                    TankLevel.Level3 -> drawPlayerTankLevel3(treadPattern, palette)
+                    TankLevel.Level4 -> drawPlayerTankLevel4(treadPattern, palette)
                 }
             }
             TankSide.Bot -> {
@@ -148,8 +150,26 @@ private fun TankPreview() {
                     Text(text = "tank x = $x", Modifier.offset((x + 1).grid2mpx.mpx2dp, y.grid2mpx.mpx2dp))
                     Text(text = "pivot x = ${tank.pivotBox.left / 1f.grid2mpx}", Modifier.offset((x + 1).grid2mpx.mpx2dp, (y + 0.5f).grid2mpx.mpx2dp))
                 }
-                Tank(Tank(id = 0, x = 0f.grid2mpx, y = 0f.grid2mpx, side = TankSide.Player, level = TankLevel.Level1, hp = 1, direction = Direction.Up))
-                Tank(Tank(id = 0, x = 1f.grid2mpx, y = 0f.grid2mpx, side = TankSide.Bot, level = TankLevel.Level1, hp = 1, direction = Direction.Up))
+                TankLevel.values().forEachIndexed { index, tankLevel ->
+                    Tank(Tank(
+                        id = 0,
+                        x = 0f.grid2mpx,
+                        y = index.toFloat().grid2mpx,
+                        side = TankSide.Player,
+                        level = tankLevel,
+                        hp = 1,
+                        direction = Direction.Up)
+                    )
+                    Tank(Tank(
+                        id = 0,
+                        x = 1f.grid2mpx,
+                        y = index.toFloat().grid2mpx,
+                        side = TankSide.Bot,
+                        level = tankLevel,
+                        hp = 1,
+                        direction = Direction.Up)
+                    )
+                }
             }
         }
     }
