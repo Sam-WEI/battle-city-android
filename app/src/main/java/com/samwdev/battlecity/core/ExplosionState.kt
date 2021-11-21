@@ -89,15 +89,15 @@ data class ExplosionAnimation(val frames: List<ExplosionFrame>)
 
 val ExplosionAnimationBig = ExplosionAnimation(listOf(
     ExplosionFrame(80, ExplosionUiPattern.Small0),
-    ExplosionFrame(50, ExplosionUiPattern.Small1),
-    ExplosionFrame(80, ExplosionUiPattern.Small2),
-    ExplosionFrame(50, ExplosionUiPattern.Large0),
     ExplosionFrame(80, ExplosionUiPattern.Small1),
-    ExplosionFrame(50, ExplosionUiPattern.Small2),
+    ExplosionFrame(80, ExplosionUiPattern.Small2),
+    ExplosionFrame(80, ExplosionUiPattern.Large0),
+    ExplosionFrame(80, ExplosionUiPattern.Large1),
+    ExplosionFrame(80, ExplosionUiPattern.Small2),
 ))
 
 val ExplosionAnimationSmall = ExplosionAnimation(listOf(
-    ExplosionFrame(80, ExplosionUiPattern.Small0),
+    ExplosionFrame(50, ExplosionUiPattern.Small0),
     ExplosionFrame(50, ExplosionUiPattern.Small1),
-    ExplosionFrame(80, ExplosionUiPattern.Small2),
+    ExplosionFrame(50, ExplosionUiPattern.Small2),
 ))
