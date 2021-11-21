@@ -4,12 +4,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import com.samwdev.battlecity.utils.logE
 
 
 @Composable
@@ -25,6 +26,7 @@ private val steelColorDark = Color(88, 88, 88)
 
 @Composable
 private fun SteelBlock(element: SteelElement) {
+    val drawIndex = LocalDebugConfig.current.showSteelIndex
     PixelCanvas(
         widthInMapPixel = SteelElement.elementSize,
         heightInMapPixel = SteelElement.elementSize,
@@ -53,7 +55,16 @@ private fun SteelBlock(element: SteelElement) {
             topLeft = Offset(2f, 2f),
             side = 4f,
         )
+        if (drawIndex) {
+            drawText(
+                "${element.index}",
+                color = Color.Magenta,
+                offset = Offset(0f, 5f),
+                fontSize = 1.3.sp
+            )
+        }
     }
+
 }
 
 @Preview
