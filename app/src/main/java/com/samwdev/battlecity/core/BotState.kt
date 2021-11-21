@@ -43,7 +43,7 @@ class BotState(
     }
 
     fun spawnBot() {
-        val botTank = tankState.spawnBot(TankLevel.Level3)
+        val botTank = tankState.spawnBot(TankLevel.values().random())
         bots = bots.toMutableMap().apply {
             put(botTank.id, BotTankController(tankState = tankState, tankId = botTank.id, bulletState = bulletState))
         }

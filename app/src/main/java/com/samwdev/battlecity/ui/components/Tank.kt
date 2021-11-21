@@ -78,7 +78,7 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int) {
                     TankLevel.Level1 -> drawBotTankLevel1(treadPattern)
                     TankLevel.Level2 -> drawBotTankLevel2(treadPattern)
                     TankLevel.Level3 -> drawBotTankLevel3(treadPattern)
-                    TankLevel.Level4 -> drawBotTankLevel1(treadPattern)
+                    TankLevel.Level4 -> drawBotTankLevel4(treadPattern)
                 }
 
             }
