@@ -247,11 +247,38 @@ private fun BotTankPreview() {
             )
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 0f.grid2mpx,
-                y = 3f.grid2mpx,
+                x = 2f.grid2mpx,
+                y = 0f.grid2mpx,
                 level = TankLevel.Level4,
                 side = TankSide.Bot,
                 hp = 1)
+            )
+            TankTreadsPreview(tank = Tank(
+                id = 0,
+                x = 2f.grid2mpx,
+                y = 1f.grid2mpx,
+                level = TankLevel.Level4,
+                side = TankSide.Bot,
+                hp = 1),
+                palette = BotLevel4GreenPalette
+            )
+            TankTreadsPreview(tank = Tank(
+                id = 0,
+                x = 2f.grid2mpx,
+                y = 2f.grid2mpx,
+                level = TankLevel.Level4,
+                side = TankSide.Bot,
+                hp = 1),
+                palette = BotLevel4YellowPalette
+            )
+            TankTreadsPreview(tank = Tank(
+                id = 0,
+                x = 2f.grid2mpx,
+                y = 3f.grid2mpx,
+                level = TankLevel.Level4,
+                side = TankSide.Bot,
+                hp = 1),
+                palette = BotPowerUpPalette
             )
         }
     }

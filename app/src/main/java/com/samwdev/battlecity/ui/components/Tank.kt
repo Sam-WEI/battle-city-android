@@ -20,16 +20,20 @@ import kotlin.math.roundToInt
 
 private const val TreadPatternCycleDistance = 5
 
-private val BotColorNormalPalette = TankColorPalette(Color.White, Color(163, 163, 163), Color(0, 58, 65))
-private val BotColorWithPowerUpPalette = TankColorPalette(Color.White, Color(172, 43, 30), Color(80, 0, 112))
+val PlayerYellowPalette = TankColorPalette(Color(227, 227, 137), Color(227, 145, 30), Color(96, 96, 0))
+val PlayerGreenPalette = TankColorPalette(Color(172, 246, 199), Color(0, 129, 43), Color(0, 72, 0))
 
-private val BotLevel4ColorGreenPalette = TankColorPalette(Color(172, 246, 199), Color(0, 129, 43), Color(0, 72, 0))
-private val BotLevel4ColorYellowPalette = TankColorPalette(Color(227, 227, 137), Color(227, 145, 30), Color(96, 96, 0))
+val BotNormalPalette = TankColorPalette(Color.White, Color(163, 163, 163), Color(0, 58, 65))
+val BotPowerUpPalette = TankColorPalette(Color.White, Color(172, 43, 30), Color(80, 0, 112))
+
+val BotLevel4GreenPalette = PlayerGreenPalette
+val BotLevel4YellowPalette = PlayerYellowPalette
+
 private val BotLevel4HpToFlashingPaletteMap = mapOf(
-    1 to listOf(BotColorNormalPalette, BotColorNormalPalette),
-    2 to listOf(BotLevel4ColorGreenPalette, BotLevel4ColorYellowPalette),
-    3 to listOf(BotColorNormalPalette, BotLevel4ColorYellowPalette),
-    4 to listOf(BotColorNormalPalette, BotLevel4ColorGreenPalette),
+    1 to listOf(BotNormalPalette, BotNormalPalette),
+    2 to listOf(BotLevel4GreenPalette, BotLevel4YellowPalette),
+    3 to listOf(BotNormalPalette, BotLevel4YellowPalette),
+    4 to listOf(BotNormalPalette, BotLevel4GreenPalette),
 )
 
 data class TankColorPalette(val light: Color, val medium: Color, val dark: Color)
@@ -58,27 +62,30 @@ fun Tank(tank: Tank) {
     }
 
     if (tank.timeToSpawn <= 0) {
-        if (tank.side == TankSide.Bot && tank.level == TankLevel.Level4 && tank.hp > 1) {
-            Framer(framesDef = listOf(40, 40), infinite = true) {
-                val hp = tank.hp.coerceIn(1..4)
-                TankWithTreadPattern(
-                    tank = tank,
-                    treadPattern = treadPattern,
-                    palette = BotLevel4HpToFlashingPaletteMap.getValue(hp)[LocalFramer.current]
-                )
+        when (tank.side) {
+            TankSide.Player -> TankWithTreadPattern(tank = tank, treadPattern = treadPattern, PlayerGreenPalette)
+            TankSide.Bot -> {
+                if (tank.level == TankLevel.Level4 && tank.hp > 1) {
+                    Framer(framesDef = listOf(40, 40), infinite = true) {
+                        val hp = tank.hp.coerceIn(1..4)
+                        TankWithTreadPattern(
+                            tank = tank,
+                            treadPattern = treadPattern,
+                            palette = BotLevel4HpToFlashingPaletteMap.getValue(hp)[LocalFramer.current]
+                        )
+                    }
+                } else if (tank.withPowerUp) {
+                    Framer(framesDef = listOf(140, 140), infinite = true) {
+                        TankWithTreadPattern(
+                            tank = tank,
+                            treadPattern = treadPattern,
+                            palette = if (LocalFramer.current == 0) { BotNormalPalette } else { BotPowerUpPalette }
+                        )
+                    }
+                } else {
+                    TankWithTreadPattern(tank = tank, treadPattern = treadPattern, BotNormalPalette)
+                }
             }
-        } else if (tank.withPowerUp) {
-            Framer(framesDef = listOf(140, 140), infinite = true) {
-                TankWithTreadPattern(
-                    tank = tank,
-                    treadPattern = treadPattern,
-                    palette = if (LocalFramer.current == 0) {
-                        BotColorNormalPalette
-                    } else { BotColorWithPowerUpPalette }
-                )
-            }
-        } else {
-            TankWithTreadPattern(tank = tank, treadPattern = treadPattern, BotColorNormalPalette)
         }
     } else {
         SpawnBlink(topLeft = tank.offset)
@@ -103,10 +110,10 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalett
         when (tank.side) {
             TankSide.Player -> {
                 when (tank.level) {
-                    TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern)
-                    TankLevel.Level2 -> drawPlayerTankLevel1(treadPattern)
-                    TankLevel.Level3 -> drawPlayerTankLevel1(treadPattern)
-                    TankLevel.Level4 -> drawPlayerTankLevel1(treadPattern)
+                    TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern, palette)
+                    TankLevel.Level2 -> drawPlayerTankLevel1(treadPattern, palette)
+                    TankLevel.Level3 -> drawPlayerTankLevel1(treadPattern, palette)
+                    TankLevel.Level4 -> drawPlayerTankLevel1(treadPattern, palette)
                 }
             }
             TankSide.Bot -> {
