@@ -168,6 +168,9 @@ class BulletState(
                 is HitBullet -> {
 
                 }
+                is HitEagle -> {
+                    soundState.playSound(SoundEffect.Explosion2)
+                }
             }
             explosionState.spawnExplosion(firstCollision.hitPoint, ExplosionAnimationSmall)
         }
