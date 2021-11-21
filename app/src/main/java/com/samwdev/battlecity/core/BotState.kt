@@ -20,6 +20,10 @@ class BotState(
     override fun onTick(tick: Tick) {
         if (bots.size < maxBot) {
             spawnBot()
+        } else if (bots.size > maxBot) {
+            bots.entries.take(bots.size - maxBot).forEach {
+                removeBot(it.key)
+            }
         }
         clearDeadBots()
         bots.values.forEach { controller ->
