@@ -66,10 +66,21 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int) {
     ) {
         when (tank.side) {
             TankSide.Player -> {
-                drawPlayerTankLevel1(treadPattern)
+                when (tank.level) {
+                    TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern)
+                    TankLevel.Level2 -> drawPlayerTankLevel1(treadPattern)
+                    TankLevel.Level3 -> drawPlayerTankLevel1(treadPattern)
+                    TankLevel.Level4 -> drawPlayerTankLevel1(treadPattern)
+                }
             }
             TankSide.Bot -> {
-                drawBotTankLevel1(treadPattern)
+                when (tank.level) {
+                    TankLevel.Level1 -> drawBotTankLevel1(treadPattern)
+                    TankLevel.Level2 -> drawBotTankLevel2(treadPattern)
+                    TankLevel.Level3 -> drawBotTankLevel1(treadPattern)
+                    TankLevel.Level4 -> drawBotTankLevel1(treadPattern)
+                }
+
             }
         }
     }
