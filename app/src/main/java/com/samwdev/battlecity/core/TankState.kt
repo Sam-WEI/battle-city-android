@@ -188,6 +188,7 @@ class TankState(
         val travelPath = collisionBox.getTravelPath(toRect)
         val newPivotBox = tank.moveTo(toRect).pivotBox.deflate(1f)
 
+        // check collision against map elements
         val checks = mutableListOf<MoveRestriction>()
         BrickElement.getHitPoint(mapState.bricks, travelPath, movingDirection)
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
@@ -198,14 +199,16 @@ class TankState(
         EagleElement.getHitPoint(mapState.eagle, travelPath, movingDirection)
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
 
+        // check collision against tanks
         tanks.values.asSequence().filter { it.id != tank.id }.forEach { otherTank ->
-            collisionBox.deflate(1f).intersect(otherTank.pivotBox.deflate(1f))
+            collisionBox.intersect(otherTank.pivotBox)
                 .takeIf { !it.isEmpty }
                 ?.let { intersect ->
                     checks.add(MoveRestriction(intersect, movingDirection))
                 }
         }
 
+        // check collision against map border
         val mapRect = Rect(offset = Offset.Zero, size = Size(MAP_BLOCK_COUNT.grid2mpx, MAP_BLOCK_COUNT.grid2mpx))
         if (mapRect.intersect(toRect) != toRect) {
             // going out of bound
