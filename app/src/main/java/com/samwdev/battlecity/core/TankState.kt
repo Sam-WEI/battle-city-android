@@ -29,6 +29,7 @@ class TankState(
     private val mapState: MapState,
 ) : TickListener {
     companion object {
+        private const val NOT_AN_ID = -1
         // todo to confirm this works as expected
 //        fun Saver() = Saver<TankState, Map<TankId, Tank>>(
 //            save = { it.tanks },
@@ -36,12 +37,14 @@ class TankState(
 //        )
 
     }
+    private var nextId = AtomicInteger(0)
     var tanks by mutableStateOf<Map<TankId, Tank>>(mapOf())
         private set
 
     val aliveTanks: Sequence<Tank> get() = tanks.values.asSequence().filter { it.isAlive }
 
-    private var nextId = AtomicInteger(0)
+    var playerTankId: TankId = NOT_AN_ID
+        private set
 
     override fun onTick(tick: Tick) {
         val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
@@ -61,6 +64,10 @@ class TankState(
             newTanks[id] = newTank
         }
         tanks = newTanks
+
+        if (playerTankId == NOT_AN_ID) {
+            spawnPlayer()
+        }
     }
 
     private fun addTank(id: TankId, tank: Tank) {
@@ -69,7 +76,9 @@ class TankState(
         }
     }
 
-    fun spawnPlayer(level: TankLevel = TankLevel.Level1): Tank {
+    private fun spawnPlayer(): Tank {
+        // todo check remaining life or from last map
+        val level = TankLevel.Level4
         return Tank(
             id = nextId.incrementAndGet(),
             x = playerSpawnPosition.x,
@@ -79,7 +88,10 @@ class TankState(
             side = TankSide.Player,
             hp = getTankSpecs(TankSide.Player, level).maxHp,
             timeToSpawn = 500,
-        ).also { addTank(nextId.get(), it) }
+        ).also {
+            playerTankId = it.id
+            addTank(nextId.get(), it)
+        }
     }
 
     fun spawnBot(level: TankLevel = TankLevel.Level1): Tank {
@@ -98,14 +110,18 @@ class TankState(
 
     private fun getRandomSpawnLocation(): Offset {
         return listOf(
-            Offset(0f.grid2mpx, 0f.grid2mpx),
-            Offset(6f.grid2mpx, 0f.grid2mpx),
-            Offset(12f.grid2mpx, 0f.grid2mpx),
+            Offset(6f.grid2mpx, 6f.grid2mpx),
+//            Offset(0f.grid2mpx, 0f.grid2mpx),
+//            Offset(6f.grid2mpx, 0f.grid2mpx),
+//            Offset(12f.grid2mpx, 0f.grid2mpx),
         ).random()
     }
 
     fun killTank(tankId: TankId) {
         tanks = tanks.toMutableMap().apply { remove(tankId) }
+        if (tankId == playerTankId) {
+            playerTankId = NOT_AN_ID
+        }
     }
 
     fun isTankAlive(tankId: TankId):Boolean = tanks[tankId]?.isAlive == true
@@ -134,7 +150,7 @@ class TankState(
             updateTank(id, tank.turn(into = direction))
         } else {
             // moving forward, check collision
-            val allowedRect = checkCollideIfMoving(tank.collisionBox, distance, tank.direction)
+            val allowedRect = checkCollideIfMoving(tank, distance, tank.direction)
             updateTank(id, tank.moveTo(rect = allowedRect))
         }
     }
@@ -155,10 +171,12 @@ class TankState(
         }
     }
 
-    private fun checkCollideIfMoving(from: Rect, distance: MapPixel, movingDirection: Direction): Rect {
+    private fun checkCollideIfMoving(tank: Tank, distance: MapPixel, movingDirection: Direction): Rect {
         // todo fix jiggling when moving right and down
-        val toRect = from.move(distance, movingDirection)
-        val travelPath = from.getTravelPath(toRect)
+        val collisionBox = tank.collisionBox
+        val toRect = collisionBox.move(distance, movingDirection)
+        val travelPath = collisionBox.getTravelPath(toRect)
+        val newPivotBox = tank.moveTo(toRect).pivotBox.deflate(1f)
 
         val checks = mutableListOf<MoveRestriction>()
         BrickElement.getHitPoint(mapState.bricks, travelPath, movingDirection)
@@ -169,6 +187,14 @@ class TankState(
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
         EagleElement.getHitPoint(mapState.eagle, travelPath, movingDirection)
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
+
+        tanks.values.asSequence().filter { it.id != tank.id }.forEach { otherTank ->
+            collisionBox.deflate(1f).intersect(otherTank.pivotBox.deflate(1f))
+                .takeIf { !it.isEmpty }
+                ?.let { intersect ->
+                    checks.add(MoveRestriction(intersect, movingDirection))
+                }
+        }
 
         val mapRect = Rect(offset = Offset.Zero, size = Size(MAP_BLOCK_COUNT.grid2mpx, MAP_BLOCK_COUNT.grid2mpx))
         if (mapRect.intersect(toRect) != toRect) {
@@ -186,6 +212,6 @@ class TankState(
             // would collide with nothing
             return toRect
         }
-        return from.moveUpTo(checks.findMostRestrict())
+        return collisionBox.moveUpTo(checks.findMostRestrict())
     }
 }

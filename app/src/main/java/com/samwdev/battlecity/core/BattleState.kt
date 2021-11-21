@@ -52,7 +52,6 @@ class BattleState(
         coroutineScope.launch {
             tickState.start()
         }
-        tankController.setTankId(1)
         coroutineScope.launch {
             tickState.tickFlow.collect { tick ->
                 soundState.onTick(tick)
@@ -63,6 +62,5 @@ class BattleState(
                 explosionState.onTick(tick)
             }
         }
-        tankState.spawnPlayer(TankLevel.Level4)
     }
 }

@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launchWhenResumed { soundPlayer.resume() }
         setContent {
             BattleCityTheme {
-                BattleScreen(MapParser.parseJson(1))
+                BattleScreen(MapParser.parseJson(10000))
             }
         }
     }
