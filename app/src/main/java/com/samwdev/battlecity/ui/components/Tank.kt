@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -48,8 +49,12 @@ fun Tank(tank: Tank) {
             heightInMapPixel = TANK_MAP_PIXEL,
             widthInMapPixel = TANK_MAP_PIXEL,
             topLeftInMapPixel = Offset(tank.x, tank.y) ,
-            modifier = Modifier
-                .rotate(tank.direction.degree)
+            modifier = when (tank.direction) {
+                Direction.Down -> Modifier.scale(1f, -1f)
+                Direction.Left -> Modifier.scale(1f, -1f).rotate(Direction.Left.degree)
+                Direction.Right -> Modifier.rotate(Direction.Right.degree)
+                else -> Modifier
+            }
         ) {
             if (tank.side == TankSide.Player) {
                 drawTank(treadPattern)
