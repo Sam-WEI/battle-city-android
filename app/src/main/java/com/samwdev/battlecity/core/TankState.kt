@@ -182,7 +182,7 @@ class TankState(
     }
 
     private fun checkCollideIfMoving(tank: Tank, distance: MapPixel, movingDirection: Direction): Rect {
-        // todo fix jiggling when moving right and down
+        // todo fix jiggling when moving against other tanks
         val collisionBox = tank.collisionBox
         val toRect = collisionBox.move(distance, movingDirection)
         val travelPath = collisionBox.getTravelPath(toRect)

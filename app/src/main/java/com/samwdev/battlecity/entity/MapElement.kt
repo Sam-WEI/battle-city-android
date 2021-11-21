@@ -81,9 +81,9 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
      */
     fun getIndicesOverlappingRect(rect: Rect, moveDirection: Direction): List<Int> {
         val top: MapPixel = rect.top
-        val bottom: MapPixel = rect.bottom - 1 // exclude the bottom border
+        val bottom: MapPixel = rect.bottom - 0.1f // exclude the bottom border
         val left: MapPixel = rect.left
-        val right: MapPixel = rect.right - 1 // exclude the right border
+        val right: MapPixel = rect.right - 0.1f // exclude the right border
 
         val col1 = (left / elementSize).toInt().coerceAtLeast(0)
         val row1 = (top / elementSize).toInt().coerceAtLeast(0)
