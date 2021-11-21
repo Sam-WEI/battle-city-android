@@ -26,9 +26,9 @@ private val iceColorDarkGray = Color(99, 99, 99)
 @Composable
 fun IceBlock(element: IceElement) {
     PixelCanvas(
+        topLeftInMapPixel = element.offsetInMapPixel,
         widthInMapPixel = IceElement.elementSize,
         heightInMapPixel = IceElement.elementSize,
-        topLeftInMapPixel = element.offsetInMapPixel,
     ) {
         val partSize = IceElement.elementSize / 2
         repeat(4) { ith ->

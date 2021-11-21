@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
-import com.samwdev.battlecity.utils.logE
 
 
 @Composable
@@ -28,9 +27,9 @@ private val steelColorDark = Color(88, 88, 88)
 private fun SteelBlock(element: SteelElement) {
     val drawIndex = LocalDebugConfig.current.showSteelIndex
     PixelCanvas(
+        topLeftInMapPixel = element.offsetInMapPixel,
         widthInMapPixel = SteelElement.elementSize,
         heightInMapPixel = SteelElement.elementSize,
-        topLeftInMapPixel = element.offsetInMapPixel,
     ) {
         drawSquare(
             color = steelColorLight,

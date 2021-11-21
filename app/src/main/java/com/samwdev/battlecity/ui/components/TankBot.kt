@@ -1,9 +1,7 @@
 package com.samwdev.battlecity.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -24,16 +22,16 @@ private val BotTankBlue = Color(0, 58, 65)
 @Composable
 fun BotTank(tank: Tank) {
     PixelCanvas(
-        heightInMapPixel = tank.pivotBox.height.grid2mpx,
-        widthInMapPixel = tank.pivotBox.width.grid2mpx,
+        modifier = Modifier.clipToBounds(),
         topLeftInMapPixel = Offset(tank.pivotBox.left, tank.pivotBox.top),
-        modifier = Modifier.clipToBounds()
+        widthInMapPixel = tank.pivotBox.width.grid2mpx,
+        heightInMapPixel = tank.pivotBox.height.grid2mpx
     ) {
-        drawBotTank(1)
+        drawBotTankLevel1(1)
     }
 }
 
-fun PixelDrawScope.drawBotTank(treadPattern: Int) {
+fun PixelDrawScope.drawBotTankLevel1(treadPattern: Int) {
     drawVerticalLine(color = BotTankWhite, topLeft = Offset(7f, 0f), length = 6f)
     translate(1f, 3f) {
         this as PixelDrawScope

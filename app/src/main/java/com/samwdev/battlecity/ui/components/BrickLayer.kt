@@ -1,19 +1,14 @@
 package com.samwdev.battlecity.ui.components
 
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.SHOW_BRICK_INDEX
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
@@ -33,9 +28,9 @@ private val brickColorDarkBrown = Color(96, 12, 0)
 private fun BrickBlock(element: BrickElement) {
     val drawIndex = LocalDebugConfig.current.showBrickIndex
     PixelCanvas(
+        topLeftInMapPixel = element.offsetInMapPixel,
         widthInMapPixel = BrickElement.elementSize,
         heightInMapPixel = BrickElement.elementSize,
-        topLeftInMapPixel = element.offsetInMapPixel,
     ) {
         drawRect(
             color = brickColorGray,

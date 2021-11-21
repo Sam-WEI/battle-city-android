@@ -25,9 +25,9 @@ fun TreeLayer(trees: List<TreeElement>) {
 @Composable
 private fun TreeBlock(element: TreeElement) {
     PixelCanvas(
+        topLeftInMapPixel = element.offsetInMapPixel,
         widthInMapPixel = TreeElement.elementSize,
         heightInMapPixel = TreeElement.elementSize,
-        topLeftInMapPixel = element.offsetInMapPixel,
     ) {
         val partSize = TreeElement.elementSize / 2
         repeat(4) { ith ->

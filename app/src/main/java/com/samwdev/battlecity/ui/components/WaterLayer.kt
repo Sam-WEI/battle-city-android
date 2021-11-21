@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,9 +31,9 @@ private val colorWater = Color(58, 58, 255)
 @Composable
 private fun WaterBlock(element: WaterElement, frame: Int) {
     PixelCanvas(
+        topLeftInMapPixel = element.offsetInMapPixel,
         widthInMapPixel = WaterElement.elementSize,
         heightInMapPixel = WaterElement.elementSize,
-        topLeftInMapPixel = element.offsetInMapPixel,
     ) {
         val partSize = TreeElement.elementSize / 2
         repeat(4) { ith ->

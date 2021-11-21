@@ -26,9 +26,9 @@ fun SpawnBlink(topLeft: Offset) {
 @Composable
 fun SpawnBlinkIndex(index: Int, topLeft: Offset) {
     PixelCanvas(
+        topLeftInMapPixel = topLeft,
         widthInMapPixel = 1f.grid2mpx,
         heightInMapPixel = 1f.grid2mpx,
-        topLeftInMapPixel = topLeft,
     ) {
         when (index) {
             0 -> spawnBlink1()
