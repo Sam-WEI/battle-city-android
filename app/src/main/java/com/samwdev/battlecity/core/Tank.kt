@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import com.samwdev.battlecity.entity.PowerUp
 import kotlinx.parcelize.Parcelize
 import kotlin.math.max
 import kotlin.math.min
@@ -21,7 +22,7 @@ data class Tank(
     val side: TankSide,
     val hp: Int,
     val isMoving: Boolean = false,
-    val withPowerUp: Boolean = false,
+    val powerUp: PowerUp? = null,
     val remainingCooldown: Int = 0,
     val timeToSpawn: Int = 0,
 ) : Parcelable {

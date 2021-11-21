@@ -74,7 +74,7 @@ fun Tank(tank: Tank) {
                             palette = BotLevel4HpToFlashingPaletteMap.getValue(hp)[LocalFramer.current]
                         )
                     }
-                } else if (tank.withPowerUp) {
+                } else if (tank.powerUp != null) {
                     Framer(framesDef = listOf(140, 140), infinite = true) {
                         TankWithTreadPattern(
                             tank = tank,
@@ -150,7 +150,6 @@ private fun TankPreview() {
                 }
                 Tank(Tank(id = 0, x = 0f.grid2mpx, y = 0f.grid2mpx, side = TankSide.Player, level = TankLevel.Level1, hp = 1, direction = Direction.Up))
                 Tank(Tank(id = 0, x = 1f.grid2mpx, y = 0f.grid2mpx, side = TankSide.Bot, level = TankLevel.Level1, hp = 1, direction = Direction.Up))
-
             }
         }
     }

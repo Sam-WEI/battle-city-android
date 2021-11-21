@@ -1,6 +1,8 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
+import com.samwdev.battlecity.entity.PowerUp
+import kotlin.random.Random
 
 @Composable
 fun rememberBotState(
@@ -43,7 +45,7 @@ class BotState(
     }
 
     fun spawnBot() {
-        val botTank = tankState.spawnBot(TankLevel.values().random())
+        val botTank = tankState.spawnBot(TankLevel.values().random(), Random.nextFloat().let { if (it < 0.2) PowerUp.Star else null })
         bots = bots.toMutableMap().apply {
             put(botTank.id, BotTankController(tankState = tankState, tankId = botTank.id, bulletState = bulletState))
         }
