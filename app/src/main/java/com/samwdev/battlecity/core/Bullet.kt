@@ -29,7 +29,7 @@ data class Bullet(
 
     fun getImpactAreaIfHitAt(hitPoint: Offset): Rect {
         val depth = if (power <= 2) { 1f.grid2mpx / 4 } else { 1f.grid2mpx / 2 }
-        val width = 1f.grid2mpx
+        val width = 1f.grid2mpx - 1f
         val reflect = 1f.toMpx // the AOE range off of the surface
 
         return when (direction) {

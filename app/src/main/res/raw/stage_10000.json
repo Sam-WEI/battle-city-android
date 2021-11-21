@@ -4,16 +4,16 @@
   "map": [
     "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
     "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
+    "X  Tf Tf Tf X  X  X  X  X  Tf Tf Tf X  ",
+    "X  Tf Tf Tf X  X  X  X  X  Tf Tf Tf X  ",
+    "X  Tf Tf Tf X  X  X  X  X  Tf Tf Tf X  ",
     "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
     "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
     "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
     "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  Bf X  Bf X  B8 Bc B4 X  Bf X  Bf X  ",
+    "X  Bf Bf Bf X  X  X  X  X  Bf Bf Bf X  ",
+    "X  Bf Bf Bf X  X  X  X  X  Bf Bf Bf X  ",
+    "X  Bf Bf Bf X  B8 Bc B4 X  Bf Bf Bf X  ",
     "X  X  X  X  X  Ba E  B5 X  X  X  X  X  "
   ],
   "bots": ["18*basic", "2*fast"]

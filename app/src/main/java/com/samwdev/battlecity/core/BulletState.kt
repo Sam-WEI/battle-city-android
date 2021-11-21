@@ -3,14 +3,11 @@ package com.samwdev.battlecity.core
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.EagleElement
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.anyRealElements
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToLong
 
 @Composable
@@ -141,6 +138,13 @@ class BulletState(
                     mapState.destroySteels(steelIndices.toSet())
                 }
             }
+
+            if (impactArea.overlaps(mapState.eagle.rect)) {
+                // can be either a direct hit or an AOE impact.
+                mapState.destroyEagle()
+                soundState.playSound(SoundEffect.Explosion2)
+            }
+
             when (firstCollision) {
                 is HitBorder -> {
                     if (bullet.side == TankSide.Player) {
@@ -167,9 +171,6 @@ class BulletState(
                 }
                 is HitBullet -> {
 
-                }
-                is HitEagle -> {
-                    soundState.playSound(SoundEffect.Explosion2)
                 }
             }
             explosionState.spawnExplosion(firstCollision.hitPoint, ExplosionAnimationSmall)
@@ -267,7 +268,6 @@ class BulletState(
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
             EagleElement.getHitPoint(mapState.eagle, trajectory, bullet.direction)?.let {
-                mapState.destroyEagle()
                 addBulletTrajectoryCollision(HitEagle(bullet = bullet, hitPoint = it))
             }
         }
