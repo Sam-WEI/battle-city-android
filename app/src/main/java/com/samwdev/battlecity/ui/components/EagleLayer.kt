@@ -19,9 +19,9 @@ private val eagleColorWtf = Color(145, 65, 0)
 @Composable
 fun EagleLayer(eagleElement: EagleElement) {
     PixelCanvas(
+        topLeftInMapPixel = eagleElement.offsetInMapPixel,
         widthInMapPixel = eagleElement.elementSize,
         heightInMapPixel = eagleElement.elementSize,
-        topLeftInMapPixel = eagleElement.offsetInMapPixel,
     ) {
         if (!eagleElement.dead) {
             drawHalfEagle()

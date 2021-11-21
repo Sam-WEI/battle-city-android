@@ -33,10 +33,10 @@ fun Tank(tank: Tank) {
     }
     if (LocalDebugConfig.current.showPivotBox) {
         PixelCanvas(
-            heightInMapPixel = tank.pivotBox.height.grid2mpx,
-            widthInMapPixel = tank.pivotBox.width.grid2mpx,
+            modifier = Modifier.clipToBounds(),
             topLeftInMapPixel = Offset(tank.pivotBox.left, tank.pivotBox.top),
-            modifier = Modifier.clipToBounds()
+            widthInMapPixel = tank.pivotBox.width.grid2mpx,
+            heightInMapPixel = tank.pivotBox.height.grid2mpx
         ) {
             drawSquare(Color(0x55ffffff), topLeft = Offset.Zero, side = tank.pivotBox.width)
         }
@@ -52,9 +52,6 @@ fun Tank(tank: Tank) {
 @Composable
 fun TankWithTreadPattern(tank: Tank, treadPattern: Int) {
     PixelCanvas(
-        heightInMapPixel = TANK_MAP_PIXEL,
-        widthInMapPixel = TANK_MAP_PIXEL,
-        topLeftInMapPixel = Offset(tank.x, tank.y) ,
         modifier = when (tank.direction) {
             Direction.Up -> Modifier
             Direction.Down -> Modifier.scale(1f, -1f)
@@ -62,12 +59,18 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int) {
                 .scale(1f, -1f)
                 .rotate(Direction.Left.degree)
             Direction.Right -> Modifier.rotate(Direction.Right.degree)
-        }
+        },
+        topLeftInMapPixel = Offset(tank.x, tank.y),
+        widthInMapPixel = TANK_MAP_PIXEL,
+        heightInMapPixel = TANK_MAP_PIXEL
     ) {
-        if (tank.side == TankSide.Player) {
-            drawPlayerTankLevel1(treadPattern)
-        } else {
-            drawBotTank(treadPattern)
+        when (tank.side) {
+            TankSide.Player -> {
+                drawPlayerTankLevel1(treadPattern)
+            }
+            TankSide.Bot -> {
+                drawBotTankLevel1(treadPattern)
+            }
         }
     }
 }

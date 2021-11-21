@@ -29,9 +29,9 @@ import kotlin.math.roundToInt
 @Composable
 fun PixelCanvas(
     modifier: Modifier = Modifier,
+    topLeftInMapPixel: Offset = Offset.Zero,
     widthInMapPixel: MapPixel = 1f.grid2mpx,
     heightInMapPixel: MapPixel = 1f.grid2mpx,
-    topLeftInMapPixel: Offset = Offset.Zero,
     onDraw: PixelDrawScope.() -> Unit
 ) {
     val mpxDp = LocalMapPixelDp.current

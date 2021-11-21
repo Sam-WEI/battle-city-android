@@ -23,9 +23,9 @@ private const val ExpSide: MapPixel = 32f
 @Composable
 fun ExplosionFrame(center: Offset, pattern: ExplosionUiPattern) {
     PixelCanvas(
+        topLeftInMapPixel = center - Offset(ExpSide / 2, ExpSide / 2),
         widthInMapPixel = ExpSide,
-        heightInMapPixel = ExpSide,
-        topLeftInMapPixel = center - Offset(ExpSide / 2, ExpSide / 2)
+        heightInMapPixel = ExpSide
     ) {
         drawExplosionPattern(pattern)
     }
