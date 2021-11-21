@@ -9,14 +9,10 @@ class TankController(
     private val bulletState: BulletState, // todo move out?
     private val handheldControllerState: HandheldControllerState,
 ) : TickListener {
-    private var _tankId: Int by mutableStateOf(-1)
-
-    fun setTankId(id: Int) {
-        _tankId = id
-    }
+    private val tankId: TankId get() = tankState.playerTankId
 
     override fun onTick(tick: Tick) {
-        val tank = tankState.getTankOrNull(_tankId) ?: return
+        val tank = tankState.getTankOrNull(tankId) ?: return
         if (tank.isSpawning) {
             return
         }
@@ -24,15 +20,15 @@ class TankController(
 
         val newDir = handheldControllerState.direction
         if (newDir != null) {
-            tankState.moveTank(_tankId, newDir, distance)
+            tankState.moveTank(tankId, newDir, distance)
         } else {
-            tankState.stopTank(_tankId)
+            tankState.stopTank(tankId)
         }
 
         if (handheldControllerState.firePressed && tank.remainingCooldown <= 0) {
             if (bulletState.countBulletForTank(tank.id) < tank.maxBulletCount) {
                 bulletState.fire(tank)
-                tankState.startCooldown(_tankId)
+                tankState.startCooldown(tankId)
             }
         }
     }
