@@ -9,9 +9,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.*
@@ -40,151 +38,38 @@ fun Tank(tank: Tank) {
             topLeftInMapPixel = Offset(tank.pivotBox.left, tank.pivotBox.top),
             modifier = Modifier.clipToBounds()
         ) {
-            drawSquare(Color(0x55FF0000), topLeft = Offset.Zero, side = tank.pivotBox.width)
+            drawSquare(Color(0x55ffffff), topLeft = Offset.Zero, side = tank.pivotBox.width)
         }
     }
 
     if (tank.timeToSpawn <= 0) {
-        PixelCanvas(
-            heightInMapPixel = TANK_MAP_PIXEL,
-            widthInMapPixel = TANK_MAP_PIXEL,
-            topLeftInMapPixel = Offset(tank.x, tank.y) ,
-            modifier = when (tank.direction) {
-                Direction.Down -> Modifier.scale(1f, -1f)
-                Direction.Left -> Modifier.scale(1f, -1f).rotate(Direction.Left.degree)
-                Direction.Right -> Modifier.rotate(Direction.Right.degree)
-                else -> Modifier
-            }
-        ) {
-            if (tank.side == TankSide.Player) {
-                drawTank(treadPattern)
-            } else {
-                drawBotTank(treadPattern)
-            }
-        }
+        TankWithTreadPattern(tank = tank, treadPattern = treadPattern)
     } else {
         SpawnBlink(topLeft = tank.offset)
     }
 }
 
-private fun PixelDrawScope.drawTank(treadPattern: Int) {
-    val color1 = Color(227, 227, 137)
-    val color2 = Color(227, 145, 30)
-    val color3 = Color(96, 96, 0)
-
-    // left tread
-    translate(1f, 4f) {
-        drawRect(
-            color = color1,
-            topLeft = Offset(0f, 0f),
-            size = Size(3f, 11f),
-        )
-        drawRect(
-            color = color2,
-            topLeft = Offset(1f, 0f),
-            size = Size(2f, 11f),
-        )
-        drawRect(
-            color = color1,
-            topLeft = Offset(2f, 1f),
-            size = Size(1f, 9f),
-        )
-        for (i in treadPattern..10 step 2) {
-            val left = if (i == 0 || i == 10) 1 else 0
-            drawRect(
-                color = color3,
-                topLeft = Offset(left.toFloat(), i.toFloat()),
-                size = Size(2f, 1f),
-            )
+@Composable
+fun TankWithTreadPattern(tank: Tank, treadPattern: Int) {
+    PixelCanvas(
+        heightInMapPixel = TANK_MAP_PIXEL,
+        widthInMapPixel = TANK_MAP_PIXEL,
+        topLeftInMapPixel = Offset(tank.x, tank.y) ,
+        modifier = when (tank.direction) {
+            Direction.Up -> Modifier
+            Direction.Down -> Modifier.scale(1f, -1f)
+            Direction.Left -> Modifier
+                .scale(1f, -1f)
+                .rotate(Direction.Left.degree)
+            Direction.Right -> Modifier.rotate(Direction.Right.degree)
+        }
+    ) {
+        if (tank.side == TankSide.Player) {
+            drawPlayerTankLevel1(treadPattern)
+        } else {
+            drawBotTank(treadPattern)
         }
     }
-
-    // right tread
-    translate(left = 11f, top = 4f) {
-        this as PixelDrawScope
-        drawPixel(color = color1, topLeft = Offset(0f, 0f))
-        drawRect(
-            color = color3,
-            topLeft = Offset(0f, 1f),
-            size = Size(1f, 10f),
-        )
-        drawRect(
-            color = color2,
-            topLeft = Offset(1f, 0f),
-            size = Size(2f, 11f),
-        )
-        for (i in treadPattern..10 step 2) {
-            drawRect(
-                color = color3,
-                topLeft = Offset(1f, i.toFloat()),
-                size = Size(2f, 1f),
-            )
-        }
-    }
-
-    translate(4f, 6f) {
-        this as PixelDrawScope
-        // body
-        drawRect(
-            color = color1,
-            topLeft = Offset(0f, 1f),
-            size = Size(7f, 6f),
-        )
-        drawRect(
-            color = color1,
-            topLeft = Offset(1f, 0f),
-            size = Size(5f, 8f),
-        )
-        drawRect(
-            color = color2,
-            topLeft = Offset(2f, 0f),
-            size = Size(4f, 2f),
-        )
-        drawRect(
-            color = color2,
-            topLeft = Offset(4f, 2f),
-            size = Size(3f, 4f),
-        )
-        drawRect(
-            color = color2,
-            topLeft = Offset(3f, 3f),
-            size = Size(3f, 4f),
-        )
-        drawRect(
-            color = color2,
-            topLeft = Offset(1f, 2f),
-            size = Size(1f, 3f),
-        )
-        drawPixel(color = color2, topLeft = Offset(2f, 5f))
-
-        // body shadow
-        drawRect(
-            color = color3,
-            topLeft = Offset(4f, 0f),
-            size = Size(2f, 1f),
-        )
-        drawPixel(color = color3, topLeft = Offset(6f, 1f))
-        drawRect(
-            color = color3,
-            topLeft = Offset(4f, 3f),
-            size = Size(1f, 3f),
-        )
-        drawPixel(color = color3, topLeft = Offset(3f, 5f))
-        drawPixel(color = color3, topLeft = Offset(0f, 6f))
-        drawPixel(color = color3, topLeft = Offset(6f, 6f))
-        drawRect(
-            color = color3,
-            topLeft = Offset(1f, 7f),
-            size = Size(5f, 1f),
-        )
-    }
-
-    // barrel
-    drawVerticalLine(
-        color = color1,
-        topLeft = Offset(7f, 2f),
-        length = 5f,
-    )
 }
 
 @Preview(showBackground = true)
