@@ -12,4 +12,5 @@ data class DebugConfig(
     val maxFps: Int = TickState.MAX_FPS,
     val maxBot: Int = 2,
     val friendlyFire: Boolean = false,
+    val whoIsYourDaddy: Boolean = false,
 )

@@ -4,11 +4,14 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.StageConfigJson
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -29,6 +32,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
         battleState.tickState.maxFps = debugConfig.maxFps
         battleState.botState.maxBot = debugConfig.maxBot
         battleState.bulletState.friendlyFire = debugConfig.friendlyFire
+        battleState.tankState.whoIsYourDaddy = debugConfig.whoIsYourDaddy
         if (debugConfig.fixTickDelta) {
             battleState.tickState.fixTickDelta(debugConfig.tickDelta)
         } else {
@@ -36,34 +40,42 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
+    CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 BattleField(
                     modifier = Modifier.fillMaxWidth(),
                     battleState = battleState,
                 )
-            }
-            Box(
-                modifier = Modifier.fillMaxSize()
-                    .background(MaterialTheme.colors.background)
-            ) {
-                HandheldController(
-                    modifier = Modifier
-                        .padding(horizontal = 30.dp, vertical = 60.dp)
-                        .fillMaxWidth(),
-                    handheldControllerState = battleState.handheldControllerState,
-                )
-            }
-        }
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .background(MaterialTheme.colors.background)
+                ) {
+                    HandheldController(
+                        modifier = Modifier
+                            .padding(horizontal = 30.dp, vertical = 60.dp)
+                            .fillMaxWidth(),
+                        handheldControllerState = battleState.handheldControllerState,
+                    )
 
-        DebugConfigControlToggle(
-            modifier = Modifier
-                .wrapContentSize()
-                .align(Alignment.BottomEnd),
-            debugConfig = debugConfig,
-            onConfigChange = { debugConfig = it }
-        )
+                    if (LocalDebugConfig.current.showFps) {
+                        Text(
+                            text = "FPS ${battleState.tickState.fps}",
+                            color = Color.Green,
+                            fontSize = 14.sp,
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        )
+                    }
+                }
+            }
+            DebugConfigControlToggle(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.BottomEnd),
+                debugConfig = debugConfig,
+                onConfigChange = { debugConfig = it }
+            )
+        }
     }
 }
 

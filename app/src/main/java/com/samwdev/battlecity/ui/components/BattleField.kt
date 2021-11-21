@@ -50,14 +50,6 @@ fun BattleField(
             battleState.explosionState.explosions.forEach { (_, explosion) ->
                 Explosion(explosion = explosion)
             }
-            if (LocalDebugConfig.current.showFps) {
-                Text(
-                    text = "FPS ${battleState.tickState.fps}",
-                    color = Color.Green,
-                    fontSize = 14.sp,
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
-            }
         }
     }
 }
