@@ -22,17 +22,15 @@ private const val TreadPatternCycleDistance = 5
 
 @Composable
 fun Tank(tank: Tank) {
-    var travelDistance by remember { mutableStateOf(0) }
+    var travelDistance by remember { mutableStateOf(0f) }
     val treadPattern: Int by remember(travelDistance) {
         derivedStateOf {
             // calculate tread pattern based on travel distance, so faster tank looks faster
-            if (travelDistance % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance) 0 else 1
+            if (travelDistance.roundToInt() % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance) 0 else 1
         }
     }
     travelDistance = remember(tank.x, tank.y, tank.direction) {
-        // 0.03f is considered as normal moving speed,
-        // this way, faster tanks accumulate distance faster. Not accurate but works.
-        travelDistance + 1 * (tank.speed / 0.03f).roundToInt()
+        travelDistance + tank.speed * 10
     }
     if (LocalDebugConfig.current.showPivotBox) {
         PixelCanvas(
