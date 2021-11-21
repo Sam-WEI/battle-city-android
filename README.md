@@ -26,7 +26,7 @@
 [ ] collision between bullets doesn't explode
 [x] level 3+ shoots 2 bullets at a time
 [x] level 4 bullets crack 1 layer of steel or 2 layers of brick
-[ ] all level 4 bots change color scheme simultaneously every 10 seconds.
-[ ] level 4 bots have different color schemes: (1) green -> yellow -> yellow -> gray -> die. (2) gray -> gray -> green -> gray -> die
-[ ] level 4 bots with power-up flash gray-red
-[ ] tank ui mirror
+[x] all level 4 bots change color scheme simultaneously every 10 seconds (new version level 4 flashes.).
+[x] ~~level 4 bots have different color schemes: (1) green -> yellow -> yellow -> gray -> die. (2) gray -> gray -> green -> gray -> die (obsolete)~~
+[ ] bots with power-up flash gray-red
+[x] tank ui shadow direction
