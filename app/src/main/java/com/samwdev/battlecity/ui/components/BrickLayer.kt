@@ -31,6 +31,7 @@ private val brickColorDarkBrown = Color(96, 12, 0)
 
 @Composable
 private fun BrickBlock(element: BrickElement) {
+    val drawIndex = LocalDebugConfig.current.showBrickIndex
     PixelCanvas(
         widthInMapPixel = BrickElement.elementSize,
         heightInMapPixel = BrickElement.elementSize,
@@ -63,17 +64,15 @@ private fun BrickBlock(element: BrickElement) {
                 side = 2f
             )
         }
-    }
-    if (SHOW_BRICK_INDEX) {
-        Text(
-            text = element.index.toString(),
-            fontSize = 3.sp,
-            modifier = Modifier.offset(
-                element.offsetInMapPixel.x.mpx2dp,
-                element.offsetInMapPixel.y.mpx2dp,
-            ),
-            color = Color.White,
-        )
+
+        if (drawIndex) {
+            drawText(
+                "${element.index}",
+                color = Color.White,
+                offset = Offset(0f, 2f),
+                fontSize = 0.6.sp
+            )
+        }
     }
 }
 

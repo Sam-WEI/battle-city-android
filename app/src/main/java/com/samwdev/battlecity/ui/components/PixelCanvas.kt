@@ -1,5 +1,6 @@
 package com.samwdev.battlecity.ui.components
 
+import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -8,8 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
 import kotlin.math.max
@@ -41,6 +48,13 @@ fun PixelCanvas(
 }
 
 class PixelDrawScope(private val drawScope: DrawScope) : DrawScope by drawScope {
+    private val textPaint = Paint().asFrameworkPaint().apply {
+        isAntiAlias = true
+        textSize = 12.sp.toPx()
+        color = android.graphics.Color.BLUE
+        typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+    }
+
     fun drawPixel(color: Color, topLeft: Offset) {
         drawRect(color = color, topLeft = topLeft, size = Size(1f, 1f))
     }
@@ -79,6 +93,20 @@ class PixelDrawScope(private val drawScope: DrawScope) : DrawScope by drawScope 
                 val x = (y * k + b).roundToInt().toFloat()
                 drawPixel(color = color, topLeft = Offset(x, y.toFloat()))
             }
+        }
+    }
+
+    fun drawText(text: String, color: Color, offset: Offset, fontSize: TextUnit) {
+        drawIntoCanvas {
+            it.nativeCanvas.drawText(
+                text,
+                offset.x,
+                offset.y,
+                textPaint.apply {
+                    this.color = color.toArgb()
+                    this.textSize = fontSize.toPx()
+                },
+            )
         }
     }
 }
