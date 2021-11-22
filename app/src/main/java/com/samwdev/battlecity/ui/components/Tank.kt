@@ -66,7 +66,7 @@ fun Tank(tank: Tank) {
             TankSide.Player -> {
                 TankWithTreadPattern(tank = tank, treadPattern = treadPattern, PlayerYellowPalette)
                 if (tank.hasShield) {
-                    TankShield(topLeft = Offset(tank.pivotBox.left, tank.pivotBox.top))
+                    TankShield(topLeft = tank.offset)
                 }
             }
             TankSide.Bot -> {
