@@ -97,7 +97,7 @@ class TankState(
             side = TankSide.Player,
             hp = getTankSpecs(TankSide.Player, level).maxHp,
             timeToSpawn = 500,
-            remainingShield = 3000,
+            remainingShield = 30000,
         ).also {
             playerTankId = it.id
             addTank(nextId.get(), it)
@@ -139,6 +139,8 @@ class TankState(
 
     fun hit(bullet: Bullet, tank: Tank) {
         // todo bullet from other player
+        if (tank.hasShield) return
+
         val updatedTank = tank.hitBy(bullet)
         updateTank(tank.id, updatedTank)
 

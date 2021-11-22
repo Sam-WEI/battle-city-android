@@ -144,6 +144,7 @@ class BulletState(
                 mapState.destroyEagle()
                 soundState.playSound(SoundEffect.Explosion2)
             }
+            // todo check if impact area affects tanks
 
             when (firstCollision) {
                 is HitBorder -> {
@@ -173,7 +174,9 @@ class BulletState(
 
                 }
             }
-            explosionState.spawnExplosion(firstCollision.hitPoint, ExplosionAnimationSmall)
+            if (!(firstCollision is HitTank && firstCollision.tank.hasShield)) {
+                explosionState.spawnExplosion(firstCollision.hitPoint, ExplosionAnimationSmall)
+            }
         }
         removeCollidedBullets(trajectoryCollisionInfo.keys)
         trajectoryCollisionInfo = emptyMap()
@@ -248,7 +251,6 @@ class BulletState(
                 .filter { it.value.id != bullet.ownerTankId }
                 .filterNot { !friendlyFire && bullet.side == it.value.side }
                 .filter { !it.value.isSpawning }
-                .filter { !it.value.hasShield }
                 .forEach { (_, tank) ->
                     val trajectory = bullet.getTrajectory(tick.delta)
                     if (trajectory.overlaps(tank.collisionBox)) {
