@@ -22,6 +22,7 @@ data class Tank(
     val side: TankSide,
     val hp: Int,
     val powerUp: PowerUp? = null,
+    val hasShield: Boolean = false,
     val remainingCooldown: Int = 0,
     val timeToSpawn: Int = 0,
 ) : Parcelable {

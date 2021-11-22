@@ -65,6 +65,9 @@ fun Tank(tank: Tank) {
         when (tank.side) {
             TankSide.Player -> {
                 TankWithTreadPattern(tank = tank, treadPattern = treadPattern, PlayerYellowPalette)
+                if (tank.hasShield) {
+                    TankShield(topLeft = Offset(tank.pivotBox.left, tank.pivotBox.top))
+                }
             }
             TankSide.Bot -> {
                 if (tank.level == TankLevel.Level4 && tank.hp > 1) {
@@ -135,7 +138,9 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalett
 private fun TankPreview() {
     BattleCityTheme {
         CompositionLocalProvider(LocalDebugConfig provides DebugConfig(showPivotBox = true)) {
-            Map(modifier = Modifier.size(500.dp).background(Color.DarkGray), sideBlockCount = 8) {
+            Map(modifier = Modifier
+                .size(500.dp)
+                .background(Color.DarkGray), sideBlockCount = 8) {
                 for (i in 0 until 7) {
                     val x = 3f + 0.2f * i
                     val y = i.toFloat()
@@ -145,7 +150,8 @@ private fun TankPreview() {
                         y = y.grid2mpx,
                         direction = Direction.Right,
                         side = TankSide.Player,
-                        hp = 1)
+                        hp = 1,
+                    )
                     Tank(tank)
                     Text(text = "tank x = $x", Modifier.offset((x + 1).grid2mpx.mpx2dp, y.grid2mpx.mpx2dp))
                     Text(text = "pivot x = ${tank.pivotBox.left / 1f.grid2mpx}", Modifier.offset((x + 1).grid2mpx.mpx2dp, (y + 0.5f).grid2mpx.mpx2dp))
