@@ -21,7 +21,6 @@ data class Tank(
     val level: TankLevel = TankLevel.Level1,
     val side: TankSide,
     val hp: Int,
-    val isMoving: Boolean = false,
     val powerUp: PowerUp? = null,
     val remainingCooldown: Int = 0,
     val timeToSpawn: Int = 0,
@@ -61,24 +60,8 @@ fun Tank.turn(into: Direction): Tank {
     return copy(direction = into, x = newX, y = newY)
 }
 
-@Deprecated("delete")
-fun Tank.move(distance: MapPixel, turnTo: Direction? = null): Tank {
-    var newX = x
-    var newY = y
-    val newDir = turnTo ?: direction
-    when (direction) {
-        Direction.Left -> newX -= distance
-        Direction.Right -> newX += distance
-        Direction.Up -> newY -= distance
-        Direction.Down -> newY += distance
-    }
-    return copy(x = newX, y = newY, direction = newDir, isMoving = distance > 0)
-}
-
 fun Tank.moveTo(rect: Rect, newDirection: Direction = direction): Tank =
-    copy(x = rect.left, y = rect.top, direction = newDirection, isMoving = rect != collisionBox)
-
-fun Tank.stop(): Tank = copy(isMoving = false)
+    copy(x = rect.left, y = rect.top, direction = newDirection)
 
 fun Tank.hitBy(bullet: Bullet): Tank {
     return copy(hp = hp - 1)
