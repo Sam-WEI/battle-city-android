@@ -97,7 +97,7 @@ class TankState(
             side = TankSide.Player,
             hp = getTankSpecs(TankSide.Player, level).maxHp,
             timeToSpawn = 500,
-            remainingShield = 2000,
+            remainingShield = 3000,
         ).also {
             playerTankId = it.id
             addTank(nextId.get(), it)
