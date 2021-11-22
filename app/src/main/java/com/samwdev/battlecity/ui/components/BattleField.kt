@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +50,10 @@ fun BattleField(
 
             battleState.explosionState.explosions.forEach { (_, explosion) ->
                 Explosion(explosion = explosion)
+            }
+
+            com.samwdev.battlecity.entity.PowerUp.values().forEachIndexed { index, powerUp ->
+                PowerUp(topLeft = Offset((4f + index).grid2mpx, 10f.grid2mpx), powerUp = powerUp)
             }
         }
     }
