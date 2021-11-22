@@ -248,6 +248,7 @@ class BulletState(
                 .filter { it.value.id != bullet.ownerTankId }
                 .filterNot { !friendlyFire && bullet.side == it.value.side }
                 .filter { !it.value.isSpawning }
+                .filter { !it.value.hasShield }
                 .forEach { (_, tank) ->
                     val trajectory = bullet.getTrajectory(tick.delta)
                     if (trajectory.overlaps(tank.collisionBox)) {
