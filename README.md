@@ -8,7 +8,7 @@
 [x] Tank collision with map elements
 [ ] Tank collision with tanks
 [x] Spawn blink
-[ ] Spawn shield
+[x] Spawn shield
 [ ] Power-ups
 [ ] Drive on ice
 [x] Debug control panel
