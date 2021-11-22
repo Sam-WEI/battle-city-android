@@ -45,9 +45,13 @@ class BotState(
     }
 
     fun spawnBot() {
-        val botTank = tankState.spawnBot(TankLevel.values().random(), Random.nextFloat().let { if (it < 0.2) PowerUp.Star else null })
+        val botTank = tankState.spawnBot(TankLevel.values().random(), carryPowerUp())
         bots = bots.toMutableMap().apply {
             put(botTank.id, BotTankController(tankState = tankState, tankId = botTank.id, bulletState = bulletState))
         }
+    }
+
+    private fun carryPowerUp(): PowerUp? {
+        return Random.nextFloat().let { if (it < 0.2) PowerUp.Star else null }
     }
 }
