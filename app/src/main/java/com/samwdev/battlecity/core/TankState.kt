@@ -82,7 +82,7 @@ class TankState(
 
     private fun spawnPlayer(): Tank {
         // todo check remaining life or from last map
-        val level = TankLevel.Level2
+        val level = TankLevel.Level3
         return Tank(
             id = nextId.incrementAndGet(),
             x = playerSpawnPosition.x,
