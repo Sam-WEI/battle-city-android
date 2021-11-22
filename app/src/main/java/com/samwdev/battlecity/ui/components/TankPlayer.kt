@@ -189,7 +189,63 @@ fun PixelDrawScope.drawPlayerTankLevel2(treadPattern: Int, palette: TankColorPal
 }
 
 fun PixelDrawScope.drawPlayerTankLevel3(treadPattern: Int, palette: TankColorPalette) {
+    // left tread
+    translate(left = 1f, top = 3f) {
+        this as PixelDrawScope
+        drawRect(color = palette.medium, topLeft = Offset(0f, 0f), size = Size(3f, 12f))
+        drawVerticalLine(color = palette.light, topLeft = Offset(0f, 0f), length = 12f)
+        drawVerticalLine(color = palette.light, topLeft = Offset(2f, 2f), length = 7f)
+        for (y in treadPattern..11 step 2) {
+            drawPixel(color = palette.dark, topLeft = Offset(0f, y.toFloat()))
+        }
+        if (treadPattern == 0) {
+            drawPixel(color = palette.medium, topLeft = Offset(0f, 0f))
+            drawHorizontalLine(color = palette.dark, topLeft = Offset(1f, 0f), length = 2f)
+        } else {
+            drawHorizontalLine(color = palette.light, topLeft = Offset(0f, 0f), length = 3f)
+        }
+    }
 
+    // right tread
+    translate(left = 11f, top = 3f) {
+        this as PixelDrawScope
+        drawRect(color = palette.medium, topLeft = Offset(0f, 0f), size = Size(3f, 12f))
+        drawPixel(color = palette.light, topLeft = Offset(0f, 0f))
+        drawRect(color = palette.dark, topLeft = Offset(0f, 1f), size = Size(2f, 11f))
+        for (y in treadPattern..11 step 2) {
+            drawHorizontalLine(color = palette.dark, topLeft = Offset(1f, y.toFloat()), length = 2f)
+        }
+    }
+
+    // body
+    translate(left = 4f, top = 3f) {
+        this as PixelDrawScope
+        drawRect(color = palette.dark, topLeft = Offset(0f, 1f), size = Size(7f, 10f))
+        drawRect(color = palette.dark, topLeft = Offset(1f, 0f), size = Size(5f, 2f))
+
+        drawVerticalLine(color = palette.light, topLeft = Offset(0f, 2f), length = 8f)
+        drawVerticalLine(color = palette.medium, topLeft = Offset(0f, 3f), length = 5f)
+        drawVerticalLine(color = palette.light, topLeft = Offset(1f, 0f), length = 10f)
+        drawRect(color = palette.medium, topLeft = Offset(1f, 2f), size = Size(5f, 7f))
+
+        drawVerticalLine(color = palette.light, topLeft = Offset(2f, 3f), length = 5f)
+        drawHorizontalLine(color = palette.medium, topLeft = Offset(2f, 9f), length = 3f)
+
+        drawPixel(color = palette.light, topLeft = Offset(3f, 3f))
+        drawPixel(color = palette.dark, topLeft = Offset(3f, 8f))
+
+        drawVerticalLine(color = palette.dark, topLeft = Offset(4f, 4f), length = 5f)
+        drawVerticalLine(color = palette.medium, topLeft = Offset(6f, 3f), length = 5f)
+    }
+
+    // barrel
+    translate(left = 6f, top = 0f) {
+        this as PixelDrawScope
+        drawVerticalLine(color = palette.light, topLeft = Offset(0f, 0f), length = 2f)
+        drawVerticalLine(color = palette.light, topLeft = Offset(1f, 0f), length = 5f)
+        drawPixel(color = palette.medium, topLeft = Offset(1f, 1f))
+        drawVerticalLine(color = palette.medium, topLeft = Offset(2f, 0f), length = 2f)
+    }
 }
 
 fun PixelDrawScope.drawPlayerTankLevel4(treadPattern: Int, palette: TankColorPalette) {
