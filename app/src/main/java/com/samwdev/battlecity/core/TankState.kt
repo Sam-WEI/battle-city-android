@@ -160,11 +160,6 @@ class TankState(
         }
     }
 
-    fun stopTank(id: TankId) {
-        val tank = getTank(id)
-        updateTank(id, tank.stop())
-    }
-
     fun startCooldown(id: TankId) {
         val tank = tanks.getValue(id)
         updateTank(id, tank.copy(remainingCooldown = tank.fireCooldown))

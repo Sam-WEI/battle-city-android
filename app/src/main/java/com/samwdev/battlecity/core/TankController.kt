@@ -21,8 +21,6 @@ class TankController(
         val newDir = handheldControllerState.direction
         if (newDir != null) {
             tankState.moveTank(tankId, newDir, distance)
-        } else {
-            tankState.stopTank(tankId)
         }
 
         if (handheldControllerState.firePressed && tank.remainingCooldown <= 0) {

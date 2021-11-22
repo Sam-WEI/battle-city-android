@@ -30,7 +30,7 @@ class BotTankController(
                 }
             }
             is Stop -> {
-                tankState.stopTank(tank.id)
+
             }
             is Turn -> {
                 tankState.moveTank(tank.id, command.direction, distance)

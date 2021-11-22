@@ -28,5 +28,5 @@
 [x] level 4 bullets crack 1 layer of steel or 2 layers of brick
 [x] all level 4 bots change color scheme simultaneously every 10 seconds (new version level 4 flashes.).
 [x] ~~level 4 bots have different color schemes: (1) green -> yellow -> yellow -> gray -> die. (2) gray -> gray -> green -> gray -> die (obsolete)~~
-[ ] bots with power-up flash gray-red
+[x] bots with power-up flash gray-red
 [x] tank ui shadow direction
