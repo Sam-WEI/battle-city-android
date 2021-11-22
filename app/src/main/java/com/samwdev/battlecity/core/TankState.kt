@@ -55,14 +55,19 @@ class TankState(
         tanks.forEach { (id, tank) ->
             var remainingCooldown = tank.remainingCooldown
             var timeToSpawn = tank.timeToSpawn
+            var remainingShield = tank.remainingShield
             if (remainingCooldown > 0) {
                 remainingCooldown -= tick.delta.toInt()
             }
             if (timeToSpawn > 0) {
                 timeToSpawn -= tick.delta.toInt()
             }
+            if (remainingShield > 0) {
+                remainingShield -= tick.delta.toInt()
+            }
             val newTank = tank.copy(
                 remainingCooldown = remainingCooldown,
+                remainingShield = remainingShield,
                 timeToSpawn = timeToSpawn,
             )
             newTanks[id] = newTank
@@ -92,7 +97,7 @@ class TankState(
             side = TankSide.Player,
             hp = getTankSpecs(TankSide.Player, level).maxHp,
             timeToSpawn = 500,
-            hasShield = true,
+            remainingShield = 2000,
         ).also {
             playerTankId = it.id
             addTank(nextId.get(), it)

@@ -22,7 +22,7 @@ data class Tank(
     val side: TankSide,
     val hp: Int,
     val powerUp: PowerUp? = null,
-    val hasShield: Boolean = false,
+    val remainingShield: Int = 0,
     val remainingCooldown: Int = 0,
     val timeToSpawn: Int = 0,
 ) : Parcelable {
@@ -35,6 +35,7 @@ data class Tank(
     val isSpawning: Boolean get() = timeToSpawn > 0
     val isAlive: Boolean get() = hp > 0
     val isDead: Boolean get() = !isAlive
+    val hasShield: Boolean get() = remainingShield > 0
 
     val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
     val pivotBox: Rect get() {
