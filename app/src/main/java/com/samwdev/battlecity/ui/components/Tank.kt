@@ -64,7 +64,7 @@ fun Tank(tank: Tank) {
     if (tank.timeToSpawn <= 0) {
         when (tank.side) {
             TankSide.Player -> {
-                TankWithTreadPattern(tank = tank, treadPattern = treadPattern, PlayerGreenPalette)
+                TankWithTreadPattern(tank = tank, treadPattern = treadPattern, PlayerYellowPalette)
             }
             TankSide.Bot -> {
                 if (tank.level == TankLevel.Level4 && tank.hp > 1) {
