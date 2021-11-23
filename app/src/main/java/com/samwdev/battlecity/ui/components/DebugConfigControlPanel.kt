@@ -2,6 +2,7 @@ package com.samwdev.battlecity.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,8 +22,8 @@ import kotlin.math.roundToInt
 @ExperimentalAnimationApi
 @Composable
 fun DebugConfigControlToggle(
-    modifier: Modifier = Modifier,
     debugConfig: DebugConfig,
+    modifier: Modifier = Modifier,
     onConfigChange: (DebugConfig) -> Unit,
 ) {
     var showDebugPanel by remember { mutableStateOf(false) }
@@ -45,10 +46,10 @@ fun DebugConfigControlToggle(
             visible = showDebugPanel
         ) {
             DebugConfigControlPanel(
-            modifier = Modifier.align(Alignment.TopStart),
-                debugConfig = debugConfig,
-                onConfigChange = onConfigChange,
-                onClose = { showDebugPanel = false }
+                modifier = Modifier.align(Alignment.TopStart),
+                    debugConfig = debugConfig,
+                    onConfigChange = onConfigChange,
+                    onClose = { showDebugPanel = false }
             )
         }
     }
@@ -57,8 +58,8 @@ fun DebugConfigControlToggle(
 
 @Composable
 fun DebugConfigControlPanel(
-    modifier: Modifier = Modifier,
     debugConfig: DebugConfig,
+    modifier: Modifier = Modifier,
     onConfigChange: (DebugConfig) -> Unit,
     onClose: () -> Unit = {},
 ) {
@@ -69,7 +70,7 @@ fun DebugConfigControlPanel(
         backgroundColor = MaterialTheme.colors.surface,
         elevation = 4.dp,
     ) {
-        Box {
+        Box(modifier = Modifier.animateContentSize()) {
             IconButton(
                 modifier = Modifier.align(Alignment.TopEnd),
                 onClick = onClose
