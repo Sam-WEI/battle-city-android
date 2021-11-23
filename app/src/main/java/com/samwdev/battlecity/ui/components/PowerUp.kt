@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.grid2mpx
-import com.samwdev.battlecity.entity.PowerUp
+import com.samwdev.battlecity.entity.PowerUpEnum
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 private val PowerUpColorBlue = Color(43, 71, 121)
@@ -20,7 +20,7 @@ private val PowerUpColorShadow = Color.Black
 private val PowerUpColorWhite = Color.White
 
 @Composable
-fun FlashingPowerUp(topLeft: Offset, powerUp: PowerUp) {
+fun FlashingPowerUp(topLeft: Offset, powerUp: PowerUpEnum) {
     Framer(framesDef = listOf(150, 100), infinite = true) {
         if (LocalFramer.current == 0) {
             PowerUp(topLeft = topLeft, powerUp = powerUp)
@@ -29,7 +29,7 @@ fun FlashingPowerUp(topLeft: Offset, powerUp: PowerUp) {
 }
 
 @Composable
-fun PowerUp(topLeft: Offset, powerUp: PowerUp) {
+fun PowerUp(topLeft: Offset, powerUp: PowerUpEnum) {
     PixelCanvas(
         topLeftInMapPixel = topLeft,
         widthInMapPixel = 1f.grid2mpx,
@@ -53,12 +53,12 @@ fun PowerUp(topLeft: Offset, powerUp: PowerUp) {
         translate(2f, 2f) {
             this as PixelDrawScope
             when (powerUp) {
-                PowerUp.Helmet -> drawHelmet()
-                PowerUp.Star -> drawStar()
-                PowerUp.Grenade -> drawGrenade()
-                PowerUp.Tank -> drawTank()
-                PowerUp.Shovel -> drawShovel()
-                PowerUp.Timer -> drawTimer()
+                PowerUpEnum.Helmet -> drawHelmet()
+                PowerUpEnum.Star -> drawStar()
+                PowerUpEnum.Grenade -> drawGrenade()
+                PowerUpEnum.Tank -> drawTank()
+                PowerUpEnum.Shovel -> drawShovel()
+                PowerUpEnum.Timer -> drawTimer()
             }
         }
     }
@@ -259,7 +259,7 @@ private fun PixelDrawScope.drawTimer() {
 private fun PowerUpPreview() {
     BattleCityTheme {
         Map(modifier = Modifier.size(500.dp), sideBlockCount = 6) {
-            PowerUp.values().forEachIndexed { index, powerUp ->
+            PowerUpEnum.values().forEachIndexed { index, powerUp ->
                 PowerUp(topLeft = Offset(0f.grid2mpx, index.toFloat().grid2mpx), powerUp)
             }
         }

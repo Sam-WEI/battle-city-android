@@ -15,7 +15,8 @@ fun rememberBattleState(
     explosionState: ExplosionState = rememberExplosionState(),
     tickState: TickState = rememberTickState(),
     mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
-    tankState: TankState = rememberTankState(explosionState = explosionState, soundState = soundState, mapState = mapState),
+    powerUpState: PowerUpState = rememberPowerUpState(mapState = mapState),
+    tankState: TankState = rememberTankState(explosionState = explosionState, soundState = soundState, mapState = mapState, powerUpState = powerUpState),
     bulletState: BulletState = rememberBulletState(mapState = mapState, tankState = tankState, explosionState = explosionState, soundState = soundState),
     botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
@@ -32,6 +33,7 @@ fun rememberBattleState(
             bulletState = bulletState,
             tankController = TankController(tankState, bulletState, handheldControllerState),
             botState = botState,
+            powerUpState = powerUpState,
         )
     }
 }
@@ -47,6 +49,7 @@ class BattleState(
     val tankState: TankState,
     val tankController: TankController,
     val botState: BotState,
+    val powerUpState: PowerUpState,
 ) {
     fun startBattle() {
         coroutineScope.launch {

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import com.samwdev.battlecity.entity.PowerUp
+import com.samwdev.battlecity.entity.PowerUpEnum
 import kotlinx.parcelize.Parcelize
 import kotlin.math.max
 import kotlin.math.min
@@ -21,7 +21,7 @@ data class Tank(
     val level: TankLevel = TankLevel.Level1,
     val side: TankSide,
     val hp: Int,
-    val powerUp: PowerUp? = null,
+    val hasPowerUp: Boolean = false,
     val remainingShield: Int = 0,
     val remainingCooldown: Int = 0,
     val timeToSpawn: Int = 0,
@@ -66,7 +66,7 @@ fun Tank.moveTo(rect: Rect, newDirection: Direction = direction): Tank =
     copy(x = rect.left, y = rect.top, direction = newDirection)
 
 fun Tank.hitBy(bullet: Bullet): Tank {
-    return copy(hp = hp - 1)
+    return copy(hp = hp - 1, hasPowerUp = false)
 }
 
 enum class Direction(val degree: Float) {
