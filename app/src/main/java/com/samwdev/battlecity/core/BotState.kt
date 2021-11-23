@@ -1,7 +1,7 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.entity.PowerUp
+import com.samwdev.battlecity.entity.PowerUpEnum
 import kotlin.random.Random
 
 @Composable
@@ -51,7 +51,7 @@ class BotState(
         }
     }
 
-    private fun carryPowerUp(): PowerUp? {
-        return Random.nextFloat().let { if (it < 0.2) PowerUp.Star else null }
+    private fun carryPowerUp(): Boolean {
+        return Random.nextFloat() < 5
     }
 }

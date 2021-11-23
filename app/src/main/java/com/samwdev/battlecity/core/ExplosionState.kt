@@ -16,7 +16,7 @@ fun rememberExplosionState(): ExplosionState {
 typealias ExplosionId = Int
 
 class ExplosionState : TickListener {
-    private val nextId = AtomicInteger()
+    private val idGen = AtomicInteger()
 
     var explosions by mutableStateOf<Map<ExplosionId, Explosion>>(mapOf())
         private set
@@ -45,8 +45,8 @@ class ExplosionState : TickListener {
 
     fun spawnExplosion(center: Offset, animation: ExplosionAnimation) {
         explosions = explosions.toMutableMap().apply {
-            put(nextId.incrementAndGet(), Explosion(
-                id = nextId.get(),
+            put(idGen.incrementAndGet(), Explosion(
+                id = idGen.get(),
                 centerOffset = center,
                 animation,
             ))

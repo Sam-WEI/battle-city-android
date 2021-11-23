@@ -11,10 +11,11 @@ import java.util.concurrent.atomic.AtomicInteger
 fun rememberTankState(
     explosionState: ExplosionState,
     soundState: SoundState,
+    powerUpState: PowerUpState,
     mapState: MapState,
 ): TankState {
     return remember {
-        TankState(soundState, mapState)
+        TankState(soundState, mapState, powerUpState)
     }
 }
 
@@ -23,6 +24,7 @@ private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
 class TankState(
     private val soundState: SoundState,
     private val mapState: MapState,
+    private val powerUpState: PowerUpState,
 ) : TickListener {
     companion object {
         private const val NOT_AN_ID = -1
@@ -33,7 +35,7 @@ class TankState(
 //        )
 
     }
-    private var nextId = AtomicInteger(0)
+    private var idGen = AtomicInteger(0)
     var tanks by mutableStateOf<Map<TankId, Tank>>(mapOf())
         private set
 
@@ -89,7 +91,7 @@ class TankState(
         // todo check remaining life or from last map
         val level = TankLevel.Level4
         return Tank(
-            id = nextId.incrementAndGet(),
+            id = idGen.incrementAndGet(),
             x = playerSpawnPosition.x,
             y = playerSpawnPosition.y,
             direction = Direction.Up,
@@ -100,23 +102,23 @@ class TankState(
             remainingShield = 3000,
         ).also {
             playerTankId = it.id
-            addTank(nextId.get(), it)
+            addTank(idGen.get(), it)
         }
     }
 
-    fun spawnBot(level: TankLevel = TankLevel.Level1, powerUp: PowerUp? = null): Tank {
+    fun spawnBot(level: TankLevel = TankLevel.Level1, hasPowerUp: Boolean = false): Tank {
         val loc = getRandomSpawnLocation()
         return Tank(
-            id = nextId.incrementAndGet(),
+            id = idGen.incrementAndGet(),
             x = loc.x,
             y = loc.y,
             hp = getTankSpecs(TankSide.Bot, level).maxHp,
             level = level,
             direction = Direction.Right,
             side = TankSide.Bot,
-            powerUp = powerUp,
+            hasPowerUp = hasPowerUp,
             timeToSpawn = 1500,
-        ).also { addTank(nextId.get(), it) }
+        ).also { addTank(idGen.get(), it) }
     }
 
     private fun getRandomSpawnLocation(): Offset {
@@ -140,6 +142,11 @@ class TankState(
     fun hit(bullet: Bullet, tank: Tank) {
         // todo bullet from other player
         if (tank.hasShield) return
+
+        if (tank.hasPowerUp) {
+            powerUpState.spawnPowerUp()
+            soundState.playSound(SoundEffect.PowerUpAppear)
+        }
 
         val updatedTank = tank.hitBy(bullet)
         updateTank(tank.id, updatedTank)

@@ -49,8 +49,8 @@ fun BattleField(
                 Explosion(explosion = explosion)
             }
 
-            com.samwdev.battlecity.entity.PowerUp.values().forEachIndexed { index, powerUp ->
-                FlashingPowerUp(topLeft = Offset((index * 2).grid2mpx, 5f.grid2mpx), powerUp = powerUp)
+            battleState.powerUpState.powerUps.forEach { (_, powerUp) ->
+                FlashingPowerUp(topLeft = Offset(powerUp.x, powerUp.y), powerUp = powerUp.type)
             }
         }
     }

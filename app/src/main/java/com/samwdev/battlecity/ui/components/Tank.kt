@@ -70,21 +70,21 @@ fun Tank(tank: Tank) {
                 }
             }
             TankSide.Bot -> {
-                if (tank.level == TankLevel.Level4 && tank.hp > 1) {
+                if (tank.hasPowerUp) {
+                    Framer(framesDef = listOf(140, 140), infinite = true) {
+                        TankWithTreadPattern(
+                            tank = tank,
+                            treadPattern = treadPattern,
+                            palette = if (LocalFramer.current == 0) { BotNormalPalette } else { BotPowerUpPalette }
+                        )
+                    }
+                } else if (tank.level == TankLevel.Level4 && tank.hp > 1) {
                     Framer(framesDef = listOf(40, 40), infinite = true) {
                         val hp = tank.hp.coerceIn(1..4)
                         TankWithTreadPattern(
                             tank = tank,
                             treadPattern = treadPattern,
                             palette = BotLevel4HpToFlashingPaletteMap.getValue(hp)[LocalFramer.current]
-                        )
-                    }
-                } else if (tank.powerUp != null) {
-                    Framer(framesDef = listOf(140, 140), infinite = true) {
-                        TankWithTreadPattern(
-                            tank = tank,
-                            treadPattern = treadPattern,
-                            palette = if (LocalFramer.current == 0) { BotNormalPalette } else { BotPowerUpPalette }
                         )
                     }
                 } else {

@@ -26,7 +26,7 @@ class BulletState(
     private val explosionState: ExplosionState,
     private val soundState: SoundState,
 ) : TickListener {
-    private val nextId: AtomicInteger = AtomicInteger(0)
+    private val idGen: AtomicInteger = AtomicInteger(0)
     var friendlyFire = false
 
     var bullets by mutableStateOf<Map<BulletId, Bullet>>(mapOf())
@@ -61,8 +61,8 @@ class BulletState(
     fun fire(tank: Tank) {
         bullets = bullets.toMutableMap().apply {
             val bulletOrigin = tank.bulletStartPosition
-            put(nextId.incrementAndGet(), Bullet(
-                id = nextId.get(),
+            put(idGen.incrementAndGet(), Bullet(
+                id = idGen.get(),
                 direction = tank.direction,
                 speed = tank.bulletSpeed,
                 x = bulletOrigin.x,

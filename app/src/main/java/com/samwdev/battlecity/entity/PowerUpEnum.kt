@@ -1,6 +1,6 @@
 package com.samwdev.battlecity.entity
 
-enum class PowerUp {
+enum class PowerUpEnum {
     Grenade,
     Helmet,
     Shovel,
