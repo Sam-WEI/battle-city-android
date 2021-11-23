@@ -50,7 +50,7 @@ fun BattleField(
             }
 
             com.samwdev.battlecity.entity.PowerUp.values().forEachIndexed { index, powerUp ->
-                PowerUp(topLeft = Offset((4.8f + index).grid2mpx, 5f.grid2mpx), powerUp = powerUp)
+                FlashingPowerUp(topLeft = Offset((index * 2).grid2mpx, 5f.grid2mpx), powerUp = powerUp)
             }
         }
     }
