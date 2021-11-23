@@ -69,10 +69,10 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
                 }
             }
             DebugConfigControlToggle(
+                debugConfig = debugConfig,
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.BottomEnd),
-                debugConfig = debugConfig,
                 onConfigChange = { debugConfig = it }
             )
         }
