@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.toMpx
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -130,4 +132,20 @@ class PixelDrawScope(private val drawScope: DrawScope) : DrawScope by drawScope 
             )
         }
     }
+}
+
+fun Path.addRect(topLeft: Offset, size: Size) {
+    addRect(Rect(offset = topLeft, size = size))
+}
+
+fun Path.addPixel(topLeft: Offset) {
+    addRect(Rect(offset = topLeft, size = Size(1f.toMpx, 1f.toMpx)))
+}
+
+fun Path.addVerticalLine(topLeft: Offset, length: MapPixel) {
+    addRect(Rect(offset = topLeft, size = Size(1f.toMpx, length)))
+}
+
+fun Path.addHorizontalLine(topLeft: Offset, length: MapPixel) {
+    addRect(Rect(offset = topLeft, size = Size(length, 1f.toMpx)))
 }
