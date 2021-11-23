@@ -15,7 +15,7 @@ fun rememberTankState(
     mapState: MapState,
 ): TankState {
     return remember {
-        TankState(soundState, mapState, powerUpState)
+        TankState(soundState, mapState, powerUpState, explosionState)
     }
 }
 
@@ -25,6 +25,7 @@ class TankState(
     private val soundState: SoundState,
     private val mapState: MapState,
     private val powerUpState: PowerUpState,
+    private val explosionState: ExplosionState,
 ) : TickListener {
     companion object {
         private const val NOT_AN_ID = -1
@@ -36,10 +37,15 @@ class TankState(
 
     }
     private var idGen = AtomicInteger(0)
+
     var tanks by mutableStateOf<Map<TankId, Tank>>(mapOf())
         private set
 
     val aliveTanks: Sequence<Tank> get() = tanks.values.asSequence().filter { it.isAlive }
+
+    // todo move to a proper place
+    var remainingBotFreezingTime: Long = 0
+        private set
 
     var playerTankId: TankId = NOT_AN_ID
         private set
@@ -53,6 +59,9 @@ class TankState(
         }
 
     override fun onTick(tick: Tick) {
+        if (remainingBotFreezingTime > 0) {
+            remainingBotFreezingTime -= tick.delta
+        }
         val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
         tanks.forEach { (id, tank) ->
             var remainingCooldown = tank.remainingCooldown
@@ -89,7 +98,7 @@ class TankState(
 
     private fun spawnPlayer(): Tank {
         // todo check remaining life or from last map
-        val level = TankLevel.Level4
+        val level = TankLevel.Level1
         return Tank(
             id = idGen.incrementAndGet(),
             x = playerSpawnPosition.x,
@@ -137,6 +146,19 @@ class TankState(
         }
     }
 
+    private fun killAllBots(explosion: Boolean = true) {
+        val killedBots = tanks.values.filter { it.side == TankSide.Bot && !it.isSpawning }.map {
+            if (explosion) {
+                explosionState.spawnExplosion(it.center, ExplosionAnimationBig)
+            }
+            it.id
+        }.toSet()
+        if (killedBots.isNotEmpty()) {
+            soundState.playSound(SoundEffect.Explosion1)
+        }
+        tanks = tanks.filter { it.key !in killedBots }
+    }
+
     fun isTankAlive(tankId: TankId):Boolean = tanks[tankId]?.isAlive == true
 
     fun hit(bullet: Bullet, tank: Tank) {
@@ -152,6 +174,12 @@ class TankState(
         updateTank(tank.id, updatedTank)
 
         if (updatedTank.isDead) {
+            explosionState.spawnExplosion(tank.center, ExplosionAnimationBig)
+            if (tank.side == TankSide.Bot) {
+                soundState.playSound(SoundEffect.Explosion1)
+            } else {
+                soundState.playSound(SoundEffect.Explosion2)
+            }
             killTank(tank.id)
         }
     }
@@ -171,7 +199,11 @@ class TankState(
         } else {
             // moving forward, check collision
             val allowedRect = checkCollideIfMoving(tank, distance, tank.direction)
-            updateTank(id, tank.moveTo(rect = allowedRect))
+            val updatedTank = tank.moveTo(rect = allowedRect)
+            updateTank(id, updatedTank)
+            if (updatedTank.side == TankSide.Player) {
+                checkPowerUpCollision(updatedTank)
+            }
         }
     }
 
@@ -234,5 +266,35 @@ class TankState(
             return toRect
         }
         return collisionBox.moveUpTo(checks.findMostRestrict())
+    }
+
+    private fun checkPowerUpCollision(tank: Tank) {
+        val toPickUp = powerUpState.powerUps.values.filter { p -> p.rect.overlaps(tank.collisionBox) }
+        powerUpState.remove(toPickUp)
+        toPickUp.forEach { pickUpPowerUp(tank, it.type) }
+    }
+
+    private fun pickUpPowerUp(tank: Tank, powerUpEnum: PowerUpEnum) {
+        soundState.playSound(SoundEffect.PowerUpPick)
+        when (powerUpEnum) {
+            PowerUpEnum.Helmet -> {
+                updateTank(tank.id, tank.shieldOn(10 * 1000))
+            }
+            PowerUpEnum.Star -> {
+                updateTank(tank.id, tank.levelUp())
+            }
+            PowerUpEnum.Grenade -> {
+                killAllBots()
+            }
+            PowerUpEnum.Tank -> {
+
+            }
+            PowerUpEnum.Shovel -> {
+
+            }
+            PowerUpEnum.Timer -> {
+                remainingBotFreezingTime = 10 * 1000
+            }
+        }
     }
 }

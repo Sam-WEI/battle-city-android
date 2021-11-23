@@ -160,15 +160,6 @@ class BulletState(
                         soundState.playSound(SoundEffect.BulletHitSteel) // todo should be a special dink sound
                     }
                     tankState.hit(bullet, firstCollision.tank)
-
-                    if (afterHit.isDead) {
-                        explosionState.spawnExplosion(firstCollision.tank.collisionBox.center, ExplosionAnimationBig)
-                        if (firstCollision.tank.side == TankSide.Bot) {
-                            soundState.playSound(SoundEffect.Explosion1)
-                        } else {
-                            soundState.playSound(SoundEffect.Explosion2)
-                        }
-                    }
                 }
                 is HitBullet -> {
 
