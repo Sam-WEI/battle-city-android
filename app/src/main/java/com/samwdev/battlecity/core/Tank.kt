@@ -36,8 +36,8 @@ data class Tank(
     val isAlive: Boolean get() = hp > 0
     val isDead: Boolean get() = !isAlive
     val hasShield: Boolean get() = remainingShield > 0
-
     val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
+    val center: Offset get() = collisionBox.center
     val pivotBox: Rect get() {
         val halfBlock = 0.5f.grid2mpx.toInt() // 8
         val pbx = (x / halfBlock).roundToInt() * halfBlock.toFloat()
@@ -66,8 +66,13 @@ fun Tank.moveTo(rect: Rect, newDirection: Direction = direction): Tank =
     copy(x = rect.left, y = rect.top, direction = newDirection)
 
 fun Tank.hitBy(bullet: Bullet): Tank {
+    if (hasShield) return this
     return copy(hp = hp - 1, hasPowerUp = false)
 }
+
+fun Tank.levelUp(): Tank = copy(level = this.level.nextLevel)
+
+fun Tank.shieldOn(duration: Int): Tank = copy(remainingShield = duration)
 
 enum class Direction(val degree: Float) {
     Up(0f),
@@ -84,7 +89,13 @@ enum class TankSide {
 }
 
 enum class TankLevel {
-    Level1, Level2, Level3, Level4
+    Level1, Level2, Level3, Level4;
+    val nextLevel: TankLevel get() = when (this) {
+        Level1 -> Level2
+        Level2 -> Level3
+        Level3 -> Level4
+        Level4 -> Level4
+    }
 }
 
 private val Tank.specs: TankSpecs get() = getTankSpecs(side, level)
