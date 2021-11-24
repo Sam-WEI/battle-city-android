@@ -18,7 +18,7 @@ class BotTankController(
         }
 
         val command = botAi.getCommand()
-        val distance = tank.speed * tick.delta
+        val distance = tank.maxSpeed * tick.delta
 
         when (command) {
             is Fire -> {
@@ -30,13 +30,13 @@ class BotTankController(
                 }
             }
             is Stop -> {
-
+                tankState.stopTank(tank.id)
             }
             is Turn -> {
-                tankState.moveTank(tank.id, command.direction, tick.delta.toInt())
+                tankState.moveTank(tank.id, command.direction)
             }
             is Proceed -> {
-                tankState.moveTank(tank.id, tank.direction, tick.delta.toInt())
+                tankState.moveTank(tank.id, tank.movingDirection)
             }
         }
     }

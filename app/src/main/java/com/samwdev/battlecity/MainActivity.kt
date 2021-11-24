@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BattleCityTheme {
 //                BattleScreen(MapParser.parseJson(Random.nextInt(1, 36)))
-                BattleScreen(MapParser.parseJson(24))
+                BattleScreen(MapParser.parseJson(17))
             }
         }
     }
