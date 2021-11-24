@@ -244,7 +244,7 @@ class TankState(
 
         // check collision against tanks
         tanks.values.asSequence().filter { it.id != tank.id }.forEach { otherTank ->
-            collisionBox.intersect(otherTank.pivotBox)
+            travelPath.intersect(otherTank.pivotBox)
                 .takeIf { !it.isEmpty }
                 ?.let { intersect ->
                     checks.add(MoveRestriction(intersect, movingDirection))

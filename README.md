@@ -6,7 +6,7 @@
 [x] Bullet collision test
 [x] Explosion animation
 [x] Tank collision with map elements
-[ ] Tank collision with tanks
+[x] Tank collision with tanks
 [x] Spawn blink
 [x] Spawn shield
 [*] Power-ups
