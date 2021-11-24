@@ -28,6 +28,9 @@ class TankState(
     private val explosionState: ExplosionState,
 ) : TickListener {
     companion object {
+        private const val ShieldDuration = 10 * 1000
+        private const val FrozenDuration = 10 * 1000
+
         private const val NOT_AN_ID = -1
         // todo to confirm this works as expected
 //        fun Saver() = Saver<TankState, Map<TankId, Tank>>(
@@ -44,7 +47,7 @@ class TankState(
     val aliveTanks: Sequence<Tank> get() = tanks.values.asSequence().filter { it.isAlive }
 
     // todo move to a proper place
-    var remainingBotFreezingTime: Long = 0
+    var remainingBotFrozenTime: Int = 0
         private set
 
     var playerTankId: TankId = NOT_AN_ID
@@ -59,8 +62,8 @@ class TankState(
         }
 
     override fun onTick(tick: Tick) {
-        if (remainingBotFreezingTime > 0) {
-            remainingBotFreezingTime -= tick.delta
+        if (remainingBotFrozenTime > 0) {
+            remainingBotFrozenTime -= tick.delta.toInt()
         }
         val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
         tanks.forEach { (id, tank) ->
@@ -98,7 +101,7 @@ class TankState(
 
     private fun spawnPlayer(): Tank {
         // todo check remaining life or from last map
-        val level = TankLevel.Level1
+        val level = TankLevel.Level3
         return Tank(
             id = idGen.incrementAndGet(),
             x = playerSpawnPosition.x,
@@ -278,7 +281,7 @@ class TankState(
         soundState.playSound(SoundEffect.PowerUpPick)
         when (powerUpEnum) {
             PowerUpEnum.Helmet -> {
-                updateTank(tank.id, tank.shieldOn(10 * 1000))
+                updateTank(tank.id, tank.shieldOn(ShieldDuration))
             }
             PowerUpEnum.Star -> {
                 updateTank(tank.id, tank.levelUp())
@@ -290,11 +293,15 @@ class TankState(
 
             }
             PowerUpEnum.Shovel -> {
-
+                fortifyBase()
             }
             PowerUpEnum.Timer -> {
-                remainingBotFreezingTime = 10 * 1000
+                remainingBotFrozenTime = FrozenDuration
             }
         }
+    }
+
+    private fun fortifyBase() {
+        mapState.fortifyBase()
     }
 }

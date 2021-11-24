@@ -57,6 +57,7 @@ class BattleState(
         }
         coroutineScope.launch {
             tickState.tickFlow.collect { tick ->
+                mapState.onTick(tick)
                 soundState.onTick(tick)
                 tankController.onTick(tick)
                 bulletState.onTick(tick)

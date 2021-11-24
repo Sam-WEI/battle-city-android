@@ -13,8 +13,8 @@
     "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
     "X  Bf Bf Bf X  X  X  X  X  Bf Bf Bf X  ",
     "X  Bf Bf Bf X  X  X  X  X  Bf Bf Bf X  ",
-    "X  Bf Bf Bf X  B8 Bc B4 X  Bf Bf Bf X  ",
-    "X  X  X  X  X  Ba E  B5 X  X  X  X  X  "
+    "X  Bf Bf Bf X  Bf Bf Bf X  Bf Bf Bf X  ",
+    "X  X  X  X  X  BF E  Bf X  X  X  X  X  "
   ],
   "bots": ["18*basic", "2*fast"]
 }
