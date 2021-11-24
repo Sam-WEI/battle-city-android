@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.*
+import com.samwdev.battlecity.utils.logI
 import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
@@ -225,11 +226,9 @@ class TankState(
     }
 
     private fun checkCollideIfMoving(tank: Tank, distance: MapPixel, movingDirection: Direction): Rect {
-        // todo fix jiggling when moving against other tanks
         val collisionBox = tank.collisionBox
         val toRect = collisionBox.move(distance, movingDirection)
         val travelPath = collisionBox.getTravelPath(toRect)
-        val newPivotBox = tank.moveTo(toRect).pivotBox.deflate(1f)
 
         // check collision against map elements
         val checks = mutableListOf<MoveRestriction>()
@@ -246,6 +245,7 @@ class TankState(
         tanks.values.asSequence().filter { it.id != tank.id }.forEach { otherTank ->
             travelPath.intersect(otherTank.pivotBox)
                 .takeIf { !it.isEmpty }
+                ?.also { logI("${tank.id} ${tank.side} <> ${otherTank.id} ${otherTank.side} - (${it.width})x(${it.height})... $it") }
                 ?.let { intersect ->
                     checks.add(MoveRestriction(intersect, movingDirection))
                 }

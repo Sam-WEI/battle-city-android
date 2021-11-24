@@ -136,14 +136,21 @@ private val BotLevel2Specs = TankSpecs(maxHp = 1, movingSpeed = 0.06f, bulletSpe
 private val BotLevel3Specs = TankSpecs(maxHp = 1, movingSpeed = 0.045f, bulletSpeed = 0.24f, bulletPower = 1, fireCooldown = 200, maxBulletCount = 1)
 private val BotLevel4Specs = TankSpecs(maxHp = 4, movingSpeed = 0.045f, bulletSpeed = 0.18f, bulletPower = 1, fireCooldown = 200, maxBulletCount = 1)
 
-
+/**
+ * Returns the rect difference in front of the tank
+ */
 fun Rect.getTravelPath(to: Rect): Rect {
-    return Rect(
-        left = min(left, to.left),
-        top = min(top, to.top),
-        right = max(right, to.right),
-        bottom = max(bottom, to.bottom),
-    )
+    val movingDirection = if (to.left != left) {
+        if (to.left < left) Direction.Left else Direction.Right
+    } else {
+        if (to.top < top) Direction.Up else Direction.Down
+    }
+    return when (movingDirection) {
+        Direction.Up -> Rect(left, to.top, right, top)
+        Direction.Down -> Rect(left, bottom, right, to.bottom)
+        Direction.Left -> Rect(to.left, top, left, bottom)
+        Direction.Right -> Rect(right, top, to.right, bottom)
+    }
 }
 
 fun Rect.move(distance: MapPixel, direction: Direction): Rect =
