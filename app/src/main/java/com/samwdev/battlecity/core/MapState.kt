@@ -1,8 +1,12 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapElements
+import com.samwdev.battlecity.entity.SteelElement
 
 @Composable
 fun rememberMapState(mapElements: MapElements): MapState {
@@ -12,6 +16,13 @@ fun rememberMapState(mapElements: MapElements): MapState {
 class MapState(
     mapElements: MapElements,
 ) : TickListener {
+    companion object {
+        private const val FortificationDuration = 18 * 1000
+        private const val FortificationTimeoutDuration = 3 * 1000
+    }
+    // todo move to a proper place
+    private var remainingFortificationTime: Int = 0
+
     var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
         private set
 
@@ -29,12 +40,44 @@ class MapState(
 
     var eagle by mutableStateOf(mapElements.eagle, policy = referentialEqualityPolicy())
 
-    override fun onTick(tick: Tick) {
-
+    private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
+        val top = Rect(
+            offset = Offset(eagleRect.left - 0.5f.grid2mpx, eagleRect.top - 0.5f.grid2mpx),
+            size = Size(2f.grid2mpx, 0.5f.grid2mpx)
+        )
+        val left = Rect(
+            offset = Offset(eagleRect.left - 0.5f.grid2mpx, eagleRect.top),
+            size = Size(0.5f.grid2mpx, 1f.grid2mpx)
+        )
+        val right = Rect(
+            offset = Offset(eagleRect.right, eagleRect.top),
+            size = Size(0.5f.grid2mpx, 1f.grid2mpx)
+        )
+        listOf(top, left, right)
     }
 
-    fun destroyBricks(indices: Set<BrickElement>) {
-        bricks = bricks.filter { it !in indices }
+    private val brickIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
+        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect, Direction.Up)) }
+    }
+
+    private val steelIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
+        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect, Direction.Up)) }
+    }
+
+    override fun onTick(tick: Tick) {
+        if (remainingFortificationTime > 0) {
+            remainingFortificationTime -= tick.delta.toInt()
+            if (remainingFortificationTime <= 0) {
+                wrapEagleWithBricks()
+            } else if (remainingFortificationTime < FortificationTimeoutDuration) {
+                val blinkFrame = remainingFortificationTime / (FortificationTimeoutDuration / 12)
+                if (blinkFrame % 2 == 0) {
+                    wrapEagleWithSteels()
+                } else {
+                    wrapEagleWithBricks()
+                }
+            }
+        }
     }
 
     fun destroyBricksIndex(indices: Set<Int>): Boolean {
@@ -44,11 +87,28 @@ class MapState(
         return newCount != oldCount
     }
 
-    fun destroySteels(indices: Set<Int>): Boolean {
+    fun destroySteelsIndex(indices: Set<Int>): Boolean {
         val oldCount = steels.count()
         steels = steels.filter { it.index !in indices }
         val newCount = steels.count()
         return newCount != oldCount
+    }
+
+    fun fortifyBase() {
+        remainingFortificationTime = FortificationDuration
+        wrapEagleWithSteels()
+    }
+
+    private fun wrapEagleWithSteels() {
+        destroyBricksIndex(brickIndicesAroundEagle)
+        steels = steels.toMutableList()
+            .apply { addAll(steelIndicesAroundEagle.map { SteelElement(it) }) }
+    }
+
+    private fun wrapEagleWithBricks() {
+        destroySteelsIndex(steelIndicesAroundEagle)
+        bricks = bricks.toMutableList()
+            .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it) }) }
     }
 
     fun destroyEagle() {

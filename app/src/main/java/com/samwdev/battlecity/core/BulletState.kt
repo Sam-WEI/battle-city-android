@@ -135,7 +135,7 @@ class BulletState(
                     soundState.playSound(SoundEffect.BulletHitSteel)
                 }
                 if (bullet.power >= SteelElement.strength) {
-                    mapState.destroySteels(steelIndices.toSet())
+                    mapState.destroySteelsIndex(steelIndices.toSet())
                 }
             }
 

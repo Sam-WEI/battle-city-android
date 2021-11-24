@@ -1,7 +1,6 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.entity.PowerUpEnum
 import kotlin.random.Random
 
 @Composable
@@ -28,7 +27,7 @@ class BotState(
             }
         }
         clearDeadBots()
-        if (tankState.remainingBotFreezingTime <= 0) {
+        if (tankState.remainingBotFrozenTime <= 0) {
             bots.values.forEach { controller ->
                 controller.onTick(tick)
             }
