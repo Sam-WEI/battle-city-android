@@ -78,8 +78,9 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
 
     /**
      * This method returns the indices of the elements in the rect regardless of there actually is any elements in the rect.
+     * @param moveDirection determines how the returned items are traversed. First hit items come first.
      */
-    fun getIndicesOverlappingRect(rect: Rect, moveDirection: Direction): List<Int> {
+    fun getIndicesOverlappingRect(rect: Rect, moveDirection: Direction = Direction.Down): List<Int> {
         val top: MapPixel = rect.top
         val bottom: MapPixel = rect.bottom - 0.1f // exclude the bottom border
         val left: MapPixel = rect.left

@@ -24,6 +24,7 @@ data class Tank(
     val remainingShield: Int = 0,
     val remainingCooldown: Int = 0,
     val timeToSpawn: Int = 0,
+    val isSliding: Boolean = false,
 ) : Parcelable {
     val offset: Offset get() = Offset(x, y)
     val bulletPower: Int get() = specs.bulletPower
