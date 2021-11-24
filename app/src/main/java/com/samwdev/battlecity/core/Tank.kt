@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import com.samwdev.battlecity.entity.PowerUpEnum
 import kotlinx.parcelize.Parcelize
 import kotlin.math.max
 import kotlin.math.min
@@ -40,8 +39,10 @@ data class Tank(
     val center: Offset get() = collisionBox.center
     val pivotBox: Rect get() {
         val halfBlock = 0.5f.grid2mpx.toInt() // 8
-        val pbx = (x / halfBlock).roundToInt() * halfBlock.toFloat()
-        val pby = (y / halfBlock).roundToInt() * halfBlock.toFloat()
+        // this tiny offset is to fix collision with brick quarters
+        val tinyOffset = if (direction == Direction.Right || direction == Direction.Down) { 0.1f } else { 0f }
+        val pbx = (x / halfBlock - tinyOffset).roundToInt() * halfBlock.toFloat()
+        val pby = (y / halfBlock - tinyOffset).roundToInt() * halfBlock.toFloat()
         return Rect(Offset(pbx, pby), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
     }
 

@@ -30,5 +30,5 @@
 [x] ~~level 4 bots have different color schemes: (1) green -> yellow -> yellow -> gray -> die. (2) gray -> gray -> green -> gray -> die (obsolete)~~
 [x] bots with power-up flash gray-red
 [x] tank ui shadow direction
-[ ] shovel fortifies base for 18 secs, then it alternates 12 times for 3 more secs.
-[ ] collision with half bricks is buggy
+[x] shovel fortifies base for 18 secs, then it alternates 12 times for 3 more secs.
+[x] collision with half bricks is buggy
