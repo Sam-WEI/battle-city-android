@@ -173,7 +173,7 @@ data class MoveRestriction(val bound: MapPixel, val direction: Direction) {
                      Direction.Down -> hitRect.top
                      Direction.Left -> hitRect.right
                      Direction.Right -> hitRect.left
-                 },
+                 }.roundToInt().toFloat(),
                 direction
             )
 }
