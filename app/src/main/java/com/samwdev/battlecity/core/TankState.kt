@@ -80,11 +80,14 @@ class TankState(
             if (remainingShield > 0) {
                 remainingShield -= tick.delta.toInt()
             }
-            val newTank = tank.copy(
+            var newTank = tank.copy(
                 remainingCooldown = remainingCooldown,
                 remainingShield = remainingShield,
                 timeToSpawn = timeToSpawn,
             )
+            if (isTankFullOnIce(tank)) {
+                newTank = newTank.copy(direction = Direction.values().random())
+            }
             newTanks[id] = newTank
         }
         tanks = newTanks
@@ -196,8 +199,15 @@ class TankState(
         return tanks.getValue(id)
     }
 
-    fun moveTank(id: TankId, direction: Direction, distance: MapPixel) {
+    fun moveTank(id: TankId, direction: Direction, movingDur: Int) {
         val tank = getTank(id)
+        val distance = tank.speed * movingDur
+        // todo check if on ice
+        if (isTankFullOnIce(tank)) {
+
+        } else {
+
+        }
         if (tank.direction != direction) {
             updateTank(id, tank.turn(into = direction))
         } else {
@@ -209,6 +219,12 @@ class TankState(
                 checkPowerUpCollision(updatedTank)
             }
         }
+    }
+
+    private fun isTankFullOnIce(tank: Tank): Boolean {
+        val iceIndices = IceElement.getIndicesOverlappingRect(tank.pivotBox)
+        val iceSet = mapState.ices.map { it.index }.toSet()
+        return iceIndices.all { it in iceSet }
     }
 
     fun startCooldown(id: TankId) {

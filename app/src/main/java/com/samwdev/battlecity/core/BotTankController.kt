@@ -33,10 +33,10 @@ class BotTankController(
 
             }
             is Turn -> {
-                tankState.moveTank(tank.id, command.direction, distance)
+                tankState.moveTank(tank.id, command.direction, tick.delta.toInt())
             }
             is Proceed -> {
-                tankState.moveTank(tank.id, tank.direction, distance)
+                tankState.moveTank(tank.id, tank.direction, tick.delta.toInt())
             }
         }
     }

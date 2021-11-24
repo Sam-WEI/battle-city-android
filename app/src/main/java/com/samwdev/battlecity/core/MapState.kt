@@ -57,11 +57,11 @@ class MapState(
     }
 
     private val brickIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect, Direction.Up)) }
+        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect)) }
     }
 
     private val steelIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect, Direction.Up)) }
+        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect)) }
     }
 
     override fun onTick(tick: Tick) {
