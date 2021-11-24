@@ -47,8 +47,8 @@ fun Tank(tank: Tank) {
             if (travelDistance.roundToInt() % (TreadPatternCycleDistance * 2) < TreadPatternCycleDistance) 0 else 1
         }
     }
-    travelDistance = remember(tank.x, tank.y, tank.direction) {
-        travelDistance + tank.speed * 10
+    travelDistance = remember(tank.x, tank.y, tank.movingDirection) {
+        travelDistance + tank.currentSpeed * 10
     }
     if (LocalDebugConfig.current.showPivotBox) {
         PixelCanvas(
@@ -100,7 +100,7 @@ fun Tank(tank: Tank) {
 @Composable
 fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalette) {
     PixelCanvas(
-        modifier = when (tank.direction) {
+        modifier = when (tank.facingDirection) {
             Direction.Up -> Modifier
             Direction.Down -> Modifier.scale(1f, -1f)
             Direction.Left -> Modifier
@@ -148,7 +148,7 @@ private fun TankPreview() {
                         id = 1,
                         x = x.grid2mpx,
                         y = y.grid2mpx,
-                        direction = Direction.Right,
+                        facingDirection = Direction.Right,
                         side = TankSide.Player,
                         hp = 1,
                     )
@@ -164,7 +164,7 @@ private fun TankPreview() {
                         side = TankSide.Player,
                         level = tankLevel,
                         hp = 1,
-                        direction = Direction.Up)
+                        facingDirection = Direction.Up)
                     )
                     Tank(Tank(
                         id = 0,
@@ -173,7 +173,7 @@ private fun TankPreview() {
                         side = TankSide.Bot,
                         level = tankLevel,
                         hp = 1,
-                        direction = Direction.Up)
+                        facingDirection = Direction.Up)
                     )
                 }
             }

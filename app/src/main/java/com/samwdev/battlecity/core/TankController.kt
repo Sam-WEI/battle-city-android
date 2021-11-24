@@ -1,9 +1,5 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-
 class TankController(
     private val tankState: TankState,
     private val bulletState: BulletState, // todo move out?
@@ -16,11 +12,13 @@ class TankController(
         if (tank.isSpawning) {
             return
         }
-        val distance = tank.speed * tick.delta
+        val distance = tank.maxSpeed * tick.delta
 
         val newDir = handheldControllerState.direction
         if (newDir != null) {
-            tankState.moveTank(tankId, newDir, tick.delta.toInt())
+            tankState.moveTank(tankId, newDir)
+        } else {
+            tankState.stopTank(tankId)
         }
 
         if (handheldControllerState.firePressed && tank.remainingCooldown <= 0) {

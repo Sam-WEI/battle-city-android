@@ -17,11 +17,14 @@ class BotAi : TickListener {
         }
         cd = AiCd
         when (Random.nextInt(0..100)) {
-            in 0..60 -> {
+            in 0..40 -> {
                 command = Fire
             }
-            in 60..80 -> {
+            in 40..70 -> {
                 command = Proceed
+            }
+            in 70..80 -> {
+                command = Stop
             }
             in 80..85 -> {
                 command = Turn(Direction.Up)

@@ -5,8 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import kotlinx.parcelize.Parcelize
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 typealias TankId = Int
@@ -16,10 +14,13 @@ data class Tank(
     val id: TankId,
     val x: MapPixel = 0f,
     val y: MapPixel = 0f,
-    val direction: Direction = Direction.Up,
+    val movingDirection: Direction = Direction.Up,
+    val facingDirection: Direction = Direction.Up,
     val level: TankLevel = TankLevel.Level1,
     val side: TankSide,
     val hp: Int,
+    val currentSpeed: MapPixel = 0f,
+    val isEngineOn: Boolean = false,
     val hasPowerUp: Boolean = false,
     val remainingShield: Int = 0,
     val remainingCooldown: Int = 0,
@@ -29,7 +30,7 @@ data class Tank(
     val offset: Offset get() = Offset(x, y)
     val bulletPower: Int get() = specs.bulletPower
     val bulletSpeed: MapPixel get() = specs.bulletSpeed
-    val speed: MapPixel get() = specs.movingSpeed
+    val maxSpeed: MapPixel get() = specs.movingSpeed
     val fireCooldown: Int get() = specs.fireCooldown
     val maxBulletCount: Int get() = specs.maxBulletCount
     val isSpawning: Boolean get() = timeToSpawn > 0
@@ -41,15 +42,14 @@ data class Tank(
     val pivotBox: Rect get() {
         val halfBlock = 0.5f.grid2mpx.toInt() // 8
         // this tiny offset is to fix collision with brick quarters
-        val tinyOffset = if (direction == Direction.Right || direction == Direction.Down) { 0.1f } else { 0f }
+        val tinyOffset = if (movingDirection == Direction.Right || movingDirection == Direction.Down) { 0.1f } else { 0f }
         val pbx = (x / halfBlock - tinyOffset).roundToInt() * halfBlock.toFloat()
         val pby = (y / halfBlock - tinyOffset).roundToInt() * halfBlock.toFloat()
         return Rect(Offset(pbx, pby), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
     }
 
     val bulletStartPosition: Offset
-        get() =
-        when (direction) {
+        get() = when (facingDirection) {
             Direction.Up -> Offset(x + 6, y)
             Direction.Down -> Offset(x + 6, y + 1.grid2mpx)
             Direction.Left -> Offset(x , y + 6)
@@ -57,15 +57,28 @@ data class Tank(
         }
 }
 
-fun Tank.turn(into: Direction): Tank {
-    if (into == direction) { return this }
+fun Tank.faceAndTryMove(to: Direction): Tank = copy(facingDirection = to, isEngineOn = true)
+
+fun Tank.turnAndMove(into: Direction): Tank {
+    if (into == movingDirection) { return this }
     val newX = if (into.isVertical()) pivotBox.left else x
     val newY = if (into.isVertical()) y else pivotBox.top
-    return copy(direction = into, x = newX, y = newY)
+    return copy(movingDirection = into, x = newX, y = newY)
 }
 
-fun Tank.moveTo(rect: Rect, newDirection: Direction = direction): Tank =
-    copy(x = rect.left, y = rect.top, direction = newDirection)
+fun Tank.moveTo(rect: Rect, newDirection: Direction = movingDirection): Tank =
+    copy(x = rect.left, y = rect.top, movingDirection = newDirection)
+
+fun Tank.speedUp(acceleration: Float): Tank {
+    return copy(
+        currentSpeed = (currentSpeed + acceleration).coerceAtMost(maxSpeed),
+        movingDirection = facingDirection,
+    )
+}
+
+fun Tank.speedDown(deceleration: Float): Tank {
+    return copy(currentSpeed = (currentSpeed - deceleration).coerceAtLeast(0f))
+}
 
 fun Tank.hitBy(bullet: Bullet): Tank {
     if (hasShield) return this

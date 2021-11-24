@@ -85,10 +85,7 @@ class TankState(
                 remainingShield = remainingShield,
                 timeToSpawn = timeToSpawn,
             )
-            if (isTankFullOnIce(tank)) {
-                newTank = newTank.copy(direction = Direction.values().random())
-            }
-            newTanks[id] = newTank
+            newTanks[id] = moveTankOnTick(newTank, tick.delta.toInt())
         }
         tanks = newTanks
 
@@ -110,7 +107,7 @@ class TankState(
             id = idGen.incrementAndGet(),
             x = playerSpawnPosition.x,
             y = playerSpawnPosition.y,
-            direction = Direction.Up,
+            movingDirection = Direction.Up,
             level = level,
             side = TankSide.Player,
             hp = getTankSpecs(TankSide.Player, level).maxHp,
@@ -130,7 +127,7 @@ class TankState(
             y = loc.y,
             hp = getTankSpecs(TankSide.Bot, level).maxHp,
             level = level,
-            direction = Direction.Right,
+            movingDirection = Direction.Right,
             side = TankSide.Bot,
             hasPowerUp = hasPowerUp,
             timeToSpawn = 1500,
@@ -199,29 +196,61 @@ class TankState(
         return tanks.getValue(id)
     }
 
-    fun moveTank(id: TankId, direction: Direction, movingDur: Int) {
-        val tank = getTank(id)
-        val distance = tank.speed * movingDur
-        // todo check if on ice
-        if (isTankFullOnIce(tank)) {
+    fun moveTank(tankId: TankId, direction: Direction) {
+        updateTank(tankId, getTank(tankId).faceAndTryMove(to = direction))
+    }
 
-        } else {
+    fun stopTank(tankId: TankId) {
+        updateTank(tankId, getTank(tankId).copy(isEngineOn = false))
+    }
 
-        }
-        if (tank.direction != direction) {
-            updateTank(id, tank.turn(into = direction))
+    private fun moveTankOnTick(tank: Tank, delta: Int): Tank {
+        var tank = tank
+        val isOnIce = isTankFullOnIce(tank)
+        val acceleration = if (isOnIce) 0.0002f * delta else Float.MAX_VALUE
+        if (isOnIce) {
+            if (tank.isEngineOn) {
+                if (tank.currentSpeed == 0f) {
+                    // start from
+                    tank = tank.speedUp(acceleration)
+                } else {
+                    if (tank.facingDirection == tank.movingDirection) {
+                        tank = tank.speedUp(acceleration)
+                    } else {
+                        tank = tank.speedDown(acceleration)
+                    }
+                }
+            } else {
+                if (tank.currentSpeed > 0) {
+                    tank = tank.speedDown(acceleration)
+                }
+            }
         } else {
-            // moving forward, check collision
-            val allowedRect = checkCollideIfMoving(tank, distance, tank.direction)
-            val updatedTank = tank.moveTo(rect = allowedRect)
-            updateTank(id, updatedTank)
-            if (updatedTank.side == TankSide.Player) {
-                checkPowerUpCollision(updatedTank)
+            if (tank.isEngineOn) {
+                tank = tank.speedUp(acceleration)
+
+                if (tank.movingDirection != tank.facingDirection) {
+                    return tank.turnAndMove(into = tank.facingDirection)
+                } else {
+                    // moving forward, check collision
+                }
+            } else {
+                tank = tank.speedDown(acceleration)
             }
         }
+
+        val distance = tank.currentSpeed * delta
+        val allowedRect = checkCollideIfMoving(tank, distance, tank.movingDirection)
+        val updatedTank = tank.moveTo(rect = allowedRect)
+
+        if (updatedTank.side == TankSide.Player) {
+            checkPowerUpCollision(updatedTank)
+        }
+        return updatedTank
     }
 
     private fun isTankFullOnIce(tank: Tank): Boolean {
+//        return true
         val iceIndices = IceElement.getIndicesOverlappingRect(tank.pivotBox)
         val iceSet = mapState.ices.map { it.index }.toSet()
         return iceIndices.all { it in iceSet }
