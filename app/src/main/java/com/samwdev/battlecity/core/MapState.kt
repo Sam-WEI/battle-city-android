@@ -50,9 +50,13 @@ class MapState(
         private set
 
     val iceIndexSet: Set<Int> = ices.map { it.index }.toSet()
-    val brickIndexSet: Set<Int> = bricks.map { it.index }.toSet()
-    val steelIndexSet: Set<Int> = steels.map { it.index }.toSet()
-    val waterIndexSet: Set<Int> = waters.map { it.index }.toSet()
+    val brickIndexSet: Set<Int> get() = bricks.map { it.index }.toSet()
+    val steelIndexSet: Set<Int> get() = steels.map { it.index }.toSet()
+    val waterIndexSet: Set<Int> get() = waters.map { it.index }.toSet()
+
+    init {
+        calculateAccessPoints()
+    }
 
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
         val top = Rect(
@@ -92,7 +96,6 @@ class MapState(
                 }
             }
         }
-        calculateAccessPoints()
     }
 
     fun destroyBricksIndex(indices: Set<Int>): Boolean {
@@ -101,7 +104,17 @@ class MapState(
             removeAll { it.index in indices }
         }
         val newCount = bricks.count()
-        return newCount != oldCount
+        val destroyedSome = newCount != oldCount
+        if (destroyedSome) {
+            indices.forEach {
+                val (subR, subC) = BrickElement.getSubRowCol(it)
+                val cleared = !BrickElement.overlapsAnyElement(brickIndexSet, subR, subC)
+                if (cleared) {
+                    calculateAccessPoints(subR, subC, depth = 10)
+                }
+            }
+        }
+        return destroyedSome
     }
 
     fun destroySteelsIndex(indices: Set<Int>): Boolean {
@@ -139,17 +152,18 @@ class MapState(
             .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it) }) }
     }
 
-    private fun calculateAccessPoints() {
-        val spawnSubRow = (playerSpawnPosition.x / 1f.grid2mpx * 2).toInt()
-        val spawnSubCol = (playerSpawnPosition.y / 1f.grid2mpx * 2).toInt()
-
-        val accPts = AccessPoints(AccessPointsSize) { Array(AccessPointsSize) { -1 } }
-        calculateAccessPointsRecursively(accPts, spawnSubRow, spawnSubCol)
+    private fun calculateAccessPoints(
+        fromSubRow: Int = (playerSpawnPosition.y / 1f.grid2mpx * 2).toInt(),
+        fromSubCol: Int = (playerSpawnPosition.x / 1f.grid2mpx * 2).toInt(),
+        depth: Int = Int.MAX_VALUE,
+    ) {
+        val accPts = accessPoints.copyOf()
+        calculateAccessPointsRecursively(accPts, fromSubRow, fromSubCol, depth)
         accessPoints = accPts
     }
 
-    private fun calculateAccessPointsRecursively(accessPoints: AccessPoints, row: Int, col: Int) {
-        if (row !in accessPoints.indices || col !in accessPoints.first().indices) return
+    private fun calculateAccessPointsRecursively(accessPoints: AccessPoints, row: Int, col: Int, depth: Int) {
+        if (depth < 0 || row !in accessPoints.indices || col !in accessPoints.first().indices) return
         if (accessPoints[row][col] > 0) return // already accessed
 
         // starting from the cheapest
@@ -161,10 +175,10 @@ class MapState(
             return
         } else {
             accessPoints[row][col] = 1
-            calculateAccessPointsRecursively(accessPoints, row - 1, col)
-            calculateAccessPointsRecursively(accessPoints, row + 1, col)
-            calculateAccessPointsRecursively(accessPoints, row, col - 1)
-            calculateAccessPointsRecursively(accessPoints, row, col + 1)
+            calculateAccessPointsRecursively(accessPoints, row - 1, col, depth - 1)
+            calculateAccessPointsRecursively(accessPoints, row + 1, col, depth - 1)
+            calculateAccessPointsRecursively(accessPoints, row, col - 1, depth - 1)
+            calculateAccessPointsRecursively(accessPoints, row, col + 1, depth - 1)
         }
     }
 }
