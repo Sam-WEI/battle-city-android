@@ -40,6 +40,8 @@ class MapState(
 
     var eagle by mutableStateOf(mapElements.eagle, policy = referentialEqualityPolicy())
 
+    val iceIndexSet: Set<Int> = ices.map { it.index }.toSet()
+
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
         val top = Rect(
             offset = Offset(eagleRect.left - 0.5f.grid2mpx, eagleRect.top - 0.5f.grid2mpx),
