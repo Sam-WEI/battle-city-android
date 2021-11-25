@@ -20,8 +20,6 @@ fun rememberTankState(
     }
 }
 
-private val playerSpawnPosition = Offset(4.5f.grid2mpx, 12f.grid2mpx)
-
 class TankState(
     private val soundState: SoundState,
     private val mapState: MapState,
@@ -90,8 +88,8 @@ class TankState(
         val level = TankLevel.Level3
         return Tank(
             id = idGen.incrementAndGet(),
-            x = playerSpawnPosition.x,
-            y = playerSpawnPosition.y,
+            x = mapState.playerSpawnPosition.x,
+            y = mapState.playerSpawnPosition.y,
             movingDirection = Direction.Up,
             level = level,
             side = TankSide.Player,

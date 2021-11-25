@@ -49,7 +49,14 @@ class PowerUpState(
     }
 
     private fun getAvailablePosition(): Offset {
-        // todo
+        var attempt = 0
+        while (attempt < 3) {
+            val row = (Random.nextInt(MAP_BLOCK_COUNT * 2) / 2f).grid2mpx
+            val col = (Random.nextInt(MAP_BLOCK_COUNT * 2) / 2f).grid2mpx
+
+
+            attempt++
+        }
         return Offset(
             Random.nextInt(0, (MAP_BLOCK_COUNT - 1)).grid2mpx,
             Random.nextInt(0, (MAP_BLOCK_COUNT - 1)).grid2mpx

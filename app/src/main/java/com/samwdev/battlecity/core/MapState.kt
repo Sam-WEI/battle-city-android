@@ -7,11 +7,14 @@ import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapElements
 import com.samwdev.battlecity.entity.SteelElement
+import com.samwdev.battlecity.entity.WaterElement
 
 @Composable
 fun rememberMapState(mapElements: MapElements): MapState {
     return remember(mapElements) { MapState(mapElements) }
 }
+
+typealias AccessPoints = Array<Array<Int>>
 
 class MapState(
     mapElements: MapElements,
@@ -19,9 +22,12 @@ class MapState(
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationTimeoutDuration = 3 * 1000
+        private const val AccessPointsSize = MAP_BLOCK_COUNT * 2 - 1
     }
     // todo move to a proper place
     private var remainingFortificationTime: Int = 0
+
+    val playerSpawnPosition = Offset(4f.grid2mpx, 12f.grid2mpx)
 
     var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
         private set
@@ -40,7 +46,13 @@ class MapState(
 
     var eagle by mutableStateOf(mapElements.eagle, policy = referentialEqualityPolicy())
 
+    var accessPoints: AccessPoints by mutableStateOf(Array(AccessPointsSize) { Array(AccessPointsSize) { -1 } })
+        private set
+
     val iceIndexSet: Set<Int> = ices.map { it.index }.toSet()
+    val brickIndexSet: Set<Int> = bricks.map { it.index }.toSet()
+    val steelIndexSet: Set<Int> = steels.map { it.index }.toSet()
+    val waterIndexSet: Set<Int> = waters.map { it.index }.toSet()
 
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
         val top = Rect(
@@ -80,6 +92,7 @@ class MapState(
                 }
             }
         }
+        calculateAccessPoints()
     }
 
     fun destroyBricksIndex(indices: Set<Int>): Boolean {
@@ -105,6 +118,15 @@ class MapState(
         wrapEagleWithSteels()
     }
 
+    fun destroyEagle() {
+        eagle = eagle.copy(dead = true)
+    }
+
+    fun isGridAccessible(topLeft: Offset): Boolean {
+        // todo
+        return true
+    }
+
     private fun wrapEagleWithSteels() {
         destroyBricksIndex(brickIndicesAroundEagle)
         steels = steels.toMutableSet()
@@ -117,7 +139,32 @@ class MapState(
             .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it) }) }
     }
 
-    fun destroyEagle() {
-        eagle = eagle.copy(dead = true)
+    private fun calculateAccessPoints() {
+        val spawnSubRow = (playerSpawnPosition.x / 1f.grid2mpx * 2).toInt()
+        val spawnSubCol = (playerSpawnPosition.y / 1f.grid2mpx * 2).toInt()
+
+        val accPts = AccessPoints(AccessPointsSize) { Array(AccessPointsSize) { -1 } }
+        calculateAccessPointsRecursively(accPts, spawnSubRow, spawnSubCol)
+        accessPoints = accPts
+    }
+
+    private fun calculateAccessPointsRecursively(accessPoints: AccessPoints, row: Int, col: Int) {
+        if (row !in accessPoints.indices || col !in accessPoints.first().indices) return
+        if (accessPoints[row][col] > 0) return // already accessed
+
+        // starting from the cheapest
+        if (WaterElement.overlapsAnyElement(waterIndexSet, row, col) ||
+            SteelElement.overlapsAnyElement(steelIndexSet, row, col) ||
+            BrickElement.overlapsAnyElement(brickIndexSet, row, col)
+        ) {
+            accessPoints[row][col] = -1
+            return
+        } else {
+            accessPoints[row][col] = 1
+            calculateAccessPointsRecursively(accessPoints, row - 1, col)
+            calculateAccessPointsRecursively(accessPoints, row + 1, col)
+            calculateAccessPointsRecursively(accessPoints, row, col - 1)
+            calculateAccessPointsRecursively(accessPoints, row, col + 1)
+        }
     }
 }
