@@ -73,8 +73,8 @@ value class SubGrid internal constructor(private val packedValue: Int) {
     val subRow: Int get() = packedValue / AccessPointsSize
     val subCol: Int get() = packedValue % AccessPointsSize
 
-    val x: MapPixel get() = (subRow / 2f).grid2mpx
-    val y: MapPixel get() = (subCol / 2f).grid2mpx
+    val x: MapPixel get() = (subCol / 2f).grid2mpx
+    val y: MapPixel get() = (subRow / 2f).grid2mpx
 
     val isOutOfBound: Boolean get() = !(subRow in 0 until AccessPointsSize && subCol in 0 until AccessPointsSize)
 
