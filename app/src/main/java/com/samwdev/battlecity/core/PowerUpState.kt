@@ -50,17 +50,13 @@ class PowerUpState(
 
     private fun getAvailablePosition(): Offset {
         var attempt = 0
-        while (attempt < 3) {
-            val row = (Random.nextInt(MAP_BLOCK_COUNT * 2) / 2f).grid2mpx
-            val col = (Random.nextInt(MAP_BLOCK_COUNT * 2) / 2f).grid2mpx
-
-
-            attempt++
+        while (true) {
+            val row = Random.nextInt(MapState.AccessPointsSize)
+            val col = Random.nextInt(MapState.AccessPointsSize)
+            if (mapState.accessPoints[row][col] > 0 || ++attempt >= 5) {
+                return Offset((col / 2f).grid2mpx, (row / 2f).grid2mpx)
+            }
         }
-        return Offset(
-            Random.nextInt(0, (MAP_BLOCK_COUNT - 1)).grid2mpx,
-            Random.nextInt(0, (MAP_BLOCK_COUNT - 1)).grid2mpx
-        )
     }
 
     private fun randomPowerUp(): PowerUpEnum {

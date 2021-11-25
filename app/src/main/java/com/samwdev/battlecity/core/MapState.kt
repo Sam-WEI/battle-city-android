@@ -22,7 +22,7 @@ class MapState(
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationTimeoutDuration = 3 * 1000
-        private const val AccessPointsSize = MAP_BLOCK_COUNT * 2 - 1
+        const val AccessPointsSize = MAP_BLOCK_COUNT * 2 - 1
     }
     // todo move to a proper place
     private var remainingFortificationTime: Int = 0
