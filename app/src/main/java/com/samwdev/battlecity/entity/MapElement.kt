@@ -31,38 +31,38 @@ data class BrickElement(override val index: Int) : MapElement(index), MapElement
     val patternIndex: Int get() = (gridPosition.x + gridPosition.y) % 2
 
     companion object : MapElementHelper(4) {
-        operator fun invoke(row: Int, col: Int) = BrickElement(row * countInOneLine + col)
+        operator fun invoke(row: Int, col: Int) = BrickElement(getIndex(row, col))
     }
 }
 
 data class SteelElement(override val index: Int) : MapElement(index), MapElementProperties by SteelElement {
     companion object : MapElementHelper(2) {
         override val strength: Int = 3
-        operator fun invoke(row: Int, col: Int) = SteelElement(row * countInOneLine + col)
+        operator fun invoke(row: Int, col: Int) = SteelElement(getIndex(row, col))
     }
 }
 
 data class TreeElement(override val index: Int) : MapElement(index), MapElementProperties by TreeElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int) = TreeElement(row * countInOneLine + col)
+        operator fun invoke(row: Int, col: Int) = TreeElement(getIndex(row, col))
     }
 }
 
 data class WaterElement(override val index: Int) : MapElement(index), MapElementProperties by WaterElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int) = WaterElement(row * countInOneLine + col)
+        operator fun invoke(row: Int, col: Int) = WaterElement(getIndex(row, col))
     }
 }
 
 data class IceElement(override val index: Int) : MapElement(index), MapElementProperties by IceElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int) = IceElement(row * countInOneLine + col)
+        operator fun invoke(row: Int, col: Int) = IceElement(getIndex(row, col))
     }
 }
 
 data class EagleElement(override val index: Int, val dead: Boolean = false) : MapElement(index), MapElementProperties by EagleElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int, destroyed: Boolean = false) = EagleElement(row * countInOneLine + col, destroyed)
+        operator fun invoke(row: Int, col: Int, destroyed: Boolean = false) = EagleElement(getIndex(row, col), destroyed)
     }
 }
 
@@ -75,6 +75,22 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
             size = Size(elementSize, elementSize),
         )
     }
+
+    fun overlapsAnyElement(realElements: Set<Int>, subRow: Int, subCol: Int): Boolean {
+        // 2 is the sub granularity
+        val realRow = (subRow / (2f / granularity)).toInt()
+        val realCol = (subCol / (2f / granularity)).toInt()
+
+        for (i in 0 until granularity) {
+            for (j in 0 until granularity) {
+                val idx = getIndex(realRow + i, realCol + j)
+                if (idx in realElements) return true
+            }
+        }
+        return false
+    }
+
+    protected fun getIndex(row: Int, col: Int) = row * countInOneLine + col
 
     /**
      * This method returns the indices of the elements in the rect regardless of there actually is any elements in the rect.
@@ -116,13 +132,13 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         if (moveDirection.isHorizontal()) {
             for (c in firstDimen) {
                 for (r in secondDimen) {
-                    ret.add(r * countInOneLine + c)
+                    ret.add(getIndex(r, c))
                 }
             }
         } else {
             for (r in firstDimen) {
                 for (c in secondDimen) {
-                    ret.add(r * countInOneLine + c)
+                    ret.add(getIndex(r, c))
                 }
             }
         }
