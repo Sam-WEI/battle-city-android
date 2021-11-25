@@ -21,7 +21,7 @@ data class Tank(
     val side: TankSide,
     val hp: Int,
     val currentSpeed: MapPixel = 0f,
-    val isEngineOn: Boolean = false,
+    val isGasPedalPressed: Boolean = false,
     val hasPowerUp: Boolean = false,
     val remainingShield: Int = 0,
     val remainingCooldown: Int = 0,
@@ -58,23 +58,24 @@ data class Tank(
         }
 }
 
-fun Tank.faceAndFloorGas(to: Direction): Tank = copy(facingDirection = to, isEngineOn = true)
+/** face the direction, but not necessarily able to move into this direction (sliding on ice) */
+fun Tank.tryMove(dir: Direction): Tank = copy(facingDirection = dir, isGasPedalPressed = true)
 
-fun Tank.turnAndMove(into: Direction): Tank {
-    if (into == movingDirection && into == facingDirection) { return this }
-    val newX = if (into.isVertical()) pivotBox.left else x
-    val newY = if (into.isVertical()) y else pivotBox.top
-    return copy(movingDirection = into, facingDirection = into, x = newX, y = newY, isEngineOn = true)
+fun Tank.turnAndMove(dir: Direction): Tank {
+    if (dir == movingDirection && dir == facingDirection) { return this }
+    val newX = if (dir.isVertical()) pivotBox.left else x
+    val newY = if (dir.isVertical()) y else pivotBox.top
+    return copy(movingDirection = dir, facingDirection = dir, x = newX, y = newY, isGasPedalPressed = true)
 }
 
 fun Tank.moveTo(rect: Rect, newDirection: Direction = movingDirection): Tank =
     copy(x = rect.left, y = rect.top, movingDirection = newDirection)
 
-fun Tank.moveForward(acceleration: Float): Tank {
+fun Tank.speedUp(acceleration: Float): Tank {
     return copy(
         currentSpeed = (currentSpeed + acceleration).coerceAtMost(maxSpeed),
         movingDirection = facingDirection,
-        isEngineOn = true,
+        isGasPedalPressed = true,
     )
 }
 
@@ -82,7 +83,7 @@ fun Tank.speedDown(deceleration: Float): Tank {
     return copy(currentSpeed = (currentSpeed - deceleration).coerceAtLeast(0f))
 }
 
-fun Tank.releaseGas(): Tank = copy(isEngineOn = false)
+fun Tank.releaseGas(): Tank = copy(isGasPedalPressed = false)
 
 fun Tank.hitBy(bullet: Bullet): Tank {
     if (hasShield) return this
