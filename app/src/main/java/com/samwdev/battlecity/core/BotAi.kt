@@ -16,7 +16,13 @@ class BotAi : TickListener {
     }
 
     private fun findNewWaypoint(tank: Tank, accessPoints: AccessPoints) {
+        val dest = accessPoints.randomAccessiblePoint()
+        val src = tank.pivotBox.topLeft.subGrid
 
+    }
+
+    private fun walkWaypointRecursive(waypoints: MutableList<SubGrid>, src: SubGrid, dest: SubGrid): Boolean {
+        return false
     }
 
     override fun onTick(tick: Tick) {
