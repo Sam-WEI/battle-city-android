@@ -34,18 +34,19 @@ class BotState(
         }
     }
 
-    fun clearDeadBots() {
+    private fun clearDeadBots() {
         bots = bots.filter { tankState.isTankAlive(it.key) }
     }
 
-    fun removeBot(tankId: TankId) {
+    private fun removeBot(tankId: TankId) {
         bots = bots.toMutableMap().apply {
             remove(tankId)
         }
         tankState.killTank(tankId)
     }
 
-    fun spawnBot() {
+    private fun spawnBot() {
+        // todo tank level
         val botTank = tankState.spawnBot(TankLevel.values().random(), carryPowerUp())
         bots = bots.toMutableMap().apply {
             put(botTank.id, BotTankController(tankState = tankState, tankId = botTank.id, bulletState = bulletState))
