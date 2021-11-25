@@ -68,30 +68,15 @@ class TankState(
         }
         val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
         tanks.forEach { (id, tank) ->
-            var remainingCooldown = tank.remainingCooldown
-            var timeToSpawn = tank.timeToSpawn
-            var remainingShield = tank.remainingShield
-            if (remainingCooldown > 0) {
-                remainingCooldown -= tick.delta.toInt()
-            }
-            if (timeToSpawn > 0) {
-                timeToSpawn -= tick.delta.toInt()
-            }
-            if (remainingShield > 0) {
-                remainingShield -= tick.delta.toInt()
-            }
-            val newTank = tank.copy(
-                remainingCooldown = remainingCooldown,
-                remainingShield = remainingShield,
-                timeToSpawn = timeToSpawn,
-            )
-            newTanks[id] = moveTankOnTick(newTank, tick.delta.toInt())
+            val updatedTank = updateTankTimers(tank, tick.delta.toInt())
+            newTanks[id] = updateTankMovement(updatedTank, tick.delta.toInt())
         }
         tanks = newTanks
 
         if (playerTankId == NOT_AN_ID) {
             spawnPlayer()
         }
+        checkPowerUpCollision(getTank(playerTankId))
     }
 
     private fun addTank(id: TankId, tank: Tank) {
@@ -204,7 +189,27 @@ class TankState(
         updateTank(tankId, getTank(tankId).releaseGas())
     }
 
-    private fun moveTankOnTick(tank: Tank, delta: Int): Tank {
+    private fun updateTankTimers(tank: Tank, delta: Int): Tank {
+        var remainingCooldown = tank.remainingCooldown
+        var timeToSpawn = tank.timeToSpawn
+        var remainingShield = tank.remainingShield
+        if (remainingCooldown > 0) {
+            remainingCooldown -= delta
+        }
+        if (timeToSpawn > 0) {
+            timeToSpawn -= delta
+        }
+        if (remainingShield > 0) {
+            remainingShield -= delta
+        }
+        return tank.copy(
+            remainingCooldown = remainingCooldown,
+            remainingShield = remainingShield,
+            timeToSpawn = timeToSpawn,
+        )
+    }
+
+    private fun updateTankMovement(tank: Tank, delta: Int): Tank {
         var newTank = tank
         val isOnIce = isTankFullOnIce(newTank)
         val acceleration = if (isOnIce) 0.0002f * delta else Float.MAX_VALUE
@@ -233,12 +238,7 @@ class TankState(
 
         val distance = newTank.currentSpeed * delta
         val allowedRect = checkCollideIfMoving(newTank, distance, newTank.movingDirection)
-        val updatedTank = newTank.moveTo(rect = allowedRect)
-
-        if (updatedTank.side == TankSide.Player) {
-            checkPowerUpCollision(updatedTank)
-        }
-        return updatedTank
+        return newTank.moveTo(rect = allowedRect)
     }
 
     private fun isTankFullOnIce(tank: Tank): Boolean {

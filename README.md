@@ -10,7 +10,7 @@
 [x] Spawn blink
 [x] Spawn shield
 [*] Power-ups
-[ ] Drive on ice
+[x] Drive on ice
 [x] Debug control panel
 [ ] Map selection
 [ ] HUD
