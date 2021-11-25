@@ -52,6 +52,8 @@ fun BattleField(
             battleState.powerUpState.powerUps.forEach { (_, powerUp) ->
                 FlashingPowerUp(topLeft = Offset(powerUp.x, powerUp.y), powerUp = powerUp.type)
             }
+
+            AccessPointLayer(mapState = battleState.mapState)
         }
     }
 }
