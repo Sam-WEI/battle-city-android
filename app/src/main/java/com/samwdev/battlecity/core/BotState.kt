@@ -49,6 +49,7 @@ class BotState(
 
     private fun spawnBot() {
         // todo tank level
+        // todo there's a couple seconds delay to spawn
         val botTank = tankState.spawnBot(TankLevel.values().random(), carryPowerUp())
         bots = bots.toMutableMap().apply {
             put(botTank.id, BotTankController(

@@ -6,6 +6,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.*
 import com.samwdev.battlecity.utils.logI
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
@@ -42,6 +43,8 @@ class TankState(
 
     var tanks by mutableStateOf<Map<TankId, Tank>>(mapOf())
         private set
+
+    private val eventQueue: LinkedList<TankEvent> = LinkedList() // todo assess if needed
 
     val aliveTanks: Sequence<Tank> get() = tanks.values.asSequence().filter { it.isAlive }
 
@@ -100,6 +103,10 @@ class TankState(
             playerTankId = it.id
             addTank(idGen.get(), it)
         }
+    }
+
+    fun pushEvent(tankEvent: TankEvent) {
+        eventQueue.push(tankEvent)
     }
 
     fun spawnBot(level: TankLevel = TankLevel.Level1, hasPowerUp: Boolean = false): Tank {
@@ -244,7 +251,7 @@ class TankState(
         return iceIndices.all { it in mapState.iceIndexSet }
     }
 
-    fun startCooldown(id: TankId) {
+    fun startFireCooldown(id: TankId) {
         val tank = tanks.getValue(id)
         updateTank(id, tank.copy(remainingCooldown = tank.fireCooldown))
     }
@@ -337,3 +344,12 @@ class TankState(
         mapState.fortifyBase()
     }
 }
+
+sealed class TankEvent
+data class MoveTankEvent(val tankId: TankId, val direction: Direction) : TankEvent()
+data class StopTankEvent(val tankId: TankId) : TankEvent()
+data class SpawnBotEvent(val level: TankLevel, val hasPowerUp: Boolean) : TankEvent()
+data class KillTankEvent(val tankId: TankId) : TankEvent()
+object SmokeAllBotsEvent : TankEvent()
+data class HitTankEvent(val bullet: Bullet, val tankId: TankId) : TankEvent()
+data class PickUpPowerUpEvent(val tankId: TankId, val powerUpEnum: PowerUpEnum) : TankEvent()

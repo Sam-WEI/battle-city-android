@@ -26,7 +26,7 @@ class BotTankController(
                 if (tank.remainingCooldown <= 0) {
                     if (bulletState.countBulletForTank(tank.id) < tank.maxBulletCount) {
                         bulletState.fire(tank)
-                        tankState.startCooldown(tank.id)
+                        tankState.startFireCooldown(tank.id)
                     }
                 }
             }
