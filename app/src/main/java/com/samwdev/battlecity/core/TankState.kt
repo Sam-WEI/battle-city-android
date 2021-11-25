@@ -112,7 +112,7 @@ class TankState(
             y = loc.y,
             hp = getTankSpecs(TankSide.Bot, level).maxHp,
             level = level,
-            movingDirection = Direction.Right,
+            movingDirection = Direction.Down,
             side = TankSide.Bot,
             hasPowerUp = hasPowerUp,
             timeToSpawn = 1500,
