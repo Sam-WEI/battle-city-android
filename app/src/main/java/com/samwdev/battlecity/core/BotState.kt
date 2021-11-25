@@ -18,7 +18,7 @@ class BotState(
     private val mapState: MapState,
 ) : TickListener {
     var maxBot: Int = 1
-    var bots by mutableStateOf<Map<TankId, BotTankController>>(mapOf())
+    var bots: Map<TankId, BotTankController> by mutableStateOf(mapOf())
 
     override fun onTick(tick: Tick) {
         if (bots.size < maxBot) {

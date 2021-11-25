@@ -78,6 +78,18 @@ value class SubGrid internal constructor(private val packedValue: Int) {
 
     val isOutOfBound: Boolean get() = !(subRow in 0 until AccessPointsSize && subCol in 0 until AccessPointsSize)
 
+    val subGridAbove: SubGrid get() = this - SubGrid(1, 0)
+    val subGridBelow: SubGrid get() = this + SubGrid(1, 0)
+    val subGridLeft: SubGrid get() = this - SubGrid(0, 1)
+    val subGridRight: SubGrid get() = this + SubGrid(0, 1)
+
+    fun getNeighborInDirection(direction: Direction): SubGrid = when (direction) {
+        Direction.Up -> subGridAbove
+        Direction.Down -> subGridBelow
+        Direction.Left -> subGridLeft
+        Direction.Right -> subGridRight
+    }
+
     operator fun component1(): Int = subRow
     operator fun component2(): Int = subCol
     operator fun plus(other: SubGrid) = SubGrid(subRow + other.subRow, subCol + other.subCol)

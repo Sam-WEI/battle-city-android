@@ -6,6 +6,7 @@ data class DebugConfig(
     val showSteelIndex: Boolean = false,
     val showPivotBox: Boolean = false,
     val showAccessPoints: Boolean = false,
+    val showWaypoints: Boolean = false,
     val fixTickDelta: Boolean = false,
     val tickDelta: Int = 10,
     val maxFps: Int = TickState.MAX_FPS,

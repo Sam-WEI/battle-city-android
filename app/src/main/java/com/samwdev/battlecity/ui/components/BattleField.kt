@@ -56,6 +56,8 @@ fun BattleField(
             if (LocalDebugConfig.current.showAccessPoints) {
                 AccessPointLayer(mapState = battleState.mapState)
             }
+
+            AccessPointLayer(botState = battleState.botState)
         }
     }
 }

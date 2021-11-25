@@ -63,8 +63,8 @@ fun Tank.tryMove(dir: Direction): Tank = copy(facingDirection = dir, isGasPedalP
 
 fun Tank.turnAndMove(dir: Direction): Tank {
     if (dir == movingDirection && dir == facingDirection) { return this }
-    val newX = if (dir.isVertical()) pivotBox.left else x
-    val newY = if (dir.isVertical()) y else pivotBox.top
+    val newX = if (dir.isVertical) pivotBox.left else x
+    val newY = if (dir.isVertical) y else pivotBox.top
     return copy(movingDirection = dir, facingDirection = dir, x = newX, y = newY, isGasPedalPressed = true)
 }
 
@@ -94,16 +94,22 @@ fun Tank.levelUp(): Tank = copy(level = this.level.nextLevel)
 
 fun Tank.shieldOn(duration: Int): Tank = copy(remainingShield = duration)
 
-enum class Direction(val degree: Float) {
-    Up(0f),
-    Down(180f),
-    Left(270f),
-    Right(90f);
+enum class Direction(val degree: Int) {
+    Up(0),
+    Down(180),
+    Left(270),
+    Right(90);
 
-    fun isVertical(): Boolean = this == Up || this == Down
-    fun isHorizontal(): Boolean = this == Left || this == Right
-    fun isPerpendicularWith(other: Direction): Boolean = isVertical() xor other.isVertical()
-    fun isOppositeTo(other: Direction): Boolean = (degree - other.degree).absoluteValue == 180f
+    val opposite: Direction get() = when (this) {
+        Up -> Down
+        Down -> Up
+        Left -> Right
+        Right -> Left
+    }
+    val isVertical: Boolean get() = this == Up || this == Down
+    val isHorizontal: Boolean get() = this == Left || this == Right
+    fun isPerpendicularWith(other: Direction): Boolean = isVertical xor other.isVertical
+    fun isOppositeTo(other: Direction): Boolean = (degree - other.degree).absoluteValue == 180
 }
 
 enum class TankSide {
@@ -193,7 +199,7 @@ fun Rect.moveUpTo(moveRestriction: MoveRestriction): Rect {
 
 data class MoveRestriction(val bound: MapPixel, val direction: Direction) {
     constructor(hitPoint: Offset, direction: Direction) :
-            this (if (direction.isVertical()) hitPoint.y else hitPoint.x, direction)
+            this (if (direction.isVertical) hitPoint.y else hitPoint.x, direction)
     constructor(hitRect: Rect, direction: Direction) :
             this (
                 when (direction) {

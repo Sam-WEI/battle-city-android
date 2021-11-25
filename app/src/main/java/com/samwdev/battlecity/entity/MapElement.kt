@@ -134,7 +134,7 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
                 secondDimen = row1..row2
             }
         }
-        if (moveDirection.isHorizontal()) {
+        if (moveDirection.isHorizontal) {
             for (c in firstDimen) {
                 for (r in secondDimen) {
                     ret.add(getIndex(r, c))
