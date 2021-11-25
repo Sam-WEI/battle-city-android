@@ -4,10 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
-import com.samwdev.battlecity.core.Direction
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
-import com.samwdev.battlecity.core.MapPixel
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.*
 
 sealed class MapElement(open val index: Int) : MapElementProperties {
     val gridPosition: IntOffset
@@ -75,10 +72,10 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         )
     }
 
-    fun overlapsAnyElement(realElements: Set<Int>, subRow: Int, subCol: Int): Boolean {
+    fun overlapsAnyElement(realElements: Set<Int>, subGrid: SubGrid): Boolean {
         // 2 is the sub granularity
-        val realRow = (subRow / (2f / granularity)).toInt()
-        val realCol = (subCol / (2f / granularity)).toInt()
+        val realRow = (subGrid.subRow / (2f / granularity)).toInt()
+        val realCol = (subGrid.subCol / (2f / granularity)).toInt()
 
         for (i in 0 until granularity) {
             for (j in 0 until granularity) {
@@ -93,11 +90,11 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
 
     fun getRowCol(index: Int): Pair<Int, Int> = index / countInOneLine to index % countInOneLine
 
-    fun getSubRowCol(index: Int): Pair<Int, Int> {
+    fun getSubGrid(index: Int): SubGrid {
         val (row, col) = getRowCol(index)
         val subRow = (row / (granularity / 2f)).toInt()
         val subCol = (col / (granularity / 2f)).toInt()
-        return subRow to subCol
+        return SubGrid(subRow, subCol)
     }
 
     /**
