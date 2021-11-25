@@ -63,7 +63,7 @@ class BulletState(
             val bulletOrigin = tank.bulletStartPosition
             put(idGen.incrementAndGet(), Bullet(
                 id = idGen.get(),
-                direction = tank.movingDirection,
+                direction = tank.facingDirection,
                 speed = tank.bulletSpeed,
                 x = bulletOrigin.x,
                 y = bulletOrigin.y,
