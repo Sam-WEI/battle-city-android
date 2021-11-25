@@ -278,7 +278,6 @@ class TankState(
         tanks.values.asSequence().filter { it.id != tank.id }.forEach { otherTank ->
             travelPath.intersect(otherTank.pivotBox)
                 .takeIf { !it.isEmpty }
-                ?.also { logI("${tank.id} ${tank.side} <> ${otherTank.id} ${otherTank.side} - (${it.width})x(${it.height})... $it") }
                 ?.let { intersect ->
                     checks.add(MoveRestriction(intersect, movingDirection))
                 }
