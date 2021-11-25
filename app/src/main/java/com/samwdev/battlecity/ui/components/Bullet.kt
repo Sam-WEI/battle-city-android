@@ -20,7 +20,7 @@ fun Bullet(bullet: Bullet) {
     Canvas(modifier = Modifier
         .size(BULLET_COLLISION_SIZE.mpx2dp, BULLET_COLLISION_SIZE.mpx2dp)
         .offset(bullet.x.mpx2dp, bullet.y.mpx2dp)
-        .rotate(bullet.direction.degree)
+        .rotate(bullet.direction.degree.toFloat())
     ) {
         // bullet body
         drawRect(

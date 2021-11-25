@@ -6,16 +6,20 @@ class BotTankController(
     private val bulletState: BulletState, // todo move out?
     private val mapState: MapState,
 ) : TickListener {
-    private val botAi: BotAi = BotAi()
+    val botAi: BotAi = BotAi()
 
     override fun onTick(tick: Tick) {
         if (!tankState.isTankAlive(tankId)) {
             return
         }
         botAi.onTick(tick)
+
         val tank = tankState.getTank(tankId)
         if (tank.isSpawning) {
             return
+        }
+        if (botAi.currentWaypoint.isEmpty()) {
+            botAi.findNewWaypoint(tank, mapState.accessPoints)
         }
 
         val command = botAi.getCommand()

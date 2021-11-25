@@ -105,8 +105,8 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalett
             Direction.Down -> Modifier.scale(1f, -1f)
             Direction.Left -> Modifier
                 .scale(1f, -1f)
-                .rotate(Direction.Left.degree)
-            Direction.Right -> Modifier.rotate(Direction.Right.degree)
+                .rotate(Direction.Left.degree.toFloat())
+            Direction.Right -> Modifier.rotate(Direction.Right.degree.toFloat())
         },
         topLeftInMapPixel = Offset(tank.x, tank.y),
         widthInMapPixel = TANK_MAP_PIXEL,
