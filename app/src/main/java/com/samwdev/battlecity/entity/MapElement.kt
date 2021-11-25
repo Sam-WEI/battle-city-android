@@ -133,13 +133,13 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         realElement: MapElement,
         trajectory: Rect,
         direction: Direction,
-    ): Offset? = getHitPoint(listOf(realElement), trajectory, direction)
+    ): Offset? = getHitPoint(setOf(realElement), trajectory, direction)
 
     /**
      * Get the first actual hit point along the trajectory
      */
     fun getHitPoint(
-        realElements: List<MapElement>,
+        realElements: Set<MapElement>,
         trajectory: Rect,
         direction: Direction,
     ): Offset? {
@@ -169,49 +169,6 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
             }
         }
     }
-
-    @Deprecated("")
-    fun getImpactArea(
-        realElements: List<MapElement>,
-        trajectory: Rect,
-        impactDepth: MapPixel,
-        direction: Direction,
-    ): Rect {
-        val indicesAlongTrajectory = getIndicesOverlappingRect(trajectory, moveDirection = direction)
-        val realSet = realElements.map { it.index }.toSet()
-
-        val firstImpactedIndex = indicesAlongTrajectory.find { it in realSet } ?: return Rect.Zero
-        val (leftMost, topMost, rightMost, bottomMost) = getRectByIndex(firstImpactedIndex)
-
-        return when (direction) {
-            Direction.Up -> {
-                Rect(trajectory.left, bottomMost - impactDepth, trajectory.right, bottomMost)
-            }
-            Direction.Down -> {
-                Rect(trajectory.left, topMost, trajectory.right, topMost + impactDepth)
-            }
-            Direction.Left -> {
-                Rect(rightMost - impactDepth, trajectory.top, rightMost, trajectory.bottom)
-            }
-            Direction.Right -> {
-                Rect(leftMost, trajectory.top, leftMost + impactDepth, trajectory.bottom)
-            }
-        }
-    }
-
-    @Deprecated("")
-    fun getImpactedIndices(
-        realElements: List<MapElement>,
-        trajectory: Rect,
-        impactDepth: MapPixel,
-        direction: Direction,
-    ): List<Int> {
-        val impactArea = getImpactArea(realElements, trajectory, impactDepth, direction)
-        if (impactArea.isEmpty) {
-            return emptyList()
-        }
-        return getIndicesOverlappingRect(impactArea, direction)
-    }
 }
 
 interface MapElementProperties {
@@ -225,5 +182,5 @@ interface MapElementProperties {
     val strength: Int get() = 1
 }
 
-fun List<Int>.anyRealElements(indices: List<MapElement>): Boolean =
+fun List<Int>.anyRealElements(indices: Set<MapElement>): Boolean =
     toSet().let { set -> indices.any { it.index in set } }

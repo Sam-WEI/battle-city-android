@@ -13,7 +13,7 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
-fun SteelLayer(steels: List<SteelElement>) {
+fun SteelLayer(steels: Set<SteelElement>) {
     steels.forEach { el ->
         SteelBlock(element = el)
     }

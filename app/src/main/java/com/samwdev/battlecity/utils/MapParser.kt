@@ -18,11 +18,11 @@ object MapParser {
     }
 
     fun parse(configJson: StageConfigJson): StageConfig {
-        val bricks = mutableListOf<BrickElement>()
-        val steels = mutableListOf<SteelElement>()
-        val trees = mutableListOf<TreeElement>()
-        val ices = mutableListOf<IceElement>()
-        val waters = mutableListOf<WaterElement>()
+        val bricks = mutableSetOf<BrickElement>()
+        val steels = mutableSetOf<SteelElement>()
+        val trees = mutableSetOf<TreeElement>()
+        val ices = mutableSetOf<IceElement>()
+        val waters = mutableSetOf<WaterElement>()
         var eagle: EagleElement? = null
         configJson.map.forEachIndexed { r, row ->
             row.split(Regex("\\s+")).filter { it.isNotEmpty() }.forEachIndexed { c, block ->

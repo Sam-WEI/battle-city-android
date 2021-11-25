@@ -14,7 +14,7 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
-fun BrickLayer(bricks: List<BrickElement>) {
+fun BrickLayer(bricks: Set<BrickElement>) {
     bricks.forEach { el ->
         BrickBlock(element = el)
     }
