@@ -68,8 +68,7 @@ data class EagleElement(override val index: Int, val dead: Boolean = false) : Ma
 
 open class MapElementHelper(override val granularity: Int) : MapElementProperties {
     fun getRectByIndex(index: Int): Rect {
-        val row = index / (countInOneLine)
-        val col = index % (countInOneLine)
+        val (row, col) = getRowCol(index)
         return Rect(
             offset = Offset(col * elementSize, row * elementSize),
             size = Size(elementSize, elementSize),
@@ -90,7 +89,16 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         return false
     }
 
-    protected fun getIndex(row: Int, col: Int) = row * countInOneLine + col
+    fun getIndex(row: Int, col: Int) = row * countInOneLine + col
+
+    fun getRowCol(index: Int): Pair<Int, Int> = index / countInOneLine to index % countInOneLine
+
+    fun getSubRowCol(index: Int): Pair<Int, Int> {
+        val (row, col) = getRowCol(index)
+        val subRow = (row / (granularity / 2f)).toInt()
+        val subCol = (col / (granularity / 2f)).toInt()
+        return subRow to subCol
+    }
 
     /**
      * This method returns the indices of the elements in the rect regardless of there actually is any elements in the rect.
