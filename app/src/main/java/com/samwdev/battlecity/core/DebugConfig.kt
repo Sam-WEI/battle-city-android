@@ -1,7 +1,5 @@
 package com.samwdev.battlecity.core
 
-const val SHOW_BRICK_INDEX: Boolean = false
-
 data class DebugConfig(
     val showFps: Boolean = false,
     val showBrickIndex: Boolean = false,
