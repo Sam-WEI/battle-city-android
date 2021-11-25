@@ -84,14 +84,18 @@ class MapState(
 
     fun destroyBricksIndex(indices: Set<Int>): Boolean {
         val oldCount = bricks.count()
-        bricks = bricks.filter { it.index !in indices }
+        bricks = bricks.toMutableSet().apply {
+            removeAll { it.index in indices }
+        }
         val newCount = bricks.count()
         return newCount != oldCount
     }
 
     fun destroySteelsIndex(indices: Set<Int>): Boolean {
         val oldCount = steels.count()
-        steels = steels.filter { it.index !in indices }
+        steels = steels.toMutableSet().apply {
+            removeAll { it.index in indices }
+        }
         val newCount = steels.count()
         return newCount != oldCount
     }
@@ -103,13 +107,13 @@ class MapState(
 
     private fun wrapEagleWithSteels() {
         destroyBricksIndex(brickIndicesAroundEagle)
-        steels = steels.toMutableList()
+        steels = steels.toMutableSet()
             .apply { addAll(steelIndicesAroundEagle.map { SteelElement(it) }) }
     }
 
     private fun wrapEagleWithBricks() {
         destroySteelsIndex(steelIndicesAroundEagle)
-        bricks = bricks.toMutableList()
+        bricks = bricks.toMutableSet()
             .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it) }) }
     }
 

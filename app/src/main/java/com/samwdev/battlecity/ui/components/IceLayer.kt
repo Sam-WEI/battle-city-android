@@ -13,7 +13,7 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
-fun IceLayer(ices: List<IceElement>) {
+fun IceLayer(ices: Set<IceElement>) {
     ices.forEach { el ->
         IceBlock(element = el)
     }

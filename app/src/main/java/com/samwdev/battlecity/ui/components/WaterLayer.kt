@@ -14,7 +14,7 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
-fun WaterLayer(waters: List<WaterElement>) {
+fun WaterLayer(waters: Set<WaterElement>) {
     Framer(
         framesDef = listOf(700, 700),
         infinite = true,

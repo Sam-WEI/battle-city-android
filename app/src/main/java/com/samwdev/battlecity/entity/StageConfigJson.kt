@@ -15,11 +15,11 @@ data class StageConfig(
 )
 
 data class MapElements(
-    val trees: List<TreeElement>,
-    val bricks: List<BrickElement>,
-    val steels: List<SteelElement>,
-    val waters: List<WaterElement>,
-    val ices: List<IceElement>,
+    val trees: Set<TreeElement>,
+    val bricks: Set<BrickElement>,
+    val steels: Set<SteelElement>,
+    val waters: Set<WaterElement>,
+    val ices: Set<IceElement>,
     val eagle: EagleElement,
 )
 data class BotGroup(
