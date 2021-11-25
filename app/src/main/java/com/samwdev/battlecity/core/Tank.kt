@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import kotlinx.parcelize.Parcelize
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 typealias TankId = Int
@@ -57,28 +58,31 @@ data class Tank(
         }
 }
 
-fun Tank.faceAndTryMove(to: Direction): Tank = copy(facingDirection = to, isEngineOn = true)
+fun Tank.faceAndFloorGas(to: Direction): Tank = copy(facingDirection = to, isEngineOn = true)
 
 fun Tank.turnAndMove(into: Direction): Tank {
-    if (into == movingDirection) { return this }
+    if (into == movingDirection && into == facingDirection) { return this }
     val newX = if (into.isVertical()) pivotBox.left else x
     val newY = if (into.isVertical()) y else pivotBox.top
-    return copy(movingDirection = into, x = newX, y = newY)
+    return copy(movingDirection = into, facingDirection = into, x = newX, y = newY, isEngineOn = true)
 }
 
 fun Tank.moveTo(rect: Rect, newDirection: Direction = movingDirection): Tank =
     copy(x = rect.left, y = rect.top, movingDirection = newDirection)
 
-fun Tank.speedUp(acceleration: Float): Tank {
+fun Tank.moveForward(acceleration: Float): Tank {
     return copy(
         currentSpeed = (currentSpeed + acceleration).coerceAtMost(maxSpeed),
         movingDirection = facingDirection,
+        isEngineOn = true,
     )
 }
 
 fun Tank.speedDown(deceleration: Float): Tank {
     return copy(currentSpeed = (currentSpeed - deceleration).coerceAtLeast(0f))
 }
+
+fun Tank.releaseGas(): Tank = copy(isEngineOn = false)
 
 fun Tank.hitBy(bullet: Bullet): Tank {
     if (hasShield) return this
@@ -97,6 +101,8 @@ enum class Direction(val degree: Float) {
 
     fun isVertical(): Boolean = this == Up || this == Down
     fun isHorizontal(): Boolean = this == Left || this == Right
+    fun isPerpendicularWith(other: Direction): Boolean = isVertical() xor other.isVertical()
+    fun isOppositeTo(other: Direction): Boolean = (degree - other.degree).absoluteValue == 180f
 }
 
 enum class TankSide {

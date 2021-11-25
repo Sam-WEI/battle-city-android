@@ -80,7 +80,7 @@ class TankState(
             if (remainingShield > 0) {
                 remainingShield -= tick.delta.toInt()
             }
-            var newTank = tank.copy(
+            val newTank = tank.copy(
                 remainingCooldown = remainingCooldown,
                 remainingShield = remainingShield,
                 timeToSpawn = timeToSpawn,
@@ -197,51 +197,43 @@ class TankState(
     }
 
     fun moveTank(tankId: TankId, direction: Direction) {
-        updateTank(tankId, getTank(tankId).faceAndTryMove(to = direction))
+        updateTank(tankId, getTank(tankId).faceAndFloorGas(to = direction))
     }
 
     fun stopTank(tankId: TankId) {
-        updateTank(tankId, getTank(tankId).copy(isEngineOn = false))
+        updateTank(tankId, getTank(tankId).releaseGas())
     }
 
     private fun moveTankOnTick(tank: Tank, delta: Int): Tank {
-        var tank = tank
-        val isOnIce = isTankFullOnIce(tank)
+        var newTank = tank
+        val isOnIce = isTankFullOnIce(newTank)
         val acceleration = if (isOnIce) 0.0002f * delta else Float.MAX_VALUE
-        if (isOnIce) {
-            if (tank.isEngineOn) {
-                if (tank.currentSpeed == 0f) {
-                    // start from
-                    tank = tank.speedUp(acceleration)
+        if (newTank.isEngineOn) {
+            if (isOnIce) {
+                newTank = if (newTank.currentSpeed == 0f || newTank.facingDirection == newTank.movingDirection) {
+                    // start from stop or already moving in that direction
+                    newTank.moveForward(acceleration)
+                } else if (newTank.facingDirection.isPerpendicularWith(newTank.movingDirection)) {
+                    // can't do drifting due to the turning mechanism by pivot box, so straight turn and move
+                    newTank.turnAndMove(newTank.facingDirection)
                 } else {
-                    if (tank.facingDirection == tank.movingDirection) {
-                        tank = tank.speedUp(acceleration)
-                    } else {
-                        tank = tank.speedDown(acceleration)
-                    }
+                    // facing opposite to the moving direction, speed down to zero first.
+                    // because of trying hard to move forward, the deceleration is doubled.
+                    newTank.speedDown(acceleration * 2)
                 }
             } else {
-                if (tank.currentSpeed > 0) {
-                    tank = tank.speedDown(acceleration)
+                if (newTank.movingDirection != newTank.facingDirection) {
+                    return newTank.turnAndMove(into = newTank.facingDirection)
                 }
+                newTank = newTank.moveForward(acceleration)
             }
         } else {
-            if (tank.isEngineOn) {
-                tank = tank.speedUp(acceleration)
-
-                if (tank.movingDirection != tank.facingDirection) {
-                    return tank.turnAndMove(into = tank.facingDirection)
-                } else {
-                    // moving forward, check collision
-                }
-            } else {
-                tank = tank.speedDown(acceleration)
-            }
+            newTank = newTank.speedDown(acceleration)
         }
 
-        val distance = tank.currentSpeed * delta
-        val allowedRect = checkCollideIfMoving(tank, distance, tank.movingDirection)
-        val updatedTank = tank.moveTo(rect = allowedRect)
+        val distance = newTank.currentSpeed * delta
+        val allowedRect = checkCollideIfMoving(newTank, distance, newTank.movingDirection)
+        val updatedTank = newTank.moveTo(rect = allowedRect)
 
         if (updatedTank.side == TankSide.Player) {
             checkPowerUpCollision(updatedTank)
@@ -250,10 +242,8 @@ class TankState(
     }
 
     private fun isTankFullOnIce(tank: Tank): Boolean {
-//        return true
         val iceIndices = IceElement.getIndicesOverlappingRect(tank.pivotBox)
-        val iceSet = mapState.ices.map { it.index }.toSet()
-        return iceIndices.all { it in iceSet }
+        return iceIndices.all { it in mapState.iceIndexSet }
     }
 
     fun startCooldown(id: TankId) {
