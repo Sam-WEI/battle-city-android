@@ -53,7 +53,9 @@ fun BattleField(
                 FlashingPowerUp(topLeft = Offset(powerUp.x, powerUp.y), powerUp = powerUp.type)
             }
 
-            AccessPointLayer(mapState = battleState.mapState)
+            if (LocalDebugConfig.current.showAccessPoints) {
+                AccessPointLayer(mapState = battleState.mapState)
+            }
         }
     }
 }

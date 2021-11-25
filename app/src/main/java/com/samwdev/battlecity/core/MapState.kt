@@ -110,7 +110,9 @@ class MapState(
                 val (subR, subC) = BrickElement.getSubRowCol(it)
                 val cleared = !BrickElement.overlapsAnyElement(brickIndexSet, subR, subC)
                 if (cleared) {
-                    // only re-calc when a sub block is cleared
+                    // Only re-calc when an entire sub block (quarter block) is cleared. (a quarter block contains up to 4 brick elements)
+                    // For performance purposes, use a depth of 10 for the calculation.
+                    // It should do the job most of the time, unless we just unblocked a really deep dead end.
                     calculateAccessPoints(subR, subC, depth = 10)
                 }
             }
