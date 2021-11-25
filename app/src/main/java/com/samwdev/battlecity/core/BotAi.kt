@@ -2,6 +2,7 @@ package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.setValue
 import com.samwdev.battlecity.utils.logE
 import com.samwdev.battlecity.utils.logI
@@ -14,7 +15,7 @@ class BotAi : TickListener {
 
     private var cd: Int = AiCd
 
-    var currentWaypoint: List<SubGrid> by mutableStateOf(listOf())
+    var currentWaypoint: List<SubGrid> by mutableStateOf(listOf(), referentialEqualityPolicy())
         private set
 
     fun getCommand(tank: Tank, accessPoints: AccessPoints): AiCommand {
