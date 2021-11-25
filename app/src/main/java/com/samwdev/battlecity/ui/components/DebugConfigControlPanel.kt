@@ -117,6 +117,12 @@ fun DebugConfigControlPanel(
                 )
                 DebugConfigSwitch(
                     modifier = Modifier.fillMaxWidth(),
+                    label = "Show access points",
+                    value = debugConfig.showAccessPoints,
+                    onSwitch = { onConfigChange(debugConfig.copy(showAccessPoints = it)) }
+                )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
                     label = "Lock tick",
                     value = debugConfig.fixTickDelta,
                     onSwitch = { onConfigChange(debugConfig.copy(fixTickDelta = it)) }
