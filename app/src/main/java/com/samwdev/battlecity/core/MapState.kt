@@ -110,6 +110,7 @@ class MapState(
                 val (subR, subC) = BrickElement.getSubRowCol(it)
                 val cleared = !BrickElement.overlapsAnyElement(brickIndexSet, subR, subC)
                 if (cleared) {
+                    // only re-calc when a sub block is cleared
                     calculateAccessPoints(subR, subC, depth = 10)
                 }
             }
@@ -123,7 +124,15 @@ class MapState(
             removeAll { it.index in indices }
         }
         val newCount = steels.count()
-        return newCount != oldCount
+        val destroyedSome = newCount != oldCount
+        if (destroyedSome) {
+            indices.forEach {
+                val (subR, subC) = SteelElement.getSubRowCol(it)
+                // a destroyed steel always frees up a sub block
+                calculateAccessPoints(subR, subC, depth = 10)
+            }
+        }
+        return destroyedSome
     }
 
     fun fortifyBase() {
