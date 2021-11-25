@@ -7,13 +7,15 @@ import kotlin.random.Random
 fun rememberBotState(
     tankState: TankState,
     bulletState: BulletState,
+    mapState: MapState,
 ) = remember {
-    BotState(tankState = tankState, bulletState = bulletState)
+    BotState(tankState = tankState, bulletState = bulletState, mapState = mapState)
 }
 
 class BotState(
     private val tankState: TankState,
     private val bulletState: BulletState,
+    private val mapState: MapState,
 ) : TickListener {
     var maxBot: Int = 1
     var bots by mutableStateOf<Map<TankId, BotTankController>>(mapOf())
@@ -49,7 +51,12 @@ class BotState(
         // todo tank level
         val botTank = tankState.spawnBot(TankLevel.values().random(), carryPowerUp())
         bots = bots.toMutableMap().apply {
-            put(botTank.id, BotTankController(tankState = tankState, tankId = botTank.id, bulletState = bulletState))
+            put(botTank.id, BotTankController(
+                tankId = botTank.id,
+                tankState = tankState,
+                bulletState = bulletState,
+                mapState = mapState,
+            ))
         }
     }
 

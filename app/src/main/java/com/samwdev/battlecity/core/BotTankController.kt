@@ -1,9 +1,10 @@
 package com.samwdev.battlecity.core
 
 class BotTankController(
-    private val tankState: TankState,
     private val tankId: TankId,
+    private val tankState: TankState,
     private val bulletState: BulletState, // todo move out?
+    private val mapState: MapState,
 ) : TickListener {
     private val botAi: BotAi = BotAi()
 
