@@ -182,7 +182,7 @@ class TankState(
     }
 
     fun moveTank(tankId: TankId, direction: Direction) {
-        updateTank(tankId, getTank(tankId).faceAndFloorGas(to = direction))
+        updateTank(tankId, getTank(tankId).tryMove(dir = direction))
     }
 
     fun stopTank(tankId: TankId) {
@@ -213,29 +213,29 @@ class TankState(
         var newTank = tank
         val isOnIce = isTankFullOnIce(newTank)
         val acceleration = if (isOnIce) 0.0002f * delta else Float.MAX_VALUE
-        if (newTank.isEngineOn) {
+        if (newTank.isGasPedalPressed) {
             if (isOnIce) {
                 newTank = if (newTank.currentSpeed == 0f || newTank.facingDirection == newTank.movingDirection) {
                     // start from stop or already moving in that direction
-                    newTank.moveForward(acceleration)
+                    newTank.speedUp(acceleration)
                 } else if (newTank.facingDirection.isPerpendicularWith(newTank.movingDirection)) {
                     // can't do drifting due to the turning mechanism by pivot box, so straight turn and move
                     newTank.turnAndMove(newTank.facingDirection)
                 } else {
                     // facing opposite to the moving direction, speed down to zero first.
-                    // because of trying hard to move forward, the deceleration is doubled.
+                    // Because it tries hard to move, the deceleration is doubled.
                     newTank.speedDown(acceleration * 2)
                 }
             } else {
                 if (newTank.movingDirection != newTank.facingDirection) {
-                    return newTank.turnAndMove(into = newTank.facingDirection)
+                    // return in order to take a full tick to make the turn
+                    return newTank.turnAndMove(dir = newTank.facingDirection)
                 }
-                newTank = newTank.moveForward(acceleration)
+                newTank = newTank.speedUp(acceleration)
             }
         } else {
             newTank = newTank.speedDown(acceleration)
         }
-
         val distance = newTank.currentSpeed * delta
         val allowedRect = checkCollideIfMoving(newTank, distance, newTank.movingDirection)
         return newTank.moveTo(rect = allowedRect)
