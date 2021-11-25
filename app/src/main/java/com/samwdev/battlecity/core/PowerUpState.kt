@@ -6,7 +6,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.PowerUpEnum
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.random.Random
 
 typealias PowerUpId = Int
 
@@ -26,7 +25,7 @@ class PowerUpState(
     fun spawnPowerUp() {
         trimOldPowerUps()
         powerUps = powerUps.toMutableMap().apply {
-            val pos = getAvailablePosition()
+            val pos = mapState.accessPoints.randomAccessiblePoint(5)
             put(idGen.incrementAndGet(), PowerUp(idGen.get(), pos.x, pos.y, randomPowerUp()))
         }
     }
@@ -48,19 +47,7 @@ class PowerUpState(
         }
     }
 
-    private fun getAvailablePosition(): Offset {
-        var attempt = 0
-        while (true) {
-            val row = Random.nextInt(MapState.AccessPointsSize)
-            val col = Random.nextInt(MapState.AccessPointsSize)
-            if (mapState.accessPoints[row][col] > 0 || ++attempt >= 5) {
-                return Offset((col / 2f).grid2mpx, (row / 2f).grid2mpx)
-            }
-        }
-    }
-
     private fun randomPowerUp(): PowerUpEnum {
-        // todo
         return PowerUpEnum.values().random()
     }
 }

@@ -10,6 +10,15 @@ class BotAi : TickListener {
 
     private var cd: Int = AiCd
 
+    fun getCommand(tank: Tank, accessPoints: AccessPoints): AiCommand {
+
+        return Proceed
+    }
+
+    private fun findNewWaypoint(tank: Tank, accessPoints: AccessPoints) {
+
+    }
+
     override fun onTick(tick: Tick) {
         if (cd > 0) {
             cd -= tick.delta.toInt()

@@ -7,14 +7,11 @@ import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapElements
 import com.samwdev.battlecity.entity.SteelElement
-import com.samwdev.battlecity.entity.WaterElement
 
 @Composable
 fun rememberMapState(mapElements: MapElements): MapState {
     return remember(mapElements) { MapState(mapElements) }
 }
-
-typealias AccessPoints = Array<Array<Int>>
 
 class MapState(
     mapElements: MapElements,
@@ -22,7 +19,6 @@ class MapState(
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationTimeoutDuration = 3 * 1000
-        const val AccessPointsSize = MAP_BLOCK_COUNT * 2 - 1
     }
     // todo move to a proper place
     private var remainingFortificationTime: Int = 0
@@ -46,7 +42,7 @@ class MapState(
 
     var eagle by mutableStateOf(mapElements.eagle, policy = referentialEqualityPolicy())
 
-    var accessPoints: AccessPoints by mutableStateOf(Array(AccessPointsSize) { Array(AccessPointsSize) { -1 } })
+    var accessPoints: AccessPoints by mutableStateOf(emptyAccessPoints())
         private set
 
     val iceIndexSet: Set<Int> = ices.map { it.index }.toSet()
@@ -55,7 +51,7 @@ class MapState(
     val waterIndexSet: Set<Int> get() = waters.map { it.index }.toSet()
 
     init {
-        calculateAccessPoints()
+        updateAccessPoints(SubGrid(playerSpawnPosition), depth = Int.MAX_VALUE)
     }
 
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
@@ -107,13 +103,13 @@ class MapState(
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.forEach {
-                val (subR, subC) = BrickElement.getSubRowCol(it)
-                val cleared = !BrickElement.overlapsAnyElement(brickIndexSet, subR, subC)
+                val subGrid = BrickElement.getSubGrid(it)
+                val cleared = !BrickElement.overlapsAnyElement(brickIndexSet, subGrid)
                 if (cleared) {
-                    // Only re-calc when an entire sub block (quarter block) is cleared. (a quarter block contains up to 4 brick elements)
+                    // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
                     // For performance purposes, use a depth of 10 for the calculation.
                     // It should do the job most of the time, unless we just unblocked a really deep dead end.
-                    calculateAccessPoints(subR, subC, depth = 10)
+                    updateAccessPoints(subGrid, depth = 10)
                 }
             }
         }
@@ -129,9 +125,9 @@ class MapState(
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.forEach {
-                val (subR, subC) = SteelElement.getSubRowCol(it)
-                // a destroyed steel always frees up a sub block
-                calculateAccessPoints(subR, subC, depth = 10)
+                val subGrid = SteelElement.getSubGrid(it)
+                // a destroyed steel always frees up a sub grid
+                updateAccessPoints(subGrid, depth = 10)
             }
         }
         return destroyedSome
@@ -151,6 +147,10 @@ class MapState(
         return true
     }
 
+    private fun updateAccessPoints(spreadFrom: SubGrid, depth: Int) {
+        accessPoints = accessPoints.updated(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom, depth)
+    }
+
     private fun wrapEagleWithSteels() {
         destroyBricksIndex(brickIndicesAroundEagle)
         steels = steels.toMutableSet()
@@ -161,35 +161,5 @@ class MapState(
         destroySteelsIndex(steelIndicesAroundEagle)
         bricks = bricks.toMutableSet()
             .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it) }) }
-    }
-
-    private fun calculateAccessPoints(
-        fromSubRow: Int = (playerSpawnPosition.y / 1f.grid2mpx * 2).toInt(),
-        fromSubCol: Int = (playerSpawnPosition.x / 1f.grid2mpx * 2).toInt(),
-        depth: Int = Int.MAX_VALUE,
-    ) {
-        val accPts = accessPoints.copyOf()
-        calculateAccessPointsRecursively(accPts, fromSubRow, fromSubCol, depth)
-        accessPoints = accPts
-    }
-
-    private fun calculateAccessPointsRecursively(accessPoints: AccessPoints, row: Int, col: Int, depth: Int) {
-        if (depth < 0 || row !in accessPoints.indices || col !in accessPoints.first().indices) return
-        if (accessPoints[row][col] > 0) return // already accessed
-
-        // starting from the cheapest
-        if (WaterElement.overlapsAnyElement(waterIndexSet, row, col) ||
-            SteelElement.overlapsAnyElement(steelIndexSet, row, col) ||
-            BrickElement.overlapsAnyElement(brickIndexSet, row, col)
-        ) {
-            accessPoints[row][col] = -1
-            return
-        } else {
-            accessPoints[row][col] = 1
-            calculateAccessPointsRecursively(accessPoints, row - 1, col, depth - 1)
-            calculateAccessPointsRecursively(accessPoints, row + 1, col, depth - 1)
-            calculateAccessPointsRecursively(accessPoints, row, col - 1, depth - 1)
-            calculateAccessPointsRecursively(accessPoints, row, col + 1, depth - 1)
-        }
     }
 }
