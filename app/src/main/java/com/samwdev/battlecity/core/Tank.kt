@@ -15,6 +15,7 @@ data class Tank(
     val x: MapPixel = 0f,
     val y: MapPixel = 0f,
     val movingDirection: Direction = Direction.Up,
+    val facingDirection: Direction = Direction.Up,
     val level: TankLevel = TankLevel.Level1,
     val side: TankSide,
     val hp: Int,
@@ -48,7 +49,7 @@ data class Tank(
     }
 
     val bulletStartPosition: Offset
-        get() = when (movingDirection) {
+        get() = when (facingDirection) {
             Direction.Up -> Offset(x + 6, y)
             Direction.Down -> Offset(x + 6, y + 1.grid2mpx)
             Direction.Left -> Offset(x , y + 6)
@@ -56,18 +57,24 @@ data class Tank(
         }
 }
 
-fun Tank.turn(into: Direction): Tank {
-    if (into == movingDirection) { return copy(isEngineOn = true) }
+fun Tank.faceAndTryMove(to: Direction): Tank = copy(facingDirection = to, isEngineOn = true)
+
+fun Tank.turnAndMove(into: Direction): Tank {
+    if (into == movingDirection) { return this }
     val newX = if (into.isVertical()) pivotBox.left else x
     val newY = if (into.isVertical()) y else pivotBox.top
-    return copy(movingDirection = into, x = newX, y = newY, isEngineOn = true)
+    return copy(movingDirection = into, x = newX, y = newY)
 }
 
 fun Tank.moveTo(rect: Rect, newDirection: Direction = movingDirection): Tank =
     copy(x = rect.left, y = rect.top, movingDirection = newDirection)
 
-fun Tank.speedUp(acceleration: Float): Tank =
-    copy(currentSpeed = (currentSpeed + acceleration).coerceAtMost(maxSpeed))
+fun Tank.speedUp(acceleration: Float): Tank {
+    return copy(
+        currentSpeed = (currentSpeed + acceleration).coerceAtMost(maxSpeed),
+        movingDirection = facingDirection,
+    )
+}
 
 fun Tank.speedDown(deceleration: Float): Tank {
     return copy(currentSpeed = (currentSpeed - deceleration).coerceAtLeast(0f))

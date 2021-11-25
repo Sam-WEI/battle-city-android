@@ -100,7 +100,7 @@ fun Tank(tank: Tank) {
 @Composable
 fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalette) {
     PixelCanvas(
-        modifier = when (tank.movingDirection) {
+        modifier = when (tank.facingDirection) {
             Direction.Up -> Modifier
             Direction.Down -> Modifier.scale(1f, -1f)
             Direction.Left -> Modifier
@@ -148,7 +148,7 @@ private fun TankPreview() {
                         id = 1,
                         x = x.grid2mpx,
                         y = y.grid2mpx,
-                        movingDirection = Direction.Right,
+                        facingDirection = Direction.Right,
                         side = TankSide.Player,
                         hp = 1,
                     )
@@ -164,7 +164,7 @@ private fun TankPreview() {
                         side = TankSide.Player,
                         level = tankLevel,
                         hp = 1,
-                        movingDirection = Direction.Up)
+                        facingDirection = Direction.Up)
                     )
                     Tank(Tank(
                         id = 0,
@@ -173,7 +173,7 @@ private fun TankPreview() {
                         side = TankSide.Bot,
                         level = tankLevel,
                         hp = 1,
-                        movingDirection = Direction.Up)
+                        facingDirection = Direction.Up)
                     )
                 }
             }
