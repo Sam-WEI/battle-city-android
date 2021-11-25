@@ -18,7 +18,7 @@ fun rememberBattleState(
     powerUpState: PowerUpState = rememberPowerUpState(mapState = mapState),
     tankState: TankState = rememberTankState(explosionState = explosionState, soundState = soundState, mapState = mapState, powerUpState = powerUpState),
     bulletState: BulletState = rememberBulletState(mapState = mapState, tankState = tankState, explosionState = explosionState, soundState = soundState),
-    botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState),
+    botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState, mapState = mapState),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
 ): BattleState {
     return remember {
