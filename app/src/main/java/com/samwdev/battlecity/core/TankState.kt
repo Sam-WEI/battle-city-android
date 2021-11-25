@@ -80,7 +80,7 @@ class TankState(
             if (remainingShield > 0) {
                 remainingShield -= tick.delta.toInt()
             }
-            var newTank = tank.copy(
+            val newTank = tank.copy(
                 remainingCooldown = remainingCooldown,
                 remainingShield = remainingShield,
                 timeToSpawn = timeToSpawn,
@@ -197,7 +197,7 @@ class TankState(
     }
 
     fun moveTank(tankId: TankId, direction: Direction) {
-        updateTank(tankId, getTank(tankId).faceAndTryMove(to = direction))
+        updateTank(tankId, getTank(tankId).turn(into = direction))
     }
 
     fun stopTank(tankId: TankId) {
@@ -207,36 +207,11 @@ class TankState(
     private fun moveTankOnTick(tank: Tank, delta: Int): Tank {
         var tank = tank
         val isOnIce = isTankFullOnIce(tank)
-        val acceleration = if (isOnIce) 0.0002f * delta else Float.MAX_VALUE
-        if (isOnIce) {
-            if (tank.isEngineOn) {
-                if (tank.currentSpeed == 0f) {
-                    // start from
-                    tank = tank.speedUp(acceleration)
-                } else {
-                    if (tank.facingDirection == tank.movingDirection) {
-                        tank = tank.speedUp(acceleration)
-                    } else {
-                        tank = tank.speedDown(acceleration)
-                    }
-                }
-            } else {
-                if (tank.currentSpeed > 0) {
-                    tank = tank.speedDown(acceleration)
-                }
-            }
+        val acceleration = if (isOnIce) 0.0001f * delta else Float.MAX_VALUE
+        if (tank.isEngineOn) {
+            tank = tank.speedUp(acceleration)
         } else {
-            if (tank.isEngineOn) {
-                tank = tank.speedUp(acceleration)
-
-                if (tank.movingDirection != tank.facingDirection) {
-                    return tank.turnAndMove(into = tank.facingDirection)
-                } else {
-                    // moving forward, check collision
-                }
-            } else {
-                tank = tank.speedDown(acceleration)
-            }
+            tank = tank.speedDown(acceleration)
         }
 
         val distance = tank.currentSpeed * delta
