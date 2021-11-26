@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
 import kotlin.collections.LinkedHashSet
 import kotlin.math.abs
 import kotlin.random.Random
@@ -16,6 +17,9 @@ class BotTankController(
 ) : TickListener {
     var currentWaypoint: List<SubGrid> by mutableStateOf(listOf(), referentialEqualityPolicy())
         private set
+    private var lastTankPivotTopLeft: Offset? = null
+    private var stuckTime: Int = 0
+
     override fun onTick(tick: Tick) {
         if (!tankState.isTankAlive(tankId)) {
             return
@@ -34,7 +38,17 @@ class BotTankController(
                 currentWaypoint.firstOrNull()?.let { nextWayPoint ->
                     val dir = Direction.values().find { currWaypoint.getNeighborInDirection(it) == nextWayPoint }!!
                     tankState.moveTank(tank.id, dir)
-
+                }
+            } else {
+                if (lastTankPivotTopLeft != tank.pivotBox.topLeft) {
+                    lastTankPivotTopLeft = tank.pivotBox.topLeft
+                    stuckTime = 0
+                } else {
+                    stuckTime += tick.delta.toInt()
+                    if (stuckTime > 1000) {
+                        findNewWaypoint(tank, mapState.accessPoints)
+                        stuckTime = 0
+                    }
                 }
             }
         } else {
