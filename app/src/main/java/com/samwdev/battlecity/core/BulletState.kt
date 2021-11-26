@@ -59,6 +59,9 @@ class BulletState(
     }
 
     fun fire(tank: Tank) {
+        if (tank.remainingCooldown > 0 || countBulletForTank(tank.id) >= tank.maxBulletCount) {
+            return
+        }
         bullets = bullets.toMutableMap().apply {
             val bulletOrigin = tank.bulletStartPosition
             put(idGen.incrementAndGet(), Bullet(
@@ -72,6 +75,7 @@ class BulletState(
                 side = tank.side,
             ))
         }
+        tankState.startFireCooldown(tank.id)
         if (tank.side == TankSide.Player) {
             soundState.playSound(SoundEffect.BulletShot)
         }
