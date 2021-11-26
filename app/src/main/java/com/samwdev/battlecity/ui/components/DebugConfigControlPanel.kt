@@ -123,6 +123,12 @@ fun DebugConfigControlPanel(
                 )
                 DebugConfigSwitch(
                     modifier = Modifier.fillMaxWidth(),
+                    label = "Show waypoints",
+                    value = debugConfig.showWaypoints,
+                    onSwitch = { onConfigChange(debugConfig.copy(showWaypoints = it)) }
+                )
+                DebugConfigSwitch(
+                    modifier = Modifier.fillMaxWidth(),
                     label = "Lock tick",
                     value = debugConfig.fixTickDelta,
                     onSwitch = { onConfigChange(debugConfig.copy(fixTickDelta = it)) }
