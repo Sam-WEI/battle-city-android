@@ -117,25 +117,22 @@ class AiTankController(
         }
         val directionAttemptPriority = mutableListOf<Direction>()
         if (dest.subRow != src.subRow && dest.subCol != src.subCol) {
-            // decide to go vertically or horizontally first
-            if (abs(dest.subRow - src.subRow) > abs(dest.subCol - src.subCol)) {
-                // prefer shortening longer dimension
-                directionAttemptPriority.add(if (dest.subRow > src.subRow) Direction.Down else Direction.Up)
-                directionAttemptPriority.add(if (dest.subCol > src.subCol) Direction.Right else Direction.Left)
-            } else {
-                directionAttemptPriority.add(if (dest.subCol > src.subCol) Direction.Right else Direction.Left)
-                directionAttemptPriority.add(if (dest.subRow > src.subRow) Direction.Down else Direction.Up)
-            }
+            // prefer going vertically
+            directionAttemptPriority.add(if (dest.subRow > src.subRow) Direction.Down else Direction.Up)
+            directionAttemptPriority.add(if (dest.subCol > src.subCol) Direction.Right else Direction.Left)
         } else if (dest.subRow == src.subRow) {
-            // horizontally equal, try vertically first
+            // horizontally equal, go vertically first
             directionAttemptPriority.add(if (dest.subCol > src.subCol) Direction.Right else Direction.Left)
         } else if (dest.subCol == src.subCol) {
-            // vertically equal, try horizontally first
+            // vertically equal, go horizontally first
             directionAttemptPriority.add(if (dest.subRow > src.subRow) Direction.Down else Direction.Up)
         }
+        // then, prefer continuing the current direction
+        currentDirection?.let { directionAttemptPriority.add(currentDirection) }
+        // then randomly choose another direction
         Direction.values().asSequence()
             .shuffled()
-            .filter { it != currentDirection?.opposite }
+            .filter { it != currentDirection?.opposite } // never go back
             .forEach {
                 if (it !in directionAttemptPriority) {
                     directionAttemptPriority.add(it)
