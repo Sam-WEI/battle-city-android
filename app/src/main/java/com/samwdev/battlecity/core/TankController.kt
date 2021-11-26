@@ -12,8 +12,6 @@ class TankController(
         if (tank.isSpawning) {
             return
         }
-        val distance = tank.maxSpeed * tick.delta
-
         val newDir = handheldControllerState.direction
         if (newDir != null) {
             tankState.moveTank(tankId, newDir)

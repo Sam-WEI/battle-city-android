@@ -18,7 +18,7 @@ class BotState(
     private val mapState: MapState,
 ) : TickListener {
     var maxBot: Int = 1
-    var bots: Map<TankId, BotTankController> by mutableStateOf(mapOf())
+    var bots: Map<TankId, AiTankController> by mutableStateOf(mapOf())
 
     override fun onTick(tick: Tick) {
         if (bots.size < maxBot) {
@@ -52,7 +52,7 @@ class BotState(
         // todo there's a couple seconds delay to spawn
         val botTank = tankState.spawnBot(TankLevel.values().random(), carryPowerUp())
         bots = bots.toMutableMap().apply {
-            put(botTank.id, BotTankController(
+            put(botTank.id, AiTankController(
                 tankId = botTank.id,
                 tankState = tankState,
                 bulletState = bulletState,

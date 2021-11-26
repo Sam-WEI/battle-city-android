@@ -25,7 +25,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
             showFps = true,
             showPivotBox = false,
             maxBot = 1,
-            showAccessPoints = true,
+            showAccessPoints = false,
             showWaypoints = true,
         ))
     }

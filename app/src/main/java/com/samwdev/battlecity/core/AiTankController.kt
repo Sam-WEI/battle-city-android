@@ -9,7 +9,7 @@ import kotlin.collections.LinkedHashSet
 import kotlin.math.abs
 import kotlin.random.Random
 
-class BotTankController(
+class AiTankController(
     private val tankId: TankId,
     private val tankState: TankState,
     private val bulletState: BulletState, // todo move out?
