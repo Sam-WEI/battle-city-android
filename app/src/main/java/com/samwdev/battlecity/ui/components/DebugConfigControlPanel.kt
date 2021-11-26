@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.ui.components
 
+import android.content.Context
+import android.hardware.display.DisplayManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -12,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -134,6 +137,12 @@ fun DebugConfigControlPanel(
                     onSwitch = { onConfigChange(debugConfig.copy(fixTickDelta = it)) }
                 )
                 if (debugConfig.fixTickDelta) {
+                    val refreshRate = (LocalContext.current.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager)
+                        .displays.first().refreshRate
+                    val normalTickDelta = 1000f / refreshRate
+                    val range = (normalTickDelta / 10)..(normalTickDelta * 10)
+                    val speed = ((debugConfig.tickDelta / normalTickDelta) * 10).roundToInt() / 10f
+
                     Text(
                         text = "Locked tick: ${debugConfig.tickDelta}",
                         fontSize = 14.sp

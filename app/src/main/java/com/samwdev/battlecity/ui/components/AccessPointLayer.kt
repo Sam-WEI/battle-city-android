@@ -21,7 +21,7 @@ fun AccessPointLayer(mapState: MapState) {
             for ((ci, value) in row.withIndex()) {
                 drawCircle(
                     if (value > 0) ColorGreen else ColorRed,
-                    radius = 2f,
+                    radius = 1.2f,
                     center = Offset((ci / 2f + 0.5f).grid2mpx, (ri / 2f + 0.5f).grid2mpx)
                 )
             }

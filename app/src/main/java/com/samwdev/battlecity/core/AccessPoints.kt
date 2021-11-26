@@ -1,6 +1,8 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.WaterElement
@@ -10,7 +12,7 @@ private const val AccessPointsSize = MAP_BLOCK_COUNT * 2 - 1
 
 typealias AccessPoints = Array<Array<Int>>
 
-fun emptyAccessPoints() = Array(AccessPointsSize) { Array(AccessPointsSize) { -1 } }
+fun emptyAccessPoints() = Array(AccessPointsSize) { Array(AccessPointsSize) { 0 } }
 
 /** Return an updated copy */
 fun AccessPoints.updated(
@@ -52,6 +54,13 @@ private fun calculateAccessPointsRecursive(
     if (depth < 0 || spreadFrom.isOutOfBound) return
     if (accessPoints[spreadFrom] > 0) return // already accessed
 
+    val right = spreadFrom.subGridRight
+    val below = spreadFrom.subGridBelow
+//    if (!right.isOutOfBound && accessPoints[right] == -1 || !below.isOutOfBound && accessPoints[below] == -1) {
+//        accessPoints[spreadFrom] = -1
+//        return
+//    }
+
     // starting from the cheapest
     if (WaterElement.overlapsAnyElement(waterIndexSet, spreadFrom) ||
         SteelElement.overlapsAnyElement(steelIndexSet, spreadFrom) ||
@@ -81,6 +90,8 @@ inline class SubGrid internal constructor(val packedValue: Int) {
     val subGridBelow: SubGrid get() = this + SubGrid(1, 0)
     val subGridLeft: SubGrid get() = this - SubGrid(0, 1)
     val subGridRight: SubGrid get() = this + SubGrid(0, 1)
+
+    val fullBlock: Rect get() = Rect(Offset(x, y), Size(1f.grid2mpx, 1f.grid2mpx))
 
     fun getNeighborInDirection(direction: Direction): SubGrid = when (direction) {
         Direction.Up -> subGridAbove

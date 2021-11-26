@@ -74,16 +74,9 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
 
     fun overlapsAnyElement(realElements: Set<Int>, subGrid: SubGrid): Boolean {
         // 2 is the sub granularity
-        val realRow = (subGrid.subRow / (2f / granularity)).toInt()
-        val realCol = (subGrid.subCol / (2f / granularity)).toInt()
-
-        for (i in 0 until granularity) {
-            for (j in 0 until granularity) {
-                val idx = getIndex(realRow + i, realCol + j)
-                if (idx in realElements) return true
-            }
+        return getIndicesOverlappingRect(subGrid.fullBlock).any {
+            it in realElements
         }
-        return false
     }
 
     fun getIndex(row: Int, col: Int) = row * countInOneLine + col
