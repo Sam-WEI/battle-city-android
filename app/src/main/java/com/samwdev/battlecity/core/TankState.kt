@@ -238,7 +238,8 @@ class TankState(
 
     private fun isTankFullOnIce(tank: Tank): Boolean {
         val iceIndices = IceElement.getIndicesOverlappingRect(tank.pivotBox)
-        return iceIndices.all { it in mapState.iceIndexSet }
+        val allIceIndices = mapState.iceIndexSet
+        return iceIndices.all { it in allIceIndices }
     }
 
     fun startFireCooldown(id: TankId) {

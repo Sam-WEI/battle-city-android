@@ -7,6 +7,7 @@ import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapElements
 import com.samwdev.battlecity.entity.SteelElement
+import com.samwdev.battlecity.utils.logE
 
 @Composable
 fun rememberMapState(mapElements: MapElements): MapState {
@@ -54,9 +55,9 @@ class MapState(
         private set
 
     val iceIndexSet: Set<Int> = ices.map { it.index }.toSet()
-    val brickIndexSet: Set<Int> get() = bricks.map { it.index }.toSet()
-    val steelIndexSet: Set<Int> get() = steels.map { it.index }.toSet()
-    val waterIndexSet: Set<Int> get() = waters.map { it.index }.toSet()
+    private val brickIndexSet: Set<Int> get() = bricks.map { it.index }.toSet()
+    private val steelIndexSet: Set<Int> get() = steels.map { it.index }.toSet()
+    private val waterIndexSet: Set<Int> get() = waters.map { it.index }.toSet()
 
     init {
         updateAccessPoints(SubGrid(playerSpawnPosition), depth = Int.MAX_VALUE)
@@ -107,21 +108,26 @@ class MapState(
 
     fun destroyBricksIndex(indices: Set<Int>): Boolean {
         val oldCount = bricks.count()
+        val oldBrickIndex = brickIndexSet
         bricks = bricks.toMutableSet().apply {
             removeAll { it.index in indices }
         }
+        val newBrickIndex = brickIndexSet
         val newCount = bricks.count()
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
-            indices.forEach {
-                val subGrid = BrickElement.getSubGrid(it)
-                val cleared = !BrickElement.overlapsAnyElement(brickIndexSet, subGrid)
-                if (cleared) {
-                    // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
-                    // For performance purposes, use a depth of 10 for the calculation.
-                    // It should do the job most of the time, unless we just unblocked a really deep dead end.
-                    updateAccessPoints(subGrid, depth = 10)
-                }
+            indices.asSequence().filter { it in oldBrickIndex }
+                .map { BrickElement.getSubGrid(it) }
+                .toSet() // remove dup
+                .forEach { subGrid ->
+                    logE("  SubGrid: $subGrid.. newCount: $newCount")
+                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid)
+                    if (cleared) {
+                        // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
+                        // For performance purposes, use a depth of 10 for the calculation.
+                        // It should do the job most of the time, unless we just unblocked a really deep dead end.
+                        updateAccessPoints(subGrid, depth = 10)
+                    }
             }
         }
         return destroyedSome

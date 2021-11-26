@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.utils.logI
 
 sealed class MapElement(open val index: Int) : MapElementProperties {
     val gridPosition: IntOffset
@@ -74,9 +75,20 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
 
     fun overlapsAnyElement(realElements: Set<Int>, subGrid: SubGrid): Boolean {
         // 2 is the sub granularity
-        return getIndicesOverlappingRect(subGrid.fullBlock).any {
-            it in realElements
+//        return getIndicesOverlappingRect(subGrid.fullBlock).any {
+//            it in realElements
+//        }
+        val realRow = (subGrid.subRow / (2f / granularity)).toInt()
+        val realCol = (subGrid.subCol / (2f / granularity)).toInt()
+        logI("  testing subgrid $subGrid")
+        for (i in 0 until granularity) {
+            for (j in 0 until granularity) {
+                val idx = getIndex(realRow + i, realCol + j)
+                logI("  brick Row: ${realRow + i}, brick col: ${realCol + j}... in real: ${idx in realElements}")
+                if (idx in realElements) return true
+            }
         }
+        return false
     }
 
     fun getIndex(row: Int, col: Int) = row * countInOneLine + col
