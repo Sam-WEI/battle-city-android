@@ -93,6 +93,10 @@ inline class SubGrid internal constructor(val packedValue: Int) {
     operator fun component2(): Int = subCol
     operator fun plus(other: SubGrid) = SubGrid(subRow + other.subRow, subCol + other.subCol)
     operator fun minus(other: SubGrid) = SubGrid(subRow - other.subRow, subCol - other.subCol)
+
+    override fun toString(): String {
+        return "SubGrid[subRow=$subRow][subCol=$subCol]"
+    }
 }
 
 fun SubGrid(subRow: Int, subCol: Int): SubGrid = SubGrid(subRow * 10000 + subCol)

@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import com.samwdev.battlecity.utils.logE
+import com.samwdev.battlecity.utils.logI
+import com.samwdev.battlecity.utils.logW
 import kotlin.collections.LinkedHashSet
 import kotlin.random.Random
 
@@ -19,7 +22,7 @@ class AiTankController(
     private var lastTankPivotTopLeft: Offset? = null
     private var stuckTime: Int = 0
 
-    private val AiDecisionCooldown = 0 // todo by AI personality
+    private val AiDecisionCooldown = 300 // todo by AI personality
     private var remainingAiDecisionCooldown = 0
 
     private val fireChance = 0.07f // todo by AI personality
@@ -33,6 +36,11 @@ class AiTankController(
             return
         }
 
+        if (tankState.remainingBotFrozenTime > 0) {
+            tankState.stopTank(tank.id)
+            return
+        }
+        // todo after frozen, continue prev waypoints
         if (currentWaypoint.isNotEmpty()) {
             // move along waypoints
             val currTankSubGrid = tank.pivotBox.topLeft.subGrid
@@ -59,30 +67,28 @@ class AiTankController(
                 bulletState.fire(tank)
             }
         } else {
+            tankState.stopTank(tank.id)
             if (remainingAiDecisionCooldown > 0) {
                 remainingAiDecisionCooldown -= tick.delta
                 return
             }
             remainingAiDecisionCooldown = AiDecisionCooldown
-            val randomCmd = getNextCommand()
+            val randomCmd = getNextWaypointMode()
             when (randomCmd) {
-                is Fire -> {
-                    bulletState.fire(tank)
-                }
-                is Stop -> {
-                    tankState.stopTank(tank.id)
-                }
-                is Aggressive -> {
-                    // todo attack base
-                }
-                is FindNewWaypoints -> {
+                is Wander -> {
                     findNewWaypoint(tank, mapState.accessPoints)
+                }
+                is AttackBase -> {
+                    // todo
+                }
+                is AttackPlayer -> {
+                    // todo
                 }
             }
         }
     }
 
-    private fun getNextCommand(): AiCommand {
+    private fun getNextWaypointMode(): WaypointMode {
         val random = Random.nextInt(commandWeightMap.values.sum())
         var accWgt = 0
         for ((cmd, weight) in commandWeightMap) {
@@ -92,11 +98,10 @@ class AiTankController(
         return commandWeightMap.keys.last()
     }
 
-    private val commandWeightMap: Map<AiCommand, Int> = mapOf(
-        Stop to 1,
-        FindNewWaypoints to 1,
-        Fire to 1,
-        Aggressive to 1,
+    private val commandWeightMap: Map<WaypointMode, Int> = mapOf(
+        Wander to 5,
+        AttackPlayer to 1,
+        AttackBase to 1,
     )
 
     private fun findNewWaypoint(tank: Tank, accessPoints: AccessPoints) {
@@ -143,7 +148,6 @@ class AiTankController(
                     directionAttemptPriority.add(it)
                 }
             }
-
         for (dir in directionAttemptPriority) {
             val nextWp = src.getNeighborInDirection(dir)
             if (nextWp.isOutOfBound) {
@@ -172,8 +176,7 @@ class AiTankController(
     }
 }
 
-sealed class AiCommand()
-object Stop : AiCommand()
-object FindNewWaypoints : AiCommand()
-object Fire : AiCommand()
-object Aggressive : AiCommand()
+private sealed class WaypointMode
+private object AttackPlayer : WaypointMode()
+private object Wander : WaypointMode()
+private object AttackBase : WaypointMode()

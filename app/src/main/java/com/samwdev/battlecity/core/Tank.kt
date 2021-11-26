@@ -32,6 +32,7 @@ data class Tank(
     val bulletPower: Int get() = specs.bulletPower
     val bulletSpeed: MapPixel get() = specs.bulletSpeed
     val maxSpeed: MapPixel get() = specs.movingSpeed
+    val isMoving: Boolean get() = currentSpeed > 0
     val fireCooldown: Int get() = specs.fireCooldown
     val maxBulletCount: Int get() = specs.maxBulletCount
     val isSpawning: Boolean get() = timeToSpawn > 0

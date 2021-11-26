@@ -1,7 +1,6 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.utils.logD
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,7 +43,6 @@ class TickState(tick: Tick = Tick.INITIAL) {
                 tickCount++
             }
             lastTick = newTick
-//            logD("tick: $delta")
         }
         (now - lastUptime).takeIf { it > 1000f }?.let { elapsed ->
             fps = (tickCount.toFloat() / elapsed * 1000).roundToInt()

@@ -29,10 +29,8 @@ class BotState(
             }
         }
         clearDeadBots()
-        if (tankState.remainingBotFrozenTime <= 0) {
-            bots.values.forEach { controller ->
-                controller.onTick(tick)
-            }
+        bots.values.forEach { controller ->
+            controller.onTick(tick)
         }
     }
 
