@@ -58,10 +58,6 @@ fun BattleField(
             }
 
             if (LocalDebugConfig.current.showWaypoints) {
-                AccessPointLayer(mapState = battleState.mapState)
-            }
-
-            if (LocalDebugConfig.current.showWaypoints) {
                 WaypointLayer(botState = battleState.botState)
             }
         }
