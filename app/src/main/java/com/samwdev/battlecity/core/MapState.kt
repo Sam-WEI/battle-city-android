@@ -19,11 +19,19 @@ class MapState(
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationTimeoutDuration = 3 * 1000
+
+        private val DefaultPlayerSpawnPosition = Offset(4f.grid2mpx, 12f.grid2mpx)
+        private val DefaultBotSpawnPositions = listOf(
+            Offset(0f.grid2mpx, 0f.grid2mpx),
+            Offset(6f.grid2mpx, 0f.grid2mpx),
+            Offset(12f.grid2mpx, 0f.grid2mpx),
+        )
     }
     // todo move to a proper place
     private var remainingFortificationTime: Int = 0
 
-    val playerSpawnPosition = Offset(4f.grid2mpx, 12f.grid2mpx)
+    val playerSpawnPosition = DefaultPlayerSpawnPosition
+    val botSpawnPositions = DefaultBotSpawnPositions
 
     var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
         private set
@@ -52,6 +60,9 @@ class MapState(
 
     init {
         updateAccessPoints(SubGrid(playerSpawnPosition), depth = Int.MAX_VALUE)
+        botSpawnPositions.forEach {
+            updateAccessPoints(SubGrid(it), depth = Int.MAX_VALUE)
+        }
     }
 
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->

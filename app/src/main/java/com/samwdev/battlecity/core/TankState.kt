@@ -5,7 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.*
-import com.samwdev.battlecity.utils.logI
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -110,7 +109,7 @@ class TankState(
     }
 
     fun spawnBot(level: TankLevel = TankLevel.Level1, hasPowerUp: Boolean = false): Tank {
-        val loc = getRandomSpawnLocation()
+        val loc = mapState.botSpawnPositions.random()
         return Tank(
             id = idGen.incrementAndGet(),
             x = loc.x,
@@ -122,15 +121,6 @@ class TankState(
             hasPowerUp = hasPowerUp,
             timeToSpawn = 1500,
         ).also { addTank(idGen.get(), it) }
-    }
-
-    private fun getRandomSpawnLocation(): Offset {
-        return listOf(
-//            Offset(6f.grid2mpx, 6f.grid2mpx),
-            Offset(0f.grid2mpx, 0f.grid2mpx),
-            Offset(6f.grid2mpx, 0f.grid2mpx),
-            Offset(12f.grid2mpx, 0f.grid2mpx),
-        ).random()
     }
 
     fun killTank(tankId: TankId) {
