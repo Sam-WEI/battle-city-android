@@ -36,7 +36,7 @@ fun AccessPoints.randomAccessiblePoint(maxAttempt: Int = 5): SubGrid {
     }
 }
 
-operator fun AccessPoints.get(subGrid: SubGrid) = this[subGrid.subRow][subGrid.subCol]
+operator fun AccessPoints.get(subGrid: SubGrid): Int = this[subGrid.subRow][subGrid.subCol]
 operator fun AccessPoints.set(subGrid: SubGrid, value: Int) {
     this[subGrid.subRow][subGrid.subCol] = value
 }
@@ -68,10 +68,9 @@ private fun calculateAccessPointsRecursive(
     }
 }
 
-@JvmInline
-value class SubGrid internal constructor(private val packedValue: Int) {
-    val subRow: Int get() = packedValue / AccessPointsSize
-    val subCol: Int get() = packedValue % AccessPointsSize
+inline class SubGrid internal constructor(val packedValue: Int) {
+    val subRow: Int get() = packedValue / 10000
+    val subCol: Int get() = packedValue % 10000
 
     val x: MapPixel get() = (subCol / 2f).grid2mpx
     val y: MapPixel get() = (subRow / 2f).grid2mpx
@@ -96,7 +95,7 @@ value class SubGrid internal constructor(private val packedValue: Int) {
     operator fun minus(other: SubGrid) = SubGrid(subRow - other.subRow, subCol - other.subCol)
 }
 
-fun SubGrid(subRow: Int, subCol: Int): SubGrid = SubGrid(subRow * AccessPointsSize + subCol)
+fun SubGrid(subRow: Int, subCol: Int): SubGrid = SubGrid(subRow * 10000 + subCol)
 
 fun SubGrid(offset: Offset): SubGrid = SubGrid(
     (offset.y / 1f.grid2mpx).toInt() * 2, (offset.x / 1f.grid2mpx).toInt() * 2)

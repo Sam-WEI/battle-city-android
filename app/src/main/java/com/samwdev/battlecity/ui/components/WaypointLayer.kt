@@ -17,7 +17,6 @@ private val ColorLine = Color(0x6600ffff)
 @Composable
 fun AccessPointLayer(botState: BotState) {
     val waypointsList = botState.bots.values.map { it.currentWaypoint }
-
     PixelCanvas(
         widthInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
         heightInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
@@ -31,11 +30,13 @@ fun AccessPointLayer(botState: BotState) {
 private fun PixelDrawScope.drawWaypoints(waypoints: List<SubGrid>) {
     for ((i, wp) in waypoints.withIndex()) {
         val center = Offset(wp.x + 0.5f.grid2mpx, wp.y + 0.5f.grid2mpx)
-        drawCircle(
-            ColorDot,
-            radius = 2f,
-            center = center,
-        )
+        if (i == 0 || i == waypoints.lastIndex) {
+            drawCircle(
+                ColorDot,
+                radius = 2f,
+                center = center,
+            )
+        }
         if (i > 0) {
             val lastWp = waypoints[i - 1]
             val lastDotCenter = Offset(lastWp.x + 0.5f.grid2mpx, lastWp.y + 0.5f.grid2mpx)
