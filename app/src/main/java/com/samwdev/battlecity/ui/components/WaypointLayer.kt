@@ -11,8 +11,16 @@ import com.samwdev.battlecity.core.SubGrid
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.utils.logW
 
-private val ColorDot = Color(0xBB00ffff)
-private val ColorLine = Color(0x6600ffff)
+private val ColorList = listOf(
+    Color(0xFF00ffff),
+    Color(0xFFFFEB3B),
+    Color(0xFF673AB7),
+    Color(0xFFF44336),
+    Color(0xFF8BC34A),
+    Color(0xFF004D40),
+    Color(0xFFFFFFFF),
+)
+
 
 @Composable
 fun WaypointLayer(botState: BotState) {
@@ -21,18 +29,20 @@ fun WaypointLayer(botState: BotState) {
         widthInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
         heightInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
     ) {
-        waypointsList.forEach { waypoints ->
-            drawWaypoints(waypoints)
+        waypointsList.forEachIndexed { i, waypoints ->
+            val color = ColorList[i % ColorList.size]
+            drawWaypoints(waypoints, color)
         }
     }
 }
 
-private fun PixelDrawScope.drawWaypoints(waypoints: List<SubGrid>) {
+private fun PixelDrawScope.drawWaypoints(waypoints: List<SubGrid>, color: Color) {
     for ((i, wp) in waypoints.withIndex()) {
         val center = Offset(wp.x + 0.5f.grid2mpx, wp.y + 0.5f.grid2mpx)
         if (i == 0 || i == waypoints.lastIndex) {
             drawCircle(
-                ColorDot,
+                color,
+                alpha = 0.8f,
                 radius = 2f,
                 center = center,
             )
@@ -41,10 +51,11 @@ private fun PixelDrawScope.drawWaypoints(waypoints: List<SubGrid>) {
             val lastWp = waypoints[i - 1]
             val lastDotCenter = Offset(lastWp.x + 0.5f.grid2mpx, lastWp.y + 0.5f.grid2mpx)
             drawLine(
-                ColorLine,
+                color,
+                alpha = 0.6f,
                 start = lastDotCenter,
                 end = center,
-                strokeWidth = 2.5f,
+                strokeWidth = 2f,
                 cap = StrokeCap.Round,
             )
         }
