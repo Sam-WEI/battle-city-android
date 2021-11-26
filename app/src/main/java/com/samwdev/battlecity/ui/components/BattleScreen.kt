@@ -24,7 +24,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
         mutableStateOf(DebugConfig(
             showFps = true,
             showPivotBox = false,
-            maxBot = 0,
+            maxBot = 2,
             showAccessPoints = true,
             showWaypoints = true,
         ))

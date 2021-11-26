@@ -5,7 +5,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.utils.logI
 
 sealed class MapElement(open val index: Int) : MapElementProperties {
     val gridPosition: IntOffset
@@ -73,22 +72,16 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
         )
     }
 
-    fun overlapsAnyElement(realElements: Set<Int>, subGrid: SubGrid): Boolean {
+    fun overlapsAnyElement(realElements: Set<Int>, subGrid: SubGrid, hSpan: Int = 1, vSpan: Int = 1): Boolean {
+        require(hSpan > 0 && vSpan <= 2)
+        require(vSpan > 0 && hSpan <= 2)
         // 2 is the sub granularity
-//        return getIndicesOverlappingRect(subGrid.fullBlock).any {
-//            it in realElements
-//        }
-        val realRow = (subGrid.subRow / (2f / granularity)).toInt()
-        val realCol = (subGrid.subCol / (2f / granularity)).toInt()
-        logI("  testing subgrid $subGrid")
-        for (i in 0 until granularity) {
-            for (j in 0 until granularity) {
-                val idx = getIndex(realRow + i, realCol + j)
-                logI("  brick Row: ${realRow + i}, brick col: ${realCol + j}... in real: ${idx in realElements}")
-                if (idx in realElements) return true
-            }
-        }
-        return false
+        val elementCountInOneSubGridSide = granularity / 2f
+
+        val rectToCheck = Rect(subGrid.topLeft, Size(hSpan * elementCountInOneSubGridSide * elementSize,
+            vSpan * elementCountInOneSubGridSide * elementSize))
+        val indices = getIndicesOverlappingRect(rectToCheck)
+        return indices.any { it in realElements }
     }
 
     fun getIndex(row: Int, col: Int) = row * countInOneLine + col
@@ -198,6 +191,7 @@ open class MapElementHelper(override val granularity: Int) : MapElementPropertie
 }
 
 interface MapElementProperties {
+    /** element count in one map block, e.g, 4 for brick, 2 for steel. */
     val granularity: Int
 
     val elementSize: MapPixel get() = 1.grid2mpx / granularity

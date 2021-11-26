@@ -7,8 +7,8 @@ import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.grid2mpx
 
-private val ColorGreen = Color(0x6600ff00)
-private val ColorRed = Color(0x66ff0000)
+private val ColorGreen = Color(0xff00ff00)
+private val ColorRed = Color(0xffff0000)
 
 @Composable
 fun AccessPointLayer(mapState: MapState) {
@@ -20,8 +20,13 @@ fun AccessPointLayer(mapState: MapState) {
         for ((ri, row) in points.withIndex()) {
             for ((ci, value) in row.withIndex()) {
                 drawCircle(
-                    if (value > 0) ColorGreen else ColorRed,
-                    radius = 1.2f,
+                    color = when {
+                        value > 0 -> ColorGreen
+                        value == -1 -> Color.White
+                        else -> ColorRed
+                    },
+                    alpha = 0.4f,
+                    radius = 1f,
                     center = Offset((ci / 2f + 0.5f).grid2mpx, (ri / 2f + 0.5f).grid2mpx)
                 )
             }
