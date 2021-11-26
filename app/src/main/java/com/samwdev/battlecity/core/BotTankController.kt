@@ -16,7 +16,6 @@ class BotTankController(
 ) : TickListener {
     var currentWaypoint: List<SubGrid> by mutableStateOf(listOf(), referentialEqualityPolicy())
         private set
-    var tmp = 0
     override fun onTick(tick: Tick) {
         if (!tankState.isTankAlive(tankId)) {
             return
@@ -25,17 +24,22 @@ class BotTankController(
         if (tank.isSpawning) {
             return
         }
-        if (tmp > 200) {
-            findNewWaypoint(tank, mapState.accessPoints)
-            tmp = 0
-        } else {
-            tmp += tick.delta.toInt()
-        }
 
         if (currentWaypoint.isNotEmpty()) {
             // move along waypoints
-            
+            val currTankSubGrid = tank.pivotBox.topLeft.subGrid
+            val currWaypoint = currentWaypoint.first()
+            if (currWaypoint == currTankSubGrid) {
+                currentWaypoint = currentWaypoint.subList(1, currentWaypoint.size)
+                currentWaypoint.firstOrNull()?.let { nextWayPoint ->
+                    val dir = Direction.values().find { currWaypoint.getNeighborInDirection(it) == nextWayPoint }!!
+                    tankState.moveTank(tank.id, dir)
+
+                }
+            }
         } else {
+            findNewWaypoint(tank, mapState.accessPoints)
+
             val randomCmd = getNextCommand()
             when (randomCmd) {
                 is Fire -> {
