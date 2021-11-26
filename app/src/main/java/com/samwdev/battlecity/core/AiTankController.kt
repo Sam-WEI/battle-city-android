@@ -153,7 +153,7 @@ class AiTankController(
             if (nextWp.isOutOfBound) {
                 continue
             }
-            if (accessPoints[nextWp] < 0) {
+            if (!accessPoints.isAccessible(nextWp)) {
                 continue
             }
             if (nextWp in badAccessPoints) {

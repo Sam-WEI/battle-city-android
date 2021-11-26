@@ -3,6 +3,8 @@ package com.samwdev.battlecity.core
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.WaterElement
@@ -23,7 +25,7 @@ fun AccessPoints.updated(
     depth: Int = Int.MAX_VALUE
 ): AccessPoints {
     val updated = copyOf()
-    calculateAccessPointsRecursive(waterIndexSet, steelIndexSet, brickIndexSet, updated, spreadFrom, depth)
+    updated.calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom, depth)
     return updated
 }
 
@@ -43,16 +45,32 @@ operator fun AccessPoints.set(subGrid: SubGrid, value: Int) {
     this[subGrid.subRow][subGrid.subCol] = value
 }
 
-private fun calculateAccessPointsRecursive(
+fun AccessPoints.isAccessible(subGrid: SubGrid): Boolean = this[subGrid] > 0
+
+private fun AccessPoints.calculateInPlaceRecursive(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
-    accessPoints: AccessPoints,
     spreadFrom: SubGrid,
     depth: Int
 ) {
+//    val (rowB, colB) = spreadFrom.subRow
+//
+//    for (row in rowB downTo 0) {
+//        for (col in colB downTo 0) {
+//            val curr = SubGrid(row, col)
+//            if (isAccessible(curr)) {
+//                continue
+//            }
+//            if (curr.subGridRight.isOutOfBound && curr.subGridBelow.isOutOfBound) {
+//
+//            }
+//        }
+//    }
+
+
     if (depth < 0 || spreadFrom.isOutOfBound) return
-    if (accessPoints[spreadFrom] > 0) return // already accessed
+    if (isAccessible(spreadFrom)) return // already accessed
 
     val right = spreadFrom.subGridRight
     val below = spreadFrom.subGridBelow
@@ -66,14 +84,14 @@ private fun calculateAccessPointsRecursive(
         SteelElement.overlapsAnyElement(steelIndexSet, spreadFrom) ||
         BrickElement.overlapsAnyElement(brickIndexSet, spreadFrom)
     ) {
-        accessPoints[spreadFrom] = -1
+        this[spreadFrom] = -1
         return
     } else {
-        accessPoints[spreadFrom] = 1
-        calculateAccessPointsRecursive(waterIndexSet, steelIndexSet, brickIndexSet, accessPoints, spreadFrom - SubGrid(1, 0), depth - 1)
-        calculateAccessPointsRecursive(waterIndexSet, steelIndexSet, brickIndexSet, accessPoints, spreadFrom + SubGrid(1, 0), depth - 1)
-        calculateAccessPointsRecursive(waterIndexSet, steelIndexSet, brickIndexSet, accessPoints, spreadFrom - SubGrid(0, 1), depth - 1)
-        calculateAccessPointsRecursive(waterIndexSet, steelIndexSet, brickIndexSet, accessPoints, spreadFrom + SubGrid(0, 1), depth - 1)
+        this[spreadFrom] = 1
+        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom - SubGrid(1, 0), depth - 1)
+        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom + SubGrid(1, 0), depth - 1)
+        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom - SubGrid(0, 1), depth - 1)
+        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom + SubGrid(0, 1), depth - 1)
     }
 }
 
