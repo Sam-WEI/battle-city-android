@@ -19,11 +19,8 @@ class TankController(
             tankState.stopTank(tankId)
         }
 
-        if (handheldControllerState.firePressed && tank.remainingCooldown <= 0) {
-            if (bulletState.countBulletForTank(tank.id) < tank.maxBulletCount) {
-                bulletState.fire(tank)
-                tankState.startFireCooldown(tankId)
-            }
+        if (handheldControllerState.firePressed) {
+            bulletState.fire(tank)
         }
     }
 }

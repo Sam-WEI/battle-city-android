@@ -26,7 +26,7 @@ class TickState(tick: Tick = Tick.INITIAL) {
 
     val uptimeMillis: Long
         get() = lastTick.uptimeMillis
-    val delta: Long
+    val delta: Int
         get() = lastTick.delta
 
     private var fixedDelta: Int? = null
@@ -38,7 +38,7 @@ class TickState(tick: Tick = Tick.INITIAL) {
     suspend fun update(now: Long) {
         val delta = now - lastTick.uptimeMillis
         if (delta > 1000f / maxFps) {
-            val newTick = Tick(now, fixedDelta?.toLong() ?: delta)
+            val newTick = Tick(now, fixedDelta ?: delta.toInt())
             if (lastTick != Tick.INITIAL) {
                 _tickFlow.emit(newTick)
                 tickCount++
@@ -69,7 +69,7 @@ class TickState(tick: Tick = Tick.INITIAL) {
     }
 }
 
-data class Tick(val uptimeMillis: Long, val delta: Long) {
+data class Tick(val uptimeMillis: Long, val delta: Int) {
     companion object {
         val INITIAL = Tick(0, 0)
     }

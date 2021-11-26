@@ -52,7 +52,7 @@ data class Bullet(
         }
     }
 
-    fun getFlashbackBullet(millisAgo: Long): Bullet {
+    fun getFlashbackBullet(millisAgo: Int): Bullet {
         val delta = millisAgo * speed
         val currPos = Offset(x, y)
         val oldPos = when (direction) {
@@ -64,7 +64,7 @@ data class Bullet(
         return copy(x = oldPos.x.coerceAtLeast(0f), y = oldPos.y.coerceAtLeast(0f))
     }
 
-    fun getTrajectory(vararg flashbackDeltas: Long): Rect {
+    fun getTrajectory(vararg flashbackDeltas: Int): Rect {
         val bullets = flashbackDeltas.map { getFlashbackBullet(it) }.toTypedArray()
         return getTrajectory(*bullets)
     }

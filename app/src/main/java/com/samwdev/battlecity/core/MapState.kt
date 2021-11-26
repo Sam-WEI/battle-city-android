@@ -80,7 +80,7 @@ class MapState(
 
     override fun onTick(tick: Tick) {
         if (remainingFortificationTime > 0) {
-            remainingFortificationTime -= tick.delta.toInt()
+            remainingFortificationTime -= tick.delta
             if (remainingFortificationTime <= 0) {
                 wrapEagleWithBricks()
             } else if (remainingFortificationTime < FortificationTimeoutDuration) {

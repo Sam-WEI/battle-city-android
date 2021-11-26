@@ -6,7 +6,6 @@ import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import kotlin.collections.LinkedHashSet
-import kotlin.math.abs
 import kotlin.random.Random
 
 class AiTankController(
@@ -19,6 +18,11 @@ class AiTankController(
         private set
     private var lastTankPivotTopLeft: Offset? = null
     private var stuckTime: Int = 0
+
+    private val AiDecisionCooldown = 0 // todo by AI personality
+    private var remainingAiDecisionCooldown = 0
+
+    private val fireChance = 0.07f // todo by AI personality
 
     override fun onTick(tick: Tick) {
         if (!tankState.isTankAlive(tankId)) {
@@ -44,34 +48,35 @@ class AiTankController(
                     lastTankPivotTopLeft = tank.pivotBox.topLeft
                     stuckTime = 0
                 } else {
-                    stuckTime += tick.delta.toInt()
+                    stuckTime += tick.delta
                     if (stuckTime > 1000) {
                         findNewWaypoint(tank, mapState.accessPoints)
                         stuckTime = 0
                     }
                 }
             }
+            if (Random.nextFloat() < fireChance) {
+                bulletState.fire(tank)
+            }
         } else {
-            findNewWaypoint(tank, mapState.accessPoints)
-
+            if (remainingAiDecisionCooldown > 0) {
+                remainingAiDecisionCooldown -= tick.delta
+                return
+            }
+            remainingAiDecisionCooldown = AiDecisionCooldown
             val randomCmd = getNextCommand()
             when (randomCmd) {
                 is Fire -> {
-//                    if (tank.remainingCooldown <= 0) {
-//                        if (bulletState.countBulletForTank(tank.id) < tank.maxBulletCount) {
-//                            bulletState.fire(tank)
-//                            tankState.startFireCooldown(tank.id)
-//                        }
-//                    }
+                    bulletState.fire(tank)
                 }
                 is Stop -> {
-//                    tankState.stopTank(tank.id)
+                    tankState.stopTank(tank.id)
                 }
                 is Aggressive -> {
-//                    tankState.moveTank(tank.id, )
+                    // todo attack base
                 }
                 is FindNewWaypoints -> {
-//                    tankState.moveTank(tank.id, tank.movingDirection)
+                    findNewWaypoint(tank, mapState.accessPoints)
                 }
             }
         }
@@ -79,10 +84,10 @@ class AiTankController(
 
     private fun getNextCommand(): AiCommand {
         val random = Random.nextInt(commandWeightMap.values.sum())
-        var acc = 0
+        var accWgt = 0
         for ((cmd, weight) in commandWeightMap) {
-            acc += weight
-            if (random < weight) return cmd
+            accWgt += weight
+            if (random < accWgt) return cmd
         }
         return commandWeightMap.keys.last()
     }

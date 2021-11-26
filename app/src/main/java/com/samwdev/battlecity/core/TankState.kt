@@ -65,12 +65,12 @@ class TankState(
 
     override fun onTick(tick: Tick) {
         if (remainingBotFrozenTime > 0) {
-            remainingBotFrozenTime -= tick.delta.toInt()
+            remainingBotFrozenTime -= tick.delta
         }
         val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
         tanks.forEach { (id, tank) ->
-            val updatedTank = updateTankTimers(tank, tick.delta.toInt())
-            newTanks[id] = updateTankMovement(updatedTank, tick.delta.toInt())
+            val updatedTank = updateTankTimers(tank, tick.delta)
+            newTanks[id] = updateTankMovement(updatedTank, tick.delta)
         }
         tanks = newTanks
 
