@@ -15,7 +15,7 @@ private val ColorDot = Color(0xBB00ffff)
 private val ColorLine = Color(0x6600ffff)
 
 @Composable
-fun AccessPointLayer(botState: BotState) {
+fun WaypointLayer(botState: BotState) {
     val waypointsList = botState.bots.values.map { it.currentWaypoint }
     PixelCanvas(
         widthInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
