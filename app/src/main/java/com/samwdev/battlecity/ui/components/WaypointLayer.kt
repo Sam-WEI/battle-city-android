@@ -55,7 +55,7 @@ private fun PixelDrawScope.drawWaypoints(waypoints: List<SubGrid>, color: Color)
                 alpha = 0.6f,
                 start = lastDotCenter,
                 end = center,
-                strokeWidth = 2f,
+                strokeWidth = 1f,
                 cap = StrokeCap.Round,
             )
         }

@@ -1,31 +1,34 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.core.graphics.component1
-import androidx.core.graphics.component2
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.WaterElement
 import kotlin.random.Random
 
-private const val AccessPointsSize = MAP_BLOCK_COUNT * 2 - 1
+private const val AccessPointsSizeInternal = MAP_BLOCK_COUNT * 2
+private const val AccessPointsSize = MAP_BLOCK_COUNT * 2
+private const val ValueUninitialized = 0
+private const val ValueAccessible = 1
+private const val ValueObstacleSteel = -10000
+private const val ValueObstacleBrick = -100
+private const val ValueObstacleWater = -10
+private const val ValueNeighborObstacle = -1
 
 typealias AccessPoints = Array<Array<Int>>
 
-fun emptyAccessPoints() = Array(AccessPointsSize) { Array(AccessPointsSize) { 0 } }
+fun emptyAccessPoints() = Array(AccessPointsSizeInternal) { Array(AccessPointsSizeInternal) { ValueUninitialized } }
 
 /** Return an updated copy */
 fun AccessPoints.updated(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
-    spreadFrom: SubGrid,
+    spreadFrom: SubGrid = SubGrid(AccessPointsSize - 1, AccessPointsSize - 1),
     depth: Int = Int.MAX_VALUE
 ): AccessPoints {
     val updated = copyOf()
-    updated.calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom, depth)
+    updated.calculateInPlace(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom, depth)
     return updated
 }
 
@@ -47,75 +50,65 @@ operator fun AccessPoints.set(subGrid: SubGrid, value: Int) {
 
 fun AccessPoints.isAccessible(subGrid: SubGrid): Boolean = this[subGrid] > 0
 
-private fun AccessPoints.calculateInPlaceRecursive(
+private fun AccessPoints.calculateInPlace(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
     spreadFrom: SubGrid,
-    depth: Int
+    depth: Int = Int.MAX_VALUE
 ) {
-//    val (rowB, colB) = spreadFrom.subRow
-//
-//    for (row in rowB downTo 0) {
-//        for (col in colB downTo 0) {
-//            val curr = SubGrid(row, col)
-//            if (isAccessible(curr)) {
-//                continue
-//            }
-//            if (curr.subGridRight.isOutOfBound && curr.subGridBelow.isOutOfBound) {
-//
-//            }
-//        }
-//    }
-
-
-    if (depth < 0 || spreadFrom.isOutOfBound) return
-    if (isAccessible(spreadFrom)) return // already accessed
-
-    val right = spreadFrom.subGridRight
-    val below = spreadFrom.subGridBelow
-//    if (!right.isOutOfBound && accessPoints[right] == -1 || !below.isOutOfBound && accessPoints[below] == -1) {
-//        accessPoints[spreadFrom] = -1
-//        return
-//    }
-
-    // starting from the cheapest
-    if (WaterElement.overlapsAnyElement(waterIndexSet, spreadFrom) ||
-        SteelElement.overlapsAnyElement(steelIndexSet, spreadFrom) ||
-        BrickElement.overlapsAnyElement(brickIndexSet, spreadFrom)
-    ) {
-        this[spreadFrom] = -1
-        return
-    } else {
-        this[spreadFrom] = 1
-        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom - SubGrid(1, 0), depth - 1)
-        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom + SubGrid(1, 0), depth - 1)
-        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom - SubGrid(0, 1), depth - 1)
-        calculateInPlaceRecursive(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom + SubGrid(0, 1), depth - 1)
+    val (rowB, colB) = spreadFrom
+    val top = (rowB - depth).coerceAtLeast(0)
+    val left = (colB - depth).coerceAtLeast(0)
+    for (row in rowB downTo top) {
+        for (col in colB downTo left) {
+            val curr = SubGrid(row, col)
+            if (isAccessible(curr)) {
+                continue
+            }
+            val value = when {
+                WaterElement.overlapsAnyElement(waterIndexSet, curr, 1, 1) -> ValueObstacleWater
+                SteelElement.overlapsAnyElement(steelIndexSet, curr, 1, 1) -> ValueObstacleSteel
+                BrickElement.overlapsAnyElement(brickIndexSet, curr, 1, 1) -> ValueObstacleBrick
+                else -> ValueAccessible
+            }
+            this[curr] = value
+            if (value == ValueAccessible) {
+                if (
+                    curr.neighborRight.isOutOfBound
+                    || curr.neighborDown.isOutOfBound
+                    || this[curr.neighborDown] < ValueNeighborObstacle
+                    || this[curr.neighborRight] < ValueNeighborObstacle
+                    || this[curr.neighborRight.neighborDown] < ValueNeighborObstacle
+                ) {
+                    this[curr] = ValueNeighborObstacle
+                }
+            }
+        }
     }
 }
 
-inline class SubGrid internal constructor(val packedValue: Int) {
+inline class SubGrid internal constructor(private val packedValue: Int) {
     val subRow: Int get() = packedValue / 10000
     val subCol: Int get() = packedValue % 10000
 
     val x: MapPixel get() = (subCol / 2f).grid2mpx
     val y: MapPixel get() = (subRow / 2f).grid2mpx
 
+    val topLeft: Offset get() = Offset(x, y)
+
     val isOutOfBound: Boolean get() = !(subRow in 0 until AccessPointsSize && subCol in 0 until AccessPointsSize)
 
-    val subGridAbove: SubGrid get() = this - SubGrid(1, 0)
-    val subGridBelow: SubGrid get() = this + SubGrid(1, 0)
-    val subGridLeft: SubGrid get() = this - SubGrid(0, 1)
-    val subGridRight: SubGrid get() = this + SubGrid(0, 1)
-
-    val fullBlock: Rect get() = Rect(Offset(x, y), Size(1f.grid2mpx, 1f.grid2mpx))
+    val neighborUp: SubGrid get() = this - SubGrid(1, 0)
+    val neighborDown: SubGrid get() = this + SubGrid(1, 0)
+    val neighborLeft: SubGrid get() = this - SubGrid(0, 1)
+    val neighborRight: SubGrid get() = this + SubGrid(0, 1)
 
     fun getNeighborInDirection(direction: Direction): SubGrid = when (direction) {
-        Direction.Up -> subGridAbove
-        Direction.Down -> subGridBelow
-        Direction.Left -> subGridLeft
-        Direction.Right -> subGridRight
+        Direction.Up -> neighborUp
+        Direction.Down -> neighborDown
+        Direction.Left -> neighborLeft
+        Direction.Right -> neighborRight
     }
 
     operator fun component1(): Int = subRow

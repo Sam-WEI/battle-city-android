@@ -7,7 +7,6 @@ import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapElements
 import com.samwdev.battlecity.entity.SteelElement
-import com.samwdev.battlecity.utils.logE
 
 @Composable
 fun rememberMapState(mapElements: MapElements): MapState {
@@ -60,10 +59,7 @@ class MapState(
     private val waterIndexSet: Set<Int> get() = waters.map { it.index }.toSet()
 
     init {
-        updateAccessPoints(SubGrid(playerSpawnPosition), depth = Int.MAX_VALUE)
-        botSpawnPositions.forEach {
-            updateAccessPoints(SubGrid(it), depth = Int.MAX_VALUE)
-        }
+        accessPoints = accessPoints.updated(waterIndexSet, steelIndexSet, brickIndexSet)
     }
 
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
@@ -120,13 +116,18 @@ class MapState(
                 .map { BrickElement.getSubGrid(it) }
                 .toSet() // remove dup
                 .forEach { subGrid ->
-                    logE("  SubGrid: $subGrid.. newCount: $newCount")
                     val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid)
                     if (cleared) {
                         // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
                         // For performance purposes, use a depth of 10 for the calculation.
                         // It should do the job most of the time, unless we just unblocked a really deep dead end.
-                        updateAccessPoints(subGrid, depth = 10)
+                        accessPoints = accessPoints.updated(
+                            brickIndexSet = brickIndexSet,
+                            steelIndexSet = steelIndexSet,
+                            waterIndexSet = waterIndexSet,
+                            spreadFrom = subGrid,
+                            depth = 1
+                        )
                     }
             }
         }
@@ -144,7 +145,13 @@ class MapState(
             indices.forEach {
                 val subGrid = SteelElement.getSubGrid(it)
                 // a destroyed steel always frees up a sub grid
-                updateAccessPoints(subGrid, depth = 10)
+                accessPoints = accessPoints.updated(
+                    brickIndexSet = brickIndexSet,
+                    steelIndexSet = steelIndexSet,
+                    waterIndexSet = waterIndexSet,
+                    spreadFrom = subGrid,
+                    depth = 1
+                )
             }
         }
         return destroyedSome
@@ -162,10 +169,6 @@ class MapState(
     fun isGridAccessible(topLeft: Offset): Boolean {
         // todo
         return true
-    }
-
-    private fun updateAccessPoints(spreadFrom: SubGrid, depth: Int) {
-        accessPoints = accessPoints.updated(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom, depth)
     }
 
     private fun wrapEagleWithSteels() {
