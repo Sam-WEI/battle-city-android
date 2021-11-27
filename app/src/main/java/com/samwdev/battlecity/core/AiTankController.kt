@@ -84,15 +84,12 @@ class AiTankController(
                 in 0f..personality.attackPlayer -> {
                     // todo
                     findNewWaypoint(tank, mapState.accessPoints)
-                    logE("   attack player!!!")
                 }
                 in personality.attackPlayer..(personality.attackPlayer + personality.attackBase) -> {
                     // todo
                     findNewWaypoint(tank, mapState.accessPoints)
-                    logE("   attack base!!!")
                 }
                 else -> {
-                    logE("   find waypoint!!!")
                     findNewWaypoint(tank, mapState.accessPoints)
                 }
             }
