@@ -25,9 +25,10 @@ private val ColorList = listOf(
 @Composable
 fun WaypointLayer(botState: BotState) {
     val waypointsList = botState.bots.values.map { it.currentWaypoint }
+    val gridUnitNumber = LocalGridUnitNumber.current
     PixelCanvas(
-        widthInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
-        heightInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
+        widthInMapPixel = gridUnitNumber.grid2mpx,
+        heightInMapPixel = gridUnitNumber.grid2mpx,
     ) {
         waypointsList.forEachIndexed { i, waypoints ->
             val color = ColorList[i % ColorList.size]
