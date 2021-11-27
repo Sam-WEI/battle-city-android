@@ -25,7 +25,7 @@ class TankState(
     private val mapState: MapState,
     private val powerUpState: PowerUpState,
     private val explosionState: ExplosionState,
-) : TickListener {
+) : TickListener, HorizontalGridUnitNumberAware by mapState {
     companion object {
         private const val ShieldDuration = 10 * 1000
         private const val FrozenDuration = 10 * 1000

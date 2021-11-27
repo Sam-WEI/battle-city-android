@@ -71,9 +71,27 @@ private fun AccessPoints.calculateInPlace(
                 continue
             }
             val value = when {
-                WaterElement.overlapsAnyElement(waterIndexSet, curr, 1, 1, hGridUnitNum = hSubGridUnitNum / 2) -> ValueObstacleWater
-                SteelElement.overlapsAnyElement(steelIndexSet, curr, 1, 1, hGridUnitNum = hSubGridUnitNum / 2) -> ValueObstacleSteel
-                BrickElement.overlapsAnyElement(brickIndexSet, curr, 1, 1, hGridUnitNum = hSubGridUnitNum / 2) -> ValueObstacleBrick
+                WaterElement.overlapsAnyElement(
+                    waterIndexSet,
+                    curr,
+                    hGridUnitNum = hSubGridUnitNum / 2,
+                    1,
+                    1
+                ) -> ValueObstacleWater
+                SteelElement.overlapsAnyElement(
+                    steelIndexSet,
+                    curr,
+                    hGridUnitNum = hSubGridUnitNum / 2,
+                    1,
+                    1
+                ) -> ValueObstacleSteel
+                BrickElement.overlapsAnyElement(
+                    brickIndexSet,
+                    curr,
+                    hGridUnitNum = hSubGridUnitNum / 2,
+                    1,
+                    1
+                ) -> ValueObstacleBrick
                 else -> ValueAccessible
             }
             this[curr] = value

@@ -15,7 +15,7 @@ fun rememberMapState(mapElements: MapElements): MapState {
 
 class MapState(
     mapElements: MapElements,
-) : TickListener {
+) : TickListener, HorizontalGridUnitNumberAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationTimeoutDuration = 3 * 1000
@@ -33,7 +33,7 @@ class MapState(
     val playerSpawnPosition = DefaultPlayerSpawnPosition
     val botSpawnPositions = DefaultBotSpawnPositions
 
-    val hGridUnitNum: Int = mapElements.hGridUnitNum
+    override val hGridUnitNum: Int = mapElements.hGridUnitNum
 
     var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
         private set
@@ -81,11 +81,11 @@ class MapState(
     }
 
     private val brickIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect, hGridUnitNum)) }
+        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect)) }
     }
 
     private val steelIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect, hGridUnitNum)) }
+        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect)) }
     }
 
     override fun onTick(tick: Tick) {
@@ -115,10 +115,10 @@ class MapState(
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.asSequence().filter { it in oldBrickIndex }
-                .map { BrickElement.getSubGrid(it, hGridUnitNum) }
+                .map { BrickElement.getSubGrid(it) }
                 .toSet() // remove dup
                 .forEach { subGrid ->
-                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid, hGridUnitNum = hGridUnitNum)
+                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid)
                     if (cleared) {
                         // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
                         // For performance purposes, use a depth of 10 for the calculation.
@@ -145,7 +145,7 @@ class MapState(
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.forEach {
-                val subGrid = SteelElement.getSubGrid(it, hGridUnitNum)
+                val subGrid = SteelElement.getSubGrid(it)
                 // a destroyed steel always frees up a sub grid
                 accessPoints = accessPoints.updated(
                     brickIndexSet = brickIndexSet,

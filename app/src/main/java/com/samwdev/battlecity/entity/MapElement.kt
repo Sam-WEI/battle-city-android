@@ -100,9 +100,15 @@ abstract class MapElementHelper(override val granularity: Int) : MapElementPrope
         )
     }
 
-    fun overlapsAnyElement(realElements: Set<Int>, subGrid: SubGrid, hSpan: Int = 1, vSpan: Int = 1, hGridUnitNum: Int): Boolean {
-        require(hSpan > 0 && vSpan <= 2)
-        require(vSpan > 0 && hSpan <= 2)
+    fun overlapsAnyElement(
+        realElements: Set<Int>,
+        subGrid: SubGrid,
+        hGridUnitNum: Int,
+        hSpan: Int = 1,
+        vSpan: Int = 1
+    ): Boolean {
+        require(hSpan in 1..2)
+        require(vSpan in 1..2)
         // 2 is the sub granularity
         val elementCountInOneSubGridSide = granularity / 2f
 
