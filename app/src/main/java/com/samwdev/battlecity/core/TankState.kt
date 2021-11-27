@@ -302,6 +302,9 @@ class TankState(
     }
 
     private fun checkPowerUpCollision(tank: Tank) {
+        if (powerUpState.powerUps.isEmpty()) {
+            return
+        }
         val toPickUp = powerUpState.powerUps.values.filter { p -> p.rect.overlaps(tank.collisionBox) }
         powerUpState.remove(toPickUp)
         toPickUp.forEach { pickUpPowerUp(tank, it.type) }
