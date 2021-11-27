@@ -78,7 +78,7 @@ private fun PixelDrawScope.drawBrickUnit(element: BrickElement, drawIndex: Boole
 @Composable
 fun BrickPreview() {
     BattleCityTheme {
-        Pixelate(modifier = Modifier.size(500.dp), sideBlockCount = MAP_BLOCK_COUNT) {
+        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = MAP_BLOCK_COUNT) {
             val bricks = mutableSetOf<BrickElement>()
             for (r in 0 until BrickElement.countInOneLine) {
                 for (c in 0 until BrickElement.countInOneLine) {

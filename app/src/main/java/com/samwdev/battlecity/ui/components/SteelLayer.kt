@@ -70,7 +70,7 @@ private fun SteelBlock(element: SteelElement) {
 @Composable
 fun SteelPreview() {
     BattleCityTheme {
-        Pixelate(modifier = Modifier.size(500.dp), sideBlockCount = 2) {
+        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = 2) {
             SteelBlock(element = SteelElement(0))
             SteelBlock(element = SteelElement(1))
             SteelBlock(element = SteelElement(2))

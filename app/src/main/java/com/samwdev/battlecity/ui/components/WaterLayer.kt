@@ -77,7 +77,7 @@ private fun WaterBlock(element: WaterElement, frame: Int) {
 @Composable
 fun WaterPreview() {
     BattleCityTheme {
-        Pixelate(modifier = Modifier.size(500.dp), sideBlockCount = 3) {
+        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = 3) {
             WaterBlock(element = WaterElement(0), frame = 0)
             WaterBlock(element = WaterElement(2), frame = 1)
         }

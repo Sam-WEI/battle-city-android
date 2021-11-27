@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.BattleState
 import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -97,12 +96,12 @@ fun BotIcon(botCount: Int) {
 @Composable
 fun HudPreview() {
     BattleCityTheme {
-        Pixelate(
+        Grid(
             modifier = Modifier
                 .width(500.dp)
                 .height(200.dp)
                 .background(Color(117, 117, 117)),
-            sideBlockCount = MAP_BLOCK_COUNT
+            gridUnitNumber = MAP_BLOCK_COUNT
         ) {
             Hud(botCount = 20, lifeCount = 3, level = 30)
         }
