@@ -75,7 +75,7 @@ fun IceBlock(element: IceElement) {
 @Composable
 fun IcePreview() {
     BattleCityTheme {
-        Pixelate(modifier = Modifier.size(500.dp), sideBlockCount = 4) {
+        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = 4) {
             IceBlock(element = IceElement(0))
             IceBlock(element = IceElement(1))
             IceBlock(element = IceElement(2))

@@ -49,7 +49,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
     CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Pixelate(modifier = Modifier
+                Grid(modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(Color(117, 117, 117))
