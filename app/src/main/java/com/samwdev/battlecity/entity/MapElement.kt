@@ -9,8 +9,8 @@ import com.samwdev.battlecity.core.*
 sealed class MapElement(open val index: Int, open val hGridUnitNum: Int) : MapElementProperties {
     val gridPosition: IntOffset
         get() {
-            val row = index / countInOneLine
-            val col = index % countInOneLine
+            val row = index / countInOneRow
+            val col = index % countInOneRow
             return IntOffset(col, row)
         }
 
@@ -21,8 +21,7 @@ sealed class MapElement(open val index: Int, open val hGridUnitNum: Int) : MapEl
         return Offset(colF.grid2mpx, rowF.grid2mpx)
     }
 
-    // todo countInOneRow
-    val countInOneLine: Int get() = hGridUnitNum * granularity
+    val countInOneRow: Int get() = hGridUnitNum * granularity
 
     val rect: Rect get() = Rect(offset = offsetInMapPixel, size = Size(elementSize, elementSize))
 }
