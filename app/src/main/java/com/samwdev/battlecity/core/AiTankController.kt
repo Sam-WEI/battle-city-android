@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.core
 
+import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.referentialEqualityPolicy
@@ -21,11 +23,13 @@ class AiTankController(
         private set
     private var lastTankPivotTopLeft: Offset? = null
     private var stuckTime: Int = 0
-
-    private val AiDecisionCooldown = 300 // todo by AI personality
     private var remainingAiDecisionCooldown = 0
 
-    private val fireChance = 0.07f // todo by AI personality
+    private val personality: AiPersonality = AiPersonality()
+
+    init {
+        logI("tank[$tankId] personality: ${personality}")
+    }
 
     override fun onTick(tick: Tick) {
         if (!tankState.isTankAlive(tankId)) {
@@ -57,32 +61,39 @@ class AiTankController(
                     stuckTime = 0
                 } else {
                     stuckTime += tick.delta
-                    if (stuckTime > 1000) {
+                    if (stuckTime > personality.stuckTimeout) {
                         findNewWaypoint(tank, mapState.accessPoints)
                         stuckTime = 0
                     }
                 }
             }
-            if (Random.nextFloat() < fireChance) {
+            if (personality.fire) {
                 bulletState.fire(tank)
             }
         } else {
             tankState.stopTank(tank.id)
             if (remainingAiDecisionCooldown > 0) {
                 remainingAiDecisionCooldown -= tick.delta
+                if (personality.fire) {
+                    bulletState.fire(tank)
+                }
                 return
             }
-            remainingAiDecisionCooldown = AiDecisionCooldown
-            val randomCmd = getNextWaypointMode()
-            when (randomCmd) {
-                is Wander -> {
+            remainingAiDecisionCooldown = personality.aiDecisionCooldown
+            when (Random.nextFloat()) {
+                in 0f..personality.attackPlayer -> {
+                    // todo
                     findNewWaypoint(tank, mapState.accessPoints)
+                    logE("   attack player!!!")
                 }
-                is AttackBase -> {
+                in personality.attackPlayer..(personality.attackPlayer + personality.attackBase) -> {
                     // todo
+                    findNewWaypoint(tank, mapState.accessPoints)
+                    logE("   attack base!!!")
                 }
-                is AttackPlayer -> {
-                    // todo
+                else -> {
+                    logE("   find waypoint!!!")
+                    findNewWaypoint(tank, mapState.accessPoints)
                 }
             }
         }
@@ -180,3 +191,29 @@ private sealed class WaypointMode
 private object AttackPlayer : WaypointMode()
 private object Wander : WaypointMode()
 private object AttackBase : WaypointMode()
+
+private class AiPersonality(difficulty: Int = 1) {
+    // fire frequency, invasion frequency
+    private val maniac: Float = (Random.nextInt(5) + difficulty) / 5f
+
+    private val aggressiveTowardsPlayer: Float = (Random.nextInt(5) + difficulty) / 5f
+
+    private val aggressiveTowardsBase: Float = (Random.nextInt(5) + difficulty) / 5f
+
+    // decision making cooldown
+    private val wisdom: Float = (Random.nextInt(5) + difficulty) / 5f
+
+    // when stuck, agile AI waits shorter before changing path
+    private val agility: Float = (Random.nextInt(5) + difficulty) / 5f
+
+    val fire: Boolean get() = Random.nextFloat() < 0.05f * maniac
+    val attackPlayer: Float get() = 0.2f * aggressiveTowardsPlayer
+    val attackBase: Float get() = 0.2f * aggressiveTowardsBase
+    val aiDecisionCooldown: Int get() = (500 / wisdom).toInt()
+    val stuckTimeout: Int get() = (500 / agility).toInt()
+
+    override fun toString(): String {
+        return "AiPersonality[maniac=$maniac,aggressiveTowardsPlayer=$aggressiveTowardsPlayer],aggressiveTowardsBase=$aggressiveTowardsBase" +
+                ",wisdom=$wisdom,agility=$agility]"
+    }
+}
