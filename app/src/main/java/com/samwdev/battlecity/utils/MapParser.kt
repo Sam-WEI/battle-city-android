@@ -52,38 +52,42 @@ object MapParser {
 
                         ((brickBits shr 12) and 0xf).takeIf { it != 0 }?.let {
                             // 4 TL cells
-                            val topLeftIndex = cellRow * cellCountInARow + cellCol
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftIndex + 0, hGridUnitNum)) } // todo use constructor fun
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftIndex + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftIndex + cellCountInARow, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftIndex + 1 + cellCountInARow, hGridUnitNum)) }
+                            val topLeftRow = cellRow
+                            val topLeftCol = cellCol
+                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
+                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
                         }
 
                         ((brickBits shr 8) and 0xf).takeIf { it != 0 }?.let {
                             // 4 TR cells
-                            val topLeftIndex = cellRow * cellCountInARow + cellCol + 2
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftIndex + 0, hGridUnitNum)) }
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftIndex + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftIndex + cellCountInARow, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftIndex + 1 + cellCountInARow, hGridUnitNum)) }
+                            val topLeftRow = cellRow
+                            val topLeftCol = cellCol + 2
+                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
+                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
                         }
 
                         ((brickBits shr 4) and 0xf).takeIf { it != 0 }?.let {
                             // 4 BL cells
-                            val topLeftIndex = (cellRow + 2) * cellCountInARow + cellCol
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftIndex + 0, hGridUnitNum)) }
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftIndex + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftIndex + cellCountInARow, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftIndex + 1 + cellCountInARow, hGridUnitNum)) }
+                            val topLeftRow = cellRow + 2
+                            val topLeftCol = cellCol
+                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
+                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
                         }
 
                         ((brickBits shr 0) and 0xf).takeIf { it != 0 }?.let {
                             // 4 BR cells
-                            val topLeftIndex = (cellRow + 2) * cellCountInARow + cellCol + 2
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftIndex + 0, hGridUnitNum)) }
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftIndex + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftIndex + cellCountInARow, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftIndex + 1 + cellCountInARow, hGridUnitNum)) }
+                            val topLeftRow = cellRow + 2
+                            val topLeftCol = cellCol + 2
+                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
+                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
+                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
                         }
 
                     }
