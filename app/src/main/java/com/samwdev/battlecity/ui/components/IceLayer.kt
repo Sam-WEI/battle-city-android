@@ -75,11 +75,11 @@ fun IceBlock(element: IceElement) {
 @Composable
 fun IcePreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = 4) {
-            IceBlock(element = IceElement(0))
-            IceBlock(element = IceElement(1))
-            IceBlock(element = IceElement(2))
-            IceBlock(element = IceElement(2, 2))
+        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 3) {
+            IceBlock(element = IceElement(0, hGridUnitNum = 4))
+            IceBlock(element = IceElement(1, hGridUnitNum = 4))
+            IceBlock(element = IceElement(2, hGridUnitNum = 4))
+            IceBlock(element = IceElement(2, 2, hGridUnitNum = 4))
         }
     }
 }

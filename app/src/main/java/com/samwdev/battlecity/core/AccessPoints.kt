@@ -6,7 +6,6 @@ import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.WaterElement
 import kotlin.random.Random
 
-private const val AccessPointsSize = MAP_BLOCK_COUNT * 2
 private const val ValueUninitialized = 0
 private const val ValueAccessible = 1
 private const val ValueObstacleSteel = -10000
@@ -16,14 +15,20 @@ private const val ValueNeighborObstacle = -1
 
 typealias AccessPoints = Array<Array<Int>>
 
-fun emptyAccessPoints() = Array(AccessPointsSize) { Array(AccessPointsSize) { ValueUninitialized } }
+fun emptyAccessPoints(hGridUnitNum: Int, vGridUnitNum: Int) =
+    Array(vGridUnitNum * 2) { Array(hGridUnitNum * 2) { ValueUninitialized } }
+
+val AccessPoints.hSubGridUnitNum: Int get() = this[0].size
+val AccessPoints.vSubGridUnitNum: Int get() = size
+
+val AccessPoints.bottomRight: SubGrid get() = SubGrid(vSubGridUnitNum - 1, hSubGridUnitNum - 1)
 
 /** Return an updated copy */
 fun AccessPoints.updated(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
-    spreadFrom: SubGrid = SubGrid(AccessPointsSize - 1, AccessPointsSize - 1),
+    spreadFrom: SubGrid = bottomRight,
     depth: Int = Int.MAX_VALUE
 ): AccessPoints {
     val updated = copyOf()
@@ -34,8 +39,8 @@ fun AccessPoints.updated(
 fun AccessPoints.randomAccessiblePoint(maxAttempt: Int = 5): SubGrid {
     var attempt = 0
     while (true) {
-        val row = Random.nextInt(AccessPointsSize)
-        val col = Random.nextInt(AccessPointsSize)
+        val row = Random.nextInt(vSubGridUnitNum)
+        val col = Random.nextInt(hSubGridUnitNum)
         if (this[row][col] > 0 || ++attempt >= maxAttempt) {
             return SubGrid(row, col)
         }
@@ -66,16 +71,16 @@ private fun AccessPoints.calculateInPlace(
                 continue
             }
             val value = when {
-                WaterElement.overlapsAnyElement(waterIndexSet, curr, 1, 1) -> ValueObstacleWater
-                SteelElement.overlapsAnyElement(steelIndexSet, curr, 1, 1) -> ValueObstacleSteel
-                BrickElement.overlapsAnyElement(brickIndexSet, curr, 1, 1) -> ValueObstacleBrick
+                WaterElement.overlapsAnyElement(waterIndexSet, curr, 1, 1, hGridUnitNum = hSubGridUnitNum / 2) -> ValueObstacleWater
+                SteelElement.overlapsAnyElement(steelIndexSet, curr, 1, 1, hGridUnitNum = hSubGridUnitNum / 2) -> ValueObstacleSteel
+                BrickElement.overlapsAnyElement(brickIndexSet, curr, 1, 1, hGridUnitNum = hSubGridUnitNum / 2) -> ValueObstacleBrick
                 else -> ValueAccessible
             }
             this[curr] = value
             if (value == ValueAccessible) {
                 if (
-                    curr.neighborRight.isOutOfBound
-                    || curr.neighborDown.isOutOfBound
+                    curr.neighborRight.isOutOfBound(this)
+                    || curr.neighborDown.isOutOfBound(this)
                     || this[curr.neighborDown] < ValueNeighborObstacle
                     || this[curr.neighborRight] < ValueNeighborObstacle
                     || this[curr.neighborRight.neighborDown] < ValueNeighborObstacle
@@ -96,7 +101,8 @@ inline class SubGrid internal constructor(private val packedValue: Int) {
 
     val topLeft: Offset get() = Offset(x, y)
 
-    val isOutOfBound: Boolean get() = !(subRow in 0 until AccessPointsSize && subCol in 0 until AccessPointsSize)
+    fun isOutOfBound(accessPoints: AccessPoints): Boolean =
+        !(subRow in 0 until accessPoints.vSubGridUnitNum && subCol in 0 until accessPoints.hSubGridUnitNum)
 
     val neighborUp: SubGrid get() = this - SubGrid(1, 0)
     val neighborDown: SubGrid get() = this + SubGrid(1, 0)

@@ -258,7 +258,7 @@ private fun PixelDrawScope.drawTimer() {
 @Composable
 private fun PowerUpPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = 6) {
+        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 6) {
             PowerUpEnum.values().forEachIndexed { index, powerUp ->
                 PowerUp(topLeft = Offset(0f.grid2mpx, index.toFloat().grid2mpx), powerUp)
             }

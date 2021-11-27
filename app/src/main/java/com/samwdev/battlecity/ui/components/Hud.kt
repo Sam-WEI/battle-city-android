@@ -101,7 +101,7 @@ fun HudPreview() {
                 .width(500.dp)
                 .height(200.dp)
                 .background(Color(117, 117, 117)),
-            gridUnitNumber = MAP_BLOCK_COUNT
+            gridUnitNum = MAP_BLOCK_COUNT
         ) {
             Hud(botCount = 20, lifeCount = 3, level = 30)
         }

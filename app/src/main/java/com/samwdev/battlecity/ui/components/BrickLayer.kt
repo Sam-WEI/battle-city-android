@@ -24,8 +24,8 @@ fun BrickLayer(bricks: Set<BrickElement>) {
     val drawIndex = LocalDebugConfig.current.showBrickIndex
     val gridUnitNumber = LocalGridUnitNumber.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.grid2mpx,
-        heightInMapPixel = gridUnitNumber.grid2mpx,
+        widthInMapPixel = gridUnitNumber.first.grid2mpx,
+        heightInMapPixel = gridUnitNumber.second.grid2mpx,
     ) {
         bricks.forEach { element ->
             val offset = element.offsetInMapPixel
@@ -79,11 +79,11 @@ private fun PixelDrawScope.drawBrickUnit(element: BrickElement, drawIndex: Boole
 @Composable
 fun BrickPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = MAP_BLOCK_COUNT) {
+        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 4) {
             val bricks = mutableSetOf<BrickElement>()
-            for (r in 0 until BrickElement.countInOneLine) {
-                for (c in 0 until BrickElement.countInOneLine) {
-                    bricks.add(BrickElement(r, c))
+            for (r in 0 until 32) {
+                for (c in 0 until 32) {
+                    bricks.add(BrickElement(r, c, hGridUnitNum = 4))
                 }
             }
             BrickLayer(bricks = bricks)

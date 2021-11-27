@@ -158,7 +158,7 @@ class AiTankController(
             }
         for (dir in directionAttemptPriority) {
             val nextWp = src.getNeighborInDirection(dir)
-            if (nextWp.isOutOfBound) {
+            if (nextWp.isOutOfBound(accessPoints)) {
                 continue
             }
             if (!accessPoints.isAccessible(nextWp)) {

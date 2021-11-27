@@ -14,8 +14,8 @@ fun AccessPointLayer(mapState: MapState) {
     val points = mapState.accessPoints
     val gridUnitNumber = LocalGridUnitNumber.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.grid2mpx,
-        heightInMapPixel = gridUnitNumber.grid2mpx,
+        widthInMapPixel = gridUnitNumber.first.grid2mpx,
+        heightInMapPixel = gridUnitNumber.second.grid2mpx,
     ) {
         for ((ri, row) in points.withIndex()) {
             for ((ci, value) in row.withIndex()) {

@@ -237,7 +237,7 @@ class TankState(
     }
 
     private fun isTankFullOnIce(tank: Tank): Boolean {
-        val iceIndices = IceElement.getIndicesOverlappingRect(tank.pivotBox)
+        val iceIndices = IceElement.getIndicesOverlappingRect(tank.pivotBox, mapState.hGridUnitNum)
         val allIceIndices = mapState.iceIndexSet
         return iceIndices.all { it in allIceIndices }
     }

@@ -140,7 +140,7 @@ private fun TankPreview() {
         CompositionLocalProvider(LocalDebugConfig provides DebugConfig(showPivotBox = true)) {
             Grid(modifier = Modifier
                 .size(500.dp)
-                .background(Color.DarkGray), gridUnitNumber = 8) {
+                .background(Color.DarkGray), gridUnitNum = 8) {
                 for (i in 0 until 7) {
                     val x = 3f + 0.2f * i
                     val y = i.toFloat()

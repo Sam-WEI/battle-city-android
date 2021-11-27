@@ -112,9 +112,9 @@ private fun TreeBlock(element: TreeElement) {
 @Composable
 fun TreePreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = 2) {
-            TreeBlock(element = TreeElement(0))
-            TreeBlock(element = TreeElement(1))
+        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 2) {
+            TreeBlock(element = TreeElement(0, hGridUnitNum = 2))
+            TreeBlock(element = TreeElement(1, hGridUnitNum = 2))
         }
     }
 }

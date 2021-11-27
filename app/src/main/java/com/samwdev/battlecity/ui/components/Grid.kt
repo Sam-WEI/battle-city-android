@@ -16,16 +16,18 @@ import com.samwdev.battlecity.core.grid2mpx
 @Composable
 fun Grid(
     modifier: Modifier,
-    gridUnitNumber: Int = MAP_BLOCK_COUNT,
+    gridUnitNum: Int = MAP_BLOCK_COUNT,
+    hGridUnitNum: Int = gridUnitNum,
+    vGridUnitNum: Int = gridUnitNum,
     content: @Composable BoxScope.() -> Unit,
 ) {
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapPixelInDp = remember(maxWidth) { maxWidth / (gridUnitNumber.grid2mpx) }
+        val mapPixelInDp = remember(maxWidth) { maxWidth / (gridUnitNum.grid2mpx) }
         CompositionLocalProvider(
             LocalMapPixelDp provides mapPixelInDp,
-            LocalGridUnitNumber provides gridUnitNumber
+            LocalGridUnitNumber provides (hGridUnitNum to vGridUnitNum)
         ) {
             content()
         }
@@ -45,6 +47,6 @@ val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
 /**
  * Provides dp size for one MapPixel
  */
-val LocalGridUnitNumber = staticCompositionLocalOf<Int> {
+val LocalGridUnitNumber = staticCompositionLocalOf<Pair<Int, Int>> {
     error("Not in Map composable or its child composable.")
 }

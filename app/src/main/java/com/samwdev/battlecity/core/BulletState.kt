@@ -124,7 +124,7 @@ class BulletState(
             val impactArea = bullet.getImpactAreaIfHitAt(firstCollision.hitPoint)
 
             // bricks and steels can be destroyed by bullet explosion, so check them regardless of being directly hit
-            val brickIndices = BrickElement.getIndicesOverlappingRect(impactArea, bullet.direction)
+            val brickIndices = BrickElement.getIndicesOverlappingRect(impactArea, mapState.hGridUnitNum, bullet.direction)
             val hitAnyBricks = brickIndices.anyRealElements(mapState.bricks)
             if (hitAnyBricks) {
                 if (bullet.side == TankSide.Player) {
@@ -132,7 +132,7 @@ class BulletState(
                 }
                 mapState.destroyBricksIndex(brickIndices.toSet())
             }
-            val steelIndices = SteelElement.getIndicesOverlappingRect(impactArea, bullet.direction)
+            val steelIndices = SteelElement.getIndicesOverlappingRect(impactArea, mapState.hGridUnitNum, bullet.direction)
             val hitAnySteels = steelIndices.anyRealElements(mapState.steels)
             if (hitAnySteels) {
                 if (bullet.side == TankSide.Player) {

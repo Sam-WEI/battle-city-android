@@ -70,11 +70,11 @@ private fun SteelBlock(element: SteelElement) {
 @Composable
 fun SteelPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNumber = 2) {
-            SteelBlock(element = SteelElement(0))
-            SteelBlock(element = SteelElement(1))
-            SteelBlock(element = SteelElement(2))
-            SteelBlock(element = SteelElement(3))
+        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 2) {
+            SteelBlock(element = SteelElement(0, hGridUnitNum = 2))
+            SteelBlock(element = SteelElement(1, hGridUnitNum = 2))
+            SteelBlock(element = SteelElement(2, hGridUnitNum = 2))
+            SteelBlock(element = SteelElement(3, hGridUnitNum = 2))
         }
     }
 }
