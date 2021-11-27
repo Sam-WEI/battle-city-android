@@ -6,7 +6,6 @@ import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.WaterElement
 import kotlin.random.Random
 
-private const val AccessPointsSizeInternal = MAP_BLOCK_COUNT * 2
 private const val AccessPointsSize = MAP_BLOCK_COUNT * 2
 private const val ValueUninitialized = 0
 private const val ValueAccessible = 1
@@ -17,7 +16,7 @@ private const val ValueNeighborObstacle = -1
 
 typealias AccessPoints = Array<Array<Int>>
 
-fun emptyAccessPoints() = Array(AccessPointsSizeInternal) { Array(AccessPointsSizeInternal) { ValueUninitialized } }
+fun emptyAccessPoints() = Array(AccessPointsSize) { Array(AccessPointsSize) { ValueUninitialized } }
 
 /** Return an updated copy */
 fun AccessPoints.updated(
