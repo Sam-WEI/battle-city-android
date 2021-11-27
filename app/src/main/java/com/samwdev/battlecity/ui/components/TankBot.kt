@@ -217,7 +217,7 @@ fun PixelDrawScope.drawBotTankLevel4(treadPattern: Int, palette: TankColorPalett
 @Composable
 private fun BotTankPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier
+        Pixelate(modifier = Modifier
             .size(500.dp)
             .background(Color.DarkGray), sideBlockCount = 4
         ) {

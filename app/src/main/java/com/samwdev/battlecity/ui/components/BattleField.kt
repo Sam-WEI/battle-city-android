@@ -24,7 +24,7 @@ fun BattleField(
     modifier: Modifier = Modifier,
 ) {
     TickAware(tickState = battleState.tickState) {
-        Map(modifier = modifier
+        Pixelate(modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
             .background(Color.Black)
@@ -65,7 +65,7 @@ fun BattleField(
 }
 
 @Composable
-fun Map(
+fun Pixelate(
     modifier: Modifier,
     sideBlockCount: Int = MAP_BLOCK_COUNT,
     content: @Composable BoxScope.() -> Unit,
