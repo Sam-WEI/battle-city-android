@@ -138,7 +138,7 @@ fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalett
 private fun TankPreview() {
     BattleCityTheme {
         CompositionLocalProvider(LocalDebugConfig provides DebugConfig(showPivotBox = true)) {
-            Map(modifier = Modifier
+            Pixelate(modifier = Modifier
                 .size(500.dp)
                 .background(Color.DarkGray), sideBlockCount = 8) {
                 for (i in 0 until 7) {

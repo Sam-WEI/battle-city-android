@@ -112,7 +112,7 @@ private fun TreeBlock(element: TreeElement) {
 @Composable
 fun TreePreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp), sideBlockCount = 2) {
+        Pixelate(modifier = Modifier.size(500.dp), sideBlockCount = 2) {
             TreeBlock(element = TreeElement(0))
             TreeBlock(element = TreeElement(1))
         }

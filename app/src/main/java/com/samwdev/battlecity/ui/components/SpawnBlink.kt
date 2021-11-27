@@ -71,7 +71,7 @@ private fun PixelDrawScope.spawnBlink4() {
 @Composable
 fun SpawnBlinkPreview() {
     BattleCityTheme {
-        Map(
+        Pixelate(
             modifier = Modifier.size(500.dp),
             sideBlockCount = 4,
         ) {

@@ -311,7 +311,7 @@ fun PixelDrawScope.drawPlayerTankLevel4(treadPattern: Int, palette: TankColorPal
 @Composable
 private fun PlayerTankPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
+        Pixelate(modifier = Modifier.size(500.dp), sideBlockCount = 8) {
             TankLevel.values().forEachIndexed { index, tankLevel ->
                 TankTreadsPreview(
                     tank = Tank(

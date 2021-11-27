@@ -64,7 +64,7 @@ private fun PixelDrawScope.drawExplosionPattern(pattern: ExplosionUiPattern) {
 @Composable
 fun ExplosionPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(500.dp), sideBlockCount = 10) {
+        Pixelate(modifier = Modifier.size(500.dp), sideBlockCount = 10) {
             repeat(5) { i ->
                 ExplosionFrame(
                     center = Offset(5f.grid2mpx, (i * 2 + 1).grid2mpx),

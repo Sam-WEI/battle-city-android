@@ -60,7 +60,7 @@ private fun PixelDrawScope.drawShieldPetal(frame: Int) {
 @Composable
 private fun TankShieldPreview() {
     BattleCityTheme {
-        Map(modifier = Modifier.size(200.dp), sideBlockCount = 2) {
+        Pixelate(modifier = Modifier.size(200.dp), sideBlockCount = 2) {
             TankShield(Offset(0f.grid2mpx, 0f.grid2mpx), 0)
             TankShield(Offset(0f.grid2mpx, 1f.grid2mpx), 1)
         }

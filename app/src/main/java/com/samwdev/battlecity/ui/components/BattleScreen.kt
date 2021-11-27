@@ -49,12 +49,20 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
     CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth()) {
+                Pixelate(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(Color(117, 117, 117))
+                ) {
+                    Hud(battleState = battleState)
+                }
                 BattleField(
                     modifier = Modifier.fillMaxWidth(),
                     battleState = battleState,
                 )
                 Box(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .background(MaterialTheme.colors.background)
                 ) {
                     HandheldController(
