@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -31,13 +30,13 @@ fun BrickLayer(bricks: Set<BrickElement>) {
             val offset = element.offsetInMapPixel
             translate(offset.x, offset.y) {
                 this as PixelDrawScope
-                drawBrickUnit(element, drawIndex)
+                drawBrickElement(element, drawIndex)
             }
         }
     }
 }
 
-private fun PixelDrawScope.drawBrickUnit(element: BrickElement, drawIndex: Boolean) {
+private fun PixelDrawScope.drawBrickElement(element: BrickElement, drawIndex: Boolean) {
     drawRect(
         color = brickColorGray,
         size = Size(BrickElement.elementSize, BrickElement.elementSize)
