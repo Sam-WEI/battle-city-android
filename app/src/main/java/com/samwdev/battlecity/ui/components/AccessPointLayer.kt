@@ -3,7 +3,6 @@ package com.samwdev.battlecity.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.MapState
 import com.samwdev.battlecity.core.grid2mpx
 
@@ -13,9 +12,10 @@ private val ColorRed = Color(0xffff0000)
 @Composable
 fun AccessPointLayer(mapState: MapState) {
     val points = mapState.accessPoints
+    val gridUnitNumber = LocalGridUnitNumber.current
     PixelCanvas(
-        widthInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
-        heightInMapPixel = MAP_BLOCK_COUNT.grid2mpx,
+        widthInMapPixel = gridUnitNumber.grid2mpx,
+        heightInMapPixel = gridUnitNumber.grid2mpx,
     ) {
         for ((ri, row) in points.withIndex()) {
             for ((ci, value) in row.withIndex()) {

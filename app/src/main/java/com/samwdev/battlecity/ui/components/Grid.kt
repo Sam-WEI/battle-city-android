@@ -23,7 +23,10 @@ fun Grid(
         modifier = modifier,
     ) {
         val mapPixelInDp = remember(maxWidth) { maxWidth / (gridUnitNumber.grid2mpx) }
-        CompositionLocalProvider(LocalMapPixelDp provides mapPixelInDp) {
+        CompositionLocalProvider(
+            LocalMapPixelDp provides mapPixelInDp,
+            LocalGridUnitNumber provides gridUnitNumber
+        ) {
             content()
         }
     }
@@ -36,5 +39,12 @@ val MapPixel.mpx2dp: Dp @Composable get() = LocalMapPixelDp.current * this
  * Provides dp size for one MapPixel
  */
 val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
+    error("Not in Map composable or its child composable.")
+}
+
+/**
+ * Provides dp size for one MapPixel
+ */
+val LocalGridUnitNumber = staticCompositionLocalOf<Int> {
     error("Not in Map composable or its child composable.")
 }
