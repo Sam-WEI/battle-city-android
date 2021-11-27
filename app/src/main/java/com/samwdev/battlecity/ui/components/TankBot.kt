@@ -219,7 +219,7 @@ private fun BotTankPreview() {
     BattleCityTheme {
         Grid(modifier = Modifier
             .size(500.dp)
-            .background(Color.DarkGray), gridUnitNumber = 4
+            .background(Color.DarkGray), gridUnitNum = 4
         ) {
             TankTreadsPreview(tank = Tank(
                 id = 0,

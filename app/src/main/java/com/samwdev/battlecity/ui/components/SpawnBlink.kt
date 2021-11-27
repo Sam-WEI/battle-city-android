@@ -73,7 +73,7 @@ fun SpawnBlinkPreview() {
     BattleCityTheme {
         Grid(
             modifier = Modifier.size(500.dp),
-            gridUnitNumber = 4,
+            gridUnitNum = 4,
         ) {
             for (i in 0..3) {
                 SpawnBlinkIndex(index = i, topLeft = Offset(0f, i.toFloat().grid2mpx))

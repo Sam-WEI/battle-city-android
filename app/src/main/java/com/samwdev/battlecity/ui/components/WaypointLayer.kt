@@ -1,15 +1,12 @@
 package com.samwdev.battlecity.ui.components
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import com.samwdev.battlecity.core.BotState
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.SubGrid
 import com.samwdev.battlecity.core.grid2mpx
-import com.samwdev.battlecity.utils.logW
 
 private val ColorList = listOf(
     Color(0xFF00ffff),
@@ -27,8 +24,8 @@ fun WaypointLayer(botState: BotState) {
     val waypointsList = botState.bots.values.map { it.currentWaypoint }
     val gridUnitNumber = LocalGridUnitNumber.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.grid2mpx,
-        heightInMapPixel = gridUnitNumber.grid2mpx,
+        widthInMapPixel = gridUnitNumber.first.grid2mpx,
+        heightInMapPixel = gridUnitNumber.second.grid2mpx,
     ) {
         waypointsList.forEachIndexed { i, waypoints ->
             val color = ColorList[i % ColorList.size]
