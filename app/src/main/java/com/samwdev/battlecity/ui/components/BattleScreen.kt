@@ -54,7 +54,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
                     .wrapContentHeight()
                     .background(Color(117, 117, 117))
                 ) {
-                    Hud(botCount = 20, lifeCount = 3, 29)
+                    Hud(botCount = 35, lifeCount = 3, 29)
                 }
                 BattleField(
                     modifier = Modifier.fillMaxWidth(),
