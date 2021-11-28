@@ -2,19 +2,19 @@
   "name": "31",
   "difficulty": 2,
   "map": [
-    "X  X  X  R  X  X  X  X  R  X  X  X  X  ",
-    "R  R  X  R  X  R  R  R  R  X  R  R  R  ",
-    "F  F  Bf X  X  Bf X  X  R  X  R  F  R  ",
-    "F  R  R  R  R  X  Tf X  X  Bf F  F  F  ",
-    "F  F  X  R  X  X  R  X  R  R  R  R  F  ",
-    "R  R  X  R  X  R  R  X  X  R  X  X  X  ",
-    "X  X  Bf F  Bf X  Bf F  X  R  X  X  R  ",
-    "X  R  R  F  R  R  R  R  X  F  Bf X  R  ",
-    "Bf X  X  Bf X  X  R  X  F  F  R  X  R  ",
-    "R  R  X  R  R  X  R  Bf R  R  R  X  X  ",
-    "X  X  Bf X  F  F  X  X  F  R  X  X  R  ",
-    "X  R  R  R  F  B8 Bc B4 X  R  X  R  R  ",
-    "X  R  X  X  X  Ba E  B5 X  X  X  X  X  "
+    "O  O  O  W  O  O  O  O  W  O  O  O  O  ",
+    "W  W  O  W  O  W  W  W  W  O  W  W  W  ",
+    "T  T  Bf O  O  Bf O  O  W  O  W  T  W  ",
+    "T  W  W  W  W  O  Sf O  O  Bf T  T  T  ",
+    "T  T  O  W  O  O  W  O  W  W  W  W  T  ",
+    "W  W  O  W  O  W  W  O  O  W  O  O  O  ",
+    "O  O  Bf T  Bf O  Bf T  O  W  O  O  W  ",
+    "O  W  W  T  W  W  W  W  O  T  Bf O  W  ",
+    "Bf O  O  Bf O  O  W  O  T  T  W  O  W  ",
+    "W  W  O  W  W  O  W  Bf W  W  W  O  O  ",
+    "O  O  Bf O  T  T  O  O  T  W  O  O  W  ",
+    "O  W  W  W  T  B8 Bc B4 O  W  O  W  W  ",
+    "O  W  O  O  O  Ba E  B5 O  O  O  O  O  "
   ],
   "bots": ["L3x3", "L2x8", "L4x6", "L3x3"]
 }

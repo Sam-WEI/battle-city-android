@@ -2,19 +2,19 @@
   "name": "23",
   "difficulty": 2,
   "map": [
-    "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  X  X  X  X  Tf Tf X  X  X  X  X  X  ",
-    "X  X  X  X  X  X  Tf X  X  X  X  X  X  ",
-    "X  Tf Tf F  F  Bf Tf Bf F  F  Tf Tf X  ",
-    "X  X  X  Tf F  F  Tf F  F  Tf X  X  X  ",
-    "F  X  X  X  Tf F  F  F  Tf X  X  X  F  ",
-    "Tf F  X  X  X  F  F  F  X  X  X  F  Tf ",
-    "F  X  X  X  Tc T3 F  T3 Tc X  X  X  F  ",
-    "X  X  X  X  Tf X  Tc X  Tf X  X  X  X  ",
-    "X  X  X  Tf X  X  Tf X  X  Tf X  X  X  ",
-    "X  X  X  X  X  X  X  X  X  X  X  X  X  ",
-    "X  X  X  X  X  B8 Bc B4 X  X  X  X  X  ",
-    "X  X  Tf X  X  Ba E  B5 X  X  Tf X  X  "
+    "O  O  O  O  O  O  O  O  O  O  O  O  O  ",
+    "O  O  O  O  O  Sf Sf O  O  O  O  O  O  ",
+    "O  O  O  O  O  O  Sf O  O  O  O  O  O  ",
+    "O  Sf Sf T  T  Bf Sf Bf T  T  Sf Sf O  ",
+    "O  O  O  Sf T  T  Sf T  T  Sf O  O  O  ",
+    "T  O  O  O  Sf T  T  T  Sf O  O  O  T  ",
+    "Sf T  O  O  O  T  T  T  O  O  O  T  Sf ",
+    "T  O  O  O  Sc S3 T  S3 Sc O  O  O  T  ",
+    "O  O  O  O  Sf O  Sc O  Sf O  O  O  O  ",
+    "O  O  O  Sf O  O  Sf O  O  Sf O  O  O  ",
+    "O  O  O  O  O  O  O  O  O  O  O  O  O  ",
+    "O  O  O  O  O  B8 Bc B4 O  O  O  O  O  ",
+    "O  O  Sf O  O  Ba E  B5 O  O  Sf O  O  "
   ],
   "bots": ["L4x6", "L3x4", "L2x10"]
 }

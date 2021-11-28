@@ -2,19 +2,19 @@
   "name": "17",
   "difficulty": 2,
   "map": [
-    "X  X  X  X  Bc X  X  X  X  X  Bc X  X  ",
-    "X  Bf X  Bf Bf X  X  S  S  S  Bf Bf X  ",
-    "X  Bf X  X  Bf X  Tf S  S  S  S  S  X  ",
-    "S  S  S  T5 Bf X  X  Bf S  S  S  S  X  ",
-    "S  S  S  S  S  S  Bf Bf Ba B5 X  X  X  ",
-    "X  X  Ta S  S  S  S  Bf Ba B5 X  T3 T3 ",
-    "Bf Bf Bf Bf S  S  S  S  S  S  S  Bf Bf ",
-    "X  X  X  Bf Bf S  S  S  S  T5 X  X  X  ",
-    "X  Bf Bf Bf X  S  S  S  Bf Bf X  Bf X  ",
-    "S  S  S  Bf S  X  X  X  X  Bf X  Bf X  ",
-    "S  S  S  S  S  T3 X  T3 X  X  Bc Bf X  ",
-    "Bf S  S  S  S  B8 Bc B4 X  Bf X  X  X  ",
-    "Bf Bf T5 X  X  Ba E  B5 X  Bf X  Bf X  "
+    "O  O  O  O  Bc O  O  O  O  O  Bc O  O  ",
+    "O  Bf O  Bf Bf O  O  I  I  I  Bf Bf O  ",
+    "O  Bf O  O  Bf O  Sf I  I  I  I  I  O  ",
+    "I  I  I  S5 Bf O  O  Bf I  I  I  I  O  ",
+    "I  I  I  I  I  I  Bf Bf Ba B5 O  O  O  ",
+    "O  O  Sa I  I  I  I  Bf Ba B5 O  S3 S3 ",
+    "Bf Bf Bf Bf I  I  I  I  I  I  I  Bf Bf ",
+    "O  O  O  Bf Bf I  I  I  I  S5 O  O  O  ",
+    "O  Bf Bf Bf O  I  I  I  Bf Bf O  Bf O  ",
+    "I  I  I  Bf I  O  O  O  O  Bf O  Bf O  ",
+    "I  I  I  I  I  S3 O  S3 O  O  Bc Bf O  ",
+    "Bf I  I  I  I  B8 Bc B4 O  Bf O  O  O  ",
+    "Bf Bf S5 O  O  Ba E  B5 O  Bf O  Bf O  "
   ],
   "bots": ["L4x2", "L2x2", "L4x8", "L1x8"]
 }
