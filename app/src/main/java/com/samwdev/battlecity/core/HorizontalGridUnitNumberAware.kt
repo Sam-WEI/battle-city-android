@@ -14,3 +14,9 @@ interface HorizontalGridUnitNumberAware {
     fun MapElementHelper.getIndicesOverlappingRect(rect: Rect, moveDirection: Direction = Direction.Down): List<Int> =
         getIndicesOverlappingRect(rect, hGridUnitNum, moveDirection)
 }
+
+interface VerticalGridUnitNumberAware {
+    val vGridUnitNum: Int
+}
+
+interface GridUnitNumberAware : HorizontalGridUnitNumberAware, VerticalGridUnitNumberAware

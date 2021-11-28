@@ -24,7 +24,7 @@ fun Grid(
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapPixelInDp = remember(maxWidth) { maxWidth / (gridUnitNum.grid2mpx) }
+        val mapPixelInDp = remember(maxWidth) { maxWidth / (hGridUnitNum.grid2mpx) }
         CompositionLocalProvider(
             LocalMapPixelDp provides mapPixelInDp,
             LocalGridUnitNumber provides (hGridUnitNum to vGridUnitNum)

@@ -16,9 +16,11 @@ fun BattleField(
 ) {
     TickAware(tickState = battleState.tickState) {
         Grid(modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-            .background(Color.Black)
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .background(Color.Black),
+            hGridUnitNum = battleState.mapState.hGridUnitNum,
+            vGridUnitNum = battleState.mapState.vGridUnitNum,
         ) {
             BrickLayer(battleState.mapState.bricks)
             SteelLayer(battleState.mapState.steels)

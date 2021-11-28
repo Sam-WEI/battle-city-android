@@ -5,6 +5,8 @@ data class StageConfigJson(
     val difficulty: Int,
     val map: List<String>,
     val bots: List<String>,
+    val width: Int?, // todo non-optional, better name
+    val height: Int?,
 )
 
 data class StageConfig(
