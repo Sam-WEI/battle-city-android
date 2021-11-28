@@ -20,6 +20,7 @@ class BotState(
     var maxBot: Int = 1
     var bots: Map<TankId, AiTankController> by mutableStateOf(mapOf())
 
+    private var botSpawnedSoFar = 0
     private val spawnDelay: Int get() = 1000 // todo based on map difficulty, 3000, 2000, 1000
     private var remainingSpawnDelay: Int = 0
 
@@ -27,8 +28,9 @@ class BotState(
         if (bots.size < maxBot) {
             remainingSpawnDelay -= tick.delta // only count down when short of bots
             if (remainingSpawnDelay < 0) {
-                spawnBot()
-                remainingSpawnDelay = spawnDelay
+                if (spawnBot()) {
+                    remainingSpawnDelay = spawnDelay
+                }
             }
         } else if (bots.size > maxBot) {
             bots.entries.take(bots.size - maxBot).forEach {
@@ -56,6 +58,7 @@ class BotState(
     private fun spawnBot(): Boolean {
         // todo tank level
         val botTank = tankState.spawnBot(TankLevel.values().random(), carryPowerUp()) ?: return false
+        botSpawnedSoFar++
         bots = bots.toMutableMap().apply {
             put(botTank.id, AiTankController(
                 tankId = botTank.id,
@@ -68,6 +71,6 @@ class BotState(
     }
 
     private fun carryPowerUp(): Boolean {
-        return Random.nextFloat() < 5
+        return (botSpawnedSoFar + 1) % 5 == 0
     }
 }
