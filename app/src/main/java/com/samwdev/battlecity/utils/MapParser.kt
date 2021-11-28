@@ -25,8 +25,9 @@ object MapParser {
         val ices = mutableSetOf<IceElement>()
         val waters = mutableSetOf<WaterElement>()
         var eagle: EagleElement? = null
-        val hGridUnitNum = configJson.width ?: MAP_BLOCK_COUNT // todo get from config json
-        val vGridUnitNum = configJson.height ?: MAP_BLOCK_COUNT // todo get from config json
+        val (width, height) = configJson.size.split("x")
+        val hGridUnitNum = width.toInt()
+        val vGridUnitNum = height.toInt()
 
         configJson.map.forEachIndexed { r, row ->
             row.split(Regex("\\s+")).filter { it.isNotEmpty() }.forEachIndexed { c, block ->

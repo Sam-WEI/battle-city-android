@@ -29,7 +29,6 @@
     "B5 B5 B5 O  O  B8 Bc B4 O  O  Ba Ba Ba O  Sf Bf B3 Sf B8 Bc B4 Bf Bf Sf Sf Sf ",
     "S5 S5 S5 Sa O  Ba E  B5 O  S5 Sa Sa Sa O  O  O  O  O  Ba O  B5 O  O  O  O  O  "
   ],
-  "width": "26",
-  "height": "26",
+  "size": "26x26",
   "bots": ["L2x4", "L4x8", "L1x4", "L3x4"]
 }
