@@ -48,7 +48,6 @@ class PowerUpState(
     }
 
     private fun randomPowerUp(): PowerUpEnum {
-        return PowerUpEnum.Timer
         return PowerUpEnum.values().random()
     }
 }
