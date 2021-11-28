@@ -108,8 +108,9 @@ class TankState(
         eventQueue.push(tankEvent)
     }
 
-    fun spawnBot(level: TankLevel = TankLevel.Level1, hasPowerUp: Boolean = false): Tank {
-        val loc = mapState.botSpawnPositions.random()
+    /** May fail due to tank congestion */
+    fun spawnBot(level: TankLevel = TankLevel.Level1, hasPowerUp: Boolean = false): Tank? {
+        val loc = getAvailableSpawnSpot() ?: return null
         return Tank(
             id = idGen.incrementAndGet(),
             x = loc.x,
@@ -121,6 +122,13 @@ class TankState(
             hasPowerUp = hasPowerUp,
             timeToSpawn = 1500,
         ).also { addTank(idGen.get(), it) }
+    }
+
+    private fun getAvailableSpawnSpot(): Offset? {
+        val allTanksRect = tanks.values.map { Rect(it.offset, Size(1.grid2mpx, 1.grid2mpx)) }
+        val allSpawnRect = mapState.botSpawnPositions.map { Rect(it, Size(1.grid2mpx, 1.grid2mpx)) }.shuffled()
+        // find a spawn spot that doesn't collide with any tanks
+        return allSpawnRect.find { spawn -> allTanksRect.none { tank -> tank.overlaps(spawn) } }?.topLeft
     }
 
     fun killTank(tankId: TankId) {
