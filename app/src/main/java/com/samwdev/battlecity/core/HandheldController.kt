@@ -12,13 +12,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.utils.VibratorHelper
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.*
@@ -38,26 +38,12 @@ class HandheldControllerState {
     var firePressed by mutableStateOf(false)
         private set
 
-    fun setSteerInput(offset: Offset) {
-        this.offset = offset
-        direction = getDirection(offset)
+    fun setSteerInput(direction: Direction?) {
+        this.direction = direction
     }
 
     fun setFireInput(pressed: Boolean) {
         firePressed = pressed
-    }
-}
-
-private fun getDirection(steerOffset: Offset): Direction? {
-    val (x, y) = steerOffset
-    val angle = Math.toDegrees(atan2(y, x).toDouble())
-    return when {
-        x == 0f && y == 0f -> null
-        angle <= -45 && angle > -135 -> Direction.Up
-        angle <= -135 || angle > 135 -> Direction.Left
-        angle <= 135 && angle > 45 -> Direction.Down
-        angle <= 45 && angle > 0 || angle > -45 && angle <= 0 -> Direction.Right
-        else -> null
     }
 }
 
@@ -67,9 +53,13 @@ private val joyStickBgColor = listOf(Color.Gray, Color.LightGray)
 fun HandheldController(
     modifier: Modifier = Modifier,
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
-    onSteer: (Offset) -> Unit = { handheldControllerState.setSteerInput(it) },
+    onSteer: (Direction?) -> Unit = { handheldControllerState.setSteerInput(it) },
     onFire: (Boolean) -> Unit = { handheldControllerState.setFireInput(it) },
 ) {
+    val context = LocalContext.current.applicationContext
+    val vibrator = remember(context) { VibratorHelper(context) }
+    var lastDirection: Direction? by remember { mutableStateOf(null) }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,11 +67,22 @@ fun HandheldController(
     ) {
         JoyStick(
             modifier = Modifier.size(100.dp),
-            onChange = onSteer
+            onChange = {
+                onSteer(it)
+                if (it != null && lastDirection != it) {
+                    vibrator.vibrateJoyStick()
+                }
+                lastDirection = it
+            }
         )
         FireButton(
             modifier = Modifier.size(60.dp),
-            onPress = onFire,
+            onPress = { fire ->
+                onFire(fire)
+                if (fire) {
+                    vibrator.vibrateFire()
+                }
+            },
         )
     }
 }
@@ -90,7 +91,7 @@ fun HandheldController(
 fun JoyStick(
     modifier: Modifier = Modifier,
     idleRadiusFraction: Float = 0.15f,
-    onChange: (Offset) -> Unit,
+    onChange: (Direction?) -> Unit,
 ) {
     val joystickPosition = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     // the BoxWithConstraints provides maxWidth/maxHeight for calculating the joystick's center.
@@ -134,9 +135,9 @@ fun JoyStick(
                 Offset(sin(angle) * allowedRadius, cos(angle) * allowedRadius) + center
             }
             if (Offset(x, y).getDistanceSquared() < (idleRadiusFraction * side).pow(2)) {
-                onChange(Offset(0f, 0f))
+                onChange(Offset(0f, 0f).steerDirection)
             } else {
-                onChange(Offset(x / allowedRadius, y / allowedRadius))
+                onChange(Offset(x / allowedRadius, y / allowedRadius).steerDirection)
             }
 
             drawCircle(
@@ -151,7 +152,19 @@ fun JoyStick(
             )
         }
     }
+}
 
+private val Offset.steerDirection: Direction? get() {
+    val (x, y) = this
+    val angle = Math.toDegrees(atan2(y, x).toDouble())
+    return when {
+        x == 0f && y == 0f -> null
+        angle <= -45 && angle > -135 -> Direction.Up
+        angle <= -135 || angle > 135 -> Direction.Left
+        angle <= 135 && angle > 45 -> Direction.Down
+        angle <= 45 && angle > 0 || angle > -45 && angle <= 0 -> Direction.Right
+        else -> null
+    }
 }
 
 @Composable
