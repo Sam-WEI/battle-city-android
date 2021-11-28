@@ -1,6 +1,8 @@
 package com.samwdev.battlecity.ui.components
 
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -8,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.entity.TreeElement
 import com.samwdev.battlecity.entity.WaterElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -19,8 +22,24 @@ fun WaterLayer(waters: Set<WaterElement>) {
         framesDef = listOf(700, 700),
         infinite = true,
     ) {
-        waters.forEach { el ->
-            WaterBlock(element = el, frame = LocalFramer.current)
+        val frame = LocalFramer.current
+        WaterLayerFrame(waters = waters, frame = frame)
+    }
+}
+
+@Composable
+fun WaterLayerFrame(waters: Set<WaterElement>, frame: Int) {
+    val gridUnitNumber = LocalGridUnitNumber.current
+    PixelCanvas(
+        widthInMapPixel = gridUnitNumber.first.grid2mpx,
+        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+    ) {
+        waters.forEach { element ->
+            val offset = element.offsetInMapPixel
+            translate(offset.x, offset.y) {
+                this as PixelDrawScope
+                drawWaterElement(frame)
+            }
         }
     }
 }
@@ -28,46 +47,40 @@ fun WaterLayer(waters: Set<WaterElement>) {
 private val colorWaterGleam = Color(172, 237, 237)
 private val colorWater = Color(58, 58, 255)
 
-@Composable
-private fun WaterBlock(element: WaterElement, frame: Int) {
-    PixelCanvas(
-        topLeftInMapPixel = element.offsetInMapPixel,
-        widthInMapPixel = WaterElement.elementSize,
-        heightInMapPixel = WaterElement.elementSize,
-    ) {
-        val partSize = TreeElement.elementSize / 2
-        repeat(4) { ith ->
-            translate(
-                left = (ith % 2).toFloat() * partSize,
-                top = (ith / 2).toFloat() * partSize
-            ) {
-                this@PixelCanvas.drawSquare(
-                    color = colorWater,
-                    topLeft = Offset(0f, 0f),
-                    side = partSize
-                )
-                if (frame == 0) {
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(5f, 0f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(0f, 2f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 3f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(4f, 3f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 4f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(5f, 4f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 6f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 7f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(6f, 7f))
-                } else {
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(7f, 0f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 1f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 2f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 3f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(6f, 3f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(7f, 4f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 5f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 6f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(4f, 6f))
-                    this@PixelCanvas.drawPixel(color = colorWaterGleam, topLeft = Offset(0f, 7f))
-                }
+private fun PixelDrawScope.drawWaterElement(frame: Int) {
+    val partSize = TreeElement.elementSize / 2
+    repeat(4) { ith ->
+        translate(
+            left = (ith % 2).toFloat() * partSize,
+            top = (ith / 2).toFloat() * partSize
+        ) {
+            this as PixelDrawScope
+            drawSquare(
+                color = colorWater,
+                topLeft = Offset(0f, 0f),
+                side = partSize
+            )
+            if (frame == 0) {
+                drawPixel(color = colorWaterGleam, topLeft = Offset(5f, 0f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(0f, 2f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 3f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(4f, 3f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 4f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(5f, 4f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 6f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 7f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(6f, 7f))
+            } else {
+                drawPixel(color = colorWaterGleam, topLeft = Offset(7f, 0f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(1f, 1f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 2f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 3f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(6f, 3f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(7f, 4f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(3f, 5f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(2f, 6f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(4f, 6f))
+                drawPixel(color = colorWaterGleam, topLeft = Offset(0f, 7f))
             }
         }
     }
@@ -75,11 +88,18 @@ private fun WaterBlock(element: WaterElement, frame: Int) {
 
 @Preview
 @Composable
-fun WaterPreview() {
+private fun WaterPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 3) {
-            WaterBlock(element = WaterElement(0, hGridUnitNum = 3), frame = 0)
-            WaterBlock(element = WaterElement(2, hGridUnitNum = 3), frame = 1)
+        val waters = setOf(
+            WaterElement.compose(0, 0),
+            WaterElement.compose(0, 1),
+            WaterElement.compose(0, 2),
+        )
+        Grid(modifier = Modifier.size(500.dp, 250.dp), gridUnitNum = 3) {
+            WaterLayerFrame(waters = waters, frame = 0)
+        }
+        Grid(modifier = Modifier.size(500.dp, 250.dp), gridUnitNum = 3) {
+            WaterLayerFrame(waters = waters, frame = 1)
         }
     }
 }

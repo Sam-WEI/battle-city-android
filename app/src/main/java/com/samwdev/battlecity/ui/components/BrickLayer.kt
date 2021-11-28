@@ -82,7 +82,7 @@ fun BrickPreview() {
             val bricks = mutableSetOf<BrickElement>()
             for (r in 0 until 32) {
                 for (c in 0 until 32) {
-                    bricks.add(BrickElement(r, c, hGridUnitNum = 4))
+                    bricks.add(BrickElement.compose(r, c))
                 }
             }
             BrickLayer(bricks = bricks)

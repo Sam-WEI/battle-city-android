@@ -78,8 +78,8 @@ private fun PixelDrawScope.drawHalfEagle() {
 fun EaglePreview() {
     BattleCityTheme {
         Grid(modifier = Modifier.size(500.dp), gridUnitNum = 3) {
-            EagleLayer(eagleElement = EagleElement(0, 1))
-            EagleLayer(eagleElement = EagleElement(1, 1, true))
+            EagleLayer(eagleElement = EagleElement.compose(0, 1))
+            EagleLayer(eagleElement = EagleElement.compose(1, 1, true))
         }
     }
 }

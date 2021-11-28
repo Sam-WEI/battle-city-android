@@ -1,10 +1,12 @@
 package com.samwdev.battlecity.entity
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
 import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.ui.components.LocalGridUnitNumber
 
 sealed class MapElement(open val index: Int, open val hGridUnitNum: Int) : MapElementProperties {
     val gridPosition: IntOffset
@@ -35,6 +37,11 @@ data class BrickElement(
     companion object : MapElementHelper(4) {
         operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
             BrickElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+
+        @Composable
+        fun compose(row: Int, col: Int): BrickElement {
+            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+        }
     }
 }
 
@@ -47,6 +54,11 @@ data class SteelElement(
         override val strength: Int = 3
         operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
             SteelElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+
+        @Composable
+        fun compose(row: Int, col: Int): SteelElement {
+            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+        }
     }
 }
 
@@ -57,6 +69,11 @@ data class TreeElement(
     companion object : MapElementHelper(1) {
         operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
             TreeElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+
+        @Composable
+        fun compose(row: Int, col: Int): TreeElement {
+            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+        }
     }
 }
 
@@ -67,6 +84,11 @@ data class WaterElement(
     companion object : MapElementHelper(1) {
         operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
             WaterElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+
+        @Composable
+        fun compose(row: Int, col: Int): WaterElement {
+            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+        }
     }
 }
 
@@ -77,6 +99,11 @@ data class IceElement(
     companion object : MapElementHelper(1) {
         operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
             IceElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+
+        @Composable
+        fun compose(row: Int, col: Int): IceElement {
+            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+        }
     }
 }
 
@@ -88,6 +115,11 @@ data class EagleElement(
     companion object : MapElementHelper(1) {
         operator fun invoke(row: Int, col: Int, hGridUnitNum: Int, destroyed: Boolean = false) =
             EagleElement(getIndex(row, col, hGridUnitNum), hGridUnitNum, destroyed)
+
+        @Composable
+        fun compose(row: Int, col: Int, destroyed: Boolean = false): EagleElement {
+            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first, destroyed = destroyed)
+        }
     }
 }
 

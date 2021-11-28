@@ -78,7 +78,7 @@ fun SteelPreview() {
             val steels = mutableSetOf<SteelElement>()
             for (r in 0 until 4) {
                 for (c in 0 until 4) {
-                    steels.add(SteelElement(r, c, hGridUnitNum = 2))
+                    steels.add(SteelElement.compose(r, c))
                 }
             }
             SteelLayer(steels = steels)
