@@ -16,5 +16,6 @@
     "Sf Bf Bf O  O  B8 Bc B4 T  O  T  T  T  ",
     "Sf Sf Bf Bf O  Ba E  B5 T  O  O  T  T  "
   ],
+  "size": "13x13",
   "bots": ["L1x16", "L2x2", "L4x2"]
 }

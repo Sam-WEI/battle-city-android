@@ -16,5 +16,6 @@
     "O  BT O  O  O  B8 BC B4 O  BT O  BT O  ",
     "O  BT O  BT O  BA EE B5 O  BT BT BT O  "
   ],
+  "size": "13x13",
   "bots": ["L4x2", "L2x4", "L1x14"]
 }
