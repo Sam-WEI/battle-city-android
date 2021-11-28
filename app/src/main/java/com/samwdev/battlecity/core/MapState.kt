@@ -33,6 +33,8 @@ class MapState(
     val playerSpawnPosition = DefaultPlayerSpawnPosition
     val botSpawnPositions = DefaultBotSpawnPositions
 
+    val mapDifficulty: Int = 1 // todo default to map config but should bump up after beating all maps
+
     override val hGridUnitNum: Int = mapElements.hGridUnitNum
     override val vGridUnitNum: Int = mapElements.vGridUnitNum
 
@@ -167,11 +169,6 @@ class MapState(
 
     fun destroyEagle() {
         eagle = eagle.copy(dead = true)
-    }
-
-    fun isGridAccessible(topLeft: Offset): Boolean {
-        // todo
-        return true
     }
 
     private fun wrapEagleWithSteels() {
