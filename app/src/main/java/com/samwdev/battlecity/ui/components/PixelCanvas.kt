@@ -12,8 +12,10 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import com.samwdev.battlecity.core.Direction
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
 import kotlin.math.max
@@ -131,3 +133,25 @@ class PixelDrawScope(private val drawScope: DrawScope) : DrawScope by drawScope 
         }
     }
 }
+
+inline fun DrawScope.drawForDirection(
+    direction: Direction,
+    pivot: Offset = Offset.Zero,
+    block: DrawScope.() -> Unit
+) = withTransform({
+    when (direction) {
+        Direction.Up -> {
+            // do nothing
+        }
+        Direction.Down -> {
+            scale(1f, -1f, pivot = pivot)
+        }
+        Direction.Left -> {
+            scale(1f, -1f, pivot = pivot)
+            rotate(direction.degreeF, pivot)
+        }
+        Direction.Right -> {
+            rotate(direction.degreeF, pivot)
+        }
+    }
+}, block)

@@ -30,9 +30,7 @@ fun BattleField(
                 Tank(tank = tank)
             }
 
-            battleState.bulletState.bullets.forEach { (_, bullet) ->
-                Bullet(bullet)
-            }
+            Bullets(bullets = battleState.bulletState.bullets.values)
 
             TreeLayer(battleState.mapState.trees)
 

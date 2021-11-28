@@ -1,6 +1,10 @@
 package com.samwdev.battlecity.core
 
 import android.os.Parcelable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -101,6 +105,7 @@ enum class Direction(val degree: Int) {
     Left(270),
     Right(90);
 
+    val degreeF: Float get() = degree.toFloat()
     val opposite: Direction get() = when (this) {
         Up -> Down
         Down -> Up
@@ -111,6 +116,17 @@ enum class Direction(val degree: Int) {
     val isHorizontal: Boolean get() = this == Left || this == Right
     fun isPerpendicularWith(other: Direction): Boolean = isVertical xor other.isVertical
     fun isOppositeTo(other: Direction): Boolean = (degree - other.degree).absoluteValue == 180
+}
+
+fun Modifier.drawForDirection(direction: Direction): Modifier {
+    return composed {
+        when (direction) {
+            Direction.Up -> this
+            Direction.Down -> this.scale(1f, -1f)
+            Direction.Left -> this.scale(1f, -1f).rotate(direction.degreeF)
+            Direction.Right -> this.rotate(direction.degreeF)
+        }
+    }
 }
 
 enum class TankSide {

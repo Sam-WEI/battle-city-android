@@ -100,14 +100,7 @@ fun Tank(tank: Tank) {
 @Composable
 fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalette) {
     PixelCanvas(
-        modifier = when (tank.facingDirection) {
-            Direction.Up -> Modifier
-            Direction.Down -> Modifier.scale(1f, -1f)
-            Direction.Left -> Modifier
-                .scale(1f, -1f)
-                .rotate(Direction.Left.degree.toFloat())
-            Direction.Right -> Modifier.rotate(Direction.Right.degree.toFloat())
-        },
+        modifier = Modifier.drawForDirection(tank.facingDirection),
         topLeftInMapPixel = Offset(tank.x, tank.y),
         widthInMapPixel = TANK_MAP_PIXEL,
         heightInMapPixel = TANK_MAP_PIXEL

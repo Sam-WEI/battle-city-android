@@ -8,7 +8,7 @@ data class DebugConfig(
     val showAccessPoints: Boolean = false,
     val showWaypoints: Boolean = false,
     val fixTickDelta: Boolean = false,
-    val tickDelta: Int = 10,
+    val tickDelta: Int = 3,
     val maxFps: Int = TickState.MAX_FPS,
     val maxBot: Int = 2,
     val friendlyFire: Boolean = false,
