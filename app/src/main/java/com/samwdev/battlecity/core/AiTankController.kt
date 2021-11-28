@@ -203,7 +203,7 @@ private class AiPersonality(difficulty: Int = 1) {
     // when stuck, agile AI waits shorter before changing path
     private val agility: Float = (Random.nextInt(5) + difficulty) / 5f
 
-    val fire: Boolean get() = Random.nextFloat() < 0.05f * maniac
+    val fire: Boolean get() = Random.nextFloat() < 0.02f * maniac // todo make fire rate independent of tick rate
     val attackPlayer: Float get() = 0.2f * aggressiveTowardsPlayer
     val attackBase: Float get() = 0.2f * aggressiveTowardsBase
     val aiDecisionCooldown: Int get() = (500 / wisdom).toInt()
