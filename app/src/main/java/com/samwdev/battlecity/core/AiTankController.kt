@@ -24,6 +24,7 @@ class AiTankController(
     private var lastTankPivotTopLeft: Offset? = null
     private var stuckTime: Int = 0
     private var remainingAiDecisionCooldown = 0
+    private var remainingFireDecisionCooldown = 0
 
     private val personality: AiPersonality = AiPersonality()
 
@@ -44,6 +45,16 @@ class AiTankController(
             tankState.stopTank(tank.id)
             return
         }
+
+        // making fire decision
+        remainingFireDecisionCooldown -= tick.delta
+        if (remainingFireDecisionCooldown <= 0) {
+            if (Random.nextFloat() < personality.fireChance) {
+                bulletState.fire(tank)
+            }
+            remainingFireDecisionCooldown = personality.fireDecisionCooldown
+        }
+
         // todo after frozen, continue prev waypoints
         if (currentWaypoint.isNotEmpty()) {
             // move along waypoints
@@ -67,16 +78,11 @@ class AiTankController(
                     }
                 }
             }
-            if (personality.fire) {
-                bulletState.fire(tank)
-            }
         } else {
+            // done with prev waypoints, finding new ones
             tankState.stopTank(tank.id)
             if (remainingAiDecisionCooldown > 0) {
                 remainingAiDecisionCooldown -= tick.delta
-                if (personality.fire) {
-                    bulletState.fire(tank)
-                }
                 return
             }
             remainingAiDecisionCooldown = personality.aiDecisionCooldown
@@ -203,14 +209,16 @@ private class AiPersonality(difficulty: Int = 1) {
     // when stuck, agile AI waits shorter before changing path
     private val agility: Float = (Random.nextInt(5) + difficulty) / 5f
 
-    val fire: Boolean get() = Random.nextFloat() < 0.02f * maniac // todo make fire rate independent of tick rate
+    val fireDecisionCooldown: Int get() = (70 / maniac).toInt()
+    val fireChance: Float get() = 0.3f * maniac
     val attackPlayer: Float get() = 0.2f * aggressiveTowardsPlayer
     val attackBase: Float get() = 0.2f * aggressiveTowardsBase
     val aiDecisionCooldown: Int get() = (500 / wisdom).toInt()
     val stuckTimeout: Int get() = (500 / agility).toInt()
 
     override fun toString(): String {
-        return "AiPersonality[maniac=$maniac,aggressiveTowardsPlayer=$aggressiveTowardsPlayer],aggressiveTowardsBase=$aggressiveTowardsBase" +
+        return "AiPersonality[maniac=$maniac,aggressiveTowardsPlayer=$aggressiveTowardsPlayer]" +
+                ",aggressiveTowardsBase=$aggressiveTowardsBase" +
                 ",wisdom=$wisdom,agility=$agility]"
     }
 }
