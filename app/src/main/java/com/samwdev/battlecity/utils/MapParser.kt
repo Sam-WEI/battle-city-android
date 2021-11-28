@@ -92,7 +92,7 @@ object MapParser {
                         }
 
                     }
-                    'T' -> {
+                    'S' -> {
                         // steel
                         val blockInfo = Integer.parseInt(block.substring(1), 16)
                         val cellRow = 2 * r
@@ -110,15 +110,15 @@ object MapParser {
                             steels.add(SteelElement(cellRow + 1, cellCol + 1, hGridUnitNum))
                         }
                     }
-                    'S' -> {
+                    'I' -> {
                         // ice
                         ices.add(IceElement(r, c, hGridUnitNum))
                     }
-                    'R' -> {
+                    'W' -> {
                         // water
                         waters.add(WaterElement(r, c, hGridUnitNum))
                     }
-                    'F' -> {
+                    'T' -> {
                         // tree
                         trees.add(TreeElement(r, c, hGridUnitNum))
                     }
