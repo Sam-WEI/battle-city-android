@@ -9,30 +9,38 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
 import com.samwdev.battlecity.core.BULLET_COLLISION_SIZE
 import com.samwdev.battlecity.core.Bullet
+import com.samwdev.battlecity.core.grid2mpx
 
 private val BulletColor = Color(0xFFADADAD)
 
 @Composable
-fun Bullet(bullet: Bullet) {
-    val oneMapPixel = 1f.mpx2dp
-    Canvas(modifier = Modifier
-        .size(BULLET_COLLISION_SIZE.mpx2dp, BULLET_COLLISION_SIZE.mpx2dp)
-        .offset(bullet.x.mpx2dp, bullet.y.mpx2dp)
-        .rotate(bullet.direction.degree.toFloat())
+fun Bullets(bullets: Collection<Bullet>) {
+    val (hGridUnitNum, vGridUnitNum) = LocalGridUnitNumber.current.first
+    PixelCanvas(
+        widthInMapPixel = hGridUnitNum.grid2mpx,
+        heightInMapPixel = vGridUnitNum.grid2mpx
     ) {
-        // bullet body
-        drawRect(
-            color = BulletColor,
-            topLeft = Offset.Zero,
-            size = size,
-        )
-        // bullet tip
-        drawRect(
-            color = BulletColor,
-            topLeft = Offset(1f * oneMapPixel.toPx(), -1f * oneMapPixel.toPx()),
-            size = Size(oneMapPixel.toPx(), oneMapPixel.toPx())
-        )
+        bullets.forEach { bullet ->
+            translate(bullet.x, bullet.y) {
+                drawForDirection(direction = bullet.direction, pivot = Offset(1f, 1f)) {
+                    this as PixelDrawScope
+                    // bullet body
+                    drawRect(
+                        color = BulletColor,
+                        topLeft = Offset(0f, 0f),
+                        size = Size(BULLET_COLLISION_SIZE, BULLET_COLLISION_SIZE),
+                    )
+                    // bullet tip
+                    drawPixel(color = BulletColor, topLeft = Offset(1f, -1f))
+                }
+            }
+        }
     }
 }
