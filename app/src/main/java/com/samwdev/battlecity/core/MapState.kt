@@ -15,7 +15,7 @@ fun rememberMapState(mapElements: MapElements): MapState {
 
 class MapState(
     mapElements: MapElements,
-) : TickListener, HorizontalGridUnitNumberAware {
+) : TickListener, GridUnitNumberAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationTimeoutDuration = 3 * 1000
@@ -34,6 +34,7 @@ class MapState(
     val botSpawnPositions = DefaultBotSpawnPositions
 
     override val hGridUnitNum: Int = mapElements.hGridUnitNum
+    override val vGridUnitNum: Int = mapElements.vGridUnitNum
 
     var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
         private set

@@ -25,7 +25,7 @@ class TankState(
     private val mapState: MapState,
     private val powerUpState: PowerUpState,
     private val explosionState: ExplosionState,
-) : TickListener, HorizontalGridUnitNumberAware by mapState {
+) : TickListener, GridUnitNumberAware by mapState {
     companion object {
         private const val ShieldDuration = 10 * 1000
         private const val FrozenDuration = 10 * 1000
@@ -282,14 +282,14 @@ class TankState(
         }
 
         // check collision against map border
-        val mapRect = Rect(offset = Offset.Zero, size = Size(MAP_BLOCK_COUNT.grid2mpx, MAP_BLOCK_COUNT.grid2mpx))
+        val mapRect = Rect(offset = Offset.Zero, size = Size(hGridUnitNum.grid2mpx, vGridUnitNum.grid2mpx))
         if (mapRect.intersect(toRect) != toRect) {
             // going out of bound
             val boundary = when (movingDirection) {
                 Direction.Up -> 0f
-                Direction.Down -> MAP_BLOCK_COUNT.grid2mpx
+                Direction.Down -> vGridUnitNum.grid2mpx
                 Direction.Left -> 0f
-                Direction.Right -> MAP_BLOCK_COUNT.grid2mpx
+                Direction.Right -> hGridUnitNum.grid2mpx
             }
             checks.add(MoveRestriction(boundary, movingDirection))
         }

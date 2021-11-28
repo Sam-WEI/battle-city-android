@@ -25,7 +25,7 @@ class BulletState(
     private val tankState: TankState,
     private val explosionState: ExplosionState,
     private val soundState: SoundState,
-) : TickListener, HorizontalGridUnitNumberAware by mapState {
+) : TickListener, GridUnitNumberAware by mapState {
     private val idGen: AtomicInteger = AtomicInteger(0)
     var friendlyFire = false
 
@@ -180,9 +180,9 @@ class BulletState(
 
     private fun checkCollisionWithBorder() {
         bullets.values.forEach { bullet ->
-            if (bullet.x <= 0 || bullet.x >= MAP_BLOCK_COUNT.grid2mpx || bullet.y <= 0 ||
-                bullet.y >= MAP_BLOCK_COUNT.grid2mpx) {
-                addBulletTrajectoryCollision(HitBorderInfo(bullet))
+            if (bullet.x <= 0 || bullet.x >= hGridUnitNum.grid2mpx || bullet.y <= 0 ||
+                bullet.y >= vGridUnitNum.grid2mpx) {
+                addBulletTrajectoryCollision(HitBorderInfo(bullet, hGridUnitNum, vGridUnitNum))
             }
         }
     }
@@ -288,19 +288,18 @@ class BulletState(
     }
 }
 
-private val Bullet.hitPointIfHitBorder: Offset
-    get() =
-        when (direction) {
-            Direction.Up -> Offset(center.x, 0f)
-            Direction.Down -> Offset(center.x, MAP_BLOCK_COUNT.grid2mpx)
-            Direction.Left -> Offset(0f, center.y)
-            Direction.Right -> Offset(MAP_BLOCK_COUNT.grid2mpx, center.y)
-        }
+private fun Bullet.hitPointIfHitBorder(hGridUnitNum: Int, vGridUnitNum: Int): Offset =
+    when (direction) {
+        Direction.Up -> Offset(center.x, 0f)
+        Direction.Down -> Offset(center.x, vGridUnitNum.grid2mpx)
+        Direction.Left -> Offset(0f, center.y)
+        Direction.Right -> Offset(hGridUnitNum.grid2mpx, center.y)
+    }
 
 private sealed class TrajectoryCollisionInfo(open val bullet: Bullet, open val hitPoint: Offset)
 
-private data class HitBorderInfo(override val bullet: Bullet) :
-    TrajectoryCollisionInfo(bullet, bullet.hitPointIfHitBorder)
+private data class HitBorderInfo(override val bullet: Bullet, val hGridUnitNum: Int, val vGridUnitNum: Int) :
+    TrajectoryCollisionInfo(bullet, bullet.hitPointIfHitBorder(hGridUnitNum, vGridUnitNum))
 
 private data class HitBrickInfo(override val bullet: Bullet, override val hitPoint: Offset) :
     TrajectoryCollisionInfo(bullet, hitPoint)
