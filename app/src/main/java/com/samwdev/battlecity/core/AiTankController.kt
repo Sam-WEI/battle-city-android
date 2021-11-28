@@ -1,16 +1,11 @@
 package com.samwdev.battlecity.core
 
-import androidx.annotation.FloatRange
-import androidx.annotation.IntRange
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
-import com.samwdev.battlecity.utils.logE
-import com.samwdev.battlecity.utils.logI
-import com.samwdev.battlecity.utils.logW
-import kotlin.collections.LinkedHashSet
+import com.samwdev.battlecity.utils.Logger
 import kotlin.random.Random
 
 class AiTankController(
@@ -27,9 +22,11 @@ class AiTankController(
     private var remainingFireDecisionCooldown = 0
 
     private val personality: AiPersonality = AiPersonality()
+    private var remainingHuntingPlayerTime: Int = 0
+    private var remainingLockOnPlayerCooldown: Int = 0
 
     init {
-        logI("tank[$tankId] personality: ${personality}")
+        Logger.info("tank[$tankId] personality: ${personality}")
     }
 
     override fun onTick(tick: Tick) {
@@ -56,6 +53,18 @@ class AiTankController(
         }
 
         // todo after frozen, continue prev waypoints
+
+        remainingLockOnPlayerCooldown -= tick.delta
+        remainingHuntingPlayerTime -= tick.delta
+
+        if (remainingHuntingPlayerTime > 0) {
+            if (remainingLockOnPlayerCooldown <= 0) {
+                findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.center?.subGrid)
+                remainingLockOnPlayerCooldown = personality.lockOnPlayerCooldown
+                Logger.debug("[${tankId}] re-locked player!! remaining hunting time: $remainingHuntingPlayerTime")
+            }
+        }
+
         if (currentWaypoint.isNotEmpty()) {
             // move along waypoints
             val currTankSubGrid = tank.pivotBox.topLeft.subGrid
@@ -73,7 +82,7 @@ class AiTankController(
                 } else {
                     stuckTime += tick.delta
                     if (stuckTime > personality.stuckTimeout) {
-                        findNewWaypoint(tank, mapState.accessPoints)
+                        findNewWaypoint(tank, null)
                         stuckTime = 0
                     }
                 }
@@ -88,15 +97,19 @@ class AiTankController(
             remainingAiDecisionCooldown = personality.aiDecisionCooldown
             when (Random.nextFloat()) {
                 in 0f..personality.attackPlayer -> {
-                    // todo
-                    findNewWaypoint(tank, mapState.accessPoints)
+                    findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.offset?.subGrid)
+                    remainingHuntingPlayerTime = personality.huntingPlayerDuration
+                    remainingLockOnPlayerCooldown = personality.lockOnPlayerCooldown
+                    Logger.info("[${tankId}] Locked player!! Hunting time: $remainingHuntingPlayerTime")
+
                 }
                 in personality.attackPlayer..(personality.attackPlayer + personality.attackBase) -> {
-                    // todo
-                    findNewWaypoint(tank, mapState.accessPoints)
+                    findNewWaypoint(tank, mapState.eagle.offsetInMapPixel.subGrid)
+                    Logger.info("[${tankId}] Locked base!!")
                 }
                 else -> {
-                    findNewWaypoint(tank, mapState.accessPoints)
+                    findNewWaypoint(tank, null)
+                    Logger.info("[${tankId}] Go shopping.")
                 }
             }
         }
@@ -118,11 +131,10 @@ class AiTankController(
         AttackBase to 1,
     )
 
-    private fun findNewWaypoint(tank: Tank, accessPoints: AccessPoints) {
-        val dest = accessPoints.randomAccessiblePoint(Int.MAX_VALUE)
-//        val dest = SubGrid(20, 0)
+    private fun findNewWaypoint(tank: Tank, target: SubGrid?) {
+        val accessPoints = mapState.accessPoints
+        val dest = target ?: accessPoints.randomAccessiblePoint(Int.MAX_VALUE)
         val src = tank.pivotBox.topLeft.subGrid
-//        val src = SubGrid(24, 24)
         val waypoints = LinkedHashSet<SubGrid>().apply { add(src) }
         walkWaypointRecursive(waypoints, mutableSetOf(), accessPoints, src, dest, null)
         currentWaypoint = waypoints.toList()
@@ -209,9 +221,14 @@ private class AiPersonality(difficulty: Int = 1) {
     // when stuck, agile AI waits shorter before changing path
     private val agility: Float = (Random.nextInt(5) + difficulty) / 5f
 
+    // derived attributes
     val fireDecisionCooldown: Int get() = (70 / maniac).toInt()
     val fireChance: Float get() = 0.3f * maniac
     val attackPlayer: Float get() = 0.2f * aggressiveTowardsPlayer
+    // when decided to hunt player, it takes this long before giving up.
+    val huntingPlayerDuration: Int get() = (10 * 1000 * aggressiveTowardsPlayer).toInt()
+    // re-lock on player because player keeps moving
+    val lockOnPlayerCooldown: Int get() = (1000 / aggressiveTowardsPlayer).toInt()
     val attackBase: Float get() = 0.2f * aggressiveTowardsBase
     val aiDecisionCooldown: Int get() = (500 / wisdom).toInt()
     val stuckTimeout: Int get() = (500 / agility).toInt()
