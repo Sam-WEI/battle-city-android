@@ -172,11 +172,10 @@ abstract class MapElementHelper(override val granularity: Int) : MapElementPrope
         val left: MapPixel = rect.left
         val right: MapPixel = rect.right - 0.1f // exclude the right border
 
-        // todo! confirm working
-        val col1 = (left / elementSize).toInt()//.coerceAtLeast(0)
-        val row1 = (top / elementSize).toInt()//.coerceAtLeast(0)
-        val col2 = (right / elementSize).toInt()//.coerceAtMost(countInOneLine - 1)
-        val row2 = (bottom / elementSize).toInt()//.coerceAtMost(countInOneLine - 1)
+        val col1 = (left / elementSize).toInt().coerceAtLeast(0)
+        val row1 = (top / elementSize).toInt().coerceAtLeast(0)
+        val col2 = (right / elementSize).toInt().coerceAtMost(hGridUnitNum * granularity - 1)
+        val row2 = (bottom / elementSize).toInt().coerceAtMost(hGridUnitNum * granularity - 1)
 
         val firstDimen: IntProgression
         val secondDimen: IntProgression
