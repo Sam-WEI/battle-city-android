@@ -15,6 +15,7 @@ data class StageConfig(
     val difficulty: Int,
     val map: MapElements,
     val bots: List<BotGroup>,
+    // todo add spawn pos
 )
 
 data class MapElements(
