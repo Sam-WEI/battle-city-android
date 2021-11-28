@@ -8,14 +8,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.entity.IceElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
 fun IceLayer(ices: Set<IceElement>) {
-    ices.forEach { el ->
-        IceBlock(element = el)
+    val gridUnitNumber = LocalGridUnitNumber.current
+    PixelCanvas(
+        widthInMapPixel = gridUnitNumber.first.grid2mpx,
+        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+    ) {
+        ices.forEach { element ->
+            val offset = element.offsetInMapPixel
+            translate(offset.x, offset.y) {
+                this as PixelDrawScope
+                drawIceElement()
+            }
+        }
     }
 }
 
@@ -23,50 +34,44 @@ private val iceColorWhite = Color.White
 private val iceColorGray = Color(173, 173, 173)
 private val iceColorDarkGray = Color(99, 99, 99)
 
-@Composable
-fun IceBlock(element: IceElement) {
-    PixelCanvas(
-        topLeftInMapPixel = element.offsetInMapPixel,
-        widthInMapPixel = IceElement.elementSize,
-        heightInMapPixel = IceElement.elementSize,
-    ) {
-        val partSize = IceElement.elementSize / 2
-        repeat(4) { ith ->
-            translate(
-                left = (ith % 2).toFloat() * partSize,
-                top = (ith / 2).toFloat() * partSize
-            ) {
-                this@PixelCanvas.drawSquare(color = iceColorGray, topLeft = Offset(0f, 0f), side = partSize)
-                this@PixelCanvas.drawPixel(color = iceColorDarkGray, topLeft = Offset(0f, 0f))
-                this@PixelCanvas.drawPixel(color = iceColorDarkGray, topLeft = Offset(4f, 0f))
-                this@PixelCanvas.drawPixel(color = iceColorDarkGray, topLeft = Offset(0f, 4f))
-                this@PixelCanvas.drawPixel(color = iceColorWhite, topLeft = Offset(3f, 0f))
-                this@PixelCanvas.drawPixel(color = iceColorWhite, topLeft = Offset(0f, 3f))
+private fun PixelDrawScope.drawIceElement() {
+    val partSize = IceElement.elementSize / 2
+    repeat(4) { ith ->
+        translate(
+            left = (ith % 2).toFloat() * partSize,
+            top = (ith / 2).toFloat() * partSize
+        ) {
+            this as PixelDrawScope
+            drawSquare(color = iceColorGray, topLeft = Offset(0f, 0f), side = partSize)
+            drawPixel(color = iceColorDarkGray, topLeft = Offset(0f, 0f))
+            drawPixel(color = iceColorDarkGray, topLeft = Offset(4f, 0f))
+            drawPixel(color = iceColorDarkGray, topLeft = Offset(0f, 4f))
+            drawPixel(color = iceColorWhite, topLeft = Offset(3f, 0f))
+            drawPixel(color = iceColorWhite, topLeft = Offset(0f, 3f))
 
-                this@PixelCanvas.drawDiagonalLine(
-                    color = iceColorWhite,
-                    end1 = Offset(0f, 7f),
-                    end2 = Offset(7f, 0f),
-                )
+            drawDiagonalLine(
+                color = iceColorWhite,
+                end1 = Offset(0f, 7f),
+                end2 = Offset(7f, 0f),
+            )
 
-                this@PixelCanvas.drawDiagonalLine(
-                    color = iceColorDarkGray,
-                    end1 = Offset(1f, 7f),
-                    end2 = Offset(7f, 1f),
-                )
+            drawDiagonalLine(
+                color = iceColorDarkGray,
+                end1 = Offset(1f, 7f),
+                end2 = Offset(7f, 1f),
+            )
 
-                this@PixelCanvas.drawDiagonalLine(
-                    color = iceColorWhite,
-                    end1 = Offset(4f, 7f),
-                    end2 = Offset(7f, 4f),
-                )
+            drawDiagonalLine(
+                color = iceColorWhite,
+                end1 = Offset(4f, 7f),
+                end2 = Offset(7f, 4f),
+            )
 
-                this@PixelCanvas.drawDiagonalLine(
-                    color = iceColorDarkGray,
-                    end1 = Offset(5f, 7f),
-                    end2 = Offset(7f, 5f),
-                )
-            }
+            drawDiagonalLine(
+                color = iceColorDarkGray,
+                end1 = Offset(5f, 7f),
+                end2 = Offset(7f, 5f),
+            )
         }
     }
 }
@@ -76,10 +81,14 @@ fun IceBlock(element: IceElement) {
 fun IcePreview() {
     BattleCityTheme {
         Grid(modifier = Modifier.size(500.dp), gridUnitNum = 3) {
-            IceBlock(element = IceElement(0, hGridUnitNum = 4))
-            IceBlock(element = IceElement(1, hGridUnitNum = 4))
-            IceBlock(element = IceElement(2, hGridUnitNum = 4))
-            IceBlock(element = IceElement(2, 2, hGridUnitNum = 4))
+            IceLayer(ices = setOf(
+                IceElement.compose(0, 0),
+                IceElement.compose(0, 1),
+                IceElement.compose(0, 2),
+                IceElement.compose(1, 0),
+                IceElement.compose(1, 1),
+                IceElement.compose(1, 2),
+            ))
         }
     }
 }
