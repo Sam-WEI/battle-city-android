@@ -5,6 +5,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.core.TankLevel
 import com.samwdev.battlecity.entity.*
 
 object MapParser {
@@ -126,10 +127,12 @@ object MapParser {
         }
 
         val bots = configJson.bots.map { grp ->
-            val (count, level) = grp.split("*")
+            // e.g, L1x10, L3x2
+            val (level, count) = grp.split("x")
+            val levelEnum = TankLevel.values()[level.substring(1).toInt() - 1]
             return@map BotGroup(
                 count = count.toInt(),
-                level = level.lowercase().replaceFirstChar { it.uppercase() }.let { BotTankLevel.valueOf(it) }
+                level = levelEnum
             )
         }
 

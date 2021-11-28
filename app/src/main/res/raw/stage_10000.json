@@ -16,5 +16,5 @@
     "X  Bf Bf Bf X  Bf Bf Bf X  Bf Bf Bf X  ",
     "X  X  X  X  X  BF E  Bf X  X  X  X  X  "
   ],
-  "bots": ["18*basic", "2*fast"]
+  "bots": ["L1x18", "L2x2"]
 }

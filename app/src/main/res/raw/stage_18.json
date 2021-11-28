@@ -16,5 +16,5 @@
     "F  Tf Tf Tf X  B8 Bc B4 X  X  Bf Tf Tf ",
     "X  X  X  X  X  Ba E  B5 X  X  X  Tf Tf "
   ],
-  "bots": ["4*armor", "2*basic", "6*power", "8*fast"]
+  "bots": ["L4x4", "L1x2", "L3x6", "L2x8"]
 }

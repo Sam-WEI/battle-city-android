@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.entity
 
+import com.samwdev.battlecity.core.TankLevel
+
 data class StageConfigJson(
     val name: String,
     val difficulty: Int,
@@ -27,6 +29,6 @@ data class MapElements(
     val eagle: EagleElement,
 )
 data class BotGroup(
-    val level: BotTankLevel,
+    val level: TankLevel,
     val count: Int,
 )
