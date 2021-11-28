@@ -176,6 +176,8 @@ class TankState(
         return tanks.getValue(id)
     }
 
+    fun getPlayerTankOrNull(): Tank? = getTankOrNull(playerTankId)
+
     fun moveTank(tankId: TankId, direction: Direction) {
         updateTank(tankId, getTank(tankId).tryMove(dir = direction))
     }
