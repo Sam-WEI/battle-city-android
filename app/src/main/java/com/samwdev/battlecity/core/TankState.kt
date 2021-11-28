@@ -232,7 +232,7 @@ class TankState(
             newTank = newTank.speedDown(acceleration)
         }
         val distance = newTank.currentSpeed * delta
-        val allowedRect = checkCollideIfMoving(newTank, distance, newTank.movingDirection)
+        val allowedRect = checkCollisionIfMoving(newTank, distance, newTank.movingDirection)
         return newTank.moveTo(rect = allowedRect)
     }
 
@@ -256,7 +256,7 @@ class TankState(
         }
     }
 
-    private fun checkCollideIfMoving(tank: Tank, distance: MapPixel, movingDirection: Direction): Rect {
+    private fun checkCollisionIfMoving(tank: Tank, distance: MapPixel, movingDirection: Direction): Rect {
         val collisionBox = tank.collisionBox
         val toRect = collisionBox.move(distance, movingDirection)
         val travelPath = collisionBox.getTravelPath(toRect)
