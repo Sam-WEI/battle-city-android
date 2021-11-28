@@ -19,6 +19,7 @@
 [ ] Menu screens
 [ ] Map editor
 [ ] AI
+[x] N-in-1 Map
 [ ] Online
 
 ## Details:
