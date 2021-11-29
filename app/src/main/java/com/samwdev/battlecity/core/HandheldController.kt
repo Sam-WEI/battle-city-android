@@ -57,6 +57,7 @@ fun HandheldController(
     onFire: (Boolean) -> Unit = { handheldControllerState.setFireInput(it) },
 ) {
     val context = LocalContext.current.applicationContext
+    val coroutine = rememberCoroutineScope()
     val vibrator = remember(context) { VibratorHelper(context) }
     var lastDirection: Direction? by remember { mutableStateOf(null) }
 
@@ -70,7 +71,10 @@ fun HandheldController(
             onChange = {
                 onSteer(it)
                 if (it != null && lastDirection != it) {
-                    vibrator.vibrateJoyStick()
+                    coroutine.launch {
+                        // may not even need a coroutine
+                        vibrator.vibrateFire()
+                    }
                 }
                 lastDirection = it
             }
@@ -80,7 +84,9 @@ fun HandheldController(
             onPress = { fire ->
                 onFire(fire)
                 if (fire) {
-                    vibrator.vibrateFire()
+                    coroutine.launch {
+                        vibrator.vibrateFire()
+                    }
                 }
             },
         )
