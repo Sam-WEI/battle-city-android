@@ -26,7 +26,7 @@ import kotlin.math.nextUp
 fun Hud(
     botCount: Int,
     lifeCount: Int,
-    level: Int,
+    level: String,
     modifier: Modifier = Modifier,
     hudLayoutOrientation: Orientation = Orientation.Horizontal,
 ) {
@@ -155,7 +155,7 @@ private fun PixelDrawScope.drawPlayerLifeIcon() {
 }
 
 @Composable
-private fun LevelInfo(level: Int, modifier: Modifier) {
+private fun LevelInfo(level: String, modifier: Modifier) {
     val textPaint = LocalPixelFontPaint.current
     PixelCanvas(modifier) {
         scale(0.7f, Offset(0f, 0.5f.grid2mpx)) {
@@ -168,7 +168,7 @@ private fun LevelInfo(level: Int, modifier: Modifier) {
             drawRect(color = ColorOrange, topLeft = Offset(2f, 5f), size = Size(8f, 4f))
             translate(1f.grid2mpx, 0.5f.grid2mpx) {
                 this as PixelDrawScope
-                drawPixelText(level.toString(), Offset.Zero, textPaint)
+                drawPixelText(level, Offset.Zero, textPaint)
             }
         }
     }
@@ -241,7 +241,7 @@ fun HudPreview() {
                 .background(Color(117, 117, 117)),
             gridUnitNum = MAP_BLOCK_COUNT
         ) {
-            Hud(botCount = 20, lifeCount = 3, level = 30)
+            Hud(botCount = 20, lifeCount = 3, level = "30")
         }
     }
 }
