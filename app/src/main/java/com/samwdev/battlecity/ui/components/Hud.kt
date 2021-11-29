@@ -13,13 +13,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.vector.DefaultStrokeLineMiter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,10 +50,9 @@ fun Hud(
     ) {
         LevelInfo(lifeCount, modifier = Modifier
             .align(Alignment.CenterStart)
-            .background(Color.Green)
             .fillMaxWidth()
             .fillMaxHeight())
-//        BotIcon(botCount, modifier = Modifier.align(Alignment.CenterEnd))
+        BotIcon(botCount, modifier = Modifier.align(Alignment.CenterEnd))
     }
 }
 
@@ -105,52 +100,62 @@ private fun PixelDrawScope.drawPlayerLifeIcon() {
     drawVerticalLine(
         color = ColorOrange,
         topLeft = Offset(3f, 0f),
-        length = 2f,
-    )
-    drawVerticalLine(
-        color = ColorOrange,
-        topLeft = Offset(3f, 6f),
-        length = 2f,
+        length = 8f,
     )
     drawHorizontalLine(
         color = ColorOrange,
         topLeft = Offset(2f, 0f),
         length = 3f,
     )
-    translate(left = 0.5f, top = 0.5f) {
-        drawPath(
-            Path().apply {
-                moveTo(1f, 3f)
-                lineTo(2f, 3f)
-                lineTo(2f, 2f)
-                lineTo(4f, 2f)
-                lineTo(4f, 3f)
-                lineTo(5f, 3f)
-                lineTo(5f, 5f)
-                lineTo(4f, 5f)
-                lineTo(4f, 6f)
-                lineTo(2f, 6f)
-                lineTo(2f, 5f)
-                lineTo(1f, 5f)
-                close()
-            },
-            color = ColorOrange,
-            style = Stroke(width = 1f),
-        )
-    }
+//    translate(left = 0.5f, top = 0.5f) {
+//        drawPath(
+//            Path().apply {
+//                moveTo(1f, 3f)
+//                lineTo(2f, 3f)
+//                lineTo(2f, 2f)
+//                lineTo(4f, 2f)
+//                lineTo(4f, 3f)
+//                lineTo(5f, 3f)
+//                lineTo(5f, 5f)
+//                lineTo(4f, 5f)
+//                lineTo(4f, 6f)
+//                lineTo(2f, 6f)
+//                lineTo(2f, 5f)
+//                lineTo(1f, 5f)
+//                close()
+//            },
+//            color = ColorOrange,
+//            style = Stroke(width = 1f),
+//        )
+//    }
 
-//    drawRect(
-//        color = ColorOrange,
-//        topLeft = Offset(2f, 2f),
-//        size = Size(3f, 5f),
-//        style = Stroke(width = 1f, cap = StrokeCap.Butt, join = StrokeJoin.Miter, miter = 10f)
-//    )
-//    drawRect(
-//        color = ColorOrange,
-//        topLeft = Offset(1f, 3f),
-//        size = Size(5f, 3f),
-//        style = Stroke(width = 1f, cap = StrokeCap.Square)
-//    )
+    drawRect(
+        color = ColorOrange,
+        topLeft = Offset(2f, 2f),
+        size = Size(3f, 5f),
+    )
+    drawRect(
+        color = ColorOrange,
+        topLeft = Offset(1f, 3f),
+        size = Size(5f, 3f),
+    )
+    drawIntoCanvas {
+        it.withSaveLayer(
+            Rect(Offset(2f, 3f), Size(3f, 3f)),
+            Paint().apply { blendMode = BlendMode.DstOut }
+        ) {
+            drawRect(Color.White, Offset(3f, 3f), Size(1f, 3f))
+            drawRect(Color.White, Offset(2f, 4f), Size(3f, 1f))
+        }
+
+        it.withSaveLayer(
+            Rect(Offset(2f, 3f), Size(3f, 3f)),
+            Paint().apply { blendMode = BlendMode.DstAtop }
+        ) {
+            // todo make the cross transparent
+            drawRect(Color.Gray, Offset(2f, 3f), Size(3f, 3f))
+        }
+    }
 }
 
 @Composable
