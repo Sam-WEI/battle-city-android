@@ -73,7 +73,7 @@ class MapState(
     private val waterIndexSet: Set<Int> get() = waters.map { it.index }.toSet()
 
     init {
-        accessPoints = accessPoints.updated(waterIndexSet, steelIndexSet, brickIndexSet)
+        refreshAccessPoints()
     }
 
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
@@ -98,6 +98,14 @@ class MapState(
 
     private val steelIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
         acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect)) }
+    }
+
+    private val bottomRightSubGridAroundEagle: SubGrid =
+        rectanglesAroundEagle.asSequence().map { it.topLeft }.maxOf { it.subGrid }
+
+    private val subGridDepthAroundEagle: Int get() {
+        val topLeft = rectanglesAroundEagle.asSequence().map { it.topLeft }.minOf { it.subGrid }
+        return max(bottomRightSubGridAroundEagle.subRow - topLeft.subRow, bottomRightSubGridAroundEagle.subCol - topLeft.subCol) + 1
     }
 
     override fun onTick(tick: Tick) {
@@ -135,13 +143,7 @@ class MapState(
                         // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
                         // For performance purposes, use a depth of 10 for the calculation.
                         // It should do the job most of the time, unless we just unblocked a really deep dead end.
-                        accessPoints = accessPoints.updated(
-                            brickIndexSet = brickIndexSet,
-                            steelIndexSet = steelIndexSet,
-                            waterIndexSet = waterIndexSet,
-                            spreadFrom = subGrid,
-                            depth = 1
-                        )
+                        refreshAccessPoints(subGrid, 1)
                     }
             }
         }
@@ -159,13 +161,7 @@ class MapState(
             indices.forEach {
                 val subGrid = SteelElement.getSubGrid(it)
                 // a destroyed steel always frees up a sub grid
-                accessPoints = accessPoints.updated(
-                    brickIndexSet = brickIndexSet,
-                    steelIndexSet = steelIndexSet,
-                    waterIndexSet = waterIndexSet,
-                    spreadFrom = subGrid,
-                    depth = 1
-                )
+                refreshAccessPoints(subGrid, 1)
             }
         }
         return destroyedSome
@@ -190,15 +186,43 @@ class MapState(
         remainingPlayerLife -= 1
     }
 
+    /**
+     * To refresh all access points, use default values.
+     * @param spreadFrom pass null to refresh from bottom right
+     * @param depth pass [Int.MAX_VALUE] for max depth
+     * @param hardRefresh pass true if new obstacles added, i.e, base fortification.
+     */
+    private fun refreshAccessPoints(spreadFrom: SubGrid? = null, depth: Int = Int.MAX_VALUE, hardRefresh: Boolean = false) {
+        accessPoints = accessPoints.updated(
+            brickIndexSet = brickIndexSet,
+            steelIndexSet = steelIndexSet,
+            waterIndexSet = waterIndexSet,
+            spreadFrom = spreadFrom,
+            depth = depth,
+            hardRefresh = hardRefresh,
+        )
+    }
+
+    private fun refreshAccessPointsAroundEagle() {
+        refreshAccessPoints(
+            spreadFrom = bottomRightSubGridAroundEagle,
+            depth = subGridDepthAroundEagle,
+            hardRefresh = true,
+        )
+    }
+
+
     private fun wrapEagleWithSteels() {
         destroyBricksIndex(brickIndicesAroundEagle)
         steels = steels.toMutableSet()
             .apply { addAll(steelIndicesAroundEagle.map { SteelElement(it, hGridUnitNum) }) }
+        refreshAccessPointsAroundEagle()
     }
 
     private fun wrapEagleWithBricks() {
         destroySteelsIndex(steelIndicesAroundEagle)
         bricks = bricks.toMutableSet()
             .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it, hGridUnitNum) }) }
+        refreshAccessPointsAroundEagle()
     }
 }
