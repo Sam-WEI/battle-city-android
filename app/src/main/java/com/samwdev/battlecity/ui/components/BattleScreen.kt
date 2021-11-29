@@ -49,7 +49,7 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
     CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Grid(modifier = Modifier
+                Grid(gridUnitNum = 5, modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(Color(117, 117, 117))
