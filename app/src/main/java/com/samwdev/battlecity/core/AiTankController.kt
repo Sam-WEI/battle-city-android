@@ -221,15 +221,15 @@ private class AiPersonality(difficulty: Int = 1) {
     // when stuck, agile AI waits shorter before changing path
     private val agility: Float = (Random.nextInt(5) + difficulty) / 5f
 
-    // derived attributes
+    // derived attributes below
     val fireDecisionCooldown: Int get() = (70 / maniac).toInt()
-    val fireChance: Float get() = 0.3f * maniac
-    val attackPlayer: Float get() = 0.2f * aggressiveTowardsPlayer
+    val fireChance: Float get() = 0.2f * maniac
+    val attackPlayer: Float get() = 0.1f * aggressiveTowardsPlayer
     // when decided to hunt player, it takes this long before giving up.
-    val huntingPlayerDuration: Int get() = (10 * 1000 * aggressiveTowardsPlayer).toInt()
+    val huntingPlayerDuration: Int get() = (7 * 1000 * aggressiveTowardsPlayer).toInt()
     // re-lock on player because player keeps moving
     val lockOnPlayerCooldown: Int get() = (1000 / aggressiveTowardsPlayer).toInt()
-    val attackBase: Float get() = 0.2f * aggressiveTowardsBase
+    val attackBase: Float get() = 0.1f * aggressiveTowardsBase
     val aiDecisionCooldown: Int get() = (500 / wisdom).toInt()
     val stuckTimeout: Int get() = (500 / agility).toInt()
 

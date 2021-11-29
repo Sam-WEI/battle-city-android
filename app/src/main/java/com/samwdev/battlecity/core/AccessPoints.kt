@@ -23,16 +23,27 @@ val AccessPoints.vSubGridUnitNum: Int get() = size
 
 val AccessPoints.bottomRight: SubGrid get() = SubGrid(vSubGridUnitNum - 1, hSubGridUnitNum - 1)
 
-/** Return an updated copy */
+/**
+ * Return an updated copy
+ * @param hardRefresh pass true if new obstacles added, i.e, base fortification.
+ */
 fun AccessPoints.updated(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
-    spreadFrom: SubGrid = bottomRight,
-    depth: Int = Int.MAX_VALUE
+    spreadFrom: SubGrid? = null,
+    depth: Int = Int.MAX_VALUE,
+    hardRefresh: Boolean = false,
 ): AccessPoints {
     val updated = copyOf()
-    updated.calculateInPlace(waterIndexSet, steelIndexSet, brickIndexSet, spreadFrom, depth)
+    updated.calculateInPlace(
+        waterIndexSet,
+        steelIndexSet,
+        brickIndexSet,
+        spreadFrom ?: bottomRight,
+        depth,
+        hardRefresh,
+    )
     return updated
 }
 
@@ -54,12 +65,16 @@ operator fun AccessPoints.set(subGrid: SubGrid, value: Int) {
 
 fun AccessPoints.isAccessible(subGrid: SubGrid): Boolean = this[subGrid] > 0
 
+/**
+ * @param hardRefresh pass true to not also validate accessible ones
+ */
 private fun AccessPoints.calculateInPlace(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
     spreadFrom: SubGrid,
-    depth: Int = Int.MAX_VALUE
+    depth: Int = Int.MAX_VALUE,
+    hardRefresh: Boolean = false,
 ) {
     val (rowB, colB) = spreadFrom
     val top = (rowB - depth).coerceAtLeast(0)
@@ -67,7 +82,7 @@ private fun AccessPoints.calculateInPlace(
     for (row in rowB downTo top) {
         for (col in colB downTo left) {
             val curr = SubGrid(row, col)
-            if (isAccessible(curr)) {
+            if (!hardRefresh && isAccessible(curr)) {
                 continue
             }
             val value = when {
@@ -110,7 +125,7 @@ private fun AccessPoints.calculateInPlace(
     }
 }
 
-inline class SubGrid internal constructor(private val packedValue: Int) {
+inline class SubGrid internal constructor(private val packedValue: Int) : Comparable<SubGrid> {
     val subRow: Int get() = packedValue / 10000
     val subCol: Int get() = packedValue % 10000
 
@@ -138,6 +153,8 @@ inline class SubGrid internal constructor(private val packedValue: Int) {
     operator fun component2(): Int = subCol
     operator fun plus(other: SubGrid) = SubGrid(subRow + other.subRow, subCol + other.subCol)
     operator fun minus(other: SubGrid) = SubGrid(subRow - other.subRow, subCol - other.subCol)
+
+    override fun compareTo(other: SubGrid): Int = packedValue - other.packedValue
 
     override fun toString(): String {
         return "SubGrid[subRow=$subRow][subCol=$subCol]"
