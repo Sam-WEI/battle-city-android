@@ -182,6 +182,10 @@ class MapState(
     }
 
     // todo move to better place
+    fun addPlayerLife() {
+        remainingPlayerLife += 1
+    }
+
     fun deductPlayerLife() {
         remainingPlayerLife -= 1
     }
