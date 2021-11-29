@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BattleCityTheme {
                 var stageName = Random.nextInt(1, 36).toString()
-//                stageName = 26.toString()
+                stageName = 2.toString()
 
                 val json = MapParser.readJsonFile(this, stageName)
                 val stageConfig = MapParser.parse(json)
