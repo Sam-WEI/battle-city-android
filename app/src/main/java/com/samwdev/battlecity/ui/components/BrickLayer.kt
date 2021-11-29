@@ -36,7 +36,7 @@ fun BrickLayer(bricks: Set<BrickElement>) {
     }
 }
 
-private fun PixelDrawScope.drawBrickElement(element: BrickElement, drawIndex: Boolean) {
+fun PixelDrawScope.drawBrickElement(element: BrickElement, drawIndex: Boolean = false) {
     drawRect(
         color = brickColorGray,
         size = Size(BrickElement.elementSize, BrickElement.elementSize)
