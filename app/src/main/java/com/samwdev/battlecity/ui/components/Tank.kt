@@ -100,29 +100,32 @@ fun Tank(tank: Tank) {
 @Composable
 fun TankWithTreadPattern(tank: Tank, treadPattern: Int, palette: TankColorPalette) {
     PixelCanvas(
-        modifier = Modifier.drawForDirection(tank.facingDirection),
         topLeftInMapPixel = Offset(tank.x, tank.y),
         widthInMapPixel = TANK_MAP_PIXEL,
         heightInMapPixel = TANK_MAP_PIXEL
     ) {
-        when (tank.side) {
-            TankSide.Player -> {
-                when (tank.level) {
-                    TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern, palette)
-                    TankLevel.Level2 -> drawPlayerTankLevel2(treadPattern, palette)
-                    TankLevel.Level3 -> drawPlayerTankLevel3(treadPattern, palette)
-                    TankLevel.Level4 -> drawPlayerTankLevel4(treadPattern, palette)
+        drawForDirection(tank.facingDirection, pivot = Offset(TANK_MAP_PIXEL / 2, TANK_MAP_PIXEL / 2)) {
+            this as PixelDrawScope
+            when (tank.side) {
+                TankSide.Player -> {
+                    when (tank.level) {
+                        TankLevel.Level1 -> drawPlayerTankLevel1(treadPattern, palette)
+                        TankLevel.Level2 -> drawPlayerTankLevel2(treadPattern, palette)
+                        TankLevel.Level3 -> drawPlayerTankLevel3(treadPattern, palette)
+                        TankLevel.Level4 -> drawPlayerTankLevel4(treadPattern, palette)
+                    }
                 }
-            }
-            TankSide.Bot -> {
-                when (tank.level) {
-                    TankLevel.Level1 -> drawBotTankLevel1(treadPattern, palette)
-                    TankLevel.Level2 -> drawBotTankLevel2(treadPattern, palette)
-                    TankLevel.Level3 -> drawBotTankLevel3(treadPattern, palette)
-                    TankLevel.Level4 -> drawBotTankLevel4(treadPattern, palette)
+                TankSide.Bot -> {
+                    when (tank.level) {
+                        TankLevel.Level1 -> drawBotTankLevel1(treadPattern, palette)
+                        TankLevel.Level2 -> drawBotTankLevel2(treadPattern, palette)
+                        TankLevel.Level3 -> drawBotTankLevel3(treadPattern, palette)
+                        TankLevel.Level4 -> drawBotTankLevel4(treadPattern, palette)
+                    }
                 }
             }
         }
+
     }
 }
 

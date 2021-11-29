@@ -7,7 +7,6 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -31,33 +30,31 @@ fun Hud(
     botCount: Int,
     lifeCount: Int,
     level: Int,
+    modifier: Modifier = Modifier,
     hudLayoutOrientation: Orientation = Orientation.Horizontal,
 ) {
-    Box(
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .then(
-                if (hudLayoutOrientation == Orientation.Horizontal) {
-                    Modifier
-                        .fillMaxWidth()
-                        .height(1.grid2mpx.mpx2dp)
-                } else {
-                    Modifier
-                        .fillMaxHeight()
-                        .width(1.grid2mpx.mpx2dp)
-                }
-            )
+    Grid(modifier = modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
     ) {
-        LevelInfo(lifeCount, modifier = Modifier
-            .align(Alignment.CenterStart)
-            .fillMaxWidth()
-            .fillMaxHeight())
-        BotIcon(botCount, modifier = Modifier.align(Alignment.CenterEnd))
+        PlayerInfo(
+            lifeCount,
+            modifier = Modifier.size(1.5f.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
+                .offset(x = 0.5f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
+                .background(Color.Green)
+        )
+
+        BotIcons(
+            botCount,
+            modifier = Modifier.size(6.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
+                .offset(x = 7f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
+                .background(Color.Green)
+        )
     }
 }
 
 @Composable
-fun LevelInfo(lifeCount: Int, modifier: Modifier) {
+fun PlayerInfo(lifeCount: Int, modifier: Modifier) {
     val context = LocalContext.current
     val tf = remember(context) {
         try { ResourcesCompat.getFont(context, R.font.pixel_font) }
@@ -68,7 +65,7 @@ fun LevelInfo(lifeCount: Int, modifier: Modifier) {
         textSize = 8f
         typeface = tf
     } }
-    PixelCanvas {
+    PixelCanvas(modifier) {
         drawIntoCanvas {
             it.nativeCanvas.drawText("1P", 0f, 8f, textPaint)
         }
@@ -159,7 +156,12 @@ private fun PixelDrawScope.drawPlayerLifeIcon() {
 }
 
 @Composable
-fun BotIcon(botCount: Int, modifier: Modifier) {
+private fun LevelInfo(level: Int, modifier: Modifier) {
+
+}
+
+@Composable
+fun BotIcons(botCount: Int, modifier: Modifier) {
     val rowMax = if (botCount <= 20) 10 else 20
     PixelCanvas(
         widthInMapPixel = 5f.grid2mpx,

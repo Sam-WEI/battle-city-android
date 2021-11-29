@@ -49,13 +49,8 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
     CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Grid(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(Color(117, 117, 117))
-                ) {
-                    Hud(botCount = 35, lifeCount = 3, 29)
-                }
+                Hud(botCount = 35, lifeCount = 13, level = 29, modifier = Modifier.background(Color.Red))
+
                 BattleField(
                     modifier = Modifier.fillMaxWidth(),
                     battleState = battleState,

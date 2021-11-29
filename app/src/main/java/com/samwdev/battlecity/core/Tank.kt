@@ -118,6 +118,7 @@ enum class Direction(val degree: Int) {
     fun isOppositeTo(other: Direction): Boolean = (degree - other.degree).absoluteValue == 180
 }
 
+@Deprecated("delete")
 fun Modifier.drawForDirection(direction: Direction): Modifier {
     return composed {
         when (direction) {
