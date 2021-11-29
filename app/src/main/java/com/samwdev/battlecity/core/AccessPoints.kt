@@ -9,7 +9,7 @@ import kotlin.random.Random
 private const val ValueUninitialized = 0
 private const val ValueAccessible = 1
 private const val ValueObstacleSteel = -10000
-private const val ValueObstacleBrick = -100
+private const val ValueObstacleBrick = -100 // todo make brick accessible so AI can have a desire to break through
 private const val ValueObstacleWater = -10
 private const val ValueNeighborObstacle = -1
 

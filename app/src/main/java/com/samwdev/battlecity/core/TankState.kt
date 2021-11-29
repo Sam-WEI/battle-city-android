@@ -337,7 +337,7 @@ class TankState(
                 killAllBots()
             }
             PowerUpEnum.Tank -> {
-
+                mapState.addPlayerLife()
             }
             PowerUpEnum.Shovel -> {
                 fortifyBase()

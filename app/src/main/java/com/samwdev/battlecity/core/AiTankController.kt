@@ -180,6 +180,7 @@ class AiTankController(
                 continue
             }
             if (!accessPoints.isAccessible(nextWp)) {
+                // todo consider brick as accessible
                 continue
             }
             if (nextWp in badAccessPoints) {
