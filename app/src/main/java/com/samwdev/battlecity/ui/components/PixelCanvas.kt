@@ -35,10 +35,9 @@ fun PixelCanvas(
 ) {
     val mpxDp = LocalMapPixelDp.current
     Canvas(
-        modifier = Modifier
+        modifier = modifier
             .size(widthInMapPixel.mpx2dp, heightInMapPixel.mpx2dp)
             .offset(topLeftInMapPixel.x.mpx2dp, topLeftInMapPixel.y.mpx2dp)
-            .then(modifier)
     ) {
         scale(mpxDp.toPx(), pivot = Offset.Zero) {
             PixelDrawScope(this).onDraw()
