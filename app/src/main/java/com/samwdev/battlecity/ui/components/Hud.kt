@@ -1,25 +1,22 @@
 package com.samwdev.battlecity.ui.components
 
-import android.content.res.Resources
-import android.graphics.Typeface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.withSaveLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.res.ResourcesCompat
-import com.samwdev.battlecity.R
 import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -37,45 +34,47 @@ fun Hud(
         .fillMaxWidth()
         .wrapContentHeight()
     ) {
-        PlayerInfo(
-            lifeCount,
-            modifier = Modifier.size(1.5f.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
-                .offset(x = 0.5f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
-                .background(Color.Green)
-        )
+        PixelTextPaintScope {
+            PlayerInfo(
+                lifeCount,
+                modifier = Modifier
+                    .size(1.5f.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
+                    .offset(x = 0.5f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
+            )
+
+            LevelInfo(
+                level = level,
+                modifier = Modifier
+                    .size(2f.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
+                    .offset(x = 4.5f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
+            )
+        }
 
         BotIcons(
             botCount,
-            modifier = Modifier.size(6.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
+            modifier = Modifier
+                .size(6.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
                 .offset(x = 7f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
-                .background(Color.Green)
         )
     }
 }
 
 @Composable
 fun PlayerInfo(lifeCount: Int, modifier: Modifier) {
-    val context = LocalContext.current
-    val tf = remember(context) {
-        try { ResourcesCompat.getFont(context, R.font.pixel_font) }
-        catch (e: Resources.NotFoundException) { Typeface.DEFAULT }
-    }
-    val textPaint = remember { Paint().asFrameworkPaint().apply {
-        color = android.graphics.Color.BLACK
+    val textPaint = LocalPixelFontPaint.current.apply {
         textSize = 8f
-        typeface = tf
-    } }
+    }
     PixelCanvas(modifier) {
-        drawIntoCanvas {
-            it.nativeCanvas.drawText("1P", 0f, 8f, textPaint)
-        }
-        translate(top = 8f) {
+        scale(0.7f, Offset(0f, 0.5f.grid2mpx)) {
             this as PixelDrawScope
-            drawPlayerLifeIcon()
-        }
-        translate(8f, 8f) {
-            drawIntoCanvas {
-                it.nativeCanvas.drawText(lifeCount.toString(), 0f, 8f, textPaint)
+            drawPixelText("1P", Offset.Zero, textPaint)
+            translate(top = 8f) {
+                this as PixelDrawScope
+                drawPlayerLifeIcon()
+            }
+            translate(8f, 8f) {
+                this as PixelDrawScope
+                drawPixelText(lifeCount.toString(), Offset.Zero, textPaint)
             }
         }
     }
@@ -157,7 +156,22 @@ private fun PixelDrawScope.drawPlayerLifeIcon() {
 
 @Composable
 private fun LevelInfo(level: Int, modifier: Modifier) {
-
+    val textPaint = LocalPixelFontPaint.current
+    PixelCanvas(modifier) {
+        scale(0.7f, Offset(0f, 0.5f.grid2mpx)) {
+            this as PixelDrawScope
+            drawRect(color = Color.Black, topLeft = Offset(0f, 0f), size = Size(2f, 16f))
+            drawDiagonalLine(color = ColorOrange, end1 = Offset(2f, 1f), end2 = Offset(15f, 7f))
+            drawDiagonalLine(color = ColorOrange, end1 = Offset(2f, 2f), end2 = Offset(15f, 8f))
+            drawDiagonalLine(color = ColorOrange, end1 = Offset(2f, 3f), end2 = Offset(13f, 8f))
+            drawDiagonalLine(color = ColorOrange, end1 = Offset(2f, 4f), end2 = Offset(11f, 8f))
+            drawRect(color = ColorOrange, topLeft = Offset(2f, 5f), size = Size(8f, 4f))
+            translate(1f.grid2mpx, 0.5f.grid2mpx) {
+                this as PixelDrawScope
+                drawPixelText(level.toString(), Offset.Zero, textPaint)
+            }
+        }
+    }
 }
 
 @Composable

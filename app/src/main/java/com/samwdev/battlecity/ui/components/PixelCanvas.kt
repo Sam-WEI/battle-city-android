@@ -1,20 +1,24 @@
 package com.samwdev.battlecity.ui.components
 
+import android.content.res.Resources
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.graphics.drawscope.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
+import com.samwdev.battlecity.R
 import com.samwdev.battlecity.core.Direction
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
@@ -42,6 +46,31 @@ fun PixelCanvas(
         scale(mpxDp.toPx(), pivot = Offset.Zero) {
             PixelDrawScope(this).onDraw()
         }
+    }
+}
+
+val LocalPixelFontPaint = staticCompositionLocalOf<NativePaint> {
+    error("Pixel font paint not provided.")
+}
+
+// todo move to better place. Revisit the impl.
+@Composable
+fun PixelTextPaintScope(content: @Composable () -> Unit) {
+    val context = LocalContext.current
+    val tf = try {
+        ResourcesCompat.getFont(context, R.font.pixel_font)
+    } catch (e: Resources.NotFoundException) {
+        Typeface.DEFAULT
+    }
+    val textPaint = remember {
+        Paint().asFrameworkPaint().apply {
+            color = android.graphics.Color.BLACK
+            textSize = 8f
+            typeface = tf
+        }
+    }
+    CompositionLocalProvider(LocalPixelFontPaint provides textPaint) {
+        content()
     }
 }
 
@@ -129,6 +158,12 @@ class PixelDrawScope(private val drawScope: DrawScope) : DrawScope by drawScope 
                     this.textSize = fontSize.toPx()
                 },
             )
+        }
+    }
+
+    fun drawPixelText(text: String, topLeft: Offset, paint: NativePaint) {
+        drawIntoCanvas {
+            it.nativeCanvas.drawText(text, topLeft.x, topLeft.y + 8f, paint)
         }
     }
 }
