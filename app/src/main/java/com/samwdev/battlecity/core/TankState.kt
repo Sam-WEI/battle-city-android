@@ -101,6 +101,7 @@ class TankState(
         ).also {
             playerTankId = it.id
             addTank(idGen.get(), it)
+            mapState.deductPlayerLife() // todo use prev player tank
         }
     }
 
@@ -121,7 +122,10 @@ class TankState(
             side = TankSide.Bot,
             hasPowerUp = hasPowerUp,
             timeToSpawn = 1500,
-        ).also { addTank(idGen.get(), it) }
+        ).also {
+            addTank(idGen.get(), it)
+            mapState.deductRemainingBot()
+        }
     }
 
     private fun getAvailableSpawnSpot(): Offset? {

@@ -1,7 +1,7 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.entity.StageConfigJson
+import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -9,16 +9,30 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun rememberBattleState(
+    stageConfig: StageConfig,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    stageConfigJson: StageConfigJson,
     soundState: SoundState = rememberSoundState(coroutine = coroutineScope),
     explosionState: ExplosionState = rememberExplosionState(),
     tickState: TickState = rememberTickState(),
-    mapState: MapState = rememberMapState(mapElements = MapParser.parse(stageConfigJson).map),
+    mapState: MapState = rememberMapState(stageConfig = stageConfig),
     powerUpState: PowerUpState = rememberPowerUpState(mapState = mapState),
-    tankState: TankState = rememberTankState(explosionState = explosionState, soundState = soundState, mapState = mapState, powerUpState = powerUpState),
-    bulletState: BulletState = rememberBulletState(mapState = mapState, tankState = tankState, explosionState = explosionState, soundState = soundState),
-    botState: BotState = rememberBotState(tankState = tankState, bulletState = bulletState, mapState = mapState),
+    tankState: TankState = rememberTankState(
+        explosionState = explosionState,
+        soundState = soundState,
+        mapState = mapState,
+        powerUpState = powerUpState,
+    ),
+    bulletState: BulletState = rememberBulletState(
+        mapState = mapState,
+        tankState = tankState,
+        explosionState = explosionState,
+        soundState = soundState,
+    ),
+    botState: BotState = rememberBotState(
+        tankState = tankState,
+        bulletState = bulletState,
+        mapState = mapState,
+    ),
     handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
 ): BattleState {
     return remember {

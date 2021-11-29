@@ -13,13 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.entity.StageConfigJson
+import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @ExperimentalAnimationApi
 @Composable
-fun BattleScreen(stageConfigJson: StageConfigJson) {
-    val battleState: BattleState = rememberBattleState(stageConfigJson = stageConfigJson)
+fun BattleScreen(stageConfig: StageConfig) {
+    val battleState: BattleState = rememberBattleState(stageConfig = stageConfig)
     var debugConfig: DebugConfig by remember {
         mutableStateOf(DebugConfig(
             showFps = true,
@@ -49,7 +49,12 @@ fun BattleScreen(stageConfigJson: StageConfigJson) {
     CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Hud(botCount = 35, lifeCount = 13, level = 29, modifier = Modifier.background(Color(117, 117, 117)))
+                Hud(
+                    botCount = battleState.mapState.remainingBot,
+                    lifeCount = battleState.mapState.remainingPlayerLife,
+                    level = battleState.mapState.mapName,
+                    modifier = Modifier.background(Color(117, 117, 117)),
+                )
 
                 BattleField(
                     modifier = Modifier.fillMaxWidth(),

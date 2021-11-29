@@ -13,12 +13,12 @@ data class StageConfigJson(
 data class StageConfig(
     val name: String,
     val difficulty: Int,
-    val map: MapElements,
+    val map: MapConfig,
     val bots: List<BotGroup>,
     // todo add spawn pos
 )
 
-data class MapElements(
+data class MapConfig(
     val hGridUnitNum: Int,
     val vGridUnitNum: Int,
     val trees: Set<TreeElement>,

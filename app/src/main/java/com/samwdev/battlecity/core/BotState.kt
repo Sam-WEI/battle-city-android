@@ -1,7 +1,6 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import kotlin.random.Random
 
 @Composable
 fun rememberBotState(

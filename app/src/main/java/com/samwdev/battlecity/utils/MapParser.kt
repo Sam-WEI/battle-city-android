@@ -1,18 +1,17 @@
 package com.samwdev.battlecity.utils
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
 import com.samwdev.battlecity.core.TankLevel
 import com.samwdev.battlecity.entity.*
 
 object MapParser {
-    @Composable
-    fun parseJson(index: Int): StageConfigJson {
-        val jsonStr = with (LocalContext.current) {
-            val rawId = resources.getIdentifier("stage_${index}", "raw", packageName)
+    fun readJsonFile(context: Context, name: String): StageConfigJson {
+        val jsonStr = with (context) {
+            val rawId = resources.getIdentifier("stage_${name}", "raw", packageName)
             resources.openRawResource(rawId).readBytes()
         }
         return jacksonObjectMapper().readValue(jsonStr)
@@ -140,7 +139,7 @@ object MapParser {
         return StageConfig(
             name = configJson.name,
             difficulty = configJson.difficulty,
-            map = MapElements(
+            map = MapConfig(
                 hGridUnitNum = hGridUnitNum,
                 vGridUnitNum = vGridUnitNum,
                 trees = trees,

@@ -13,6 +13,7 @@ import com.samwdev.battlecity.ui.components.BattleScreen
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -25,8 +26,12 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launchWhenResumed { soundPlayer.resume() }
         setContent {
             BattleCityTheme {
-//                BattleScreen(MapParser.parseJson(Random.nextInt(1, 36)))
-                BattleScreen(MapParser.parseJson(26))
+                var stageName = Random.nextInt(1, 36).toString()
+//                stageName = 26.toString()
+
+                val json = MapParser.readJsonFile(this, stageName)
+                val stageConfig = MapParser.parse(json)
+                BattleScreen(stageConfig)
             }
         }
     }

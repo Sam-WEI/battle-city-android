@@ -5,16 +5,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
-import com.samwdev.battlecity.entity.MapElements
+import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.entity.SteelElement
+import kotlin.math.max
 
 @Composable
-fun rememberMapState(mapElements: MapElements): MapState {
-    return remember(mapElements) { MapState(mapElements) }
+fun rememberMapState(stageConfig: StageConfig): MapState {
+    return remember(stageConfig) { MapState(stageConfig) }
 }
 
 class MapState(
-    mapElements: MapElements,
+    stageConfig: StageConfig,
 ) : TickListener, GridUnitNumberAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
@@ -33,29 +34,37 @@ class MapState(
     val playerSpawnPosition = DefaultPlayerSpawnPosition
     val botSpawnPositions = DefaultBotSpawnPositions
 
-    val mapDifficulty: Int = 1 // todo default to map config but should bump up after beating all maps
+    private val mapConfig = stageConfig.map
 
-    override val hGridUnitNum: Int = mapElements.hGridUnitNum
-    override val vGridUnitNum: Int = mapElements.vGridUnitNum
+    val mapDifficulty: Int = stageConfig.difficulty // todo default to map config but should bump up after beating all maps
+    override val hGridUnitNum: Int = mapConfig.hGridUnitNum
+    override val vGridUnitNum: Int = mapConfig.vGridUnitNum
 
-    var bricks by mutableStateOf(mapElements.bricks, policy = referentialEqualityPolicy())
+    val mapName: String by mutableStateOf(stageConfig.name)
+    var remainingBot: Int by mutableStateOf(20) // todo factor in difficulty
         private set
 
-    var steels by mutableStateOf(mapElements.steels, policy = referentialEqualityPolicy())
+    var remainingPlayerLife: Int by mutableStateOf(20)
         private set
 
-    var trees by mutableStateOf(mapElements.trees, policy = referentialEqualityPolicy())
+    var bricks by mutableStateOf(mapConfig.bricks, policy = referentialEqualityPolicy())
         private set
 
-    var waters by mutableStateOf(mapElements.waters, policy = referentialEqualityPolicy())
+    var steels by mutableStateOf(mapConfig.steels, policy = referentialEqualityPolicy())
         private set
 
-    var ices by mutableStateOf(mapElements.ices, policy = referentialEqualityPolicy())
+    var trees by mutableStateOf(mapConfig.trees, policy = referentialEqualityPolicy())
         private set
 
-    var eagle by mutableStateOf(mapElements.eagle, policy = referentialEqualityPolicy())
+    var waters by mutableStateOf(mapConfig.waters, policy = referentialEqualityPolicy())
+        private set
 
-    var accessPoints: AccessPoints by mutableStateOf(emptyAccessPoints(mapElements.hGridUnitNum, mapElements.vGridUnitNum))
+    var ices by mutableStateOf(mapConfig.ices, policy = referentialEqualityPolicy())
+        private set
+
+    var eagle by mutableStateOf(mapConfig.eagle, policy = referentialEqualityPolicy())
+
+    var accessPoints: AccessPoints by mutableStateOf(emptyAccessPoints(mapConfig.hGridUnitNum, mapConfig.vGridUnitNum))
         private set
 
     val iceIndexSet: Set<Int> = ices.map { it.index }.toSet()
@@ -169,6 +178,16 @@ class MapState(
 
     fun destroyEagle() {
         eagle = eagle.copy(dead = true)
+    }
+
+    // todo move to better place
+    fun deductRemainingBot() {
+        remainingBot = max(remainingBot - 1, 0)
+    }
+
+    // todo move to better place
+    fun deductPlayerLife() {
+        remainingPlayerLife -= 1
     }
 
     private fun wrapEagleWithSteels() {
