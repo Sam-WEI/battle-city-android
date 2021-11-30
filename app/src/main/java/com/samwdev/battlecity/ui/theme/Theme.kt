@@ -5,11 +5,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = Color.White,
+    primaryVariant = Color(145, 79, 26),
+    secondary = Color(97, 20, 9),
 )
 
 private val LightColorPalette = lightColors(
@@ -29,12 +30,6 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun BattleCityTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
     MaterialTheme(
         colors = DarkColorPalette,
         typography = Typography,
