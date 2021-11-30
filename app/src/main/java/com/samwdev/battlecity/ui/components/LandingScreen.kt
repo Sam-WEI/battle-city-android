@@ -1,68 +1,94 @@
 package com.samwdev.battlecity.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.withSaveLayer
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.Direction
+import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.entity.BrickElement
 
-private const val gridUnitNum = 18
+private const val gridUnitNum = 16
 
 @Composable
 fun LandingScreen() {
-    PixelTextPaintScope {
-        val textPaint = LocalPixelFontPaint.current.apply {
-            color = android.graphics.Color.WHITE
+    var selectionIndex: Int by remember { mutableStateOf(0) }
+    Grid(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .background(Color.Black),
+        gridUnitNum = gridUnitNum,
+    ) {
+        PixelText(text = "I-    00 HI- 20000", charHeight = 0.5f.grid2mpx, topLeft = Offset(1f.grid2mpx, 1f.grid2mpx))
+
+        BrickTitle(
+            Modifier
+                .offset(0f.grid2mpx.mpx2dp, 2f.grid2mpx.mpx2dp)
+                .scale(6f / 8f))
+
+        val menuItems = listOf("1 PLAYER", "2 PLAYERS", "STAGES")
+
+        menuItems.forEachIndexed { i, text ->
+            PixelText(
+                text = text,
+                charHeight = 0.5f.grid2mpx,
+                topLeft = Offset(6.grid2mpx, (10 + i).grid2mpx),
+                onClick = { selectionIndex = i })
         }
-        Grid(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .background(Color.Black),
-            gridUnitNum = gridUnitNum,
+
+        PixelText(text = "© 1980 1985 NAMCO LTD.", charHeight = 0.5f.grid2mpx, topLeft = Offset(3.grid2mpx, (gridUnitNum - 2).grid2mpx))
+        PixelText(text = "  ALL RIGHTS RESERVED", charHeight = 0.5f.grid2mpx, topLeft = Offset(3.grid2mpx, (gridUnitNum - 1).grid2mpx))
+
+        PixelCanvas(
+            topLeftInMapPixel = Offset(5.5f.grid2mpx, 9.7f.grid2mpx + selectionIndex.grid2mpx)
         ) {
-            PixelCanvas(
-                Modifier.fillMaxSize()
-            ) {
-                drawPixelText("I-    00 HI- 20000", topLeft = Offset(1f.grid2mpx, 1f.grid2mpx), textPaint)
-
-                translate(7.grid2mpx, 11.grid2mpx) {
-                    this as PixelDrawScope
-                    drawPixelText("1 PLAYER", topLeft = Offset(0f, 0f), textPaint)
-                    drawPixelText("2 PLAYERS", topLeft = Offset(0f, 1.grid2mpx), textPaint)
-                    drawPixelText("STAGES", topLeft = Offset(0f, 2.grid2mpx), textPaint)
-
-                    translate(left = (-0.8f).grid2mpx, top = (-0.3f).grid2mpx) {
-                        rotate(Direction.Right.degreeF, pivot = Offset.Zero) {
-
-                            this as PixelDrawScope
-                            drawPlayerTankLevel1(0, PlayerYellowPalette)
-                        }
-                    }
-                }
-
-                translate(3.grid2mpx, (gridUnitNum - 2).grid2mpx) {
-                    this as PixelDrawScope
-                    drawPixelText("© 1980 1985 NAMCO LTD.", topLeft = Offset(0f, 0f), textPaint)
-                    drawPixelText("  ALL RIGHTS RESERVED", topLeft = Offset(0f, 1.grid2mpx), textPaint)
-                }
+            drawForDirection(Direction.Right) {
+                this as PixelDrawScope
+                drawPlayerTankLevel1(0, PlayerYellowPalette)
             }
-
-            BrickTitle(Modifier.offset(0f.grid2mpx.mpx2dp, 2f.grid2mpx.mpx2dp).scale(6f / 8f).background(Color.Red))
-
         }
+    }
+}
 
+@Composable
+fun PixelText(
+    text: String,
+    charHeight: MapPixel,
+    topLeft: Offset,
+    modifier: Modifier = Modifier,
+    textColor: Color = Color.White,
+    onClick: () -> Unit = {},
+) {
+    val charHeightDp = charHeight.mpx2dp
+    val fontScale = LocalDensity.current.fontScale
+    val charHeightSp = (charHeightDp / fontScale).value.sp // factor out possible font scale
+    Box(
+        modifier = modifier
+            .offset(topLeft.x.mpx2dp, topLeft.y.mpx2dp)
+            .clickable { onClick() }
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = charHeightSp,
+        )
     }
 }
 
@@ -78,35 +104,41 @@ private val Bricks: Set<BrickElement> = mutableSetOf<BrickElement>().apply {
 
 @Composable
 fun BrickTitle(modifier: Modifier) {
-    val textPaint = LocalPixelFontPaint.current
-    Grid(
-        modifier = modifier
-            .wrapContentSize(),
-        gridUnitNum = 12,
-    ) {
-        PixelCanvas(
-            widthInMapPixel = 12.grid2mpx,
-            heightInMapPixel = 5.grid2mpx
+    val hGrid = 12
+    val vGrid = 5
+    // the masked bricks take up 12x5 grids.
+    PixelTextPaintScope {
+        val textPaint = LocalPixelFontPaint.current
+        Grid(
+            modifier = modifier.wrapContentSize(),
+            gridUnitNum = hGrid,
         ) {
-            Bricks.forEach { element ->
-                val offset = element.offsetInMapPixel
-                translate(offset.x, offset.y) {
-                    this as PixelDrawScope
-                    drawBrickElement(element, groutColor = Color.White)
+            PixelCanvas(
+                widthInMapPixel = hGrid.grid2mpx,
+                heightInMapPixel = vGrid.grid2mpx,
+            ) {
+                Bricks.forEach { element ->
+                    val offset = element.offsetInMapPixel
+                    translate(offset.x, offset.y) {
+                        this as PixelDrawScope
+                        drawBrickElement(element, groutColor = Color.White)
+                    }
                 }
-            }
-
-            scale(4f, pivot = Offset.Zero) {
-                this as PixelDrawScope
-                drawIntoCanvas {
-                    it.withSaveLayer(
-                        Rect(Offset.Zero, Size(3f.grid2mpx, 1.25f.grid2mpx)), // 2 letters take up 1 grid width, so BATTLE takes up 3
-                        Paint().apply { blendMode = BlendMode.DstIn }
-                    ) {
-                        drawPixelText("BATTLE", Offset.Zero, textPaint)
-                        // CITY is shifted to the right for 1 letter that takes up 0.5 grid;
-                        // It's also shifted down 1.5 letter height, where 1 letter height is also 0.5 grid.
-                        drawPixelText("CITY", Offset(0.5f.grid2mpx, 0.75f.grid2mpx), textPaint)
+                // Each letter sits in a square that originally is as big as 1/2 * 1/2 whole brick.
+                // For the brick title, each letter contains 2x2 whole bricks, resulting in a scale of 4.
+                val scale = 4f
+                scale(scale, pivot = Offset.Zero) {
+                    this as PixelDrawScope
+                    drawIntoCanvas {
+                        it.withSaveLayer(
+                            Rect(Offset.Zero, Size((hGrid / scale).grid2mpx, (vGrid / scale).grid2mpx)),
+                            Paint().apply { blendMode = BlendMode.DstIn }
+                        ) {
+                            drawPixelText("BATTLE", Offset.Zero, textPaint)
+                            // CITY is shifted to the right for 1 letter that takes up 2 whole bricks;
+                            // It's also shifted down 1.5 letter height, which is 3 whole bricks.
+                            drawPixelText("CITY", Offset((2 / scale).grid2mpx, (3 / scale).grid2mpx), textPaint)
+                        }
                     }
                 }
             }
