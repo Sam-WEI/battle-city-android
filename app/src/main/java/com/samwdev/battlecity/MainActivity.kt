@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.samwdev.battlecity.core.SoundPlayer
+import com.samwdev.battlecity.ui.components.BattleCityApp
 import com.samwdev.battlecity.ui.components.BattleScreen
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.MapParser
@@ -25,14 +26,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launchWhenStarted { soundPlayer.init(this@MainActivity) }
         lifecycleScope.launchWhenResumed { soundPlayer.resume() }
         setContent {
-            BattleCityTheme {
-                var stageName = Random.nextInt(1, 36).toString()
-                stageName = 2.toString()
-
-                val json = MapParser.readJsonFile(this, stageName)
-                val stageConfig = MapParser.parse(json)
-                BattleScreen(stageConfig)
-            }
+            BattleCityApp()
         }
     }
 
