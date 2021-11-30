@@ -32,14 +32,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = Library.composeVersion
-        kotlinCompilerVersion = "1.5.30"
     }
     packagingOptions {
         resources {
@@ -49,20 +47,20 @@ android {
 }
 
 dependencies {
-
     implementation(Library.ANDROIDX_CORE)
     implementation(Library.ANDROIDX_APPCOMPAT)
     implementation(Library.MATERIAL)
-    implementation(Library.COMPOSE_UI)
     implementation(Library.ANDROIDX_LIFECYCLE_VIEW_MODEL)
-    implementation("androidx.compose.material:material:${Library.composeVersion}")
-    implementation("androidx.compose.ui:ui-tooling-preview:${Library.composeVersion}")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation("androidx.activity:activity-compose:1.3.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+    implementation(Library.COMPOSE_UI)
+    implementation(Library.COMPOSE_MATERIAL)
+    implementation(Library.COMPOSE_UI_TOOLING_PREVIEW)
+    implementation(Library.COMPOSE_ACTIVITY)
+    implementation(Library.COMPOSE_NAVIGATION)
+    implementation(Library.ANDROIDX_LIFECYCLE_RUNTIME_KTX)
+    implementation(Library.JACKSON_MODULE_KOTLIN)
+    debugImplementation(Library.COMPOSE_UI_TOOLING)
     testImplementation(Library.JUNIT)
     androidTestImplementation(Library.ANDROIDX_TEST_JUNIT)
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation(Library.ESPRESSO_CORE)
     androidTestImplementation(Library.COMPOSE_UI_TEST_JUNIT)
-    debugImplementation("androidx.compose.ui:ui-tooling:${Library.composeVersion}")
 }
