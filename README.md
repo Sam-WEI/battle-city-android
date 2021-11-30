@@ -13,12 +13,12 @@
 [x] Drive on ice
 [x] Debug control panel
 [ ] Map selection
-[ ] HUD
+[X] HUD
 [ ] Scoreboard
-[ ] Font
+[X] Font
 [ ] Menu screens
 [ ] Map editor
-[ ] AI
+[X] AI
 [x] N-in-1 Map
 [ ] Online
 
