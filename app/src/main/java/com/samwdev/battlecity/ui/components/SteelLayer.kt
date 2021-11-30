@@ -32,31 +32,31 @@ fun SteelLayer(steels: Set<SteelElement>) {
     }
 }
 
-private val steelColorCenter = Color.White
-private val steelColorLight = Color(163, 163, 163)
-private val steelColorDark = Color(88, 88, 88)
+private val SteelColorCenter = Color.White
+private val SteelColorLight = Color(163, 163, 163)
+private val SteelColorDark = Color(88, 88, 88)
 
 private fun PixelDrawScope.drawSteelElement(element: SteelElement, drawIndex: Boolean) {
     drawSquare(
-        color = steelColorLight,
+        color = SteelColorLight,
         topLeft = Offset(0f, 0f),
         side = SteelElement.elementSize,
     )
     drawSquare(
-        color = steelColorDark,
+        color = SteelColorDark,
         topLeft = Offset(2f, 2f),
         side = 6f,
     )
     drawPixel(
-        color = steelColorDark,
+        color = SteelColorDark,
         topLeft = Offset(7f, 1f),
     )
     drawPixel(
-        color = steelColorDark,
+        color = SteelColorDark,
         topLeft = Offset(1f, 7f),
     )
     drawSquare(
-        color = steelColorCenter,
+        color = SteelColorCenter,
         topLeft = Offset(2f, 2f),
         side = 4f,
     )
