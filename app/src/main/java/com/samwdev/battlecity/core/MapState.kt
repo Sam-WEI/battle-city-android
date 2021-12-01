@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.entity.MapDifficulty
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.entity.SteelElement
 import kotlin.math.max
@@ -36,11 +37,13 @@ class MapState(
 
     private val mapConfig = stageConfig.map
 
-    val mapDifficulty: Int = stageConfig.difficulty // todo default to map config but should bump up after beating all maps
+    val botGroups = stageConfig.bots
+    val mapDifficulty: MapDifficulty = stageConfig.difficulty // todo default to map config but should bump up after beating all maps
     override val hGridUnitNum: Int = mapConfig.hGridUnitNum
     override val vGridUnitNum: Int = mapConfig.vGridUnitNum
 
     val mapName: String by mutableStateOf(stageConfig.name)
+    
     var remainingBot: Int by mutableStateOf(20) // todo factor in difficulty
         private set
 
