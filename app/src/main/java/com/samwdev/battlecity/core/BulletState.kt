@@ -77,7 +77,7 @@ class BulletState(
         }
         tankState.startFireCooldown(tank.id)
         if (tank.side == TankSide.Player) {
-            soundState.playSound(SoundEffect.BulletShot)
+            soundState.playSound(SoundEffect.Shoot)
         }
     }
 
@@ -128,7 +128,7 @@ class BulletState(
             val hitAnyBricks = brickIndices.anyRealElements(mapState.bricks)
             if (hitAnyBricks) {
                 if (bullet.side == TankSide.Player) {
-                    soundState.playSound(SoundEffect.BulletHitBrick)
+                    soundState.playSound(SoundEffect.HitBrick)
                 }
                 mapState.destroyBricksIndex(brickIndices.toSet())
             }
@@ -136,7 +136,7 @@ class BulletState(
             val hitAnySteels = steelIndices.anyRealElements(mapState.steels)
             if (hitAnySteels) {
                 if (bullet.side == TankSide.Player) {
-                    soundState.playSound(SoundEffect.BulletHitSteel)
+                    soundState.playSound(SoundEffect.HitSteelOrBorder)
                 }
                 if (bullet.power >= SteelElement.strength) {
                     mapState.destroySteelsIndex(steelIndices.toSet())
@@ -146,14 +146,14 @@ class BulletState(
             if (impactArea.overlaps(mapState.eagle.rect)) {
                 // can be either a direct hit or an AOE impact.
                 mapState.destroyEagle()
-                soundState.playSound(SoundEffect.Explosion2)
+                soundState.playSound(SoundEffect.ExplosionPlayer)
             }
             // todo check if impact area affects tanks
 
             when (firstCollision) {
                 is HitBorderInfo -> {
                     if (bullet.side == TankSide.Player) {
-                        soundState.playSound(SoundEffect.BulletHitSteel)
+                        soundState.playSound(SoundEffect.HitSteelOrBorder)
                     }
                 }
                 is HitTankInfo -> {
@@ -161,7 +161,7 @@ class BulletState(
                     if (bullet.side == TankSide.Player
                         && firstCollision.tank.side == TankSide.Bot
                         && afterHit.isAlive) {
-                        soundState.playSound(SoundEffect.BulletHitSteel) // todo should be a special dink sound
+                        soundState.playSound(SoundEffect.HitArmor)
                     }
                     tankState.hit(bullet, firstCollision.tank)
                 }

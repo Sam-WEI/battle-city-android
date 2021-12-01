@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.core.SoundEffect
+import com.samwdev.battlecity.core.SoundPlayer
 import com.samwdev.battlecity.core.TankLevel
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -32,7 +34,7 @@ fun ScoreboardScreen() {
     )
     val frameList = remember(totalScore, count) {
         var lastFrameScore = ScoreDisplayData(totalScore = 20000)
-        val frames = mutableListOf(lastFrameScore to 500)
+        val frames = mutableListOf(ScoreDisplayFrame(lastFrameScore, 500))
         count.entries.forEach { (lvl, num) ->
             repeat(num + 1) { i ->
                 val score = when (lvl) {
@@ -42,15 +44,15 @@ fun ScoreboardScreen() {
                     TankLevel.Level4 -> lastFrameScore.copy(level4Num = i)
                 }
                 if (num == 0) {
-                    frames.add(score to 100)
+                    frames.add(ScoreDisplayFrame(score, 100))
                 } else if (i > 0) {
-                    frames.add(score to 150)
+                    frames.add(ScoreDisplayFrame(score, 150, SoundEffect.ScoreboardTick))
                 }
                 lastFrameScore = score
             }
-            frames.add(lastFrameScore to 500)
+            frames.add(ScoreDisplayFrame(lastFrameScore, 500))
         }
-        frames.add(lastFrameScore.copy(totalNum = count.values.sum()) to 0) // total
+        frames.add(ScoreDisplayFrame(lastFrameScore.copy(totalNum = count.values.sum()), 0)) // total
         frames.toList()
     }
 
@@ -59,9 +61,10 @@ fun ScoreboardScreen() {
     val coroutine = rememberCoroutineScope()
     LaunchedEffect(count) {
         coroutine.launch {
-            frameList.forEach { (score, delay) ->
+            frameList.forEach { (score, delay, soundEffect) ->
                 displayScoreData = score
-                delay(delay.toLong())
+                soundEffect?.let { SoundPlayer.INSTANCE.play(it) }
+                delay(delay)
             }
         }
     }
@@ -256,6 +259,12 @@ private fun PlayerInfo(displayData: ScoreDisplayData, modifier: Modifier) {
         )
     }
 }
+
+private data class ScoreDisplayFrame(
+    val data: ScoreDisplayData,
+    val delay: Long,
+    val soundEffect: SoundEffect? = null,
+)
 
 private data class ScoreDisplayData(
     val totalScore: Int,
