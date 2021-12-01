@@ -138,7 +138,7 @@ object MapParser {
 
         return StageConfig(
             name = configJson.name,
-            difficulty = configJson.difficulty,
+            difficulty = MapDifficulty.of(configJson.difficulty),
             map = MapConfig(
                 hGridUnitNum = hGridUnitNum,
                 vGridUnitNum = vGridUnitNum,
