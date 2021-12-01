@@ -30,7 +30,11 @@ fun LandingScreen() {
             .background(Color.Black),
         gridUnitNum = gridUnitNum,
     ) {
-        PixelText(text = "I-    00 HI- 20000", charHeight = 0.5f.grid2mpx, topLeft = Offset(1f.grid2mpx, 1f.grid2mpx))
+        PixelText(
+            text = "I-    00 HI- 20000",
+            charHeight = 0.5f.grid2mpx,
+            topLeft = Offset(1f.grid2mpx, 1f.grid2mpx)
+        )
 
         BrickTitle("BATTLE", "CITY",
             modifier = Modifier
@@ -43,12 +47,20 @@ fun LandingScreen() {
             PixelText(
                 text = text,
                 charHeight = 0.5f.grid2mpx,
-                topLeft = Offset(6.grid2mpx, (10 + i).grid2mpx),
-                onClick = { selectionIndex = i })
+                topLeft = Offset(6.grid2mpx, (10 + i).grid2mpx)
+            ) { selectionIndex = i }
         }
 
-        PixelText(text = "© 1980 1985 NAMCO LTD.", charHeight = 0.5f.grid2mpx, topLeft = Offset(3.grid2mpx, (gridUnitNum - 2).grid2mpx))
-        PixelText(text = "  ALL RIGHTS RESERVED", charHeight = 0.5f.grid2mpx, topLeft = Offset(3.grid2mpx, (gridUnitNum - 1).grid2mpx))
+        PixelText(
+            text = "© 1980 1985 NAMCO LTD.",
+            charHeight = 0.5f.grid2mpx,
+            topLeft = Offset(3.grid2mpx, (gridUnitNum - 2).grid2mpx)
+        )
+        PixelText(
+            text = "  ALL RIGHTS RESERVED",
+            charHeight = 0.5f.grid2mpx,
+            topLeft = Offset(3.grid2mpx, (gridUnitNum - 1).grid2mpx)
+        )
 
         PixelCanvas(
             topLeftInMapPixel = Offset(5.5f.grid2mpx, 9.7f.grid2mpx + selectionIndex.grid2mpx)
@@ -65,8 +77,8 @@ fun LandingScreen() {
 fun PixelText(
     text: String,
     charHeight: MapPixel,
-    topLeft: Offset,
     modifier: Modifier = Modifier,
+    topLeft: Offset = Offset.Zero,
     textColor: Color = Color.White,
     onClick: () -> Unit = {},
 ) {

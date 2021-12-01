@@ -144,6 +144,13 @@ enum class TankLevel {
     }
 }
 
+val TankLevel.killScore: Int get() = when (this) {
+    TankLevel.Level1 -> 100
+    TankLevel.Level2 -> 200
+    TankLevel.Level3 -> 300
+    TankLevel.Level4 -> 400
+}
+
 private val Tank.specs: TankSpecs get() = getTankSpecs(side, level)
 
 fun getTankSpecs(side: TankSide, level: TankLevel) =
