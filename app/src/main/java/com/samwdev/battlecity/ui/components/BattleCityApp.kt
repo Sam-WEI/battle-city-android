@@ -26,13 +26,19 @@ fun BattleCityApp() {
         val stageConfig = MapParser.parse(json)
         NavHost(
             navController = appState.navController,
-            startDestination = Route.Home,
+            startDestination = Route.Scoreboard,
         ) {
             composable(Route.Home) {
                 LandingScreen()
             }
             composable(Route.BattleScreen) {
                 BattleScreen(stageConfig)
+            }
+            composable(Route.Scoreboard) {
+                ScoreboardScreen()
+            }
+            composable(Route.GameOver) {
+                GameOverScreen()
             }
         }
     }
