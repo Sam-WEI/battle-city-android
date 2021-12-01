@@ -49,13 +49,17 @@ class SoundPlayer private constructor() {
 }
 
 enum class SoundEffect(@RawRes val resId: Int) {
-    BulletHitSteel(R.raw.bullet_hit_steel),
-    BulletHitBrick(R.raw.bullet_hit_brick),
-    BulletShot(R.raw.bullet_shot),
-    Explosion1(R.raw.explosion_1),
-    Explosion2(R.raw.explosion_2),
+    HitSteelOrBorder(R.raw.hit_steel_border),
+    HitBrick(R.raw.hit_brick),
+    HitArmor(R.raw.hit_armor),
+    Shoot(R.raw.shoot),
+    ExplosionBot(R.raw.bot_explosion),
+    ExplosionPlayer(R.raw.player_explosion),
     GameOver(R.raw.game_over),
     Pause(R.raw.pause),
-    PowerUpAppear(R.raw.powerup_appear),
-    PowerUpPick(R.raw.powerup_pick),
+    SpawnPowerUp(R.raw.spawn_power_up),
+    PickUpPowerUp(R.raw.pick_up_power_up),
+    ScoreboardTick(R.raw.scoreboard_tick),
+    DriveOnIce(R.raw.drive_on_ice),
+    PickUpLifePowerUp(R.raw.pick_up_life_power_up),
 }

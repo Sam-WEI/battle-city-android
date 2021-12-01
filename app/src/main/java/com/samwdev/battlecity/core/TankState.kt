@@ -150,7 +150,7 @@ class TankState(
             it.id
         }.toSet()
         if (killedBots.isNotEmpty()) {
-            soundState.playSound(SoundEffect.Explosion1)
+            soundState.playSound(SoundEffect.ExplosionBot)
         }
         tanks = tanks.filter { it.key !in killedBots }
     }
@@ -163,7 +163,7 @@ class TankState(
 
         if (tank.hasPowerUp) {
             powerUpState.spawnPowerUp()
-            soundState.playSound(SoundEffect.PowerUpAppear)
+            soundState.playSound(SoundEffect.SpawnPowerUp)
         }
 
         val updatedTank = tank.hitBy(bullet)
@@ -172,9 +172,9 @@ class TankState(
         if (updatedTank.isDead) {
             explosionState.spawnExplosion(tank.center, ExplosionAnimationBig)
             if (tank.side == TankSide.Bot) {
-                soundState.playSound(SoundEffect.Explosion1)
+                soundState.playSound(SoundEffect.ExplosionBot)
             } else {
-                soundState.playSound(SoundEffect.Explosion2)
+                soundState.playSound(SoundEffect.ExplosionPlayer)
             }
             killTank(tank.id)
         }
@@ -325,25 +325,30 @@ class TankState(
     }
 
     private fun pickUpPowerUp(tank: Tank, powerUpEnum: PowerUpEnum) {
-        soundState.playSound(SoundEffect.PowerUpPick)
         when (powerUpEnum) {
             PowerUpEnum.Helmet -> {
                 updateTank(tank.id, tank.shieldOn(ShieldDuration))
+                soundState.playSound(SoundEffect.PickUpPowerUp)
             }
             PowerUpEnum.Star -> {
                 updateTank(tank.id, tank.levelUp())
+                soundState.playSound(SoundEffect.PickUpPowerUp)
             }
             PowerUpEnum.Grenade -> {
                 killAllBots()
+                soundState.playSound(SoundEffect.PickUpPowerUp)
             }
             PowerUpEnum.Tank -> {
                 mapState.addPlayerLife()
+                soundState.playSound(SoundEffect.PickUpLifePowerUp)
             }
             PowerUpEnum.Shovel -> {
                 fortifyBase()
+                soundState.playSound(SoundEffect.PickUpPowerUp)
             }
             PowerUpEnum.Timer -> {
                 remainingBotFrozenTime = FrozenDuration
+                soundState.playSound(SoundEffect.PickUpPowerUp)
             }
         }
     }
