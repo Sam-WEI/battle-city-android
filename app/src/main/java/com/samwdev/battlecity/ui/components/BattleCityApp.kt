@@ -28,11 +28,11 @@ fun BattleCityApp() {
         val stageConfig = MapParser.parse(json)
         NavHost(
             navController = appState.navController,
-            startDestination = Route.BattleScreen,
+            startDestination = Route.Landing,
         ) {
-            composable(Route.Home) {
+            composable(Route.Landing) {
                 LandingScreen { menuItem ->
-
+                    // todo
                 }
             }
             composable(Route.BattleScreen) {
