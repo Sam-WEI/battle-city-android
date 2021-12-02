@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -17,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.Direction
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.grid2mpx
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val gridUnitNum = 16
 
@@ -29,7 +32,29 @@ enum class LandingScreenMenuItem(val title: String) {
 
 @Composable
 fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
-    var selectionIndex: Int by remember { mutableStateOf(0) }
+    val fistMenuItemPos = Offset(6.grid2mpx, 9.5f.grid2mpx)
+    var selectedMenuItem: LandingScreenMenuItem by remember { mutableStateOf(LandingScreenMenuItem.Player1) }
+    var selected: Boolean by remember { mutableStateOf(false) }
+
+    var menuVisibility: Map<LandingScreenMenuItem, Boolean> by remember {
+        mutableStateOf(LandingScreenMenuItem.values().associateWith { true })
+    }
+
+    LaunchedEffect(selectedMenuItem, selected) {
+        if (selected) {
+            launch {
+                var i = 0
+                while (i < 4) {
+                    menuVisibility = menuVisibility.toMutableMap().apply {
+                        this[selectedMenuItem] = i % 2 == 1
+                    }
+                    i++
+                    delay(150)
+                }
+                onMenuSelect(selectedMenuItem)
+            }
+        }
+    }
 
     Grid(
         modifier = Modifier
@@ -53,11 +78,13 @@ fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
             PixelText(
                 text = menu.title,
                 charHeight = 0.5f.grid2mpx,
-                topLeft = Offset(6.grid2mpx, (10 + i).grid2mpx)
+                topLeft = fistMenuItemPos + Offset(0f, i.grid2mpx),
+                modifier = Modifier.alpha(if (menuVisibility.getValue(menu)) 1f else 0f)
             ) {
-                selectionIndex = i
-                // todo play some blink anim
-                onMenuSelect(menu)
+                if (!selected) {
+                    selectedMenuItem = menu
+                    selected = true
+                }
             }
         }
 
@@ -73,7 +100,7 @@ fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
         )
 
         PixelCanvas(
-            topLeftInMapPixel = Offset(5.5f.grid2mpx, 9.7f.grid2mpx + selectionIndex.grid2mpx)
+            topLeftInMapPixel = fistMenuItemPos + Offset((-0.5f).grid2mpx,(-0.3f).grid2mpx + (selectedMenuItem.ordinal).grid2mpx)
         ) {
             drawForDirection(Direction.Right) {
                 this as PixelDrawScope
