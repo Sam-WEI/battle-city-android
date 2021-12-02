@@ -43,7 +43,7 @@ class MapState(
     override val vGridUnitNum: Int = mapConfig.vGridUnitNum
 
     val mapName: String by mutableStateOf(stageConfig.name)
-    
+
     var remainingBot: Int by mutableStateOf(20) // todo factor in difficulty
         private set
 

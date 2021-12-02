@@ -4,8 +4,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.samwdev.battlecity.core.Route
 import com.samwdev.battlecity.core.rememberAppState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -29,13 +31,21 @@ fun BattleCityApp() {
             startDestination = Route.BattleScreen,
         ) {
             composable(Route.Home) {
-                LandingScreen()
+                LandingScreen { menuItem ->
+
+                }
             }
             composable(Route.BattleScreen) {
                 BattleScreen(stageConfig)
             }
-            composable(Route.Scoreboard) {
-                ScoreboardScreen()
+            composable(
+                Route.Scoreboard,
+                arguments = listOf(navArgument("scoreData") {
+                    this.nullable = false
+                    this.type = NavType.SerializableType(ScoreboardScreenArg::class.java)
+                })) { backStackEntry ->
+                val arg = backStackEntry.arguments!!.getSerializable("scoreData") as ScoreboardScreenArg
+                ScoreboardScreen(arg)
             }
             composable(Route.GameOver) {
                 GameOverScreen()

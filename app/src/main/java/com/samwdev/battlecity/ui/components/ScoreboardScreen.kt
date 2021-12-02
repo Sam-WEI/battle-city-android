@@ -19,23 +19,17 @@ import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 private val ColorRed = Color(210, 81, 65)
 private val ColorOrange = Color(241, 176, 96)
 
 @Composable
-fun ScoreboardScreen() {
-    val totalScore = 20000
-    val count = mapOf(
-        TankLevel.Level1 to 15,
-        TankLevel.Level2 to 2,
-        TankLevel.Level3 to 0,
-        TankLevel.Level4 to 0,
-    )
-    val frameList = remember(totalScore, count) {
-        var lastFrameScore = ScoreDisplayData(totalScore = 20000)
+fun ScoreboardScreen(arg: ScoreboardScreenArg) {
+    val frameList = remember(arg) {
+        var lastFrameScore = ScoreDisplayData(totalScore = arg.totalScore)
         val frames = mutableListOf(ScoreDisplayFrame(lastFrameScore, 500))
-        count.entries.forEach { (lvl, num) ->
+        arg.killCount.entries.forEach { (lvl, num) ->
             repeat(num + 1) { i ->
                 val score = when (lvl) {
                     TankLevel.Level1 -> lastFrameScore.copy(level1Num = i)
@@ -52,14 +46,16 @@ fun ScoreboardScreen() {
             }
             frames.add(ScoreDisplayFrame(lastFrameScore, 500))
         }
-        frames.add(ScoreDisplayFrame(lastFrameScore.copy(totalNum = count.values.sum()), 0)) // total
+        frames.add(ScoreDisplayFrame(
+            lastFrameScore.copy(totalNum = arg.killCount.values.sum()), 0)
+        ) // total
         frames.toList()
     }
 
     var displayScoreData by remember { mutableStateOf(ScoreDisplayData(totalScore = 20000)) }
 
     val coroutine = rememberCoroutineScope()
-    LaunchedEffect(count) {
+    LaunchedEffect(arg) {
         coroutine.launch {
             frameList.forEach { (score, delay, soundEffect) ->
                 displayScoreData = score
@@ -260,6 +256,11 @@ private fun PlayerInfo(displayData: ScoreDisplayData, modifier: Modifier) {
     }
 }
 
+data class ScoreboardScreenArg(
+    val totalScore: Int,
+    val killCount: Map<TankLevel, Int>,
+) : Serializable
+
 private data class ScoreDisplayFrame(
     val data: ScoreDisplayData,
     val delay: Long,
@@ -285,9 +286,6 @@ private data class ScoreDisplayData(
     val level4ScoreText: String get() = level4Num?.let { it * 400 }?.toString() ?: ""
 
     val totalNumText: String get() = totalNum?.toString() ?: ""
-//        if (level1Num != null && level2Num != null && level3Num != null && level4Num != null) {
-//            (level1Num + level2Num + level3Num + level4Num).toString()
-//        } else { "" }
 }
 
 @Preview
@@ -295,7 +293,17 @@ private data class ScoreDisplayData(
 private fun ScoreboardScreenPreview() {
     BattleCityTheme {
         Box(modifier = Modifier.size(500.dp)) {
-            ScoreboardScreen()
+            ScoreboardScreen(
+                ScoreboardScreenArg(
+                    totalScore = 23456,
+                    killCount = mapOf(
+                        TankLevel.Level1 to 5,
+                        TankLevel.Level2 to 0,
+                        TankLevel.Level3 to 10,
+                        TankLevel.Level4 to 8,
+                    )
+                )
+            )
         }
     }
 }

@@ -20,9 +20,17 @@ import com.samwdev.battlecity.core.grid2mpx
 
 private const val gridUnitNum = 16
 
+enum class LandingScreenMenuItem(val title: String) {
+    Player1("1 PLAYER"),
+    Player2("2 PLAYERS"),
+    Stages("STAGES"),
+    Editor("CONSTRUCTION");
+}
+
 @Composable
-fun LandingScreen() {
+fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
     var selectionIndex: Int by remember { mutableStateOf(0) }
+
     Grid(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,14 +49,16 @@ fun LandingScreen() {
                 .offset(0f.grid2mpx.mpx2dp, 2f.grid2mpx.mpx2dp)
                 .scale(6f / 8f))
 
-        val menuItems = listOf("1 PLAYER", "2 PLAYERS", "STAGES")
-
-        menuItems.forEachIndexed { i, text ->
+        LandingScreenMenuItem.values().forEachIndexed { i, menu ->
             PixelText(
-                text = text,
+                text = menu.title,
                 charHeight = 0.5f.grid2mpx,
                 topLeft = Offset(6.grid2mpx, (10 + i).grid2mpx)
-            ) { selectionIndex = i }
+            ) {
+                selectionIndex = i
+                // todo play some blink anim
+                onMenuSelect(menu)
+            }
         }
 
         PixelText(
