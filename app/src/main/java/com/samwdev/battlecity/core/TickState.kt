@@ -16,6 +16,8 @@ class TickState(tick: Tick = Tick.INITIAL) {
         const val MAX_FPS = 120
     }
 
+    private var paused = false
+
     private var lastTick: Tick = tick
     var fps: Int by mutableStateOf(0)
         private set
@@ -34,13 +36,15 @@ class TickState(tick: Tick = Tick.INITIAL) {
     private val _tickFlow: MutableStateFlow<Tick> = MutableStateFlow(Tick.INITIAL)
     val tickFlow: StateFlow<Tick> = _tickFlow
 
-    suspend fun update(now: Long) {
+    private suspend fun update(now: Long) {
         val delta = now - lastTick.uptimeMillis
         if (delta > 1000f / maxFps) {
             val newTick = Tick(now, fixedDelta ?: delta.toInt())
             if (lastTick != Tick.INITIAL) {
-                _tickFlow.emit(newTick)
-                tickCount++
+                if (!paused) {
+                    _tickFlow.emit(newTick)
+                    tickCount++
+                }
             }
             lastTick = newTick
         }
@@ -56,6 +60,10 @@ class TickState(tick: Tick = Tick.INITIAL) {
             val now = withFrameMillis { it }
             update(now)
         }
+    }
+
+    fun pause(b: Boolean) {
+        paused = b
     }
 
     fun fixTickDelta(delta: Int) {

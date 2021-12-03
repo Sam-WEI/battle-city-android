@@ -6,4 +6,8 @@ object Route {
     const val BattleScreen = "battle"
     const val Scoreboard = "scoreboard"
     const val GameOver = "game_over"
+
+    object Key {
+        const val StageId = "stage_id"
+    }
 }
