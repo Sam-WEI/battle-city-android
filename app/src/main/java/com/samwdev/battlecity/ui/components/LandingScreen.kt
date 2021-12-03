@@ -44,12 +44,12 @@ fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
         if (selected) {
             launch {
                 var i = 0
-                while (i < 4) {
+                while (i < 6) {
                     menuVisibility = menuVisibility.toMutableMap().apply {
                         this[selectedMenuItem] = i % 2 == 1
                     }
                     i++
-                    delay(150)
+                    delay(100)
                 }
                 onMenuSelect(selectedMenuItem)
             }

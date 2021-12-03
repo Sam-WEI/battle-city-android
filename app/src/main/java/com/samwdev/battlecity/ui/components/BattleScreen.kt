@@ -12,14 +12,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.samwdev.battlecity.core.BattleViewModel
+import com.samwdev.battlecity.core.DebugConfig
+import com.samwdev.battlecity.core.HandheldController
+import com.samwdev.battlecity.core.HandheldControllerState
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
-fun BattleScreen(stageConfig: StageConfig) {
-    val battleState: BattleState = rememberBattleState(stageConfig = stageConfig)
+fun BattleScreen(
+    stageConfig: StageConfig,
+    battleViewModel: BattleViewModel = viewModel(factory = provideBattleViewModel(stageConfig = stageConfig))
+) {
+    val composeCoroutineScope = rememberCoroutineScope()
+
     var debugConfig: DebugConfig by remember {
         mutableStateOf(DebugConfig(
             showFps = true,
@@ -31,18 +40,22 @@ fun BattleScreen(stageConfig: StageConfig) {
     }
 
     LaunchedEffect(Unit) {
-        battleState.startBattle()
+        composeCoroutineScope.launch {
+            // start() must be run from a compose coroutine scope in order to correctly run the withTimeMillis{} method.
+            // todo find out a better way
+            battleViewModel.start()
+        }
     }
 
     SideEffect {
-        battleState.tickState.maxFps = debugConfig.maxFps
-        battleState.botState.maxBot = debugConfig.maxBot
-        battleState.bulletState.friendlyFire = debugConfig.friendlyFire
-        battleState.tankState.whoIsYourDaddy = debugConfig.whoIsYourDaddy
+        battleViewModel.tickState.maxFps = debugConfig.maxFps
+        battleViewModel.botState.maxBot = debugConfig.maxBot
+        battleViewModel.bulletState.friendlyFire = debugConfig.friendlyFire
+        battleViewModel.tankState.whoIsYourDaddy = debugConfig.whoIsYourDaddy
         if (debugConfig.fixTickDelta) {
-            battleState.tickState.fixTickDelta(debugConfig.tickDelta)
+            battleViewModel.tickState.fixTickDelta(debugConfig.tickDelta)
         } else {
-            battleState.tickState.cancelFixTickDelta()
+            battleViewModel.tickState.cancelFixTickDelta()
         }
     }
 
@@ -50,15 +63,15 @@ fun BattleScreen(stageConfig: StageConfig) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Hud(
-                    botCount = battleState.mapState.remainingBot,
-                    lifeCount = battleState.mapState.remainingPlayerLife,
-                    level = battleState.mapState.mapName,
+                    botCount = battleViewModel.mapState.remainingBot,
+                    lifeCount = battleViewModel.mapState.remainingPlayerLife,
+                    level = battleViewModel.mapState.mapName,
                     modifier = Modifier.background(Color(117, 117, 117)),
                 )
 
                 BattleField(
                     modifier = Modifier.fillMaxWidth(),
-                    battleState = battleState,
+                    battleViewModel = battleViewModel,
                 )
                 Box(
                     modifier = Modifier
@@ -69,12 +82,12 @@ fun BattleScreen(stageConfig: StageConfig) {
                         modifier = Modifier
                             .padding(horizontal = 30.dp, vertical = 60.dp)
                             .fillMaxWidth(),
-                        handheldControllerState = battleState.handheldControllerState,
+                        handheldControllerState = battleViewModel.handheldControllerState,
                     )
 
                     if (LocalDebugConfig.current.showFps) {
                         Text(
-                            text = "FPS ${battleState.tickState.fps}",
+                            text = "FPS ${battleViewModel.tickState.fps}",
                             color = Color.Green,
                             fontSize = 14.sp,
                             modifier = Modifier.align(Alignment.TopEnd)
@@ -87,7 +100,9 @@ fun BattleScreen(stageConfig: StageConfig) {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.BottomEnd),
-                onConfigChange = { debugConfig = it }
+                onConfigChange = {
+                    debugConfig = it
+                }
             )
         }
     }
