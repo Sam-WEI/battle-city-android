@@ -64,7 +64,7 @@ fun BattleCityApp() {
                 val stageId = backStackEntry.arguments?.getString(Route.Key.StageId)!!
                 val json = MapParser.readJsonFile(LocalContext.current, stageId)
                 val stageConfig = MapParser.parse(json)
-                BattleScreen(stageConfig, appState)
+                BattleScreen(appState)
             }
             composable(
                 route = Route.Scoreboard,
@@ -73,7 +73,7 @@ fun BattleCityApp() {
                 val json = MapParser.readJsonFile(LocalContext.current, stageId)
                 val stageConfig = MapParser.parse(json)
                 FullScreenWrapper {
-                    ScoreboardScreen(stageConfig, appState)
+                    ScoreboardScreen(appState)
                 }
             }
             composable(Route.GameOver) {
@@ -96,18 +96,17 @@ fun FullScreenWrapper(content: @Composable BoxScope.() -> Unit) {
 }
 
 @Composable
-fun provideBattleViewModel(appContext: Context, stageConfig: StageConfig, appState: AppState): BattleViewModelFactory {
-    return BattleViewModelFactory(appContext, stageConfig, appState, LocalSavedStateRegistryOwner.current)
+fun provideBattleViewModel(appState: AppState): BattleViewModelFactory {
+    return BattleViewModelFactory(LocalContext.current.applicationContext, appState, LocalSavedStateRegistryOwner.current)
 }
 
 class BattleViewModelFactory(
     private val context: Context,
-    private val stageConfig: StageConfig,
     private val appState: AppState,
     owner: SavedStateRegistryOwner,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-        return BattleViewModel(context as Application, stageConfig, appState, handle) as T
+        return BattleViewModel(context as Application, appState, handle) as T
     }
 }
