@@ -48,7 +48,8 @@ class BattleViewModel(
             mapState.gameEventFlow.collect { event ->
                 Logger.error("Event: $event")
                 if (event == GameOver) {
-                    appState.navController.navigate("${Route.Scoreboard}/${stageConfig.name}")
+                    appState.navController.navigateUp()
+                    appState.navController.navigate(Route.Scoreboard)
 //                    appState.navController.navigate("${Route.BattleScreen}/6") {
 //                        this.launchSingleTop = true
 //                    }
