@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.ui.components
 
+import android.app.Application
+import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -94,17 +96,18 @@ fun FullScreenWrapper(content: @Composable BoxScope.() -> Unit) {
 }
 
 @Composable
-fun provideBattleViewModel(stageConfig: StageConfig, appState: AppState): BattleViewModelFactory {
-    return BattleViewModelFactory(stageConfig, appState, LocalSavedStateRegistryOwner.current)
+fun provideBattleViewModel(appContext: Context, stageConfig: StageConfig, appState: AppState): BattleViewModelFactory {
+    return BattleViewModelFactory(appContext, stageConfig, appState, LocalSavedStateRegistryOwner.current)
 }
 
 class BattleViewModelFactory(
+    private val context: Context,
     private val stageConfig: StageConfig,
     private val appState: AppState,
     owner: SavedStateRegistryOwner,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-        return BattleViewModel(stageConfig, appState, handle) as T
+        return BattleViewModel(context as Application, stageConfig, appState, handle) as T
     }
 }

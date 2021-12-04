@@ -28,7 +28,7 @@ fun BattleScreen(
 ) {
     val battleViewModel: BattleViewModel = viewModel(
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner,
-        factory = provideBattleViewModel(stageConfig = stageConfig, appState = appState)
+        factory = provideBattleViewModel(appContext = LocalContext.current.applicationContext, stageConfig = stageConfig, appState = appState)
     )
     val composeCoroutineScope = rememberCoroutineScope()
 

@@ -14,7 +14,7 @@ class SoundPlayer private constructor() {
         val INSTANCE = SoundPlayer()
     }
 
-    suspend fun init(context: Context) {
+    fun init(context: Context) {
         soundPool = SoundPool.Builder()
             .setAudioAttributes(
                 AudioAttributes.Builder()
@@ -31,19 +31,19 @@ class SoundPlayer private constructor() {
         }
     }
 
-    suspend fun play(soundEffect: SoundEffect) {
+    fun play(soundEffect: SoundEffect) {
         val streamId = soundPool.play(soundIdMap.getValue(soundEffect), 1f, 1f, 0, 0, 1f)
     }
 
-    suspend fun pause() {
+    fun pause() {
         soundPool.autoPause()
     }
 
-    suspend fun resume() {
+    fun resume() {
         soundPool.autoResume()
     }
 
-    suspend fun release() {
+    fun release() {
         soundPool.release()
     }
 }
