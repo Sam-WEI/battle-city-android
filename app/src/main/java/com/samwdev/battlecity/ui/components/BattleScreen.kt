@@ -18,17 +18,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import com.samwdev.battlecity.utils.Logger
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
-fun BattleScreen(
-    stageConfig: StageConfig,
-    appState: AppState,
-) {
+fun BattleScreen(appState: AppState) {
     val battleViewModel: BattleViewModel = viewModel(
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner,
-        factory = provideBattleViewModel(appContext = LocalContext.current.applicationContext, stageConfig = stageConfig, appState = appState)
+        factory = provideBattleViewModel(appState = appState)
     )
     val composeCoroutineScope = rememberCoroutineScope()
 
@@ -46,9 +44,13 @@ fun BattleScreen(
         composeCoroutineScope.launch {
             // start() must be run from a compose coroutine scope in order to correctly run the withTimeMillis{} method.
             // todo find out a better way
+            battleViewModel.initStage("1")
             battleViewModel.start()
         }
     }
+
+    val gameEvent by battleViewModel.gameState.collectAsState()
+    if (gameEvent == GameStatus.Initializing) return
 
     SideEffect {
         battleViewModel.tickState.maxFps = debugConfig.maxFps

@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import com.samwdev.battlecity.utils.Logger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,13 +26,10 @@ private val ColorRed = Color(210, 81, 65)
 private val ColorOrange = Color(241, 176, 96)
 
 @Composable
-fun ScoreboardScreen(
-    stageConfig: StageConfig,
-    appState: AppState,
-) {
+fun ScoreboardScreen(appState: AppState) {
     val battleViewModel: BattleViewModel = viewModel(
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner, // todo
-        factory = provideBattleViewModel(appContext = LocalContext.current, stageConfig = stageConfig, appState = appState)
+        factory = provideBattleViewModel(appState = appState)
     )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
     ScoreboardScreen(data = data)

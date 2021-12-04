@@ -1,25 +1,27 @@
 package com.samwdev.battlecity.core
 
 import android.app.Application
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.Logger
 import com.samwdev.battlecity.utils.MapParser
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class BattleViewModel(
     context: Application,
-    private val stageConfig: StageConfig,
-    private val appState: AppState,
+    val appState: AppState,
     private val savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(context) {
 
-    private var battleState: BattleState
+    private val _gameState: MutableStateFlow<GameStatus> = MutableStateFlow(GameStatus.Initializing)
+    val gameState: StateFlow<GameStatus> = _gameState
+
+    private lateinit var battleState: BattleState
 
     val mapState: MapState get() = battleState.mapState
     val botState: BotState get() = battleState.botState
@@ -32,24 +34,34 @@ class BattleViewModel(
     val handheldControllerState: HandheldControllerState get() = battleState.handheldControllerState
 
     init {
-        battleState = BattleState(stageConfig)
     }
 
-    private fun init(stageName: String) {
-
+    fun initStage(stageName: String) {
+        val json = MapParser.readJsonFile(getApplication(), stageName)
+        val stageConfig = MapParser.parse(json)
+        battleState = BattleState(stageConfig)
+        _gameState.value = GameStatus.Ready
     }
 
     suspend fun start() {
-        battleState.startBattle()
-        viewModelScope.launch {
-            battleState.mapState.gameEventFlow.collect { event ->
-                Logger.error("Event: $event")
-                if (event == GameOver) {
-                    appState.navController.navigateUp()
-                    appState.navController.navigate(Route.Scoreboard)
-//                    appState.navController.navigate("${Route.BattleScreen}/6") {
-//                        this.launchSingleTop = true
-//                    }
+        coroutineScope {
+            launch {
+                battleState.startBattle()
+            }
+            launch(viewModelScope.coroutineContext) {
+                battleState.mapState.gameEventFlow.collect { event ->
+                    Logger.error("Event: $event")
+                    when (event) {
+                        GameOver -> {
+                            appState.navController.navigateUp()
+                            appState.navController.navigate(Route.Scoreboard)
+                        }
+                        MapCleared -> {
+
+                        }
+
+                        else -> {}
+                    }
                 }
             }
         }
@@ -62,4 +74,9 @@ class BattleViewModel(
     fun pause() {
 
     }
+}
+
+enum class GameStatus {
+    Initializing,
+    Ready,
 }
