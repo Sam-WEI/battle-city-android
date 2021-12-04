@@ -11,10 +11,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.StageConfig
+import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -31,6 +34,11 @@ fun ScoreboardScreen(
         factory = provideBattleViewModel(stageConfig = stageConfig, appState = appState)
     )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
+    ScoreboardScreen(data = data)
+}
+
+@Composable
+fun ScoreboardScreen(data: ScoreboardData) {
     val frameList = remember(data) {
         var lastFrameData = ScoreDisplayData(totalScore = data.totalScore)
         val frames = mutableListOf(ScoreDisplayFrame(lastFrameData, 500))
@@ -69,7 +77,11 @@ fun ScoreboardScreen(
             }
         }
     }
+    ScoreboardDataFrame(displayScoreData)
+}
 
+@Composable
+private fun ScoreboardDataFrame(displayData: ScoreDisplayData) {
     Grid(
         gridUnitNum = 15,
         modifier = Modifier
@@ -116,12 +128,12 @@ fun ScoreboardScreen(
                 topLeft = Offset.Zero,
             )
         }
-        Body(displayScoreData)
+        DynamicBody(displayData)
     }
 }
 
 @Composable
-private fun Body(displayData: ScoreDisplayData) {
+private fun DynamicBody(displayData: ScoreDisplayData) {
     Row(
         Modifier
             .offset(y = 3.grid2mpx.mpx2dp)
@@ -148,28 +160,28 @@ private fun Body(displayData: ScoreDisplayData) {
                 PixelText(
                     text = "${displayData.level1NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
                 )
                 Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level2NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
                 )
                 Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level3NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
                 )
                 Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level4NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
                 )
                 PixelText(
-                    text = displayData.totalNumText,
+                    text = displayData.totalNumText.padStart(2),
                     charHeight = 0.5f.grid2mpx,
                     modifier = Modifier
                         .height(1f.grid2mpx.mpx2dp)
@@ -288,12 +300,21 @@ private data class ScoreDisplayData(
     val totalNumText: String get() = totalNum?.toString() ?: ""
 }
 
-//@Preview
-//@Composable
-//private fun ScoreboardScreenPreview() {
-//    BattleCityTheme {
-//        Box(modifier = Modifier.size(500.dp)) {
-//            ScoreboardScreen()
-//        }
-//    }
-//}
+@Preview
+@Composable
+private fun ScoreboardScreenPreview() {
+    BattleCityTheme {
+        Box(modifier = Modifier.size(500.dp)) {
+            ScoreboardDataFrame(
+                ScoreDisplayData(
+                    totalScore = 2000,
+                    level1Num = 1,
+                    level2Num = 3,
+                    level3Num = 3,
+                    level4Num = 2,
+                    totalNum = 6,
+                )
+            )
+        }
+    }
+}
