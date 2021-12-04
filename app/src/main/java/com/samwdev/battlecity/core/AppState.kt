@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 fun rememberAppState(
     navController: NavHostController = rememberNavController(),
 ): AppState {
-    return remember {
+    return remember(Unit) {
         AppState(
             navController = navController
         )
