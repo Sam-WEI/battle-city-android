@@ -12,13 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.max
 
-@Composable
-fun rememberMapState(stageConfig: StageConfig): MapState {
-    return remember(stageConfig) { MapState(stageConfig) }
-}
-
 class MapState(
     stageConfig: StageConfig,
+    val appState: AppState,
 ) : TickListener, GridUnitNumberAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
@@ -31,9 +27,6 @@ class MapState(
             Offset(12f.grid2mpx, 0f.grid2mpx),
         )
     }
-
-    private val _gameEventFlow = MutableStateFlow<GameEvent>(Playing)
-    val gameEventFlow: StateFlow<GameEvent> = _gameEventFlow
 
     private var remainingFortificationTime: Int = 0
     private val mapConfig = stageConfig.map
@@ -181,7 +174,7 @@ class MapState(
 
     fun destroyEagle() {
         eagle = eagle.copy(dead = true)
-        _gameEventFlow.value = GameOver
+        appState.sendGameEvent(GameOver)
     }
 
     fun deductRemainingBot() {
@@ -194,14 +187,14 @@ class MapState(
 
     fun deductPlayerLife() {
         if (remainingPlayerLife == 0) {
-            _gameEventFlow.value = GameOver
+            appState.sendGameEvent(GameOver)
             return
         }
         remainingPlayerLife -= 1
     }
 
     fun mapClear() {
-        _gameEventFlow.value = MapCleared
+        appState.sendGameEvent(MapCleared)
     }
 
     /**

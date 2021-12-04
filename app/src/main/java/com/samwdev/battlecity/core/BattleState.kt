@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BattleState(stageConfig: StageConfig) {
+class BattleState(stageConfig: StageConfig, appState: AppState) {
     val tickState = TickState()
     val soundState = SoundState()
     val explosionState = ExplosionState()
     val handheldControllerState = HandheldControllerState()
     val scoreState = ScoreState()
 
-    val mapState: MapState = MapState(stageConfig)
+    val mapState: MapState = MapState(stageConfig, appState)
     val powerUpState: PowerUpState = PowerUpState(mapState)
     val tankState: TankState = TankState(soundState, mapState, powerUpState, explosionState, scoreState)
     val bulletState: BulletState = BulletState(mapState, tankState, explosionState, soundState)
