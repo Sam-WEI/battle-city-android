@@ -39,7 +39,7 @@ class BattleViewModel(
     fun initStage(stageName: String) {
         val json = MapParser.readJsonFile(getApplication(), stageName)
         val stageConfig = MapParser.parse(json)
-        battleState = BattleState(stageConfig)
+        battleState = BattleState(stageConfig, appState)
         _gameState.value = GameStatus.Ready
     }
 
@@ -49,7 +49,7 @@ class BattleViewModel(
                 battleState.startBattle()
             }
             launch(viewModelScope.coroutineContext) {
-                battleState.mapState.gameEventFlow.collect { event ->
+                appState.gameEventFlow.collect { event ->
                     Logger.error("Event: $event")
                     when (event) {
                         GameOver -> {
