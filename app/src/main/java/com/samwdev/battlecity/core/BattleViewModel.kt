@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class BattleViewModel(
-    stageConfig: StageConfig,
+    private val stageConfig: StageConfig,
+    private val appState: AppState,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -46,6 +47,12 @@ class BattleViewModel(
         viewModelScope.launch {
             mapState.gameEventFlow.collect { event ->
                 Logger.error("Event: $event")
+                if (event == GameOver) {
+                    appState.navController.navigate("${Route.Scoreboard}/${stageConfig.name}")
+//                    appState.navController.navigate("${Route.BattleScreen}/6") {
+//                        this.launchSingleTop = true
+//                    }
+                }
             }
         }
     }

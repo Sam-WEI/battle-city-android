@@ -57,7 +57,7 @@ class ScoreState : TickListener {
             scoreSum,
             tankKillCount.apply {
                 TankLevel.values().forEach { getOrPut(it) { 0 } }
-            }
+            }.toSortedMap()
         )
     }
 

@@ -9,14 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samwdev.battlecity.core.BattleViewModel
-import com.samwdev.battlecity.core.DebugConfig
-import com.samwdev.battlecity.core.HandheldController
-import com.samwdev.battlecity.core.HandheldControllerState
+import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.launch
@@ -25,8 +24,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun BattleScreen(
     stageConfig: StageConfig,
-    battleViewModel: BattleViewModel = viewModel(factory = provideBattleViewModel(stageConfig = stageConfig))
+    appState: AppState,
 ) {
+    val battleViewModel: BattleViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner,
+        factory = provideBattleViewModel(stageConfig = stageConfig, appState = appState)
+    )
     val composeCoroutineScope = rememberCoroutineScope()
 
     var debugConfig: DebugConfig by remember {

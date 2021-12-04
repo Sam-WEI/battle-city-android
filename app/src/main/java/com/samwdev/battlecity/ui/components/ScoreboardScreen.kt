@@ -10,11 +10,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import com.samwdev.battlecity.entity.StageConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -23,8 +23,13 @@ private val ColorOrange = Color(241, 176, 96)
 
 @Composable
 fun ScoreboardScreen(
-    battleViewModel: BattleViewModel = viewModel()
+    stageConfig: StageConfig,
+    appState: AppState,
 ) {
+    val battleViewModel: BattleViewModel = viewModel(
+        viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner, // todo
+        factory = provideBattleViewModel(stageConfig = stageConfig, appState = appState)
+    )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
     val frameList = remember(data) {
         var lastFrameData = ScoreDisplayData(totalScore = data.totalScore)
@@ -283,12 +288,12 @@ private data class ScoreDisplayData(
     val totalNumText: String get() = totalNum?.toString() ?: ""
 }
 
-@Preview
-@Composable
-private fun ScoreboardScreenPreview() {
-    BattleCityTheme {
-        Box(modifier = Modifier.size(500.dp)) {
-            ScoreboardScreen()
-        }
-    }
-}
+//@Preview
+//@Composable
+//private fun ScoreboardScreenPreview() {
+//    BattleCityTheme {
+//        Box(modifier = Modifier.size(500.dp)) {
+//            ScoreboardScreen()
+//        }
+//    }
+//}
