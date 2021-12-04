@@ -31,7 +31,7 @@ fun ScoreboardScreen(
 ) {
     val battleViewModel: BattleViewModel = viewModel(
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner, // todo
-        factory = provideBattleViewModel(stageConfig = stageConfig, appState = appState)
+        factory = provideBattleViewModel(appContext = LocalContext.current, stageConfig = stageConfig, appState = appState)
     )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
     ScoreboardScreen(data = data)

@@ -1,86 +1,51 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.*
 import com.samwdev.battlecity.entity.StageConfig
-import com.samwdev.battlecity.utils.MapParser
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@Composable
-fun rememberBattleState(
-    stageConfig: StageConfig,
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    soundState: SoundState = rememberSoundState(coroutine = coroutineScope),
-    explosionState: ExplosionState = rememberExplosionState(),
-    tickState: TickState = rememberTickState(),
-    scoreState: ScoreState = ScoreState(),
-    mapState: MapState = rememberMapState(stageConfig = stageConfig),
-    powerUpState: PowerUpState = rememberPowerUpState(mapState = mapState),
-    tankState: TankState = rememberTankState(
-        explosionState = explosionState,
-        soundState = soundState,
-        mapState = mapState,
-        powerUpState = powerUpState,
-        scoreState = scoreState,
-    ),
-    bulletState: BulletState = rememberBulletState(
-        mapState = mapState,
-        tankState = tankState,
-        explosionState = explosionState,
-        soundState = soundState,
-    ),
-    botState: BotState = rememberBotState(
-        tankState = tankState,
-        bulletState = bulletState,
-        mapState = mapState,
-    ),
-    handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
-): BattleState {
-    return remember {
-        BattleState(
-            coroutineScope = coroutineScope,
-            soundState = soundState,
-            tickState = tickState,
-            handheldControllerState = handheldControllerState,
-            mapState = mapState,
-            tankState = tankState,
-            explosionState = explosionState,
-            bulletState = bulletState,
-            tankController = TankController(tankState, bulletState, handheldControllerState),
-            botState = botState,
-            powerUpState = powerUpState,
-        )
-    }
-}
+class BattleState(stageConfig: StageConfig) {
+    val tickState = TickState()
+    val soundState = SoundState()
+    val explosionState = ExplosionState()
+    val handheldControllerState = HandheldControllerState()
+    val scoreState = ScoreState()
 
-class BattleState(
-    private val coroutineScope: CoroutineScope,
-    val soundState: SoundState,
-    val tickState: TickState,
-    val handheldControllerState: HandheldControllerState,
-    val mapState: MapState,
-    val explosionState: ExplosionState,
-    val bulletState: BulletState,
-    val tankState: TankState,
-    val tankController: TankController,
-    val botState: BotState,
-    val powerUpState: PowerUpState,
-) {
-    fun startBattle() {
-        coroutineScope.launch {
-            tickState.start()
-        }
-        coroutineScope.launch {
-            tickState.tickFlow.collect { tick ->
-                mapState.onTick(tick)
-                soundState.onTick(tick)
-                tankController.onTick(tick)
-                bulletState.onTick(tick)
-                botState.onTick(tick)
-                tankState.onTick(tick)
-                explosionState.onTick(tick)
+    val mapState: MapState = MapState(stageConfig)
+    val powerUpState: PowerUpState = PowerUpState(mapState)
+    val tankState: TankState = TankState(soundState, mapState, powerUpState, explosionState, scoreState)
+    val bulletState: BulletState = BulletState(mapState, tankState, explosionState, soundState)
+    val botState: BotState = BotState(tankState, bulletState, mapState)
+    val tankController: TankController = TankController(tankState, bulletState, handheldControllerState)
+
+    suspend fun startBattle() {
+        coroutineScope {
+            launch {
+                tickState.tickFlow.collect { tick ->
+                    mapState.onTick(tick)
+                    soundState.onTick(tick)
+                    scoreState.onTick(tick)
+                    tankController.onTick(tick)
+                    bulletState.onTick(tick)
+                    botState.onTick(tick)
+                    tankState.onTick(tick)
+                    explosionState.onTick(tick)
+                }
+            }
+            launch {
+                tickState.start()
             }
         }
+    }
+
+    fun resume() {
+        tickState.pause(false)
+    }
+
+    fun pause() {
+        tickState.pause(true)
     }
 }

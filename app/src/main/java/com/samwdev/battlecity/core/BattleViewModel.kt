@@ -1,51 +1,48 @@
 package com.samwdev.battlecity.core
 
+import android.app.Application
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.Logger
+import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class BattleViewModel(
+    context: Application,
     private val stageConfig: StageConfig,
     private val appState: AppState,
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : AndroidViewModel(context) {
 
-    val tickState = TickState()
-    val soundState = SoundState(viewModelScope)
-    val explosionState = ExplosionState()
-    val handheldControllerState = HandheldControllerState()
-    val scoreState = ScoreState()
+    private var battleState: BattleState
 
-    val mapState: MapState = MapState(stageConfig)
-    val powerUpState: PowerUpState = PowerUpState(mapState)
-    val tankState: TankState = TankState(soundState, mapState, powerUpState, explosionState, scoreState)
-    val bulletState: BulletState = BulletState(mapState, tankState, explosionState, soundState)
-    val botState: BotState = BotState(tankState, bulletState, mapState)
-    val tankController: TankController = TankController(tankState, bulletState, handheldControllerState)
+    val mapState: MapState get() = battleState.mapState
+    val botState: BotState get() = battleState.botState
+    val tickState: TickState get() = battleState.tickState
+    val scoreState: ScoreState get() = battleState.scoreState
+    val bulletState: BulletState get() = battleState.bulletState
+    val tankState: TankState get() = battleState.tankState
+    val explosionState: ExplosionState get() = battleState.explosionState
+    val powerUpState: PowerUpState get() = battleState.powerUpState
+    val handheldControllerState: HandheldControllerState get() = battleState.handheldControllerState
 
     init {
-        init()
+        battleState = BattleState(stageConfig)
     }
 
-    private fun init() {
+    private fun init(stageName: String) {
+
+    }
+
+    suspend fun start() {
+        battleState.startBattle()
         viewModelScope.launch {
-            tickState.tickFlow.collect { tick ->
-                mapState.onTick(tick)
-                soundState.onTick(tick)
-                scoreState.onTick(tick)
-                tankController.onTick(tick)
-                bulletState.onTick(tick)
-                botState.onTick(tick)
-                tankState.onTick(tick)
-                explosionState.onTick(tick)
-            }
-        }
-        viewModelScope.launch {
-            mapState.gameEventFlow.collect { event ->
+            battleState.mapState.gameEventFlow.collect { event ->
                 Logger.error("Event: $event")
                 if (event == GameOver) {
                     appState.navController.navigateUp()
@@ -58,15 +55,11 @@ class BattleViewModel(
         }
     }
 
-    suspend fun start() {
-        tickState.start()
-    }
-
     fun resume() {
-        tickState.pause(false)
+
     }
 
     fun pause() {
-        tickState.pause(true)
+
     }
 }

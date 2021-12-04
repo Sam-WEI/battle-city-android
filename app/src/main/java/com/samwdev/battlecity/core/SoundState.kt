@@ -1,17 +1,13 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
-fun rememberSoundState(coroutine: CoroutineScope) : SoundState {
-    return remember { SoundState(coroutine) }
+fun rememberSoundState() : SoundState {
+    return remember { SoundState() }
 }
 
-class SoundState(
-    private val coroutine: CoroutineScope
-) : TickListener {
+class SoundState : TickListener {
     private val soundPlayer: SoundPlayer = SoundPlayer.INSTANCE
 
     private var soundToPlay by mutableStateOf<Set<SoundEffect>>(setOf())
@@ -21,10 +17,8 @@ class SoundState(
     }
 
     override fun onTick(tick: Tick) {
-        coroutine.launch {
-            for (sound in soundToPlay) {
-                soundPlayer.play(sound)
-            }
+        for (sound in soundToPlay) {
+            soundPlayer.play(sound)
         }
         soundToPlay = setOf()
     }
