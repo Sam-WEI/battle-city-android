@@ -65,13 +65,14 @@ fun BattleCityApp() {
                 BattleScreen(stageConfig, appState)
             }
             composable(
-                route = "${Route.Scoreboard}/{${Route.Key.StageId}}",
-                arguments = listOf(navArgument(Route.Key.StageId) { type = NavType.StringType} )
+                route = Route.Scoreboard,
             ) { backStackEntry ->
-                val stageId = backStackEntry.arguments?.getString(Route.Key.StageId)!!
+                val stageId = "1"
                 val json = MapParser.readJsonFile(LocalContext.current, stageId)
                 val stageConfig = MapParser.parse(json)
-                ScoreboardScreen(stageConfig, appState)
+                FullScreenWrapper {
+                    ScoreboardScreen(stageConfig, appState)
+                }
             }
             composable(Route.GameOver) {
                 GameOverScreen()
