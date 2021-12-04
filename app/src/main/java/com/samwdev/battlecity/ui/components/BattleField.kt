@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samwdev.battlecity.core.BattleState
 import com.samwdev.battlecity.core.BattleViewModel
 
 @Composable
@@ -18,9 +17,9 @@ fun BattleField(
 ) {
     TickAware(tickState = battleViewModel.tickState) {
         Grid(modifier = modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .background(Color.Black),
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .background(Color.Black),
             hGridUnitNum = battleViewModel.mapState.hGridUnitNum,
             vGridUnitNum = battleViewModel.mapState.vGridUnitNum,
         ) {
@@ -44,6 +43,10 @@ fun BattleField(
 
             battleViewModel.powerUpState.powerUps.forEach { (_, powerUp) ->
                 FlashingPowerUp(topLeft = Offset(powerUp.x, powerUp.y), powerUp = powerUp.type)
+            }
+
+            battleViewModel.scoreState.onShowScreenScores.forEach { (_, score) ->
+                OnScreenScore(onScreenScore = score)
             }
 
             if (LocalDebugConfig.current.showAccessPoints) {

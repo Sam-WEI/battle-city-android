@@ -22,25 +22,8 @@ class ExplosionState : TickListener {
         private set
 
     override fun onTick(tick: Tick) {
-        val toUpdate = mutableListOf<Explosion>()
-        val toRemove = mutableListOf<Explosion>()
-        explosions.forEach { (_, exp) ->
-            if (exp.complete) {
-                toRemove += exp
-            } else {
-                toUpdate += exp.copy(progress = exp.progress + tick.delta)
-            }
-        }
-        if (toUpdate.isNotEmpty() || toRemove.isNotEmpty()) {
-            val new = explosions.toMutableMap()
-            for (exp in toRemove) {
-                new.remove(exp.id)
-            }
-            for (exp in toUpdate) {
-                new[exp.id] = exp
-            }
-            explosions = new
-        }
+        explosions = explosions.filter { (_, exp) -> !exp.complete }
+            .mapValues { (_, exp) -> exp.copy(progress = exp.progress + tick.delta) }
     }
 
     fun spawnExplosion(center: Offset, animation: ExplosionAnimation) {

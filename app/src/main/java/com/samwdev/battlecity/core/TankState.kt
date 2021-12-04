@@ -14,9 +14,10 @@ fun rememberTankState(
     soundState: SoundState,
     powerUpState: PowerUpState,
     mapState: MapState,
+    scoreState: ScoreState
 ): TankState {
     return remember {
-        TankState(soundState, mapState, powerUpState, explosionState)
+        TankState(soundState, mapState, powerUpState, explosionState, scoreState)
     }
 }
 
@@ -25,6 +26,7 @@ class TankState(
     private val mapState: MapState,
     private val powerUpState: PowerUpState,
     private val explosionState: ExplosionState,
+    private val scoreState: ScoreState,
 ) : TickListener, GridUnitNumberAware by mapState {
     companion object {
         private const val ShieldDuration = 10 * 1000
@@ -66,12 +68,11 @@ class TankState(
         if (remainingBotFrozenTime > 0) {
             remainingBotFrozenTime -= tick.delta
         }
-        val newTanks: MutableMap<TankId, Tank> = mutableMapOf()
-        tanks.forEach { (id, tank) ->
+
+        tanks = tanks.mapValues { (_, tank) ->
             val updatedTank = updateTankTimers(tank, tick.delta)
-            newTanks[id] = updateTankMovement(updatedTank, tick.delta)
+            updateTankMovement(updatedTank, tick.delta)
         }
-        tanks = newTanks
 
         if (playerTankId == NOT_AN_ID) {
             spawnPlayer()
@@ -173,6 +174,7 @@ class TankState(
             explosionState.spawnExplosion(tank.center, ExplosionAnimationBig)
             if (tank.side == TankSide.Bot) {
                 soundState.playSound(SoundEffect.ExplosionBot)
+                scoreState.kill(tank.level, tank.offset)
             } else {
                 soundState.playSound(SoundEffect.ExplosionPlayer)
             }
@@ -321,11 +323,12 @@ class TankState(
         }
         val toPickUp = powerUpState.powerUps.values.filter { p -> p.rect.overlaps(tank.collisionBox) }
         powerUpState.remove(toPickUp)
-        toPickUp.forEach { pickUpPowerUp(tank, it.type) }
+        toPickUp.forEach { pickUpPowerUp(tank, it) }
     }
 
-    private fun pickUpPowerUp(tank: Tank, powerUpEnum: PowerUpEnum) {
-        when (powerUpEnum) {
+    private fun pickUpPowerUp(tank: Tank, powerUp: PowerUp) {
+        scoreState.pickUpPowerUp(powerUp.offset)
+        when (powerUp.type) {
             PowerUpEnum.Helmet -> {
                 updateTank(tank.id, tank.shieldOn(ShieldDuration))
                 soundState.playSound(SoundEffect.PickUpPowerUp)

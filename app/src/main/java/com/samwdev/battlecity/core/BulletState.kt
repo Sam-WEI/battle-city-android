@@ -35,8 +35,7 @@ class BulletState(
     private var trajectoryCollisionInfo by mutableStateOf<Map<Bullet, List<TrajectoryCollisionInfo>>>(mapOf())
 
     override fun onTick(tick: Tick) {
-        val newBullets = bullets.keys.associateWith { id ->
-            val bullet = bullets[id]!!
+        bullets = bullets.mapValues { (_, bullet) ->
             val delta = tick.delta * bullet.speed
             when (bullet.direction) {
                 Direction.Up -> bullet.copy(y = bullet.y - delta)
@@ -44,9 +43,7 @@ class BulletState(
                 Direction.Left ->  bullet.copy(x = bullet.x - delta)
                 Direction.Right ->  bullet.copy(x = bullet.x + delta)
             }
-
         }
-        bullets = newBullets
 
         checkCollisionWithBorder()
         checkCollisionWithBullets(tick)

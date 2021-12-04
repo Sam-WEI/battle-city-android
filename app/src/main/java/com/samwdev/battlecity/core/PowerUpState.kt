@@ -32,7 +32,7 @@ class PowerUpState(
 
     fun remove(pickedUp: List<PowerUp>) {
         val set = pickedUp.map { it.id }.toSet()
-        powerUps = powerUps.toMutableMap().filter { it.key !in set }
+        powerUps = powerUps.filter { it.key !in set }
     }
 
     private fun trimOldPowerUps() {
@@ -58,5 +58,6 @@ data class PowerUp(
     val y: MapPixel,
     val type: PowerUpEnum,
 ) {
-    val rect: Rect get() = Rect(Offset(x, y), Size(1f.grid2mpx, 1f.grid2mpx))
+    val rect: Rect get() = Rect(offset, Size(1f.grid2mpx, 1f.grid2mpx))
+    val offset: Offset get() = Offset(x, y)
 }

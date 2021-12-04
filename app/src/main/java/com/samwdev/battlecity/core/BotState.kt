@@ -16,7 +16,7 @@ class BotState(
     private val bulletState: BulletState,
     private val mapState: MapState,
 ) : TickListener {
-    var maxBot: Int = 1
+    var maxBot: Int = 4
     var bots: Map<TankId, AiTankController> by mutableStateOf(mapOf())
 
     private var botIndex = 0
@@ -27,8 +27,10 @@ class BotState(
         grp -> (0 until grp.count).map { grp.level }
     }
 
+    private val noBotsLeft: Boolean get() = mapState.remainingBot == 0
+
     override fun onTick(tick: Tick) {
-        if (bots.size < maxBot) {
+        if (bots.size < maxBot && !noBotsLeft) {
             remainingSpawnDelay -= tick.delta // only count down when short of bots
             if (remainingSpawnDelay < 0) {
                 if (spawnBot()) {
@@ -41,6 +43,10 @@ class BotState(
             }
         }
         clearDeadBots()
+        if (bots.isEmpty() && noBotsLeft) {
+            mapState.mapClear()
+        }
+
         bots.values.forEach { controller ->
             controller.onTick(tick)
         }
@@ -59,6 +65,9 @@ class BotState(
 
     /** Return false if failed to spawn a bot */
     private fun spawnBot(): Boolean {
+        if (noBotsLeft) {
+            return false
+        }
         val botTank = tankState.spawnBot(botQueue[botIndex % botQueue.size], carryPowerUp()) ?: return false // todo remove mod
         botIndex++
         bots = bots.toMutableMap().apply {

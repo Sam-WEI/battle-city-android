@@ -29,7 +29,6 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.MapParser
 import kotlin.random.Random
 
-
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
@@ -59,14 +58,8 @@ fun BattleCityApp() {
                 val stageConfig = MapParser.parse(json)
                 BattleScreen(stageConfig)
             }
-            composable(
-                Route.Scoreboard,
-                arguments = listOf(navArgument("scoreData") {
-                    this.nullable = false
-                    this.type = NavType.SerializableType(ScoreboardScreenArg::class.java)
-                })) { backStackEntry ->
-                val arg = backStackEntry.arguments!!.getSerializable("scoreData") as ScoreboardScreenArg
-                ScoreboardScreen(arg)
+            composable(Route.Scoreboard) { backStackEntry ->
+                ScoreboardScreen()
             }
             composable(Route.GameOver) {
                 GameOverScreen()

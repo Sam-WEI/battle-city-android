@@ -12,42 +12,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.SoundEffect
-import com.samwdev.battlecity.core.SoundPlayer
-import com.samwdev.battlecity.core.TankLevel
-import com.samwdev.battlecity.core.grid2mpx
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.Serializable
 
 private val ColorRed = Color(210, 81, 65)
 private val ColorOrange = Color(241, 176, 96)
 
 @Composable
-fun ScoreboardScreen(arg: ScoreboardScreenArg) {
-    val frameList = remember(arg) {
-        var lastFrameScore = ScoreDisplayData(totalScore = arg.totalScore)
-        val frames = mutableListOf(ScoreDisplayFrame(lastFrameScore, 500))
-        arg.killCount.entries.forEach { (lvl, num) ->
+fun ScoreboardScreen(
+    battleViewModel: BattleViewModel = viewModel()
+) {
+    val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
+    val frameList = remember(data) {
+        var lastFrameData = ScoreDisplayData(totalScore = data.totalScore)
+        val frames = mutableListOf(ScoreDisplayFrame(lastFrameData, 500))
+        data.killCount.entries.forEach { (lvl, num) ->
             repeat(num + 1) { i ->
                 val score = when (lvl) {
-                    TankLevel.Level1 -> lastFrameScore.copy(level1Num = i)
-                    TankLevel.Level2 -> lastFrameScore.copy(level2Num = i)
-                    TankLevel.Level3 -> lastFrameScore.copy(level3Num = i)
-                    TankLevel.Level4 -> lastFrameScore.copy(level4Num = i)
+                    TankLevel.Level1 -> lastFrameData.copy(level1Num = i)
+                    TankLevel.Level2 -> lastFrameData.copy(level2Num = i)
+                    TankLevel.Level3 -> lastFrameData.copy(level3Num = i)
+                    TankLevel.Level4 -> lastFrameData.copy(level4Num = i)
                 }
                 if (num == 0) {
                     frames.add(ScoreDisplayFrame(score, 100))
                 } else if (i > 0) {
                     frames.add(ScoreDisplayFrame(score, 150, SoundEffect.ScoreboardTick))
                 }
-                lastFrameScore = score
+                lastFrameData = score
             }
-            frames.add(ScoreDisplayFrame(lastFrameScore, 500))
+            frames.add(ScoreDisplayFrame(lastFrameData, 500))
         }
         frames.add(ScoreDisplayFrame(
-            lastFrameScore.copy(totalNum = arg.killCount.values.sum()), 0)
+            lastFrameData.copy(totalNum = data.killCount.values.sum()), 0)
         ) // total
         frames.toList()
     }
@@ -55,7 +55,7 @@ fun ScoreboardScreen(arg: ScoreboardScreenArg) {
     var displayScoreData by remember { mutableStateOf(ScoreDisplayData(totalScore = 20000)) }
 
     val coroutine = rememberCoroutineScope()
-    LaunchedEffect(arg) {
+    LaunchedEffect(data) {
         coroutine.launch {
             frameList.forEach { (score, delay, soundEffect) ->
                 displayScoreData = score
@@ -256,11 +256,6 @@ private fun PlayerInfo(displayData: ScoreDisplayData, modifier: Modifier) {
     }
 }
 
-data class ScoreboardScreenArg(
-    val totalScore: Int,
-    val killCount: Map<TankLevel, Int>,
-) : Serializable
-
 private data class ScoreDisplayFrame(
     val data: ScoreDisplayData,
     val delay: Long,
@@ -293,17 +288,7 @@ private data class ScoreDisplayData(
 private fun ScoreboardScreenPreview() {
     BattleCityTheme {
         Box(modifier = Modifier.size(500.dp)) {
-            ScoreboardScreen(
-                ScoreboardScreenArg(
-                    totalScore = 23456,
-                    killCount = mapOf(
-                        TankLevel.Level1 to 5,
-                        TankLevel.Level2 to 0,
-                        TankLevel.Level3 to 10,
-                        TankLevel.Level4 to 8,
-                    )
-                )
-            )
+            ScoreboardScreen()
         }
     }
 }

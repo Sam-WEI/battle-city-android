@@ -59,7 +59,7 @@ class AiTankController(
 
         if (remainingHuntingPlayerTime > 0) {
             if (remainingLockOnPlayerCooldown <= 0) {
-                findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.center?.subGrid)
+                findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.offset?.subGrid)
                 remainingLockOnPlayerCooldown = personality.lockOnPlayerCooldown
                 Logger.debug("[${tankId}] re-locked player!! remaining hunting time: $remainingHuntingPlayerTime")
             }
