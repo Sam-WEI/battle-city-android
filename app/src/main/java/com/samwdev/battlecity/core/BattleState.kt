@@ -14,6 +14,7 @@ fun rememberBattleState(
     soundState: SoundState = rememberSoundState(coroutine = coroutineScope),
     explosionState: ExplosionState = rememberExplosionState(),
     tickState: TickState = rememberTickState(),
+    scoreState: ScoreState = ScoreState(),
     mapState: MapState = rememberMapState(stageConfig = stageConfig),
     powerUpState: PowerUpState = rememberPowerUpState(mapState = mapState),
     tankState: TankState = rememberTankState(
@@ -21,6 +22,7 @@ fun rememberBattleState(
         soundState = soundState,
         mapState = mapState,
         powerUpState = powerUpState,
+        scoreState = scoreState,
     ),
     bulletState: BulletState = rememberBulletState(
         mapState = mapState,

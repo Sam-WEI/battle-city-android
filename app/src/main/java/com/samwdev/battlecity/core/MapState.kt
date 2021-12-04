@@ -8,6 +8,8 @@ import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapDifficulty
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.entity.SteelElement
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.max
 
 @Composable
@@ -29,16 +31,18 @@ class MapState(
             Offset(12f.grid2mpx, 0f.grid2mpx),
         )
     }
-    // todo move to a proper place
+
+    private val _gameEventFlow = MutableStateFlow<GameEvent>(Playing)
+    val gameEventFlow: StateFlow<GameEvent> = _gameEventFlow
+
     private var remainingFortificationTime: Int = 0
+    private val mapConfig = stageConfig.map
+    val botGroups = stageConfig.bots
+    val mapDifficulty: MapDifficulty = stageConfig.difficulty // todo default to map config but should bump up after beating all maps
 
     val playerSpawnPosition = DefaultPlayerSpawnPosition
     val botSpawnPositions = DefaultBotSpawnPositions
 
-    private val mapConfig = stageConfig.map
-
-    val botGroups = stageConfig.bots
-    val mapDifficulty: MapDifficulty = stageConfig.difficulty // todo default to map config but should bump up after beating all maps
     override val hGridUnitNum: Int = mapConfig.hGridUnitNum
     override val vGridUnitNum: Int = mapConfig.vGridUnitNum
 
@@ -47,7 +51,7 @@ class MapState(
     var remainingBot: Int by mutableStateOf(20) // todo factor in difficulty
         private set
 
-    var remainingPlayerLife: Int by mutableStateOf(20)
+    var remainingPlayerLife: Int by mutableStateOf(3)
         private set
 
     var bricks by mutableStateOf(mapConfig.bricks, policy = referentialEqualityPolicy())
@@ -138,10 +142,10 @@ class MapState(
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.asSequence().filter { it in oldBrickIndex }
-                .map { BrickElement.getSubGrid(it) }
+                .map { BrickElement.getSubGrid(it, hGridUnitNum) } // todo call ext method when Google fixes java.lang.NoSuchMethodError
                 .toSet() // remove dup
                 .forEach { subGrid ->
-                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid)
+                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid, hGridUnitNum) // todo call ext method when Google fixes java.lang.NoSuchMethodError
                     if (cleared) {
                         // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
                         // For performance purposes, use a depth of 10 for the calculation.
@@ -177,20 +181,27 @@ class MapState(
 
     fun destroyEagle() {
         eagle = eagle.copy(dead = true)
+        _gameEventFlow.value = GameOver
     }
 
-    // todo move to better place
     fun deductRemainingBot() {
         remainingBot = max(remainingBot - 1, 0)
     }
 
-    // todo move to better place
     fun addPlayerLife() {
         remainingPlayerLife += 1
     }
 
     fun deductPlayerLife() {
+        if (remainingPlayerLife == 0) {
+            _gameEventFlow.value = GameOver
+            return
+        }
         remainingPlayerLife -= 1
+    }
+
+    fun mapClear() {
+        _gameEventFlow.value = MapCleared
     }
 
     /**
@@ -218,7 +229,6 @@ class MapState(
         )
     }
 
-
     private fun wrapEagleWithSteels() {
         destroyBricksIndex(brickIndicesAroundEagle)
         steels = steels.toMutableSet()
@@ -233,3 +243,8 @@ class MapState(
         refreshAccessPointsAroundEagle()
     }
 }
+
+sealed class GameEvent
+object Playing : GameEvent()
+object MapCleared : GameEvent()
+object GameOver : GameEvent()
