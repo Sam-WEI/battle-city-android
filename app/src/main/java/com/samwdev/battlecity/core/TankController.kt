@@ -2,7 +2,7 @@ package com.samwdev.battlecity.core
 
 class TankController(
     private val tankState: TankState,
-    private val bulletState: BulletState, // todo move out?
+    private val bulletState: BulletState,
     private val handheldControllerState: HandheldControllerState,
 ) : TickListener {
     private val tankId: TankId get() = tankState.playerTankId

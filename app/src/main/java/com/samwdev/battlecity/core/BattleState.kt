@@ -1,20 +1,18 @@
 package com.samwdev.battlecity.core
 
 import com.samwdev.battlecity.entity.StageConfig
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class BattleState(stageConfig: StageConfig, appState: AppState) {
+class BattleState(stageConfig: StageConfig) {
     val tickState = TickState()
     val soundState = SoundState()
     val explosionState = ExplosionState()
     val handheldControllerState = HandheldControllerState()
     val scoreState = ScoreState()
 
-    val mapState: MapState = MapState(stageConfig, appState)
+    val mapState: MapState = MapState(stageConfig)
     val powerUpState: PowerUpState = PowerUpState(mapState)
     val tankState: TankState = TankState(soundState, mapState, powerUpState, explosionState, scoreState)
     val bulletState: BulletState = BulletState(mapState, tankState, explosionState, soundState)

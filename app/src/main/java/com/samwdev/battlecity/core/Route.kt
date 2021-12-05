@@ -8,6 +8,6 @@ object Route {
     const val GameOver = "game_over"
 
     object Key {
-        const val StageId = "stage_id"
+        const val StageName = "stage_id"
     }
 }

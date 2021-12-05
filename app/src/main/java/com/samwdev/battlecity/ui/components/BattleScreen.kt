@@ -16,18 +16,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.Logger
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
-fun BattleScreen(appState: AppState) {
-    val battleViewModel: BattleViewModel = viewModel(
-        viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner,
-        factory = provideBattleViewModel(appState = appState)
-    )
+fun BattleScreen() {
+    val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
     val composeCoroutineScope = rememberCoroutineScope()
 
     var debugConfig: DebugConfig by remember {
@@ -39,18 +35,17 @@ fun BattleScreen(appState: AppState) {
             showWaypoints = true,
         ))
     }
+    Logger.error("BattleScreen compose, gameState: ${battleViewModel.currentGameStatus}")
 
     LaunchedEffect(Unit) {
         composeCoroutineScope.launch {
             // start() must be run from a compose coroutine scope in order to correctly run the withTimeMillis{} method.
-            // todo find out a better way
-            battleViewModel.initStage("1")
+            battleViewModel.initStage()
             battleViewModel.start()
         }
     }
 
-    val gameEvent by battleViewModel.gameState.collectAsState()
-    if (gameEvent == GameStatus.Initializing) return
+    if (battleViewModel.currentGameStatus == Initial || battleViewModel.currentGameStatus is StageSelected) return
 
     SideEffect {
         battleViewModel.tickState.maxFps = debugConfig.maxFps
@@ -74,10 +69,7 @@ fun BattleScreen(appState: AppState) {
                     modifier = Modifier.background(Color(117, 117, 117)),
                 )
 
-                BattleField(
-                    modifier = Modifier.fillMaxWidth(),
-                    battleViewModel = battleViewModel,
-                )
+                BattleField(modifier = Modifier.fillMaxWidth())
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
