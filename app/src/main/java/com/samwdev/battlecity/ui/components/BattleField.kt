@@ -10,52 +10,51 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.samwdev.battlecity.core.BattleState
 import com.samwdev.battlecity.core.BattleViewModel
 
 @Composable
-fun BattleField(modifier: Modifier = Modifier) {
-    val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
-
-    TickAware(tickState = battleViewModel.tickState) {
+fun BattleField(battleState: BattleState, modifier: Modifier = Modifier) {
+    TickAware(tickState = battleState.tickState) {
         Grid(modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
             .background(Color.Black),
-            hGridUnitNum = battleViewModel.mapState.hGridUnitNum,
-            vGridUnitNum = battleViewModel.mapState.vGridUnitNum,
+            hGridUnitNum = battleState.mapState.hGridUnitNum,
+            vGridUnitNum = battleState.mapState.vGridUnitNum,
         ) {
-            BrickLayer(battleViewModel.mapState.bricks)
-            SteelLayer(battleViewModel.mapState.steels)
-            IceLayer(battleViewModel.mapState.ices)
-            WaterLayer(battleViewModel.mapState.waters)
-            EagleLayer(battleViewModel.mapState.eagle)
+            BrickLayer(battleState.mapState.bricks)
+            SteelLayer(battleState.mapState.steels)
+            IceLayer(battleState.mapState.ices)
+            WaterLayer(battleState.mapState.waters)
+            EagleLayer(battleState.mapState.eagle)
 
-            battleViewModel.tankState.tanks.forEach { (_, tank) ->
+            battleState.tankState.tanks.forEach { (_, tank) ->
                 Tank(tank = tank)
             }
 
-            Bullets(bullets = battleViewModel.bulletState.bullets.values)
+            Bullets(bullets = battleState.bulletState.bullets.values)
 
-            TreeLayer(battleViewModel.mapState.trees)
+            TreeLayer(battleState.mapState.trees)
 
-            battleViewModel.explosionState.explosions.forEach { (_, explosion) ->
+            battleState.explosionState.explosions.forEach { (_, explosion) ->
                 Explosion(explosion = explosion)
             }
 
-            battleViewModel.powerUpState.powerUps.forEach { (_, powerUp) ->
+            battleState.powerUpState.powerUps.forEach { (_, powerUp) ->
                 FlashingPowerUp(topLeft = Offset(powerUp.x, powerUp.y), powerUp = powerUp.type)
             }
 
-            battleViewModel.scoreState.onShowScreenScores.forEach { (_, score) ->
+            battleState.scoreState.onShowScreenScores.forEach { (_, score) ->
                 OnScreenScore(onScreenScore = score)
             }
 
             if (LocalDebugConfig.current.showAccessPoints) {
-                AccessPointLayer(mapState = battleViewModel.mapState)
+                AccessPointLayer(mapState = battleState.mapState)
             }
 
             if (LocalDebugConfig.current.showWaypoints) {
-                WaypointLayer(botState = battleViewModel.botState)
+                WaypointLayer(botState = battleState.botState)
             }
         }
     }

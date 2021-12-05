@@ -75,6 +75,9 @@ class BulletState(
         tankState.startFireCooldown(tank.id)
         if (tank.side == TankSide.Player) {
             soundState.playSound(SoundEffect.Shoot)
+        } else {
+            soundState.playSound(SoundEffect.HitArmor)
+
         }
     }
 

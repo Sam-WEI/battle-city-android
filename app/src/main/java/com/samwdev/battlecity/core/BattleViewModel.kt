@@ -38,28 +38,34 @@ class BattleViewModel(
         private set
 
     fun selectStage(stageName: String) {
+        Logger.warn("selecting stage: $stageName")
         if (currentGameStatus != Initial && currentGameStatus != MapCleared) return
+        Logger.warn("selected stage: $stageName")
         currentStageName = stageName
         currentGameStatus = StageSelected(stageName)
     }
 
     fun nextStage() {
+        Logger.warn("next stage()")
         val nextStageName = (currentStageName!!.toInt() + 1).toString()
         appState.navController.navigate("${Route.BattleScreen}/$nextStageName")
     }
 
     fun initStage() {
+        Logger.warn("initStage(). VM: ${this}")
         requireNotNull(currentStageName) { "Stage not selected" }
 
         val json = MapParser.readJsonFile(getApplication(), currentStageName!!)
         val stageConfig = MapParser.parse(json)
         battleState = BattleState(stageConfig)
 
+        Logger.warn("currentGameStatus = ReadyToPlay. battleState: ${battleState}")
         currentGameStatus = ReadyToPlay
     }
 
     suspend fun start() {
 //        require(currentGameStatus == ReadyToPlay)
+        Logger.warn("start() currentGameStatus = Playing")
         currentGameStatus = Playing
         coroutineScope {
             launch {
@@ -70,7 +76,7 @@ class BattleViewModel(
                     Logger.error("Event: $event")
                     when (event) {
                         GameOver -> {
-                            battleState.pause()
+//                            battleState.pause()
                             currentGameStatus = MapCleared
 
                             appState.navController.navigateUp()
