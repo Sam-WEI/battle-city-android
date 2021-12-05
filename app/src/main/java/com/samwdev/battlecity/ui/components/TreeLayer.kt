@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.entity.TreeElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -22,6 +23,7 @@ fun TreeLayer(trees: Set<TreeElement>) {
     PixelCanvas(
         widthInMapPixel = gridUnitNumber.first.grid2mpx,
         heightInMapPixel = gridUnitNumber.second.grid2mpx,
+        modifier = Modifier.zIndex(10f)
     ) {
         trees.forEach { element ->
             val offset = element.offsetInMapPixel

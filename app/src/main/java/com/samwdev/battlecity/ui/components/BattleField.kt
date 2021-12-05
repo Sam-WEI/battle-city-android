@@ -28,14 +28,13 @@ fun BattleField(battleState: BattleState, modifier: Modifier = Modifier) {
             IceLayer(battleState.mapState.ices)
             WaterLayer(battleState.mapState.waters)
             EagleLayer(battleState.mapState.eagle)
+            TreeLayer(battleState.mapState.trees)
 
             battleState.tankState.tanks.forEach { (_, tank) ->
                 Tank(tank = tank)
             }
 
             Bullets(bullets = battleState.bulletState.bullets.values)
-
-            TreeLayer(battleState.mapState.trees)
 
             battleState.explosionState.explosions.forEach { (_, explosion) ->
                 Explosion(explosion = explosion)
