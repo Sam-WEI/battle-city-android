@@ -7,11 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.BattleState
-import com.samwdev.battlecity.core.BattleViewModel
 
 @Composable
 fun BattleField(battleState: BattleState, modifier: Modifier = Modifier) {
