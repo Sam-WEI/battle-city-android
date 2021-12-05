@@ -23,21 +23,40 @@ import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.utils.VibratorHelper
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.util.*
 import kotlin.math.*
 
 class HandheldControllerState {
-    var direction by mutableStateOf<Direction?>(null)
-        private set
+    private var directionsInLastTick = LinkedHashSet<Direction>()
 
-    var firePressed by mutableStateOf(false)
-        private set
+    private var firePressedInLastTick = LinkedHashSet<Boolean>()
 
     fun setSteerInput(direction: Direction?) {
-        this.direction = direction
+        direction?.let { dir ->
+            // remove and add again to bring the latest input to the end
+            directionsInLastTick.remove(dir)
+            directionsInLastTick.add(dir)
+        }
     }
 
     fun setFireInput(pressed: Boolean) {
-        firePressed = pressed
+        firePressedInLastTick.remove(pressed)
+        firePressedInLastTick.add(pressed)
+    }
+
+    fun consumeSteerInput(): List<Direction> {
+        return directionsInLastTick.toList().also {
+            directionsInLastTick.clear()
+        }
+    }
+
+    fun consumeFire(): Boolean {
+        val firedInLastTick = firePressedInLastTick.contains(true)
+        if (firePressedInLastTick.lastOrNull() == false) {
+            // player released the fire button in last tick
+            firePressedInLastTick.clear()
+        }
+        return firedInLastTick
     }
 }
 

@@ -12,14 +12,16 @@ class TankController(
         if (tank.isSpawning) {
             return
         }
-        val newDir = handheldControllerState.direction
-        if (newDir != null) {
-            tankState.moveTank(tankId, newDir)
+        val dirsInLastTick = handheldControllerState.consumeSteerInput()
+        if (dirsInLastTick.isNotEmpty()) {
+            dirsInLastTick.forEach {
+                tankState.moveTank(tankId, it)
+            }
         } else {
             tankState.stopTank(tankId)
         }
 
-        if (handheldControllerState.firePressed) {
+        if (handheldControllerState.consumeFire()) {
             bulletState.fire(tank)
         }
     }
