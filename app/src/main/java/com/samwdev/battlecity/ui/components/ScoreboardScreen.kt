@@ -31,11 +31,11 @@ fun ScoreboardScreen() {
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner, // todo
     )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
-    ScoreboardScreen(data = data)
+    ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!)
 }
 
 @Composable
-private fun ScoreboardScreen(data: ScoreboardData) {
+private fun ScoreboardScreen(data: ScoreboardData, stageName: String) {
     val frameList = remember(data) {
         var lastFrameData = ScoreDisplayData(totalScore = data.totalScore)
         val frames = mutableListOf(ScoreDisplayFrame(lastFrameData, 500))
@@ -74,11 +74,11 @@ private fun ScoreboardScreen(data: ScoreboardData) {
             }
         }
     }
-    ScoreboardDataFrame(displayScoreData)
+    ScoreboardDataFrame(displayScoreData, stageName)
 }
 
 @Composable
-private fun ScoreboardDataFrame(displayData: ScoreDisplayData) {
+private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String) {
     Grid(
         gridUnitNum = 15,
         modifier = Modifier
@@ -120,7 +120,7 @@ private fun ScoreboardDataFrame(displayData: ScoreDisplayData) {
             horizontalArrangement = Arrangement.Center,
         ) {
             PixelText(
-                text = "STAGE   12",
+                text = "STAGE   $stageName",
                 charHeight = 0.5f.grid2mpx,
                 topLeft = Offset.Zero,
             )
@@ -310,7 +310,8 @@ private fun ScoreboardScreenPreview() {
                     level3Num = 3,
                     level4Num = 2,
                     totalNum = 6,
-                )
+                ),
+                "2"
             )
         }
     }

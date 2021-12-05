@@ -32,7 +32,8 @@ class BattleViewModel(
     val powerUpState: PowerUpState get() = battleState.powerUpState
     val handheldControllerState: HandheldControllerState get() = battleState.handheldControllerState
 
-    private var currentStageName: String? = null
+    var currentStageName: String? = null
+        private set
     var currentGameStatus: GameStatus by mutableStateOf(Initial)
         private set
 
