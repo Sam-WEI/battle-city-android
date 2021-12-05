@@ -159,25 +159,25 @@ private fun DynamicBody(displayData: ScoreDisplayData) {
                 PixelText(
                     text = "${displayData.level1NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
                 Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level2NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
                 Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level3NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
                 Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level4NumText}←",
                     charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 1f.mpx2dp),
+                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
                 PixelText(
                     text = displayData.totalNumText.padStart(2),
@@ -311,7 +311,7 @@ private fun ScoreboardScreenPreview() {
                     level2Num = 3,
                     level3Num = 3,
                     level4Num = 2,
-                    totalNum = 6,
+                    totalNum = 16,
                 ),
                 "2"
             )
