@@ -38,9 +38,14 @@ class BattleViewModel(
         private set
 
     fun selectStage(stageName: String) {
-        if (currentGameStatus != Initial) return
+        if (currentGameStatus != Initial && currentGameStatus != MapCleared) return
         currentStageName = stageName
         currentGameStatus = StageSelected(stageName)
+    }
+
+    fun nextStage() {
+        val nextStageName = (currentStageName!!.toInt() + 1).toString()
+        appState.navController.navigate("${Route.BattleScreen}/$nextStageName")
     }
 
     fun initStage() {
@@ -65,6 +70,9 @@ class BattleViewModel(
                     Logger.error("Event: $event")
                     when (event) {
                         GameOver -> {
+                            battleState.pause()
+                            currentGameStatus = MapCleared
+
                             appState.navController.navigateUp()
                             appState.navController.navigate(Route.Scoreboard)
                         }
@@ -80,11 +88,13 @@ class BattleViewModel(
     }
 
     fun resume() {
-
+        battleState.resume()
+        currentGameStatus = Playing
     }
 
     fun pause() {
-
+        battleState.pause()
+        currentGameStatus = ReadyToPlay
     }
 }
 
@@ -93,6 +103,5 @@ object Initial : GameStatus()
 data class StageSelected(val stageName: String) : GameStatus()
 object ReadyToPlay : GameStatus()
 object Playing : GameStatus()
-object Paused : GameStatus()
 object MapCleared : GameStatus()
 object GameOver : GameStatus()
