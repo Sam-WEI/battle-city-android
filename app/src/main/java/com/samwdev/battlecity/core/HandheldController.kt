@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.utils.VibratorHelper
 import kotlinx.coroutines.coroutineScope
@@ -25,9 +27,6 @@ import kotlin.math.*
 
 class HandheldControllerState {
     var direction by mutableStateOf<Direction?>(null)
-        private set
-
-    var offset by mutableStateOf(Offset.Unspecified)
         private set
 
     var firePressed by mutableStateOf(false)
@@ -61,7 +60,7 @@ fun HandheldController(
         modifier = modifier.fillMaxWidth(),
     ) {
         JoyStick(
-            modifier = Modifier.size(100.dp),
+            diameter = 100.dp,
             onChange = {
                 onSteer(it)
                 if (it != null && lastDirection != it) {
@@ -89,68 +88,64 @@ fun HandheldController(
 
 @Composable
 fun JoyStick(
+    diameter: Dp,
     modifier: Modifier = Modifier,
     idleRadiusFraction: Float = 0.15f,
     onChange: (Direction?) -> Unit,
 ) {
-    val joystickPosition = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
-    // the BoxWithConstraints provides maxWidth/maxHeight for calculating the joystick's center.
-    // PointerInputScope itself provides a size field, but it's always (0,0) after activity restarts possibly due to a bug.
-    BoxWithConstraints(
+    val density = LocalDensity.current.density
+    val center = Offset(diameter.value * density / 2, diameter.value * density / 2)
+    val joystickPositionAnim = remember { Animatable(center, Offset.VectorConverter) }
+    Canvas(
         modifier = modifier
+            .size(diameter)
             .aspectRatio(1f)
-            .fillMaxSize()
-    ) {
-        Canvas(
-            modifier = modifier
-                .pointerInput(Unit) {
-                    val center = Offset(maxWidth.toPx() / 2f, maxHeight.toPx() / 2f)
-                    joystickPosition.snapTo(center)
-                    coroutineScope {
-                        while (true) {
-                            val pointer = awaitPointerEventScope { awaitFirstDown() }
-                            val pointerId = pointer.id
-                            joystickPosition.snapTo(pointer.position)
-                            awaitPointerEventScope {
-                                drag(pointerId = pointerId) {
-                                    launch {
-                                        joystickPosition.snapTo(it.position)
-                                    }
+            .pointerInput(Unit) {
+                joystickPositionAnim.snapTo(center)
+                coroutineScope {
+                    while (true) {
+                        val pointer = awaitPointerEventScope { awaitFirstDown() }
+                        val pointerId = pointer.id
+                        joystickPositionAnim.snapTo(pointer.position)
+                        awaitPointerEventScope {
+                            drag(pointerId = pointerId) {
+                                launch {
+                                    joystickPositionAnim.snapTo(it.position)
                                 }
                             }
-                            launch {
-                                joystickPosition.animateTo(center, animationSpec = spring())
-                            }
+                        }
+                        launch {
+                            joystickPositionAnim.animateTo(center, animationSpec = spring())
                         }
                     }
                 }
-        ) {
-            val side = min(size.width, size.height)
-            val allowedRadius = 0.9f * side / 2
-            val (x, y) = joystickPosition.value - center
-            val drawPosition: Offset = if (x.pow(2) + y.pow(2) < allowedRadius.pow(2)) {
-                joystickPosition.value
-            } else {
-                val angle = atan2(x, y)
-                Offset(sin(angle) * allowedRadius, cos(angle) * allowedRadius) + center
             }
-            if (Offset(x, y).getDistanceSquared() < (idleRadiusFraction * side).pow(2)) {
-                onChange(Offset(0f, 0f).steerDirection)
-            } else {
-                onChange(Offset(x / allowedRadius, y / allowedRadius).steerDirection)
-            }
-
-            drawCircle(
-                brush = Brush.radialGradient(colors = joyStickBgColor, center = drawPosition, radius = 0.8f * side / 2),
-                center = Offset(side / 2f, side / 2f),
-                radius = side / 2f
-            )
-            drawCircle(
-                color = Color.DarkGray,
-                center = drawPosition,
-                radius = side / 6f,
-            )
+    ) {
+        val side = min(size.width, size.height)
+        val allowedRadius = 0.9f * side / 2
+        val (x, y) = joystickPositionAnim.value - center
+        val drawPosition: Offset = if (x.pow(2) + y.pow(2) < allowedRadius.pow(2)) {
+            joystickPositionAnim.value
+        } else {
+            val angle = atan2(x, y)
+            Offset(sin(angle) * allowedRadius, cos(angle) * allowedRadius) + center
         }
+        if (Offset(x, y).getDistanceSquared() < (idleRadiusFraction * side).pow(2)) {
+            onChange(Offset(0f, 0f).steerDirection)
+        } else {
+            onChange(Offset(x / allowedRadius, y / allowedRadius).steerDirection)
+        }
+
+        drawCircle(
+            brush = Brush.radialGradient(colors = joyStickBgColor, center = drawPosition, radius = 0.8f * side / 2),
+            center = Offset(side / 2f, side / 2f),
+            radius = side / 2f
+        )
+        drawCircle(
+            color = Color.DarkGray,
+            center = drawPosition,
+            radius = side / 6f,
+        )
     }
 }
 
