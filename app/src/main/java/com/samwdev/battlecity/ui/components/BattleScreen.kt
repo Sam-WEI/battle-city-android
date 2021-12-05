@@ -70,16 +70,19 @@ fun BattleScreen() {
                 )
 
                 BattleField(battleViewModel.battleState, modifier = Modifier.fillMaxWidth())
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colors.background)
                 ) {
+                    Logger.warn("hand held controller ${battleViewModel.handheldControllerState}")
                     HandheldController(
                         modifier = Modifier
                             .padding(horizontal = 30.dp, vertical = 60.dp)
                             .fillMaxWidth(),
-                        handheldControllerState = battleViewModel.handheldControllerState,
+                        onSteer = { dir -> battleViewModel.handheldControllerState.setSteerInput(dir) },
+                        onFire =  { firing -> battleViewModel.handheldControllerState.setFireInput(firing) }
                     )
 
                     if (LocalDebugConfig.current.showFps) {
@@ -117,7 +120,8 @@ private fun BattleStatePreview() {
                     modifier = Modifier
                         .padding(horizontal = 30.dp, vertical = 60.dp)
                         .fillMaxWidth(),
-                    handheldControllerState = HandheldControllerState(),
+                    onSteer = {},
+                    onFire = {},
                 )
             }
         }

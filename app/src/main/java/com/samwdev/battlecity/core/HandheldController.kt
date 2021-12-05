@@ -23,11 +23,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.*
 
-@Composable
-fun rememberHandheldControllerState(): HandheldControllerState {
-    return remember { HandheldControllerState() }
-}
-
 class HandheldControllerState {
     var direction by mutableStateOf<Direction?>(null)
         private set
@@ -52,9 +47,8 @@ private val joyStickBgColor = listOf(Color.Gray, Color.LightGray)
 @Composable
 fun HandheldController(
     modifier: Modifier = Modifier,
-    handheldControllerState: HandheldControllerState = rememberHandheldControllerState(),
-    onSteer: (Direction?) -> Unit = { handheldControllerState.setSteerInput(it) },
-    onFire: (Boolean) -> Unit = { handheldControllerState.setFireInput(it) },
+    onSteer: (Direction?) -> Unit,
+    onFire: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current.applicationContext
     val coroutine = rememberCoroutineScope()
