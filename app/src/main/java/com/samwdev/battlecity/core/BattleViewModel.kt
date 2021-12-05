@@ -48,6 +48,7 @@ class BattleViewModel(
     fun nextStage() {
         Logger.warn("next stage()")
         val nextStageName = (currentStageName!!.toInt() + 1).toString()
+        appState.navController.navigateUp()
         appState.navController.navigate("${Route.BattleScreen}/$nextStageName")
     }
 
