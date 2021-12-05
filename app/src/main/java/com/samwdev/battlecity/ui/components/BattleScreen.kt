@@ -69,7 +69,7 @@ fun BattleScreen() {
                     modifier = Modifier.background(Color(117, 117, 117)),
                 )
 
-                BattleField(modifier = Modifier.fillMaxWidth())
+                BattleField(battleViewModel.battleState, modifier = Modifier.fillMaxWidth())
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

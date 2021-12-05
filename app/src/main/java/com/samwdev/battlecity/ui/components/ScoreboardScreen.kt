@@ -72,7 +72,7 @@ private fun ScoreboardScreen(data: ScoreboardData, stageName: String, doneDispla
                 soundEffect?.let { SoundPlayer.INSTANCE.play(it) }
                 delay(delay)
             }
-            delay(2000)
+            delay(1000)
             doneDisplaying()
         }
     }
