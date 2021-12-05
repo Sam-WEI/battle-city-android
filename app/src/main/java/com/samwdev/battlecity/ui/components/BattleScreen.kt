@@ -76,7 +76,6 @@ fun BattleScreen() {
                         .fillMaxSize()
                         .background(MaterialTheme.colors.background)
                 ) {
-                    Logger.warn("hand held controller ${battleViewModel.handheldControllerState}")
                     HandheldController(
                         modifier = Modifier
                             .padding(horizontal = 30.dp, vertical = 60.dp)
