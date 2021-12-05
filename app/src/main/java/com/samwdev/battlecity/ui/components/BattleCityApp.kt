@@ -57,7 +57,7 @@ fun BattleCityApp() {
             }
             composable(
                 route = "${Route.BattleScreen}/{${Route.Key.StageName}}",
-                arguments = listOf(navArgument(Route.Key.StageName) { type = NavType.StringType} )
+                arguments = listOf(navArgument(Route.Key.StageName) { type = NavType.StringType })
             ) { backStackEntry ->
                 val stageName = backStackEntry.arguments?.getString(Route.Key.StageName)!!
                 LaunchedEffect(stageName) {

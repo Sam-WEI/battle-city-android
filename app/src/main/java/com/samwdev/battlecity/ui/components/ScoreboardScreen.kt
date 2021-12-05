@@ -16,9 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
-import com.samwdev.battlecity.utils.Logger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -31,11 +29,13 @@ fun ScoreboardScreen() {
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner, // todo
     )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
-    ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!)
+    ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!) {
+        battleViewModel.nextStage()
+    }
 }
 
 @Composable
-private fun ScoreboardScreen(data: ScoreboardData, stageName: String) {
+private fun ScoreboardScreen(data: ScoreboardData, stageName: String, doneDisplaying: () -> Unit) {
     val frameList = remember(data) {
         var lastFrameData = ScoreDisplayData(totalScore = data.totalScore)
         val frames = mutableListOf(ScoreDisplayFrame(lastFrameData, 500))
@@ -72,6 +72,8 @@ private fun ScoreboardScreen(data: ScoreboardData, stageName: String) {
                 soundEffect?.let { SoundPlayer.INSTANCE.play(it) }
                 delay(delay)
             }
+            delay(2000)
+            doneDisplaying()
         }
     }
     ScoreboardDataFrame(displayScoreData, stageName)

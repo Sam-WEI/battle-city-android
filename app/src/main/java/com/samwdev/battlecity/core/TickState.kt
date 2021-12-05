@@ -1,15 +1,13 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameMillis
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.roundToInt
-
-@Composable
-fun rememberTickState(): TickState {
-    return remember { TickState() }
-}
 
 class TickState(tick: Tick = Tick.INITIAL) {
     companion object {
