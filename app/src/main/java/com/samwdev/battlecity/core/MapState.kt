@@ -92,11 +92,11 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
     }
 
     private val brickIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect)) }
+        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect, hGridUnitNum)) }
     }
 
     private val steelIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect)) }
+        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect, hGridUnitNum)) }
     }
 
     private val bottomRightSubGridAroundEagle: SubGrid =
@@ -158,7 +158,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.forEach {
-                val subGrid = SteelElement.getSubGrid(it)
+                val subGrid = SteelElement.getSubGrid(it, hGridUnitNum)
                 // a destroyed steel always frees up a sub grid
                 refreshAccessPoints(subGrid, 1)
             }
