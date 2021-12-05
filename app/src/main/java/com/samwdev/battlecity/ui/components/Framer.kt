@@ -3,7 +3,6 @@ package com.samwdev.battlecity.ui.components
 import androidx.compose.runtime.*
 import com.samwdev.battlecity.core.Tick
 import com.samwdev.battlecity.core.TickState
-import com.samwdev.battlecity.utils.Logger
 
 val LocalTick = compositionLocalOf<Tick> {
     error("Error.")
@@ -13,7 +12,6 @@ val LocalTick = compositionLocalOf<Tick> {
 fun TickAware(tickState: TickState, content: @Composable () -> Unit) {
     val tick by tickState.tickFlow.collectAsState()
     CompositionLocalProvider(LocalTick provides tick) {
-        Logger.error("tickAware: ${tick.uptimeMillis}")
         content()
     }
 }
