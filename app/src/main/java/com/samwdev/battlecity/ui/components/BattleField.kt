@@ -7,14 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.BattleViewModel
 
 @Composable
-fun BattleField(
-    modifier: Modifier = Modifier,
-    battleViewModel: BattleViewModel = viewModel(),
-) {
+fun BattleField(modifier: Modifier = Modifier) {
+    val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
+
     TickAware(tickState = battleViewModel.tickState) {
         Grid(modifier = modifier
             .fillMaxWidth()

@@ -26,17 +26,16 @@ private val ColorRed = Color(210, 81, 65)
 private val ColorOrange = Color(241, 176, 96)
 
 @Composable
-fun ScoreboardScreen(appState: AppState) {
+fun ScoreboardScreen() {
     val battleViewModel: BattleViewModel = viewModel(
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner, // todo
-        factory = provideBattleViewModel(appState = appState)
     )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
     ScoreboardScreen(data = data)
 }
 
 @Composable
-fun ScoreboardScreen(data: ScoreboardData) {
+private fun ScoreboardScreen(data: ScoreboardData) {
     val frameList = remember(data) {
         var lastFrameData = ScoreDisplayData(totalScore = data.totalScore)
         val frames = mutableListOf(ScoreDisplayFrame(lastFrameData, 500))
