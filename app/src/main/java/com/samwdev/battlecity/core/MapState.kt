@@ -1,6 +1,9 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -70,6 +73,12 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
     private val brickIndexSet: Set<Int> get() = bricks.map { it.index }.toSet()
     private val steelIndexSet: Set<Int> get() = steels.map { it.index }.toSet()
     private val waterIndexSet: Set<Int> get() = waters.map { it.index }.toSet()
+
+    val subGridsOfEagleArea: Set<SubGrid> by lazy {
+        // use Steel to do the calculation since one steel is one subGrid
+        val steelIndicesOfEagleArea = SteelElement.getIndicesOverlappingRect(eagle.rect.inflate(SteelElement.elementSize + 1f), hGridUnitNum)
+        steelIndicesOfEagleArea.map { idx -> SteelElement.getSubGrid(idx, hGridUnitNum) }.toSet()
+    }
 
     init {
         refreshAccessPoints()
@@ -208,7 +217,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
             brickIndexSet = brickIndexSet,
             steelIndexSet = steelIndexSet,
             waterIndexSet = waterIndexSet,
-            eagleIndex = eagle.index,
+            eagleAreaSubGrids = subGridsOfEagleArea,
             spreadFrom = spreadFrom,
             depth = depth,
             hardRefresh = hardRefresh,

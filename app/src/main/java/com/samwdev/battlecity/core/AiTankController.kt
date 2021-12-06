@@ -59,7 +59,8 @@ class AiTankController(
 
         if (remainingHuntingPlayerTime > 0) {
             if (remainingLockOnPlayerCooldown <= 0) {
-                findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.offset?.subGrid)
+                // todo check if too many failed waypoint, make it desperate.
+                findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.offset?.subGrid, desperate = false)
                 remainingLockOnPlayerCooldown = personality.lockOnPlayerCooldown
                 Logger.debug("[${tankId}] re-locked player!! remaining hunting time: $remainingHuntingPlayerTime")
             }
@@ -115,28 +116,15 @@ class AiTankController(
         }
     }
 
-    private fun getNextWaypointMode(): WaypointMode {
-        val random = Random.nextInt(commandWeightMap.values.sum())
-        var accWgt = 0
-        for ((cmd, weight) in commandWeightMap) {
-            accWgt += weight
-            if (random < accWgt) return cmd
-        }
-        return commandWeightMap.keys.last()
-    }
-
-    private val commandWeightMap: Map<WaypointMode, Int> = mapOf(
-        Wander to 5,
-        AttackPlayer to 1,
-        AttackBase to 1,
-    )
-
-    private fun findNewWaypoint(tank: Tank, target: SubGrid?) {
+    /**
+     * @param desperate if a bot is desperate, it will consider bricks as accessible.
+     */
+    private fun findNewWaypoint(tank: Tank, target: SubGrid?, desperate: Boolean = false) {
         val accessPoints = mapState.accessPoints
         val dest = target ?: accessPoints.randomAccessiblePoint(Int.MAX_VALUE)
         val src = tank.pivotBox.topLeft.subGrid
         val waypoints = LinkedHashSet<SubGrid>().apply { add(src) }
-        walkWaypointRecursive(waypoints, mutableSetOf(), accessPoints, src, dest, null)
+        walkWaypointRecursive(waypoints, mutableSetOf(), accessPoints, src, dest, null, desperate)
         currentWaypoint = waypoints.toList()
     }
 
@@ -147,6 +135,7 @@ class AiTankController(
         src: SubGrid,
         dest: SubGrid,
         currentDirection: Direction?,
+        desperate: Boolean = false,
     ): Boolean {
         if (src == dest) {
             return true
@@ -179,8 +168,9 @@ class AiTankController(
             if (nextWp.isOutOfBound(accessPoints)) {
                 continue
             }
-            if (!accessPoints.isAccessible(nextWp)) {
-                // todo consider brick as accessible
+            if (!accessPoints.isAccessible(nextWp)
+                && !(desperate && accessPoints.isBrick(nextWp))
+                && !accessPoints.isEagleArea(nextWp)) {
                 continue
             }
             if (nextWp in badAccessPoints) {
