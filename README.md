@@ -14,9 +14,9 @@
 [x] Debug control panel
 [ ] Map selection
 [X] HUD
-[ ] Scoreboard
+[x] Scoreboard
 [X] Font
-[ ] Menu screens
+[x] Menu screens
 [ ] Map editor
 [X] AI
 [x] N-in-1 Map
