@@ -58,7 +58,7 @@ val LocalPixelFontPaint = staticCompositionLocalOf<NativePaint> {
 fun PixelTextPaintScope(content: @Composable () -> Unit) {
     val context = LocalContext.current
     val tf = try {
-        ResourcesCompat.getFont(context, R.font.pixel_font)
+        ResourcesCompat.getFont(context, R.font.ps2p_font)
     } catch (e: Resources.NotFoundException) {
         Typeface.DEFAULT
     }

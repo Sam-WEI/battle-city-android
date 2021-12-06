@@ -6,19 +6,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.R
 
-val PixelFont = FontFamily(
-    Font(R.font.pixel_font_regular)
+val Ps2pFont = FontFamily(
+    Font(R.font.ps2p_regular)
+)
+
+val CiiFont = FontFamily(
+    Font(R.font.connection_ii)
 )
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    defaultFontFamily = PixelFont,
+    defaultFontFamily = Ps2pFont,
     body1 = TextStyle(
-        fontFamily = PixelFont,
+        fontFamily = Ps2pFont,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
