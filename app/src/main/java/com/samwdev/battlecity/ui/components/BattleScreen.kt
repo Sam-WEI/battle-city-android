@@ -26,16 +26,6 @@ fun BattleScreen() {
     val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
     val composeCoroutineScope = rememberCoroutineScope()
 
-    var debugConfig: DebugConfig by remember {
-        mutableStateOf(DebugConfig(
-            showFps = true,
-            showPivotBox = false,
-            maxBot = 4,
-            showAccessPoints = false,
-            showWaypoints = true,
-        ))
-    }
-
     LaunchedEffect(battleViewModel.currentGameStatus) {
         if (battleViewModel.currentGameStatus == MapCleared) {
             Logger.error(" read text")
@@ -45,18 +35,18 @@ fun BattleScreen() {
     if (battleViewModel.currentGameStatus < StageDataLoaded) return
 
     SideEffect {
-        battleViewModel.tickState.maxFps = debugConfig.maxFps
-        battleViewModel.botState.maxBot = debugConfig.maxBot
-        battleViewModel.bulletState.friendlyFire = debugConfig.friendlyFire
-        battleViewModel.tankState.whoIsYourDaddy = debugConfig.whoIsYourDaddy
-        if (debugConfig.fixTickDelta) {
-            battleViewModel.tickState.fixTickDelta(debugConfig.tickDelta)
+        battleViewModel.tickState.maxFps = battleViewModel.debugConfig.maxFps
+        battleViewModel.botState.maxBot = battleViewModel.debugConfig.maxBot
+        battleViewModel.bulletState.friendlyFire = battleViewModel.debugConfig.friendlyFire
+        battleViewModel.tankState.whoIsYourDaddy = battleViewModel.debugConfig.whoIsYourDaddy
+        if (battleViewModel.debugConfig.fixTickDelta) {
+            battleViewModel.tickState.fixTickDelta(battleViewModel.debugConfig.tickDelta)
         } else {
             battleViewModel.tickState.cancelFixTickDelta()
         }
     }
 
-    CompositionLocalProvider(LocalDebugConfig provides debugConfig) {
+    CompositionLocalProvider(LocalDebugConfig provides battleViewModel.debugConfig) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Hud(
@@ -111,12 +101,12 @@ fun BattleScreen() {
                 }
             }
             DebugConfigControlToggle(
-                debugConfig = debugConfig,
+                debugConfig = battleViewModel.debugConfig,
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.BottomEnd),
                 onConfigChange = {
-                    debugConfig = it
+                    battleViewModel.debugConfig = it
                 }
             )
         }
