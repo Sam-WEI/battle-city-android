@@ -53,24 +53,23 @@ class BattleViewModel(
         currentGameStatus = StageDataLoaded
     }
 
-    fun nextStage() {
+    fun goToNextStage() {
         val nextStageName = (currentStageName!!.toInt() + 1).toString()
         appState.navController.navigateUp()
         appState.navController.navigate("${Route.BattleScreen}/$nextStageName")
     }
 
-    fun initStage() {
+    fun loadStageData() {
 //        val json = MapParser.readJsonFile(getApplication(), currentStageName!!)
 //        val stageConfig = MapParser.parse(json)
-
-        Logger.warn("initStage currentGameStatus = ${currentGameStatus}. battleState: ${battleState}")
-//        currentGameStatus = SwitchingStage
+//        currentGameStatus = StageDataLoaded
     }
 
     suspend fun start() {
         coroutineScope {
             launch {
                 battleState.startBattle()
+                currentGameStatus = Playing
             }
 
             launch(viewModelScope.coroutineContext) {

@@ -30,7 +30,7 @@ fun ScoreboardScreen() {
     )
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
     ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!) {
-        battleViewModel.nextStage()
+        battleViewModel.goToNextStage()
     }
 }
 
