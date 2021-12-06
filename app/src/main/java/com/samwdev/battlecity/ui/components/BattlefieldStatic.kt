@@ -20,7 +20,7 @@ fun BattlefieldStatic(mapConfig: MapConfig, modifier: Modifier = Modifier) {
         BrickLayer(mapConfig.bricks)
         SteelLayer(mapConfig.steels)
         IceLayer(mapConfig.ices)
-        WaterLayer(mapConfig.waters)
+        WaterLayerFrame(mapConfig.waters, 0)
         EagleLayer(mapConfig.eagle)
         TreeLayer(mapConfig.trees)
     }

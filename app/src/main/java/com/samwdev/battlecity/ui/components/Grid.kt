@@ -41,12 +41,12 @@ val MapPixel.mpx2dp: Dp @Composable get() = LocalMapPixelDp.current * this
  * Provides dp size for one MapPixel
  */
 val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
-    error("Not in Map composable or its child composable.")
+    error("Not in Grid composable or its child composable.")
 }
 
 /**
  * Provides dp size for one MapPixel
  */
 val LocalGridUnitNumber = staticCompositionLocalOf<Pair<Int, Int>> {
-    error("Not in Map composable or its child composable.")
+    error("Not in Grid composable or its child composable.")
 }

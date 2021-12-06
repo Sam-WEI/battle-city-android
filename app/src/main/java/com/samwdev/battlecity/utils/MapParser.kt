@@ -17,6 +17,10 @@ object MapParser {
         return jacksonObjectMapper().readValue(jsonStr)
     }
 
+    fun parse(context: Context, name: String): StageConfig {
+        return parse(readJsonFile(context, name))
+    }
+
     fun parse(configJson: StageConfigJson): StageConfig {
         val bricks = mutableSetOf<BrickElement>()
         val steels = mutableSetOf<SteelElement>()
