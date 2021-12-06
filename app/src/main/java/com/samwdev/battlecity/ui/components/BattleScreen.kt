@@ -79,7 +79,7 @@ fun BattleScreen() {
                         ) {
                             battleViewModel.start()
                         }
-                    } else if (battleViewModel.currentGameStatus == MapCleared) {
+                    } else if (battleViewModel.currentGameStatus == GameOver) {
                         RedGameOver {
                             battleViewModel.appState.navController.navigateUp()
                             battleViewModel.appState.navController.navigate(Route.Scoreboard)
