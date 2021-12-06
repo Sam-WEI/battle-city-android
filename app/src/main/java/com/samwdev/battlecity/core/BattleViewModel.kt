@@ -80,8 +80,6 @@ class BattleViewModel(
 //                            battleState.pause()
                             currentGameStatus = MapCleared
 
-                            appState.navController.navigateUp()
-                            appState.navController.navigate(Route.Scoreboard)
                         }
                         MapCleared -> {
 
