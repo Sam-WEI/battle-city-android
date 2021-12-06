@@ -2,7 +2,6 @@ package com.samwdev.battlecity.core
 
 import androidx.compose.ui.geometry.Offset
 import com.samwdev.battlecity.entity.BrickElement
-import com.samwdev.battlecity.entity.EagleElement
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.WaterElement
 import kotlin.random.Random
@@ -10,9 +9,14 @@ import kotlin.random.Random
 private const val ValueUninitialized = 0
 private const val ValueAccessible = 1
 private const val ValueObstacleSteel = -10000
-private const val ValueObstacleBrick = -100 // todo make brick accessible so AI can have a desire to break through
+private const val ValueObstacleBrick = -100
 private const val ValueObstacleWater = -10
-private const val ValueNeighborObstacle = -1
+private const val ValueEagleArea = -2
+/**
+ * When a subGrid itself is accessible but its right or bottom neighbor(s) is not,
+ * this subGrid is still inaccessible because it can't fit a tank. Use this value to indicate that.
+ */
+private const val ValueNeighborIsObstacle = -5
 
 typealias AccessPoints = Array<Array<Int>>
 
@@ -32,17 +36,17 @@ fun AccessPoints.updated(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
-    eagleIndex: Int,
+    eagleAreaSubGrids: Set<SubGrid>,
     spreadFrom: SubGrid? = null,
     depth: Int = Int.MAX_VALUE,
     hardRefresh: Boolean = false,
 ): AccessPoints {
     val updated = copyOf()
-    updated.calculateInPlace(
+    updated.updateInPlace(
         waterIndexSet,
         steelIndexSet,
         brickIndexSet,
-        setOf(eagleIndex),
+        eagleAreaSubGrids,
         spreadFrom ?: bottomRight,
         depth,
         hardRefresh,
@@ -67,15 +71,17 @@ operator fun AccessPoints.set(subGrid: SubGrid, value: Int) {
 }
 
 fun AccessPoints.isAccessible(subGrid: SubGrid): Boolean = this[subGrid] > 0
+fun AccessPoints.isEagleArea(subGrid: SubGrid): Boolean = this[subGrid] == ValueEagleArea
+fun AccessPoints.isBrick(subGrid: SubGrid): Boolean = this[subGrid] == ValueObstacleBrick
 
 /**
- * @param hardRefresh pass true to not also validate accessible ones
+ * @param hardRefresh pass true to also invalidate already accessible ones
  */
-private fun AccessPoints.calculateInPlace(
+private fun AccessPoints.updateInPlace(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
-    eagleIndex: Set<Int>,
+    eagleAreaSubGrids: Set<SubGrid>,
     spreadFrom: SubGrid,
     depth: Int = Int.MAX_VALUE,
     hardRefresh: Boolean = false,
@@ -90,6 +96,7 @@ private fun AccessPoints.calculateInPlace(
                 continue
             }
             val value = when {
+                curr in eagleAreaSubGrids -> ValueEagleArea
                 WaterElement.overlapsAnyElement(
                     waterIndexSet,
                     curr,
@@ -111,13 +118,6 @@ private fun AccessPoints.calculateInPlace(
                     1,
                     1
                 ) -> ValueObstacleBrick
-                EagleElement.overlapsAnyElement(
-                    eagleIndex,
-                    curr,
-                    hGridUnitNum = hSubGridUnitNum / 2,
-                    1,
-                    1
-                ) -> ValueObstacleSteel // consider eagle as steel
                 else -> ValueAccessible
             }
             this[curr] = value
@@ -126,11 +126,11 @@ private fun AccessPoints.calculateInPlace(
                 if (
                     curr.neighborRight.isOutOfBound(this)
                     || curr.neighborDown.isOutOfBound(this)
-                    || this[curr.neighborDown] < ValueNeighborObstacle
-                    || this[curr.neighborRight] < ValueNeighborObstacle
-                    || this[curr.neighborRight.neighborDown] < ValueNeighborObstacle
+                    || this[curr.neighborDown] < ValueNeighborIsObstacle
+                    || this[curr.neighborRight] < ValueNeighborIsObstacle
+                    || this[curr.neighborRight.neighborDown] < ValueNeighborIsObstacle
                 ) {
-                    this[curr] = ValueNeighborObstacle
+                    this[curr] = ValueNeighborIsObstacle
                 }
             }
         }
@@ -173,6 +173,7 @@ inline class SubGrid internal constructor(private val packedValue: Int) : Compar
     }
 }
 
+// todo use bit
 fun SubGrid(subRow: Int, subCol: Int): SubGrid = SubGrid(subRow * 10000 + subCol)
 
 fun SubGrid(offset: Offset): SubGrid = SubGrid(
