@@ -11,6 +11,7 @@ import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.Logger
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -78,11 +79,14 @@ class BattleViewModel(
                     when (event) {
                         GameOver -> {
 //                            battleState.pause()
-                            currentGameStatus = MapCleared
+                            currentGameStatus = GameOver
 
                         }
                         MapCleared -> {
-
+                            delay(3000L)
+                            currentGameStatus = MapCleared
+                            appState.navController.navigateUp()
+                            appState.navController.navigate(Route.Scoreboard)
                         }
 
                         else -> {}
