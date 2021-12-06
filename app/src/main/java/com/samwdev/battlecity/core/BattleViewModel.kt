@@ -43,6 +43,14 @@ class BattleViewModel(
     var currStageConfig: StageConfig? = null
         private set
 
+    var debugConfig: DebugConfig by mutableStateOf(DebugConfig(
+        showFps = true,
+        showPivotBox = false,
+        maxBot = 4,
+        showAccessPoints = false,
+        showWaypoints = true,
+    ))
+
     fun selectStage(stageName: String) {
         if (currentGameStatus != Initial && currentGameStatus != MapCleared) return
         val json = MapParser.readJsonFile(getApplication(), stageName)
@@ -55,6 +63,7 @@ class BattleViewModel(
     }
 
     fun goToNextStage() {
+        currentGameStatus = Initial
         val nextStageName = (currentStageName!!.toInt() + 1).toString()
         appState.navController.navigateUp()
         appState.navController.navigate("${Route.BattleScreen}/$nextStageName")
