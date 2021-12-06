@@ -15,9 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.core.BattleViewModel
+import com.samwdev.battlecity.core.DebugConfig
+import com.samwdev.battlecity.core.HandheldController
+import com.samwdev.battlecity.core.StageDataLoaded
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
-import com.samwdev.battlecity.utils.Logger
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -35,7 +37,6 @@ fun BattleScreen() {
             showWaypoints = true,
         ))
     }
-    Logger.error("BattleScreen compose, gameState: ${battleViewModel.currentGameStatus}")
 
     LaunchedEffect(Unit) {
         composeCoroutineScope.launch {
