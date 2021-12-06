@@ -138,8 +138,8 @@ private fun AccessPoints.updateInPlace(
 }
 
 inline class SubGrid internal constructor(private val packedValue: Int) : Comparable<SubGrid> {
-    val subRow: Int get() = packedValue / 10000
-    val subCol: Int get() = packedValue % 10000
+    val subRow: Int get() = packedValue shr 16
+    val subCol: Int get() = packedValue and 0xFFFF
 
     val x: MapPixel get() = (subCol / 2f).grid2mpx
     val y: MapPixel get() = (subRow / 2f).grid2mpx
@@ -173,8 +173,7 @@ inline class SubGrid internal constructor(private val packedValue: Int) : Compar
     }
 }
 
-// todo use bit
-fun SubGrid(subRow: Int, subCol: Int): SubGrid = SubGrid(subRow * 10000 + subCol)
+fun SubGrid(subRow: Int, subCol: Int): SubGrid = SubGrid((subRow shl 16) + subCol)
 
 fun SubGrid(offset: Offset): SubGrid = SubGrid(
     (offset.y / 1f.grid2mpx).toInt() * 2, (offset.x / 1f.grid2mpx).toInt() * 2)
