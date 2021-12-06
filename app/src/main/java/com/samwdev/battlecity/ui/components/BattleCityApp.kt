@@ -47,12 +47,16 @@ fun BattleCityApp() {
         ) {
             composable(Route.Landing) {
                 FullScreenWrapper {
-                    LandingScreen { menuItem ->
-                        // todo
-                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/2") {
-                            this.launchSingleTop = true
-                        }
-                    }
+//                    LandingScreen { menuItem ->
+//                        // todo
+//                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/2") {
+//                            this.launchSingleTop = true
+//                        }
+//                    }
+                    StageCurtain(
+                        stageConfigPrev = MapParser.parse(LocalContext.current, "1"),
+                        stageConfigNext = MapParser.parse(LocalContext.current, "2"),
+                    )
                 }
             }
             composable(
