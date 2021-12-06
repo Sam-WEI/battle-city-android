@@ -2,6 +2,7 @@ package com.samwdev.battlecity.core
 
 import androidx.compose.ui.geometry.Offset
 import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.entity.EagleElement
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.WaterElement
 import kotlin.random.Random
@@ -31,6 +32,7 @@ fun AccessPoints.updated(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
+    eagleIndex: Int,
     spreadFrom: SubGrid? = null,
     depth: Int = Int.MAX_VALUE,
     hardRefresh: Boolean = false,
@@ -40,6 +42,7 @@ fun AccessPoints.updated(
         waterIndexSet,
         steelIndexSet,
         brickIndexSet,
+        setOf(eagleIndex),
         spreadFrom ?: bottomRight,
         depth,
         hardRefresh,
@@ -72,6 +75,7 @@ private fun AccessPoints.calculateInPlace(
     waterIndexSet: Set<Int>,
     steelIndexSet: Set<Int>,
     brickIndexSet: Set<Int>,
+    eagleIndex: Set<Int>,
     spreadFrom: SubGrid,
     depth: Int = Int.MAX_VALUE,
     hardRefresh: Boolean = false,
@@ -107,6 +111,13 @@ private fun AccessPoints.calculateInPlace(
                     1,
                     1
                 ) -> ValueObstacleBrick
+                EagleElement.overlapsAnyElement(
+                    eagleIndex,
+                    curr,
+                    hGridUnitNum = hSubGridUnitNum / 2,
+                    1,
+                    1
+                ) -> ValueObstacleSteel // consider eagle as steel
                 else -> ValueAccessible
             }
             this[curr] = value
