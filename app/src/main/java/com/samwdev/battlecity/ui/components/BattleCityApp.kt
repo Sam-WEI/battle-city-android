@@ -47,16 +47,12 @@ fun BattleCityApp() {
         ) {
             composable(Route.Landing) {
                 FullScreenWrapper {
-//                    LandingScreen { menuItem ->
-//                        // todo
-//                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/2") {
-//                            this.launchSingleTop = true
-//                        }
-//                    }
-                    StageCurtain(
-                        stageConfigPrev = MapParser.parse(LocalContext.current, "1"),
-                        stageConfigNext = MapParser.parse(LocalContext.current, "2"),
-                    )
+                    LandingScreen { menuItem ->
+                        // todo
+                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/1") {
+                            this.launchSingleTop = true
+                        }
+                    }
                 }
             }
             composable(
@@ -64,6 +60,7 @@ fun BattleCityApp() {
                 arguments = listOf(navArgument(Route.Key.StageName) { type = NavType.StringType })
             ) { backStackEntry ->
                 val stageName = backStackEntry.arguments?.getString(Route.Key.StageName)!!
+                // the framework runs this block several times. Use LaunchedEffect to make it run only once.
                 LaunchedEffect(stageName) {
                     battleViewModel.selectStage(stageName)
                 }

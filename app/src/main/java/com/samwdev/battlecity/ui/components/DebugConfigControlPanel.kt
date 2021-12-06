@@ -102,15 +102,9 @@ fun DebugConfigControlPanel(
                 )
                 DebugConfigSwitch(
                     modifier = Modifier.fillMaxWidth(),
-                    label = "Show brick index",
-                    value = debugConfig.showBrickIndex,
-                    onSwitch = { onConfigChange(debugConfig.copy(showBrickIndex = it)) }
-                )
-                DebugConfigSwitch(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = "Show steel index",
-                    value = debugConfig.showSteelIndex,
-                    onSwitch = { onConfigChange(debugConfig.copy(showSteelIndex = it)) }
+                    label = "Show element index",
+                    value = debugConfig.showElementIndex,
+                    onSwitch = { onConfigChange(debugConfig.copy(showElementIndex = it)) }
                 )
                 DebugConfigSwitch(
                     modifier = Modifier.fillMaxWidth(),

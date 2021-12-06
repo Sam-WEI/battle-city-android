@@ -40,12 +40,12 @@ fun BattleScreen() {
     LaunchedEffect(Unit) {
         composeCoroutineScope.launch {
             // start() must be run from a compose coroutine scope in order to correctly run the withTimeMillis{} method.
-            battleViewModel.initStage()
-            battleViewModel.start()
+//            battleViewModel.initStage()
+//            battleViewModel.start()
         }
     }
 
-    if (battleViewModel.currentGameStatus == Initial || battleViewModel.currentGameStatus is StageSelected) return
+    if (battleViewModel.currentGameStatus < StageDataLoaded) return
 
     SideEffect {
         battleViewModel.tickState.maxFps = debugConfig.maxFps
@@ -69,7 +69,21 @@ fun BattleScreen() {
                     modifier = Modifier.background(Color(117, 117, 117)),
                 )
 
-                BattleField(battleViewModel.battleState, modifier = Modifier.fillMaxWidth())
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)) {
+
+                    BattleField(battleViewModel.battleState, modifier = Modifier.fillMaxWidth())
+
+                    if (battleViewModel.currentGameStatus == StageDataLoaded) {
+                        StageCurtain(
+                            stageConfigPrev = battleViewModel.prevStageConfig,
+                            stageConfigNext = battleViewModel.currStageConfig!!,
+                        ) {
+                            battleViewModel.start()
+                        }
+                    }
+                }
 
                 Box(
                     modifier = Modifier

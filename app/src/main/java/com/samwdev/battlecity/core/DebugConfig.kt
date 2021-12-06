@@ -2,8 +2,7 @@ package com.samwdev.battlecity.core
 
 data class DebugConfig(
     val showFps: Boolean = false,
-    val showBrickIndex: Boolean = false,
-    val showSteelIndex: Boolean = false,
+    val showElementIndex: Boolean = false,
     val showPivotBox: Boolean = false,
     val showAccessPoints: Boolean = false,
     val showWaypoints: Boolean = false,
