@@ -111,6 +111,7 @@ private fun AccessPoints.calculateInPlace(
             }
             this[curr] = value
             if (value == ValueAccessible) {
+                // dynamic programming
                 if (
                     curr.neighborRight.isOutOfBound(this)
                     || curr.neighborDown.isOutOfBound(this)
