@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.Logger
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.coroutineScope
@@ -32,46 +33,46 @@ class BattleViewModel(
     val powerUpState: PowerUpState get() = battleState.powerUpState
     val handheldControllerState: HandheldControllerState get() = battleState.handheldControllerState
 
-    var currentStageName: String? = null
-        private set
+    val currentStageName: String? get() = currStageConfig?.name
+
     var currentGameStatus: GameStatus by mutableStateOf(Initial)
+        private set
+    var prevStageConfig: StageConfig? = null
+        private set
+    var currStageConfig: StageConfig? = null
         private set
 
     fun selectStage(stageName: String) {
-        Logger.warn("selecting stage: $stageName")
         if (currentGameStatus != Initial && currentGameStatus != MapCleared) return
-        Logger.warn("selected stage: $stageName")
-        currentStageName = stageName
-        currentGameStatus = StageSelected(stageName)
+        val json = MapParser.readJsonFile(getApplication(), stageName)
+        val stageConfig = MapParser.parse(json)
+        prevStageConfig = currStageConfig
+        currStageConfig = stageConfig
+        battleState = BattleState(currStageConfig!!)
+
+        currentGameStatus = StageDataLoaded
     }
 
     fun nextStage() {
-        Logger.warn("next stage()")
         val nextStageName = (currentStageName!!.toInt() + 1).toString()
         appState.navController.navigateUp()
         appState.navController.navigate("${Route.BattleScreen}/$nextStageName")
     }
 
     fun initStage() {
-        Logger.warn("initStage(). VM: ${this}")
-        requireNotNull(currentStageName) { "Stage not selected" }
+//        val json = MapParser.readJsonFile(getApplication(), currentStageName!!)
+//        val stageConfig = MapParser.parse(json)
 
-        val json = MapParser.readJsonFile(getApplication(), currentStageName!!)
-        val stageConfig = MapParser.parse(json)
-        battleState = BattleState(stageConfig)
-
-        Logger.warn("currentGameStatus = ReadyToPlay. battleState: ${battleState}")
-        currentGameStatus = ReadyToPlay
+        Logger.warn("initStage currentGameStatus = ${currentGameStatus}. battleState: ${battleState}")
+//        currentGameStatus = SwitchingStage
     }
 
     suspend fun start() {
-//        require(currentGameStatus == ReadyToPlay)
-        Logger.warn("start() currentGameStatus = Playing")
-        currentGameStatus = Playing
         coroutineScope {
             launch {
                 battleState.startBattle()
             }
+
             launch(viewModelScope.coroutineContext) {
                 mapState.inGameEventFlow.collect { event ->
                     Logger.error("Event: $event")
@@ -101,14 +102,19 @@ class BattleViewModel(
 
     fun pause() {
         battleState.pause()
-        currentGameStatus = ReadyToPlay
+        currentGameStatus = Paused
     }
 }
 
-sealed class GameStatus
-object Initial : GameStatus()
-data class StageSelected(val stageName: String) : GameStatus()
-object ReadyToPlay : GameStatus()
-object Playing : GameStatus()
-object MapCleared : GameStatus()
-object GameOver : GameStatus()
+sealed class GameStatus(val index: Int) {
+    operator fun compareTo(other: GameStatus) = index - other.index
+}
+object Initial : GameStatus(0)
+//data class StageSelected(val stageName: String) : GameStatus()
+object StageDataLoaded : GameStatus(1)
+//object SwitchingStage : GameStatus(2)
+object Paused : GameStatus(3)
+object Playing : GameStatus(4)
+
+object MapCleared : GameStatus(5)
+object GameOver : GameStatus(5)

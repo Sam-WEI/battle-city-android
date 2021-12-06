@@ -20,7 +20,7 @@ private val BrickColorDarkBrown = Color(96, 12, 0)
 
 @Composable
 fun BrickLayer(bricks: Set<BrickElement>) {
-    val drawIndex = LocalDebugConfig.current.showBrickIndex
+    val drawIndex = LocalDebugConfig.current.showElementIndex
     val gridUnitNumber = LocalGridUnitNumber.current
     PixelCanvas(
         widthInMapPixel = gridUnitNumber.first.grid2mpx,

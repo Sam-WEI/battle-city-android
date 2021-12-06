@@ -16,7 +16,7 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
 fun SteelLayer(steels: Set<SteelElement>) {
-    val drawIndex = LocalDebugConfig.current.showSteelIndex
+    val drawIndex = LocalDebugConfig.current.showElementIndex
     val gridUnitNumber = LocalGridUnitNumber.current
     PixelCanvas(
         widthInMapPixel = gridUnitNumber.first.grid2mpx,
