@@ -23,7 +23,7 @@ fun TreeLayer(trees: Set<TreeElement>) {
     PixelCanvas(
         widthInMapPixel = gridUnitNumber.first.grid2mpx,
         heightInMapPixel = gridUnitNumber.second.grid2mpx,
-        modifier = Modifier.zIndex(10f)
+        modifier = Modifier.zIndex(ZIndexTree)
     ) {
         trees.forEach { element ->
             val offset = element.offsetInMapPixel

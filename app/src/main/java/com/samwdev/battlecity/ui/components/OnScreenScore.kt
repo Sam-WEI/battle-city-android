@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.samwdev.battlecity.core.OnScreenScore
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.core.toMpx
@@ -27,7 +28,7 @@ fun OnScreenScore(onScreenScore: OnScreenScore) {
         modifier = Modifier.offset(
             onScreenScore.offset.x.mpx2dp,
             onScreenScore.offset.y.mpx2dp
-        ).size(1f.grid2mpx.mpx2dp),
+        ).size(1f.grid2mpx.mpx2dp).zIndex(ZIndexOnScreenScore),
         contentAlignment = Alignment.Center,
     ) {
         Text(
