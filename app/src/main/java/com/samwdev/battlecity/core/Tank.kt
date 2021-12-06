@@ -118,18 +118,6 @@ enum class Direction(val degree: Int) {
     fun isOppositeTo(other: Direction): Boolean = (degree - other.degree).absoluteValue == 180
 }
 
-@Deprecated("delete")
-fun Modifier.drawForDirection(direction: Direction): Modifier {
-    return composed {
-        when (direction) {
-            Direction.Up -> this
-            Direction.Down -> this.scale(1f, -1f)
-            Direction.Left -> this.scale(1f, -1f).rotate(direction.degreeF)
-            Direction.Right -> this.rotate(direction.degreeF)
-        }
-    }
-}
-
 enum class TankSide {
     Player, Bot,
 }
@@ -179,10 +167,10 @@ data class TankSpecs(
     val maxBulletCount: Int,
 )
 
-private val PlayerLevel1Specs = TankSpecs(maxHp = 1, movingSpeed = 0.06f, bulletSpeed = 0.12f, bulletPower = 1, fireCooldown = 300, maxBulletCount = 1)
-private val PlayerLevel2Specs = TankSpecs(maxHp = 1, movingSpeed = 0.06f, bulletSpeed = 0.18f, bulletPower = 1, fireCooldown = 200, maxBulletCount = 1)
-private val PlayerLevel3Specs = TankSpecs(maxHp = 1, movingSpeed = 0.06f, bulletSpeed = 0.18f, bulletPower = 1, fireCooldown = 100, maxBulletCount = 2)
-private val PlayerLevel4Specs = TankSpecs(maxHp = 1, movingSpeed = 0.06f, bulletSpeed = 0.18f, bulletPower = 3, fireCooldown = 100, maxBulletCount = 2)
+private val PlayerLevel1Specs = TankSpecs(maxHp = 1, movingSpeed = 0.045f, bulletSpeed = 0.16f, bulletPower = 1, fireCooldown = 200, maxBulletCount = 1)
+private val PlayerLevel2Specs = TankSpecs(maxHp = 1, movingSpeed = 0.045f, bulletSpeed = 0.20f, bulletPower = 1, fireCooldown = 150, maxBulletCount = 1)
+private val PlayerLevel3Specs = TankSpecs(maxHp = 1, movingSpeed = 0.045f, bulletSpeed = 0.22f, bulletPower = 1, fireCooldown = 100, maxBulletCount = 2)
+private val PlayerLevel4Specs = TankSpecs(maxHp = 1, movingSpeed = 0.045f, bulletSpeed = 0.22f, bulletPower = 3, fireCooldown = 100, maxBulletCount = 2)
 private val BotLevel1Specs = TankSpecs(maxHp = 1, movingSpeed = 0.03f, bulletSpeed = 0.12f, bulletPower = 1, fireCooldown = 300, maxBulletCount = 1)
 private val BotLevel2Specs = TankSpecs(maxHp = 1, movingSpeed = 0.06f, bulletSpeed = 0.18f, bulletPower = 1, fireCooldown = 200, maxBulletCount = 1)
 private val BotLevel3Specs = TankSpecs(maxHp = 1, movingSpeed = 0.03f, bulletSpeed = 0.24f, bulletPower = 1, fireCooldown = 200, maxBulletCount = 1)

@@ -68,7 +68,7 @@ class BotState(
         if (noBotsLeft) {
             return false
         }
-        val botTank = tankState.spawnBot(botQueue[botIndex % botQueue.size], carryPowerUp()) ?: return false // todo remove mod
+        val botTank = tankState.spawnBot(botQueue[botIndex % botQueue.size], carryPowerUp()) ?: return false
         botIndex++
         bots = bots.toMutableMap().apply {
             put(botTank.id, AiTankController(

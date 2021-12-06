@@ -9,6 +9,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import com.samwdev.battlecity.core.BattleState
 
+const val ZIndexTree = 10f
+const val ZIndexPowerUp = 20f
+const val ZIndexOnScreenScore = 30f
+
 @Composable
 fun BattleField(battleState: BattleState, modifier: Modifier = Modifier) {
     TickAware(tickState = battleState.tickState) {

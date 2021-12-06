@@ -192,6 +192,9 @@ class BulletState(
             val b1 = all[i]
             for (j in i + 1 until all.size) {
                 val b2 = all[j]
+                if (b1.ownerTankId == b2.ownerTankId) {
+                    continue
+                }
                 if (b1.collisionBox.overlaps(b2.collisionBox)) {
                     val hitRect = b1.collisionBox.intersect(b2.collisionBox)
                     addBulletTrajectoryCollision(HitBulletInfo(bullet = b1, otherBullet = b2, hitPoint = hitRect.center))

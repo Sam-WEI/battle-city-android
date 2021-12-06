@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.entity.PowerUpEnum
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -34,6 +35,7 @@ fun PowerUp(topLeft: Offset, powerUp: PowerUpEnum) {
         topLeftInMapPixel = topLeft,
         widthInMapPixel = 1f.grid2mpx,
         heightInMapPixel = 1f.grid2mpx,
+        modifier = Modifier.zIndex(ZIndexPowerUp)
     ) {
         drawHorizontalLine(color = PowerUpColorWhite, topLeft = Offset(1f, 0f), length = 13f)
         drawVerticalLine(color = PowerUpColorWhite, topLeft = Offset(0f, 1f), length = 12f)
