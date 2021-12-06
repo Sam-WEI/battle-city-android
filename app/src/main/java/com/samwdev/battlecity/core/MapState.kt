@@ -208,6 +208,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
             brickIndexSet = brickIndexSet,
             steelIndexSet = steelIndexSet,
             waterIndexSet = waterIndexSet,
+            eagleIndex = eagle.index,
             spreadFrom = spreadFrom,
             depth = depth,
             hardRefresh = hardRefresh,
