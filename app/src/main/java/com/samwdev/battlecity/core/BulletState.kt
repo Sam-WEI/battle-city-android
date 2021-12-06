@@ -76,8 +76,7 @@ class BulletState(
         if (tank.side == TankSide.Player) {
             soundState.playSound(SoundEffect.Shoot)
         } else {
-            soundState.playSound(SoundEffect.Shoot)
-
+//            soundState.playSound(SoundEffect.Shoot)
         }
     }
 

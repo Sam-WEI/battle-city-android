@@ -15,11 +15,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.samwdev.battlecity.core.BattleViewModel
-import com.samwdev.battlecity.core.DebugConfig
-import com.samwdev.battlecity.core.HandheldController
-import com.samwdev.battlecity.core.StageDataLoaded
+import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
+import com.samwdev.battlecity.utils.Logger
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -38,11 +36,9 @@ fun BattleScreen() {
         ))
     }
 
-    LaunchedEffect(Unit) {
-        composeCoroutineScope.launch {
-            // start() must be run from a compose coroutine scope in order to correctly run the withTimeMillis{} method.
-//            battleViewModel.initStage()
-//            battleViewModel.start()
+    LaunchedEffect(battleViewModel.currentGameStatus) {
+        if (battleViewModel.currentGameStatus == MapCleared) {
+            Logger.error(" read text")
         }
     }
 
@@ -82,6 +78,11 @@ fun BattleScreen() {
                             stageConfigNext = battleViewModel.currStageConfig!!,
                         ) {
                             battleViewModel.start()
+                        }
+                    } else if (battleViewModel.currentGameStatus == MapCleared) {
+                        RedGameOver {
+                            battleViewModel.appState.navController.navigateUp()
+                            battleViewModel.appState.navController.navigate(Route.Scoreboard)
                         }
                     }
                 }
