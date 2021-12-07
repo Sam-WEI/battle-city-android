@@ -1,0 +1,21 @@
+﻿{
+  "name": "23",
+  "difficulty": 2,
+  "map": [
+    "O  O  O  O  O  O  O  O  O  O  O  O  O  ",
+    "O  O  O  O  O  Sf Sf O  O  O  O  O  O  ",
+    "O  O  O  O  O  O  Sf O  O  O  O  O  O  ",
+    "O  Sf Sf T  T  Bf Sf Bf T  T  Sf Sf O  ",
+    "O  O  O  Sf T  T  Sf T  T  Sf O  O  O  ",
+    "T  O  O  O  Sf T  T  T  Sf O  O  O  T  ",
+    "Sf T  O  O  O  T  T  T  O  O  O  T  Sf ",
+    "T  O  O  O  Sc S3 T  S3 Sc O  O  O  T  ",
+    "O  O  O  O  Sf O  Sc O  Sf O  O  O  O  ",
+    "O  O  O  Sf O  O  Sf O  O  Sf O  O  O  ",
+    "O  O  O  O  O  O  O  O  O  O  O  O  O  ",
+    "O  O  O  O  O  B8 Bc B4 O  O  O  O  O  ",
+    "O  O  Sf O  O  Ba E  B5 O  O  Sf O  O  "
+  ],
+  "size": "13x13",
+  "bots": ["L4x6", "L3x4", "L2x10"]
+}

@@ -1,0 +1,21 @@
+﻿{
+  "name": "25",
+  "difficulty": 3,
+  "map": [
+    "O  O  O  Sf O  Bf O  Bf O  Bf O  Sf O  ",
+    "O  Bf O  Bf O  O  O  O  O  Sf O  O  O  ",
+    "O  Bf O  Bf O  O  Sf O  O  Sf O  Sf Sf ",
+    "O  Bf O  O  O  Bf O  Sf Bf O  O  O  Sf ",
+    "O  O  O  O  Bf Bf O  Bf Bf O  Sf O  O  ",
+    "O  O  Sf O  Bf O  O  Bf Bf O  Bf Bf O  ",
+    "Sf O  Sf O  O  Bf O  Sf O  O  Sf Bf O  ",
+    "O  O  Bf Bf O  Bf O  O  O  Bf Sf O  O  ",
+    "O  Sf Bf Bf O  Bf Bf O  Bf Bf O  O  Bf ",
+    "O  Bf O  O  O  Bf Sf O  O  O  O  Bf Bf ",
+    "O  O  O  Bf O  Bf Bf Sf O  Sf O  O  Bf ",
+    "Bf O  Bf Bf O  B8 Bc B4 O  Bf Sf O  O  ",
+    "Bf O  Bf O  O  Ba E  B5 O  Bf Bf Bf O  "
+  ],
+  "size": "13x13",
+  "bots": ["L3x2", "L2x8", "L4x10"]
+}

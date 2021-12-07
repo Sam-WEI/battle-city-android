@@ -51,7 +51,7 @@ class BattleViewModel(
         showWaypoints = true,
     ))
 
-    fun selectStage(stageName: String) {
+    fun loadStageData(stageName: String) {
         if (currentGameStatus != Initial && currentGameStatus != MapCleared) return
         val json = MapParser.readJsonFile(getApplication(), stageName)
         val stageConfig = MapParser.parse(json)

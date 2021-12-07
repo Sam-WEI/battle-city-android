@@ -1,0 +1,21 @@
+﻿{
+  "name": "17",
+  "difficulty": 2,
+  "map": [
+    "O  O  O  O  Bc O  O  O  O  O  Bc O  O  ",
+    "O  Bf O  Bf Bf O  O  I  I  I  Bf Bf O  ",
+    "O  Bf O  O  Bf O  Sf I  I  I  I  I  O  ",
+    "I  I  I  S5 Bf O  O  Bf I  I  I  I  O  ",
+    "I  I  I  I  I  I  Bf Bf Ba B5 O  O  O  ",
+    "O  O  Sa I  I  I  I  Bf Ba B5 O  S3 S3 ",
+    "Bf Bf Bf Bf I  I  I  I  I  I  I  Bf Bf ",
+    "O  O  O  Bf Bf I  I  I  I  S5 O  O  O  ",
+    "O  Bf Bf Bf O  I  I  I  Bf Bf O  Bf O  ",
+    "I  I  I  Bf I  O  O  O  O  Bf O  Bf O  ",
+    "I  I  I  I  I  S3 O  S3 O  O  Bc Bf O  ",
+    "Bf I  I  I  I  B8 Bc B4 O  Bf O  O  O  ",
+    "Bf Bf S5 O  O  Ba E  B5 O  Bf O  Bf O  "
+  ],
+  "size": "13x13",
+  "bots": ["L4x2", "L2x2", "L4x8", "L1x8"]
+}

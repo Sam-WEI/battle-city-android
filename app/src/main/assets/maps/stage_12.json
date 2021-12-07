@@ -1,0 +1,21 @@
+﻿{
+  "name": "12",
+  "difficulty": 1,
+  "map": [
+    "O  O  O  O  O  O  O  Bf Bf Bf O  O  O  ",
+    "O  Bf Bf Bf Bc O  Bc O  O  Bf O  O  O  ",
+    "O  O  O  O  Bf O  B3 O  O  O  O  Bf Bf ",
+    "O  W  W  W  W  W  O  Bf B5 O  O  Bf S3 ",
+    "O  O  Sc Sc Sc W  O  Bf O  Sf S5 Bf O  ",
+    "Bf O  Bf Bf Bf W  W  W  O  W  Bf Bf O  ",
+    "O  O  O  O  Sf W  O  O  O  W  S3 O  O  ",
+    "W  W  W  O  W  W  Bf Bf O  W  O  O  O  ",
+    "O  O  O  O  O  Bf S3 S3 O  W  W  W  O  ",
+    "Bf Bf Bf O  O  O  O  O  O  O  O  O  O  ",
+    "O  O  Bf O  S3 S3 O  O  O  Bf Bf O  Ba ",
+    "Bf O  O  O  O  B8 Bc B4 O  Bf O  O  Bf ",
+    "O  O  O  O  O  Ba E  B5 O  O  O  O  O  "
+  ],
+  "size": "13x13",
+  "bots": ["L3x8", "L2x6", "L4x6"]
+}

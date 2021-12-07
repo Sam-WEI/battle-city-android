@@ -1,0 +1,21 @@
+﻿{
+  "name": "7",
+  "difficulty": 2,
+  "map": [
+    "O  O  O  O  O  O  O  S3 S3 O  O  O  O  ",
+    "O  O  Sf S3 S3 S3 O  O  O  O  Sf O  O  ",
+    "O  O  Sf O  O  O  T  O  S3 Sf Sf O  O  ",
+    "O  Sf O  O  O  T  Sf O  O  O  Sf O  O  ",
+    "O  O  O  O  T  Sf Sf O  O  O  S3 Sf O  ",
+    "O  Sf O  T  Sf Sf Sf O  Sf O  O  O  O  ",
+    "O  Sa O  Sf Sf O  O  O  Sf Sf O  O  O  ",
+    "S5 O  O  O  Sf O  Sf Sf Sf O  O  Sa O  ",
+    "O  Sa Sf O  O  O  Sf Sf T  O  O  Sf O  ",
+    "O  Sf O  O  O  O  Sf T  O  O  Sf Sf O  ",
+    "O  S3 S3 Sf O  O  T  O  O  Sf O  O  O  ",
+    "O  O  O  O  O  B8 Bc B4 O  S3 O  Sc Sf ",
+    "Sc Sc O  O  O  Ba E  B5 O  O  O  O  O  "
+  ],
+  "size": "13x13",
+  "bots": ["L1x3", "L2x4", "L3x6", "L1x7"]
+}
