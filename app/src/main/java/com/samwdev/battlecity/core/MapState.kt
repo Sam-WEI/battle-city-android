@@ -194,12 +194,13 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
         remainingPlayerLife += 1
     }
 
-    fun deductPlayerLife() {
+    fun deductPlayerLife(): Boolean {
         if (remainingPlayerLife == 0) {
             _inGameEventFlow.value = GameOver
-            return
+            return false
         }
         remainingPlayerLife -= 1
+        return true
     }
 
     fun mapClear() {
