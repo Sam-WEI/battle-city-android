@@ -228,7 +228,7 @@ class TankState(
             if (isOnIce) {
                 newTank = if (newTank.currentSpeed == 0f || newTank.facingDirection == newTank.movingDirection) {
                     // start from stop or already moving in that direction
-                    newTank.speedUp(acceleration)
+                    newTank.speedUp(acceleration, maxSpeed = tank.maxSpeed * 0.8f) // slower max speed on ice
                 } else if (newTank.facingDirection.isPerpendicularWith(newTank.movingDirection)) {
                     // can't do drifting due to the turning mechanism by pivot box, so straight turn and move
                     newTank.turnAndMove(newTank.facingDirection)

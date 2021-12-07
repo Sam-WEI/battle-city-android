@@ -26,12 +26,6 @@ fun BattleScreen() {
     val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
     val composeCoroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(battleViewModel.currentGameStatus) {
-        if (battleViewModel.currentGameStatus == MapCleared) {
-            Logger.error(" read text")
-        }
-    }
-
     if (battleViewModel.currentGameStatus < StageDataLoaded) return
 
     SideEffect {

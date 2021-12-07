@@ -49,7 +49,7 @@ fun BattleCityApp() {
                 FullScreenWrapper {
                     LandingScreen { menuItem ->
                         // todo
-                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/15") {
+                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/17") {
                             this.launchSingleTop = true
                         }
                     }
