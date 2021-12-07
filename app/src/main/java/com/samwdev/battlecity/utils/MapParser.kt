@@ -10,11 +10,7 @@ import com.samwdev.battlecity.entity.*
 
 object MapParser {
     fun readJsonFile(context: Context, name: String): StageConfigJson {
-        val jsonStr = with (context) {
-            val rawId = resources.getIdentifier("stage_${name}", "raw", packageName)
-            resources.openRawResource(rawId).readBytes()
-        }
-        return jacksonObjectMapper().readValue(jsonStr)
+        return jacksonObjectMapper().readValue<StageConfigJson>(context.assets.open("maps/stage_${name}.json"))
     }
 
     fun parse(context: Context, name: String): StageConfig {
