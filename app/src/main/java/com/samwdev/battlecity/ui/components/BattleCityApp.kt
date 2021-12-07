@@ -30,7 +30,6 @@ import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.Route
 import com.samwdev.battlecity.core.rememberAppState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
-import com.samwdev.battlecity.utils.MapParser
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -48,9 +47,21 @@ fun BattleCityApp() {
             composable(Route.Landing) {
                 FullScreenWrapper {
                     LandingScreen { menuItem ->
-                        // todo
-                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/24") {
-                            this.launchSingleTop = true
+                        when (menuItem) {
+                            LandingScreenMenuItem.Player1, LandingScreenMenuItem.Player2 -> {
+                                // todo
+                                battleViewModel.appState.navController.navigate("${Route.BattleScreen}/24") {
+                                    this.launchSingleTop = true
+                                }
+                            }
+                            LandingScreenMenuItem.Stages -> {
+                                battleViewModel.appState.navController.navigate(Route.MapSelection) {
+                                    this.launchSingleTop = true
+                                }
+                            }
+                            LandingScreenMenuItem.Editor -> {
+
+                            }
                         }
                     }
                 }
@@ -62,9 +73,20 @@ fun BattleCityApp() {
                 val stageName = backStackEntry.arguments?.getString(Route.Key.StageName)!!
                 // the framework runs this block several times. Use LaunchedEffect to make it run only once.
                 LaunchedEffect(stageName) {
-                    battleViewModel.selectStage(stageName)
+                    battleViewModel.loadStageData(stageName)
                 }
                 BattleScreen()
+            }
+            composable(
+                route = Route.MapSelection,
+            ) { backStackEntry ->
+                FullScreenWrapper {
+                    MapSelectionScreen {
+                        battleViewModel.appState.navController.navigate("${Route.BattleScreen}/${it.name}") {
+                            this.launchSingleTop = true
+                        }
+                    }
+                }
             }
             composable(
                 route = Route.Scoreboard,

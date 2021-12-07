@@ -1,0 +1,21 @@
+﻿{
+  "name": "32",
+  "difficulty": 3,
+  "map": [
+    "I  I  I  I  I  I  O  I  I  I  I  I  I  ",
+    "I  I  I  I  I  I  I  I  I  I  I  I  I  ",
+    "I  I  I  Bf I  I  I  I  I  Bf I  I  I  ",
+    "I  Bf O  Bf O  Bf I  Bf O  Bf O  Bf I  ",
+    "I  B3 B3 Bf O  O  O  O  O  Bf B3 B3 I  ",
+    "I  I  I  Bf Bc Bf Sf Bf Bc Bf I  I  I  ",
+    "Sf I  I  I  O  S3 O  S3 O  I  I  I  Sf ",
+    "I  I  I  I  O  Bc O  Bc O  I  I  I  I  ",
+    "I  I  I  I  O  Bf O  Bf O  I  I  I  I  ",
+    "I  I  I  Bf O  O  Bc O  O  Bf I  I  I  ",
+    "I  Bf I  Bf O  S3 S3 S3 O  Bf I  Bf I  ",
+    "O  Bf Bc Bf O  B8 Bc B4 O  Bf Bc Bf O  ",
+    "O  B3 O  O  O  Ba E  B5 O  O  O  B3 O  "
+  ],
+  "size": "13x13",
+  "bots": ["L4x8", "L1x6", "L3x2", "L2x4"]
+}

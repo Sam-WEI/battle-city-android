@@ -1,0 +1,21 @@
+﻿{
+  "name": "22",
+  "difficulty": 3,
+  "map": [
+    "O  O  O  O  O  T  O  O  O  O  O  O  O  ",
+    "O  O  O  O  T  Sf T  O  O  O  O  O  O  ",
+    "O  O  T  O  O  T  O  O  T  T  O  O  O  ",
+    "O  T  Bf T  O  O  O  T  Bf Bf T  O  O  ",
+    "O  O  T  Bf T  O  O  O  T  T  O  O  T  ",
+    "T  O  O  T  O  O  T  O  O  O  O  T  Sf ",
+    "Bf T  O  O  O  T  Sf T  O  O  T  O  T  ",
+    "Sf Bf T  O  O  O  T  O  O  T  Sf T  O  ",
+    "Bf T  O  O  T  O  O  O  T  O  T  O  O  ",
+    "T  O  O  T  Bf T  O  T  Bf T  O  O  O  ",
+    "O  O  O  T  Bf T  O  O  T  O  O  T  O  ",
+    "O  T  O  O  T  B8 Bc B4 O  O  T  Sf T  ",
+    "T  Sf T  O  O  Ba E  B5 O  T  Bf T  O  "
+  ],
+  "size": "13x13",
+  "bots": ["L2x8", "L1x6", "L3x2", "L4x4"]
+}

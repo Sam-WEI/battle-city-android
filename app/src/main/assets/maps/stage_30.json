@@ -1,0 +1,21 @@
+﻿{
+  "name": "30",
+  "difficulty": 2,
+  "map": [
+    "O  O  O  O  O  O  O  O  O  O  O  O  O  ",
+    "O  O  O  O  O  Bc Bc O  O  O  Sc O  O  ",
+    "O  Sc Sc O  Bc T  T  Sc O  Bc T  Bc O  ",
+    "Bc T  T  Bc T  T  T  T  Bc T  T  T  Bc ",
+    "T  T  T  T  T  T  T  T  T  T  T  T  T  ",
+    "Sf T  W  T  T  T  T  T  W  T  T  T  T  ",
+    "T  T  W  W  W  T  T  T  W  W  W  T  Sf ",
+    "T  T  T  T  W  T  Sf T  T  T  W  T  T  ",
+    "T  T  T  T  T  T  T  T  T  T  T  T  T  ",
+    "T  T  T  T  T  B3 B3 T  T  T  T  T  S3 ",
+    "S3 T  T  T  B3 O  O  B3 T  T  T  S3 O  ",
+    "O  S3 B3 B3 O  B8 Bc B4 B3 B3 B3 O  O  ",
+    "O  O  O  O  O  Ba E  B5 O  O  O  O  O  "
+  ],
+  "size": "13x13",
+  "bots": ["L1x4", "L2x8", "L3x4", "L4x4"]
+}
