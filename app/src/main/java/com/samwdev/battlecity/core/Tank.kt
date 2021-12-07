@@ -76,7 +76,7 @@ fun Tank.turnAndMove(dir: Direction): Tank {
 fun Tank.moveTo(rect: Rect, newDirection: Direction = movingDirection): Tank =
     copy(x = rect.left, y = rect.top, movingDirection = newDirection)
 
-fun Tank.speedUp(acceleration: Float): Tank {
+fun Tank.speedUp(acceleration: Float, maxSpeed: Float = this.maxSpeed): Tank {
     return copy(
         currentSpeed = (currentSpeed + acceleration).coerceAtMost(maxSpeed),
         movingDirection = facingDirection,
