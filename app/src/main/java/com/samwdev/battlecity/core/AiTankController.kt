@@ -25,6 +25,8 @@ class AiTankController(
     private var remainingHuntingPlayerTime: Int = 0
     private var remainingLockOnPlayerCooldown: Int = 0
 
+    private var failedToFindAPathCount = 0
+
     init {
         Logger.info("tank[$tankId] personality: ${personality}")
     }
@@ -59,8 +61,7 @@ class AiTankController(
 
         if (remainingHuntingPlayerTime > 0) {
             if (remainingLockOnPlayerCooldown <= 0) {
-                // todo check if too many failed waypoint, make it desperate.
-                findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.offset?.subGrid, desperate = false)
+                findNewWaypoint(tank, tankState.getPlayerTankOrNull()?.offset?.subGrid)
                 remainingLockOnPlayerCooldown = personality.lockOnPlayerCooldown
                 Logger.debug("[${tankId}] re-locked player!! remaining hunting time: $remainingHuntingPlayerTime")
             }
@@ -105,7 +106,7 @@ class AiTankController(
 
                 }
                 in personality.attackPlayer..(personality.attackPlayer + personality.attackBase) -> {
-                    findNewWaypoint(tank, mapState.eagle.offsetInMapPixel.subGrid)
+                    findNewWaypoint(tank, mapState.eagle.offsetInMapPixel.subGrid, attackingBase = true)
                     Logger.info("[${tankId}] Locked base!!")
                 }
                 else -> {
@@ -116,16 +117,29 @@ class AiTankController(
         }
     }
 
-    /**
-     * @param desperate if a bot is desperate, it will consider bricks as accessible.
-     */
-    private fun findNewWaypoint(tank: Tank, target: SubGrid?, desperate: Boolean = false) {
+    private fun findNewWaypoint(tank: Tank, target: SubGrid?, attackingBase: Boolean = false) {
         val accessPoints = mapState.accessPoints
         val dest = target ?: accessPoints.randomAccessiblePoint(Int.MAX_VALUE)
         val src = tank.pivotBox.topLeft.subGrid
         val waypoints = LinkedHashSet<SubGrid>().apply { add(src) }
-        walkWaypointRecursive(waypoints, mutableSetOf(), accessPoints, src, dest, null, desperate)
+        walkWaypointRecursive(
+            waypoints,
+            mutableSetOf(),
+            accessPoints,
+            src,
+            dest,
+            null,
+            breakingBricks = failedToFindAPathCount >= personality.breakingBrickThreshold,
+            attackingBase = attackingBase,
+        )
         currentWaypoint = waypoints.toList()
+        if (waypoints.size == 1) {
+            // failed to find a path
+            Logger.info("tank[$tankId] failed to find a path.")
+            failedToFindAPathCount++
+        } else {
+//            failedToFindAPathCount = 0
+        }
     }
 
     private fun walkWaypointRecursive(
@@ -135,7 +149,8 @@ class AiTankController(
         src: SubGrid,
         dest: SubGrid,
         currentDirection: Direction?,
-        desperate: Boolean = false,
+        breakingBricks: Boolean = false,
+        attackingBase: Boolean = false,
     ): Boolean {
         if (src == dest) {
             return true
@@ -168,9 +183,11 @@ class AiTankController(
             if (nextWp.isOutOfBound(accessPoints)) {
                 continue
             }
+            val canBreak = breakingBricks && accessPoints.isBrick(nextWp)
+            val canAttack = attackingBase && accessPoints.isEagleArea(nextWp)
             if (!accessPoints.isAccessible(nextWp)
-                && !(desperate && accessPoints.isBrick(nextWp))
-                && !accessPoints.isEagleArea(nextWp)) {
+                && !canBreak
+                && !canAttack) {
                 continue
             }
             if (nextWp in badAccessPoints) {
@@ -181,7 +198,16 @@ class AiTankController(
                 continue
             }
             waypoints.add(nextWp)
-            val reached = walkWaypointRecursive(waypoints, badAccessPoints, accessPoints, nextWp, dest, dir)
+            val reached = walkWaypointRecursive(
+                waypoints,
+                badAccessPoints,
+                accessPoints,
+                nextWp,
+                dest,
+                dir,
+                breakingBricks = breakingBricks,
+                attackingBase = attackingBase,
+            )
             if (reached) {
                 return true
             } else {
@@ -200,17 +226,17 @@ private object AttackBase : WaypointMode()
 
 private class AiPersonality(difficulty: Int = 1) {
     // fire frequency, invasion frequency
-    private val maniac: Float = (Random.nextInt(5) + difficulty) / 5f
+    private val maniac: Float = (Random.nextInt(3) + difficulty) / 5f
 
-    private val aggressiveTowardsPlayer: Float = (Random.nextInt(5) + difficulty) / 5f
+    private val aggressiveTowardsPlayer: Float = (Random.nextInt(3) + difficulty) / 5f
 
-    private val aggressiveTowardsBase: Float = (Random.nextInt(5) + difficulty) / 5f
+    private val aggressiveTowardsBase: Float = (Random.nextInt(3) + difficulty) / 5f
 
     // decision making cooldown
-    private val wisdom: Float = (Random.nextInt(5) + difficulty) / 5f
+    private val wisdom: Float = (Random.nextInt(3) + difficulty) / 5f
 
     // when stuck, agile AI waits shorter before changing path
-    private val agility: Float = (Random.nextInt(5) + difficulty) / 5f
+    private val agility: Float = (Random.nextInt(3) + difficulty) / 5f
 
     // derived attributes below
     val fireDecisionCooldown: Int get() = (70 / maniac).toInt()
@@ -223,6 +249,8 @@ private class AiPersonality(difficulty: Int = 1) {
     val attackBase: Float get() = 0.1f * aggressiveTowardsBase
     val aiDecisionCooldown: Int get() = (500 / wisdom).toInt()
     val stuckTimeout: Int get() = (500 / agility).toInt()
+    // After failing to find a path this many times, AI starts breaking thru bricks.
+    val breakingBrickThreshold: Int get() = 2
 
     override fun toString(): String {
         return "AiPersonality[maniac=$maniac,aggressiveTowardsPlayer=$aggressiveTowardsPlayer]" +
