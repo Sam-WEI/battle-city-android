@@ -45,8 +45,6 @@ class TankState(
     var tanks by mutableStateOf<Map<TankId, Tank>>(mapOf())
         private set
 
-    private val eventQueue: LinkedList<TankEvent> = LinkedList() // todo assess if needed
-
     val aliveTanks: Sequence<Tank> get() = tanks.values.asSequence().filter { it.isAlive }
 
     // todo move to a proper place
@@ -76,8 +74,9 @@ class TankState(
 
         if (playerTankId == NOT_AN_ID) {
             spawnPlayer()
+        } else {
+            checkPowerUpCollision(getTank(playerTankId))
         }
-        checkPowerUpCollision(getTank(playerTankId))
     }
 
     private fun addTank(id: TankId, tank: Tank) {
@@ -86,10 +85,13 @@ class TankState(
         }
     }
 
-    private fun spawnPlayer(): Tank {
+    private fun spawnPlayer() {
+        if (!mapState.deductPlayerLife()) {
+            return
+        }
         // todo check remaining life or from last map
-        val level = TankLevel.Level4
-        return Tank(
+        val level = TankLevel.Level3
+        Tank(
             id = idGen.incrementAndGet(),
             x = mapState.playerSpawnPosition.x,
             y = mapState.playerSpawnPosition.y,
@@ -102,12 +104,7 @@ class TankState(
         ).also {
             playerTankId = it.id
             addTank(idGen.get(), it)
-            mapState.deductPlayerLife() // todo use prev player tank
         }
-    }
-
-    fun pushEvent(tankEvent: TankEvent) {
-        eventQueue.push(tankEvent)
     }
 
     /** May fail due to tank congestion */
