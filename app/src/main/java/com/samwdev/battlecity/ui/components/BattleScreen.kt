@@ -5,7 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,14 +20,14 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
-import com.samwdev.battlecity.utils.Logger
-import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
 fun BattleScreen() {
     val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
-    val composeCoroutineScope = rememberCoroutineScope()
+
+//    LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher?.addCallback {
+//    }
 
     if (battleViewModel.currentGameStatus < StageDataLoaded) return
 

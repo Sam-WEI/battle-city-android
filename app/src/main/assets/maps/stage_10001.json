@@ -1,0 +1,16 @@
+﻿{
+  "name": "10001",
+  "difficulty": 2,
+  "map": [
+    "Bf Sc T  T  T  T  Bf O ",
+    "Bf Bf Bf T  T  Bf Bf B5",
+    "Bf O  O  O  Bf B3 O  O ",
+    "Bf O  Sc Bc B3 T  T  Bf",
+    "O  Ba Bf B3 T  T  Bf O ",
+    "B5 Ba B3 T  T  Bc T  Bf",
+    "O  T  B8 Bc B4 Bf T  B3",
+    "O  O  Ba E  B5 O  T  T "
+  ],
+  "size": "8x8",
+  "bots": ["L1x2", "L2x10", "L4x8"]
+}
