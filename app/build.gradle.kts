@@ -37,7 +37,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Library.composeVersion
+        kotlinCompilerExtensionVersion = Library.COMPOSE_VERSION
     }
     packagingOptions {
         resources {

@@ -1,5 +1,4 @@
 object Library {
-    const val composeVersion = "1.0.3"
     private const val COROUTINES_VERSION = "1.5.2"
     const val KOTLINX_COROUTINES_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$COROUTINES_VERSION"
     const val ANDROIDX_ACTIVITY = "androidx.activity:activity-ktx:1.3.1"
@@ -9,7 +8,7 @@ object Library {
     const val ANDROIDX_CORE = "androidx.core:core-ktx:1.6.0"
     const val ANDROIDX_VECTOR_DRAWABLE_ANIMATED = "androidx.vectordrawable:vectordrawable-animated:1.1.0"
 
-    private const val APPCOMPAT_VERSION = "1.3.1"
+    private const val APPCOMPAT_VERSION = "1.4.1"
     const val ANDROIDX_APPCOMPAT = "androidx.appcompat:appcompat:$APPCOMPAT_VERSION"
     const val ANDROIDX_APPCOMPAT_RESOURCES = "androidx.appcompat:appcompat-resources:$APPCOMPAT_VERSION"
 
@@ -19,7 +18,7 @@ object Library {
     const val ANDROIDX_LIFECYCLE_RUNTIME_KTX = "androidx.lifecycle:lifecycle-runtime-ktx:$LIFECYCLE_VERSION"
     const val ANDROIDX_LIFECYCLE_VIEW_MODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIFECYCLE_VERSION"
 
-    const val COMPOSE_VERSION = "1.0.5"
+    const val COMPOSE_VERSION = "1.1.1"
     const val COMPOSE_FOUNDATION = "androidx.compose.foundation:foundation:$COMPOSE_VERSION"
     const val COMPOSE_UI = "androidx.compose.ui:ui:$COMPOSE_VERSION"
     const val COMPOSE_UI_TEST_JUNIT = "androidx.compose.ui:ui-test-junit4:$COMPOSE_VERSION"
