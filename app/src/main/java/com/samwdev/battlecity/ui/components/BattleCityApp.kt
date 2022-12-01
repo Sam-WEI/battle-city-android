@@ -2,12 +2,10 @@ package com.samwdev.battlecity.ui.components
 
 import android.app.Application
 import android.content.Context
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -31,8 +29,6 @@ import com.samwdev.battlecity.core.Route
 import com.samwdev.battlecity.core.rememberAppState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
 @Composable
 fun BattleCityApp() {
     val battleViewModel: BattleViewModel = viewModel(

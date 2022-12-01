@@ -1,6 +1,6 @@
 package com.samwdev.battlecity.ui.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -19,24 +19,16 @@ val CiiFont = FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    defaultFontFamily = Ps2pFont,
-    body1 = TextStyle(
+    bodyLarge = TextStyle(
         fontFamily = Ps2pFont,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
 
-    button = TextStyle(
+    labelLarge = TextStyle(
+        fontFamily = Ps2pFont,
         fontWeight = FontWeight.Normal,
         fontSize = 11.sp,
         background = Color.Magenta,
     ),
-
-    /* Other default text styles to override
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
-    */
 )

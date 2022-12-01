@@ -3,13 +3,12 @@ package com.samwdev.battlecity.ui.components
 import android.content.Context
 import android.hardware.display.DisplayManager
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +21,6 @@ import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlin.math.roundToInt
 
-@ExperimentalAnimationApi
 @Composable
 fun DebugConfigControlToggle(
     debugConfig: DebugConfig,
@@ -70,8 +68,8 @@ fun DebugConfigControlPanel(
         modifier = Modifier
             .padding(12.dp)
             .wrapContentSize(),
-        backgroundColor = MaterialTheme.colors.surface,
-        elevation = 4.dp,
+        colors = CardDefaults.cardColors(), // todo backgroundColor = MaterialTheme.colorScheme.surface
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Box(modifier = Modifier.animateContentSize()) {
             IconButton(

@@ -17,7 +17,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
 @Composable
 fun Playground() {
@@ -126,7 +126,7 @@ fun Playground() {
     var expanded by remember { mutableStateOf(false) }
     Column {
         Surface(
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colorScheme.primary,
             onClick = { expanded = !expanded }
         ) {
             AnimatedContent(
@@ -167,7 +167,6 @@ fun Playground() {
             Text("This is a button")
         }
 
-        SwipeableSample()
     }
 }
 

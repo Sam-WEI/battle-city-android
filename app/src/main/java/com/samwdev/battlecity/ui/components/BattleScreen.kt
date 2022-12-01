@@ -1,10 +1,9 @@
 package com.samwdev.battlecity.ui.components
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -21,7 +20,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
-@ExperimentalAnimationApi
 @Composable
 fun BattleScreen() {
     val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
@@ -77,7 +75,7 @@ fun BattleScreen() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colors.background)
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
                     HandheldController(
                         modifier = Modifier
