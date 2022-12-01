@@ -5,12 +5,13 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    namespace = "com.samwdev.battlecity"
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.samwdev.battlecity"
         minSdk = 23
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
