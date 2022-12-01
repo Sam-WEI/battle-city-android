@@ -137,7 +137,8 @@ private fun AccessPoints.updateInPlace(
     }
 }
 
-inline class SubGrid internal constructor(private val packedValue: Int) : Comparable<SubGrid> {
+@JvmInline
+value class SubGrid internal constructor(private val packedValue: Int) : Comparable<SubGrid> {
     val subRow: Int get() = packedValue shr 16
     val subCol: Int get() = packedValue and 0xFFFF
 
