@@ -38,7 +38,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Library.COMPOSE_VERSION
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
     packagingOptions {
         resources {
@@ -48,6 +48,10 @@ android {
 }
 
 dependencies {
+    val composeBom = platform("androidx.compose:compose-bom:2022.10.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     implementation(Library.ANDROIDX_CORE)
     implementation(Library.ANDROIDX_APPCOMPAT)
     implementation(Library.MATERIAL)
