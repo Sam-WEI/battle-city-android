@@ -167,6 +167,9 @@ class BulletState(
                 is HitBulletInfo -> {
 
                 }
+                else -> {
+
+                }
             }
             if (!(firstCollision is HitTankInfo && firstCollision.tank.hasShield)) {
                 explosionState.spawnExplosion(firstCollision.hitPoint, ExplosionAnimationSmall)
