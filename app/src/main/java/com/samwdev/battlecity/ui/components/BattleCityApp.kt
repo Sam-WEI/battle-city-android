@@ -18,10 +18,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import androidx.savedstate.SavedStateRegistryOwner
 import com.samwdev.battlecity.core.AppState
 import com.samwdev.battlecity.core.BattleViewModel
@@ -121,7 +120,7 @@ class BattleViewModelFactory(
     owner: SavedStateRegistryOwner,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+    override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
         return BattleViewModel(context as Application, appState, handle) as T
     }
 }
