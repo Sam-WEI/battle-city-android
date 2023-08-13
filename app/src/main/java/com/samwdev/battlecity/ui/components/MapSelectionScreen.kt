@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.entity.StageConfigJson
 import com.samwdev.battlecity.utils.MapParser
@@ -58,7 +58,7 @@ fun MapSelectionScreen(onSelect: (StageConfig) -> Unit) {
                 .fillMaxWidth(0.6f)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    PixelText(text = "STAGE ${item.name}", textColor = Color.White, charHeight = 0.5f.grid2mpx)
+                    PixelText(text = "STAGE ${item.name}", textColor = Color.White, charHeight = 0.5f.cell2mpx)
                     BattlefieldStatic(mapConfig = item.map)
                 }
             }

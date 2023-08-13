@@ -77,7 +77,7 @@ private fun PixelDrawScope.drawHalfEagle() {
 @Composable
 fun EaglePreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 3) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 3) {
             EagleLayer(eagleElement = EagleElement.compose(0, 1))
             EagleLayer(eagleElement = EagleElement.compose(1, 1, true))
         }

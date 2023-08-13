@@ -20,8 +20,8 @@ fun BattleField(battleState: BattleState, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .aspectRatio(1f)
             .background(Color.Black),
-            hGridUnitNum = battleState.mapState.hGridUnitNum,
-            vGridUnitNum = battleState.mapState.vGridUnitNum,
+            hGridSize = battleState.mapState.hGridSize,
+            vGridSize = battleState.mapState.vGridSize,
         ) {
             BrickLayer(battleState.mapState.bricks)
             SteelLayer(battleState.mapState.steels)

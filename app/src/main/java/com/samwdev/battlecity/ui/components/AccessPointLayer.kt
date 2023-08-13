@@ -11,10 +11,10 @@ private val ColorRed = Color(0xffff0000)
 @Composable
 fun AccessPointLayer(mapState: MapState) {
     val points = mapState.accessPoints
-    val gridUnitNumber = LocalGridUnitNumber.current
+    val gridSize = LocalGridSize.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.first.grid2mpx,
-        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+        widthInMapPixel = gridSize.first.cell2mpx,
+        heightInMapPixel = gridSize.second.cell2mpx,
     ) {
         for ((ri, row) in points.withIndex()) {
             for ((ci, value) in row.withIndex()) {
@@ -27,7 +27,7 @@ fun AccessPointLayer(mapState: MapState) {
                     },
                     alpha = 0.4f,
                     radius = 1f,
-                    center = Offset((ci / 2f + 0.5f).grid2mpx, (ri / 2f + 0.5f).grid2mpx)
+                    center = Offset((ci / 2f + 0.5f).cell2mpx, (ri / 2f + 0.5f).cell2mpx)
                 )
             }
         }

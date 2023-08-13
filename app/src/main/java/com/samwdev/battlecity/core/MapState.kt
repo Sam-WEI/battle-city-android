@@ -1,6 +1,7 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.setValue
@@ -15,16 +16,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.max
 
-class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
+class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationTimeoutDuration = 3 * 1000
 
-        private val DefaultPlayerSpawnPosition = Offset(4f.grid2mpx, 12f.grid2mpx)
+        private val DefaultPlayerSpawnPosition = Offset(4f.cell2mpx, 12f.cell2mpx)
         private val DefaultBotSpawnPositions = listOf(
-            Offset(0f.grid2mpx, 0f.grid2mpx),
-            Offset(6f.grid2mpx, 0f.grid2mpx),
-            Offset(12f.grid2mpx, 0f.grid2mpx),
+            Offset(0f.cell2mpx, 0f.cell2mpx),
+            Offset(6f.cell2mpx, 0f.cell2mpx),
+            Offset(12f.cell2mpx, 0f.cell2mpx),
         )
     }
     private val _inGameEventFlow = MutableStateFlow<GameStatus>(Playing)
@@ -38,15 +39,15 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
     val playerSpawnPosition = DefaultPlayerSpawnPosition
     val botSpawnPositions = DefaultBotSpawnPositions
 
-    override val hGridUnitNum: Int = mapConfig.hGridUnitNum
-    override val vGridUnitNum: Int = mapConfig.vGridUnitNum
+    override val hGridSize: Int = mapConfig.hGridSize
+    override val vGridSize: Int = mapConfig.vGridSize
 
     val mapName: String by mutableStateOf(stageConfig.name)
 
-    var remainingBot: Int by mutableStateOf(20) // todo factor in difficulty
+    var remainingBot: Int by mutableIntStateOf(20) // todo factor in difficulty
         private set
 
-    var remainingPlayerLife: Int by mutableStateOf(3)
+    var remainingPlayerLife: Int by mutableIntStateOf(3)
         private set
 
     var bricks by mutableStateOf(mapConfig.bricks, policy = referentialEqualityPolicy())
@@ -66,7 +67,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
 
     var eagle by mutableStateOf(mapConfig.eagle, policy = referentialEqualityPolicy())
 
-    var accessPoints: AccessPoints by mutableStateOf(emptyAccessPoints(mapConfig.hGridUnitNum, mapConfig.vGridUnitNum))
+    var accessPoints: AccessPoints by mutableStateOf(emptyAccessPoints(mapConfig.hGridSize, mapConfig.vGridSize))
         private set
 
     val iceIndexSet: Set<Int> = ices.map { it.index }.toSet()
@@ -76,8 +77,8 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
 
     val subGridsOfEagleArea: Set<SubGrid> by lazy {
         // use Steel to do the calculation since one steel is one subGrid
-        val steelIndicesOfEagleArea = SteelElement.getIndicesOverlappingRect(eagle.rect.inflate(SteelElement.elementSize + 1f), hGridUnitNum)
-        steelIndicesOfEagleArea.map { idx -> SteelElement.getSubGrid(idx, hGridUnitNum) }.toSet()
+        val steelIndicesOfEagleArea = SteelElement.getOverlapIndicesInRect(eagle.rect.inflate(SteelElement.elementSize + 1f), hGridSize)
+        steelIndicesOfEagleArea.map { idx -> SteelElement.getSubGrid(idx, hGridSize) }.toSet()
     }
 
     init {
@@ -86,26 +87,26 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
 
     private val rectanglesAroundEagle = eagle.rect.let { eagleRect ->
         val top = Rect(
-            offset = Offset(eagleRect.left - 0.5f.grid2mpx, eagleRect.top - 0.5f.grid2mpx),
-            size = Size(2f.grid2mpx, 0.5f.grid2mpx)
+            offset = Offset(eagleRect.left - 0.5f.cell2mpx, eagleRect.top - 0.5f.cell2mpx),
+            size = Size(2f.cell2mpx, 0.5f.cell2mpx)
         )
         val left = Rect(
-            offset = Offset(eagleRect.left - 0.5f.grid2mpx, eagleRect.top),
-            size = Size(0.5f.grid2mpx, 1f.grid2mpx)
+            offset = Offset(eagleRect.left - 0.5f.cell2mpx, eagleRect.top),
+            size = Size(0.5f.cell2mpx, 1f.cell2mpx)
         )
         val right = Rect(
             offset = Offset(eagleRect.right, eagleRect.top),
-            size = Size(0.5f.grid2mpx, 1f.grid2mpx)
+            size = Size(0.5f.cell2mpx, 1f.cell2mpx)
         )
         listOf(top, left, right)
     }
 
     private val brickIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(BrickElement.getIndicesOverlappingRect(rect, hGridUnitNum)) }
+        acc.apply { addAll(BrickElement.getOverlapIndicesInRect(rect, hGridSize)) }
     }
 
     private val steelIndicesAroundEagle = rectanglesAroundEagle.fold(mutableSetOf<Int>()) { acc, rect ->
-        acc.apply { addAll(SteelElement.getIndicesOverlappingRect(rect, hGridUnitNum)) }
+        acc.apply { addAll(SteelElement.getOverlapIndicesInRect(rect, hGridSize)) }
     }
 
     private val bottomRightSubGridAroundEagle: SubGrid =
@@ -143,10 +144,10 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.asSequence().filter { it in oldBrickIndex }
-                .map { BrickElement.getSubGrid(it, hGridUnitNum) } // todo call ext method when Google fixes java.lang.NoSuchMethodError
+                .map { BrickElement.getSubGrid(it, hGridSize) } // todo call ext method when Google fixes java.lang.NoSuchMethodError
                 .toSet() // remove dup
                 .forEach { subGrid ->
-                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid, hGridUnitNum) // todo call ext method when Google fixes java.lang.NoSuchMethodError
+                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid, hGridSize) // todo call ext method when Google fixes java.lang.NoSuchMethodError
                     if (cleared) {
                         // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
                         // For performance purposes, use a depth of 10 for the calculation.
@@ -167,7 +168,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.forEach {
-                val subGrid = SteelElement.getSubGrid(it, hGridUnitNum)
+                val subGrid = SteelElement.getSubGrid(it, hGridSize)
                 // a destroyed steel always frees up a sub grid
                 refreshAccessPoints(subGrid, 1)
             }
@@ -236,14 +237,14 @@ class MapState(stageConfig: StageConfig) : TickListener, GridUnitNumberAware {
     private fun wrapEagleWithSteels() {
         destroyBricksIndex(brickIndicesAroundEagle)
         steels = steels.toMutableSet()
-            .apply { addAll(steelIndicesAroundEagle.map { SteelElement(it, hGridUnitNum) }) }
+            .apply { addAll(steelIndicesAroundEagle.map { SteelElement(it, hGridSize) }) }
         refreshAccessPointsAroundEagle()
     }
 
     private fun wrapEagleWithBricks() {
         destroySteelsIndex(steelIndicesAroundEagle)
         bricks = bricks.toMutableSet()
-            .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it, hGridUnitNum) }) }
+            .apply { addAll(brickIndicesAroundEagle.map { BrickElement(it, hGridSize) }) }
         refreshAccessPointsAroundEagle()
     }
 }

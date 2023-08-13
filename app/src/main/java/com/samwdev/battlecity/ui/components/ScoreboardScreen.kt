@@ -82,7 +82,7 @@ private fun ScoreboardScreen(data: ScoreboardData, stageName: String, doneDispla
 @Composable
 private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String) {
     Grid(
-        gridUnitNum = 15,
+        gridSize = 15,
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
@@ -91,15 +91,15 @@ private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(1.grid2mpx.mpx2dp)
-                .offset(y = 1.grid2mpx.mpx2dp),
+                .height(1.cell2mpx.mpx2dp)
+                .offset(y = 1.cell2mpx.mpx2dp),
             horizontalArrangement = Arrangement.Center,
         ) {
             Row(Modifier.weight(1f, true),
                 horizontalArrangement = Arrangement.End) {
                 PixelText(
                     text = "HI-SCORE",
-                    charHeight = 0.5f.grid2mpx,
+                    charHeight = 0.5f.cell2mpx,
                     topLeft = Offset.Zero,
                     textColor = ColorRed,
                 )
@@ -108,7 +108,7 @@ private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String
                 horizontalArrangement = Arrangement.Start) {
                 PixelText(
                     text = "   20000",
-                    charHeight = 0.5f.grid2mpx,
+                    charHeight = 0.5f.cell2mpx,
                     topLeft = Offset.Zero,
                     textColor = ColorOrange,
                 )
@@ -117,13 +117,13 @@ private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(1.grid2mpx.mpx2dp)
-                .offset(y = 2.grid2mpx.mpx2dp),
+                .height(1.cell2mpx.mpx2dp)
+                .offset(y = 2.cell2mpx.mpx2dp),
             horizontalArrangement = Arrangement.Center,
         ) {
             PixelText(
                 text = "STAGE   $stageName",
-                charHeight = 0.5f.grid2mpx,
+                charHeight = 0.5f.cell2mpx,
                 topLeft = Offset.Zero,
             )
         }
@@ -135,7 +135,7 @@ private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String
 private fun DynamicBody(displayData: ScoreDisplayData) {
     Row(
         Modifier
-            .offset(y = 3.grid2mpx.mpx2dp)
+            .offset(y = 3.cell2mpx.mpx2dp)
             .fillMaxSize()) {
         Column(
             Modifier
@@ -144,68 +144,68 @@ private fun DynamicBody(displayData: ScoreDisplayData) {
             PlayerInfo(displayData, modifier = Modifier.fillMaxWidth())
             PixelText(
                 text = "TOTAL",
-                charHeight = 0.5f.grid2mpx,
-                modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+                charHeight = 0.5f.cell2mpx,
+                modifier = Modifier.height(1f.cell2mpx.mpx2dp),
             )
         }
         Row(
             Modifier
                 .fillMaxHeight()
                 .weight(1f, true)
-                .offset(y = 3f.grid2mpx.mpx2dp)
-                .padding(horizontal = 0.5f.grid2mpx.mpx2dp),
+                .offset(y = 3f.cell2mpx.mpx2dp)
+                .padding(horizontal = 0.5f.cell2mpx.mpx2dp),
         ) {
             Column(Modifier.weight(2f), horizontalAlignment = Alignment.End) {
                 PixelText(
                     text = "${displayData.level1NumText}←",
-                    charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
+                    charHeight = 0.5f.cell2mpx,
+                    modifier = Modifier.height(1f.cell2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
-                Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
+                Spacer(modifier = Modifier.height(1f.cell2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level2NumText}←",
-                    charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
+                    charHeight = 0.5f.cell2mpx,
+                    modifier = Modifier.height(1f.cell2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
-                Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
+                Spacer(modifier = Modifier.height(1f.cell2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level3NumText}←",
-                    charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
+                    charHeight = 0.5f.cell2mpx,
+                    modifier = Modifier.height(1f.cell2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
-                Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
+                Spacer(modifier = Modifier.height(1f.cell2mpx.mpx2dp))
                 PixelText(
                     text = "${displayData.level4NumText}←",
-                    charHeight = 0.5f.grid2mpx,
-                    modifier = Modifier.height(1f.grid2mpx.mpx2dp).padding(end = 2f.mpx2dp),
+                    charHeight = 0.5f.cell2mpx,
+                    modifier = Modifier.height(1f.cell2mpx.mpx2dp).padding(end = 2f.mpx2dp),
                 )
                 PixelText(
                     text = displayData.totalNumText.padStart(2),
-                    charHeight = 0.5f.grid2mpx,
+                    charHeight = 0.5f.cell2mpx,
                     modifier = Modifier
-                        .height(1f.grid2mpx.mpx2dp)
+                        .height(1f.cell2mpx.mpx2dp)
                         .align(Start),
                 )
 
             }
             Column(Modifier.weight(1f)) {
-                PixelCanvas(Modifier.offset(y = -0.2f.grid2mpx.mpx2dp)) {
+                PixelCanvas(Modifier.offset(y = -0.2f.cell2mpx.mpx2dp)) {
                     drawBotTankLevel1(0, BotNormalPalette)
-                    translate(top = 2.grid2mpx) {
+                    translate(top = 2.cell2mpx) {
                         this as PixelDrawScope
                         drawBotTankLevel2(0, BotNormalPalette)
                     }
-                    translate(top = 4.grid2mpx) {
+                    translate(top = 4.cell2mpx) {
                         this as PixelDrawScope
                         drawBotTankLevel3(0, BotNormalPalette)
                     }
-                    translate(top = 6.grid2mpx) {
+                    translate(top = 6.cell2mpx) {
                         this as PixelDrawScope
                         drawBotTankLevel4(0, BotNormalPalette)
                     }
-                    translate(top = 7.grid2mpx) {
+                    translate(top = 7.cell2mpx) {
                         this as PixelDrawScope
-                        drawRect(Color.White, topLeft = Offset((-1.5f).grid2mpx, 0f), size = Size(4f.grid2mpx, 2f))
+                        drawRect(Color.White, topLeft = Offset((-1.5f).cell2mpx, 0f), size = Size(4f.cell2mpx, 2f))
                     }
                 }
             }
@@ -223,7 +223,7 @@ private fun DynamicBody(displayData: ScoreDisplayData) {
                     displayData = displayData,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 1.grid2mpx.mpx2dp)
+                        .padding(end = 1.cell2mpx.mpx2dp)
                 )
             }
         }
@@ -235,39 +235,39 @@ private fun PlayerInfo(displayData: ScoreDisplayData, modifier: Modifier) {
     Column(modifier, horizontalAlignment = Alignment.End) {
         PixelText(
             text = "I-PLAYER",
-            charHeight = 0.5f.grid2mpx,
-            modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+            charHeight = 0.5f.cell2mpx,
+            modifier = Modifier.height(1f.cell2mpx.mpx2dp),
             textColor = ColorRed
         )
         PixelText(
             text = displayData.totalScore.toString(),
-            charHeight = 0.5f.grid2mpx,
-            modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+            charHeight = 0.5f.cell2mpx,
+            modifier = Modifier.height(1f.cell2mpx.mpx2dp),
             textColor = ColorOrange
         )
-        Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
+        Spacer(modifier = Modifier.height(1f.cell2mpx.mpx2dp))
         PixelText(
             text = "${displayData.level1ScoreText} PTS",
-            charHeight = 0.5f.grid2mpx,
-            modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+            charHeight = 0.5f.cell2mpx,
+            modifier = Modifier.height(1f.cell2mpx.mpx2dp),
         )
-        Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
+        Spacer(modifier = Modifier.height(1f.cell2mpx.mpx2dp))
         PixelText(
             text = "${displayData.level2ScoreText} PTS",
-            charHeight = 0.5f.grid2mpx,
-            modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+            charHeight = 0.5f.cell2mpx,
+            modifier = Modifier.height(1f.cell2mpx.mpx2dp),
         )
-        Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
+        Spacer(modifier = Modifier.height(1f.cell2mpx.mpx2dp))
         PixelText(
             text = "${displayData.level3ScoreText} PTS",
-            charHeight = 0.5f.grid2mpx,
-            modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+            charHeight = 0.5f.cell2mpx,
+            modifier = Modifier.height(1f.cell2mpx.mpx2dp),
         )
-        Spacer(modifier = Modifier.height(1f.grid2mpx.mpx2dp))
+        Spacer(modifier = Modifier.height(1f.cell2mpx.mpx2dp))
         PixelText(
             text = "${displayData.level4ScoreText} PTS",
-            charHeight = 0.5f.grid2mpx,
-            modifier = Modifier.height(1f.grid2mpx.mpx2dp),
+            charHeight = 0.5f.cell2mpx,
+            modifier = Modifier.height(1f.cell2mpx.mpx2dp),
         )
     }
 }

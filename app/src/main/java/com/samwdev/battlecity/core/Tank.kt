@@ -1,10 +1,6 @@
 package com.samwdev.battlecity.core
 
 import android.os.Parcelable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -46,7 +42,7 @@ data class Tank(
     val collisionBox: Rect get() = Rect(Offset(x, y), Size(TANK_MAP_PIXEL, TANK_MAP_PIXEL))
     val center: Offset get() = collisionBox.center
     val pivotBox: Rect get() {
-        val halfBlock = 0.5f.grid2mpx.toInt() // 8
+        val halfBlock = 0.5f.cell2mpx.toInt() // 8
         // this tiny offset is to fix collision with brick quarters
         val tinyOffset = if (movingDirection == Direction.Right || movingDirection == Direction.Down) { 0.1f } else { 0f }
         val pbx = (x / halfBlock - tinyOffset).roundToInt() * halfBlock.toFloat()
@@ -57,9 +53,9 @@ data class Tank(
     val bulletStartPosition: Offset
         get() = when (facingDirection) {
             Direction.Up -> Offset(x + 6, y)
-            Direction.Down -> Offset(x + 6, y + 1.grid2mpx)
+            Direction.Down -> Offset(x + 6, y + 1.cell2mpx)
             Direction.Left -> Offset(x , y + 6)
-            Direction.Right -> Offset(x + 1.grid2mpx, y + 6)
+            Direction.Right -> Offset(x + 1.cell2mpx, y + 6)
         }
 }
 

@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.Tank
 import com.samwdev.battlecity.core.TankLevel
 import com.samwdev.battlecity.core.TankSide
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
@@ -311,12 +311,12 @@ fun PixelDrawScope.drawPlayerTankLevel4(treadPattern: Int, palette: TankColorPal
 @Composable
 private fun PlayerTankPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 8) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 8) {
             TankLevel.values().forEachIndexed { index, tankLevel ->
                 TankTreadsPreview(
                     tank = Tank(
                         id = 0,
-                        x = 0f.grid2mpx, y = index.toFloat().grid2mpx,
+                        x = 0f.cell2mpx, y = index.toFloat().cell2mpx,
                         level = tankLevel,
                         side = TankSide.Player,
                         hp = 1,
@@ -326,7 +326,7 @@ private fun PlayerTankPreview() {
                 TankTreadsPreview(
                     tank = Tank(
                         id = 0,
-                        x = 2f.grid2mpx, y = index.toFloat().grid2mpx,
+                        x = 2f.cell2mpx, y = index.toFloat().cell2mpx,
                         level = tankLevel,
                         side = TankSide.Player,
                         hp = 1,
@@ -341,5 +341,5 @@ private fun PlayerTankPreview() {
 @Composable
 fun TankTreadsPreview(tank: Tank, palette: TankColorPalette = BotNormalPalette) {
     TankWithTreadPattern(tank = tank, treadPattern = 0, palette = palette)
-    TankWithTreadPattern(tank = tank.copy(x = tank.x + 1f.grid2mpx), treadPattern = 1, palette = palette)
+    TankWithTreadPattern(tank = tank.copy(x = tank.x + 1f.cell2mpx), treadPattern = 1, palette = palette)
 }

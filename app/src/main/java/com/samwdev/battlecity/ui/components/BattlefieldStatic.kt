@@ -14,8 +14,8 @@ fun BattlefieldStatic(mapConfig: MapConfig, modifier: Modifier = Modifier) {
         .fillMaxWidth()
         .aspectRatio(1f)
         .background(Color.Black),
-        hGridUnitNum = mapConfig.hGridUnitNum,
-        vGridUnitNum = mapConfig.vGridUnitNum,
+        hGridSize = mapConfig.hGridSize,
+        vGridSize = mapConfig.vGridSize,
     ) {
         BrickLayer(mapConfig.bricks)
         SteelLayer(mapConfig.steels)

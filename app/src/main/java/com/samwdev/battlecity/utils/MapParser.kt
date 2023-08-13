@@ -1,16 +1,24 @@
 package com.samwdev.battlecity.utils
 
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.samwdev.battlecity.core.TankLevel
-import com.samwdev.battlecity.entity.*
+import com.samwdev.battlecity.entity.BotGroup
+import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.entity.EagleElement
+import com.samwdev.battlecity.entity.IceElement
+import com.samwdev.battlecity.entity.MapConfig
+import com.samwdev.battlecity.entity.MapDifficulty
+import com.samwdev.battlecity.entity.StageConfig
+import com.samwdev.battlecity.entity.StageConfigJson
+import com.samwdev.battlecity.entity.SteelElement
+import com.samwdev.battlecity.entity.TreeElement
+import com.samwdev.battlecity.entity.WaterElement
 
 object MapParser {
     fun readJsonFile(context: Context, name: String): StageConfigJson {
-        return jacksonObjectMapper().readValue<StageConfigJson>(context.assets.open("maps/stage_${name}.json"))
+        return jacksonObjectMapper().readValue(context.assets.open("maps/stage_${name}.json"))
     }
 
     fun parse(context: Context, name: String): StageConfig {
@@ -25,8 +33,8 @@ object MapParser {
         val waters = mutableSetOf<WaterElement>()
         var eagle: EagleElement? = null
         val (width, height) = configJson.size.split("x")
-        val hGridUnitNum = width.toInt()
-        val vGridUnitNum = height.toInt()
+        val hGridSize = width.toInt()
+        val vGridSize = height.toInt()
 
         configJson.map.forEachIndexed { r, row ->
             row.split(Regex("\\s+")).filter { it.isNotEmpty() }.forEachIndexed { c, block ->
@@ -36,7 +44,7 @@ object MapParser {
                         if (eagle != null) {
                             throw IllegalArgumentException("Eagle can only appear once.")
                         }
-                        eagle = EagleElement(r, c, hGridUnitNum)
+                        eagle = EagleElement(r, c, hGridSize)
                     }
                     'B' -> {
                         // brick
@@ -47,80 +55,79 @@ object MapParser {
                         if (blockInfo and 0b0100 != 0) { brickBits += 0x00f0 }
                         if (blockInfo and 0b1000 != 0) { brickBits += 0x000f }
 
-                        val cellRow = 4 * r
-                        val cellCol = 4 * c
-                        val cellCountInARow = 4 * hGridUnitNum
+                        val cellRow = BrickElement.granularity * r
+                        val cellCol = BrickElement.granularity * c
 
                         ((brickBits shr 12) and 0xf).takeIf { it != 0 }?.let {
-                            // 4 TL cells
+                            // TL quarter
                             val topLeftRow = cellRow
                             val topLeftCol = cellCol
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
+                            if (it and 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridSize)) }
+                            if (it and 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridSize)) }
+                            if (it and 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridSize)) }
+                            if (it and 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridSize)) }
                         }
 
                         ((brickBits shr 8) and 0xf).takeIf { it != 0 }?.let {
-                            // 4 TR cells
+                            // TR quarter
                             val topLeftRow = cellRow
                             val topLeftCol = cellCol + 2
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
+                            if (it and 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridSize)) }
+                            if (it and 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridSize)) }
+                            if (it and 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridSize)) }
+                            if (it and 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridSize)) }
                         }
 
                         ((brickBits shr 4) and 0xf).takeIf { it != 0 }?.let {
-                            // 4 BL cells
+                            // BL quarter
                             val topLeftRow = cellRow + 2
                             val topLeftCol = cellCol
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
+                            if (it and 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridSize)) }
+                            if (it and 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridSize)) }
+                            if (it and 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridSize)) }
+                            if (it and 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridSize)) }
                         }
 
                         ((brickBits shr 0) and 0xf).takeIf { it != 0 }?.let {
-                            // 4 BR cells
+                            // BR quarter
                             val topLeftRow = cellRow + 2
                             val topLeftCol = cellCol + 2
-                            if (it or 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridUnitNum)) }
-                            if (it or 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridUnitNum)) }
-                            if (it or 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridUnitNum)) }
+                            if (it and 0b0001 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol, hGridSize)) }
+                            if (it and 0b0010 != 0) { bricks.add(BrickElement(topLeftRow, topLeftCol + 1, hGridSize)) }
+                            if (it and 0b0100 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol, hGridSize)) }
+                            if (it and 0b1000 != 0) { bricks.add(BrickElement(topLeftRow + 1, topLeftCol + 1, hGridSize)) }
                         }
 
                     }
                     'S' -> {
                         // steel
                         val blockInfo = Integer.parseInt(block.substring(1), 16)
-                        val cellRow = 2 * r
-                        val cellCol = 2 * c
+                        val cellRow = SteelElement.granularity * r
+                        val cellCol = SteelElement.granularity * c
                         if (blockInfo and 0b0001 != 0) {
-                            steels.add(SteelElement(cellRow, cellCol, hGridUnitNum))
+                            steels.add(SteelElement(cellRow, cellCol, hGridSize))
                         }
                         if (blockInfo and 0b0010 != 0) {
-                            steels.add(SteelElement(cellRow, cellCol + 1, hGridUnitNum))
+                            steels.add(SteelElement(cellRow, cellCol + 1, hGridSize))
                         }
                         if (blockInfo and 0b0100 != 0) {
-                            steels.add(SteelElement(cellRow + 1, cellCol, hGridUnitNum))
+                            steels.add(SteelElement(cellRow + 1, cellCol, hGridSize))
                         }
                         if (blockInfo and 0b1000 != 0) {
-                            steels.add(SteelElement(cellRow + 1, cellCol + 1, hGridUnitNum))
+                            steels.add(SteelElement(cellRow + 1, cellCol + 1, hGridSize))
                         }
                     }
                     'I' -> {
                         // ice
-                        ices.add(IceElement(r, c, hGridUnitNum))
+                        ices.add(IceElement(r, c, hGridSize))
                     }
                     'W' -> {
                         // water
-                        waters.add(WaterElement(r, c, hGridUnitNum))
+                        waters.add(WaterElement(r, c, hGridSize))
                     }
                     'T' -> {
                         // tree
-                        trees.add(TreeElement(r, c, hGridUnitNum))
+                        trees.add(TreeElement(r, c, hGridSize))
                     }
                 }
             }
@@ -140,8 +147,8 @@ object MapParser {
             name = configJson.name,
             difficulty = MapDifficulty.of(configJson.difficulty),
             map = MapConfig(
-                hGridUnitNum = hGridUnitNum,
-                vGridUnitNum = vGridUnitNum,
+                hGridSize = hGridSize,
+                vGridSize = vGridSize,
                 trees = trees,
                 bricks = bricks,
                 steels = steels,

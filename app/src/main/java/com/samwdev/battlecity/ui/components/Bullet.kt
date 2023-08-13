@@ -9,16 +9,16 @@ import androidx.core.graphics.component1
 import androidx.core.graphics.component2
 import com.samwdev.battlecity.core.BULLET_COLLISION_SIZE
 import com.samwdev.battlecity.core.Bullet
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 
 private val BulletColor = Color(0xFFADADAD)
 
 @Composable
 fun Bullets(bullets: Collection<Bullet>) {
-    val (hGridUnitNum, vGridUnitNum) = LocalGridUnitNumber.current.first
+    val (hGridSize, vGridSize) = LocalGridSize.current.first
     PixelCanvas(
-        widthInMapPixel = hGridUnitNum.grid2mpx,
-        heightInMapPixel = vGridUnitNum.grid2mpx
+        widthInMapPixel = hGridSize.cell2mpx,
+        heightInMapPixel = vGridSize.cell2mpx
     ) {
         bullets.forEach { bullet ->
             translate(bullet.x, bullet.y) {

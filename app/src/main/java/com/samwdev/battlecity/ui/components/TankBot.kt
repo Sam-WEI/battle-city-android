@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.Tank
 import com.samwdev.battlecity.core.TankLevel
 import com.samwdev.battlecity.core.TankSide
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 fun PixelDrawScope.drawBotTankLevel1(treadPattern: Int, palette: TankColorPalette) {
@@ -219,44 +219,44 @@ private fun BotTankPreview() {
     BattleCityTheme {
         Grid(modifier = Modifier
             .size(500.dp)
-            .background(Color.DarkGray), gridUnitNum = 4
+            .background(Color.DarkGray), gridSize = 4
         ) {
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 0f.grid2mpx,
-                y = 0f.grid2mpx,
+                x = 0f.cell2mpx,
+                y = 0f.cell2mpx,
                 level = TankLevel.Level1,
                 side = TankSide.Bot,
                 hp = 1)
             )
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 0f.grid2mpx,
-                y = 1f.grid2mpx,
+                x = 0f.cell2mpx,
+                y = 1f.cell2mpx,
                 level = TankLevel.Level2,
                 side = TankSide.Bot,
                 hp = 1)
             )
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 0f.grid2mpx,
-                y = 2f.grid2mpx,
+                x = 0f.cell2mpx,
+                y = 2f.cell2mpx,
                 level = TankLevel.Level3,
                 side = TankSide.Bot,
                 hp = 1)
             )
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 2f.grid2mpx,
-                y = 0f.grid2mpx,
+                x = 2f.cell2mpx,
+                y = 0f.cell2mpx,
                 level = TankLevel.Level4,
                 side = TankSide.Bot,
                 hp = 1)
             )
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 2f.grid2mpx,
-                y = 1f.grid2mpx,
+                x = 2f.cell2mpx,
+                y = 1f.cell2mpx,
                 level = TankLevel.Level4,
                 side = TankSide.Bot,
                 hp = 1),
@@ -264,8 +264,8 @@ private fun BotTankPreview() {
             )
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 2f.grid2mpx,
-                y = 2f.grid2mpx,
+                x = 2f.cell2mpx,
+                y = 2f.cell2mpx,
                 level = TankLevel.Level4,
                 side = TankSide.Bot,
                 hp = 1),
@@ -273,8 +273,8 @@ private fun BotTankPreview() {
             )
             TankTreadsPreview(tank = Tank(
                 id = 0,
-                x = 2f.grid2mpx,
-                y = 3f.grid2mpx,
+                x = 2f.cell2mpx,
+                y = 3f.cell2mpx,
                 level = TankLevel.Level4,
                 side = TankSide.Bot,
                 hp = 1),

@@ -5,7 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import com.samwdev.battlecity.entity.*
-import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 @Composable
@@ -27,7 +26,7 @@ class TankState(
     private val powerUpState: PowerUpState,
     private val explosionState: ExplosionState,
     private val scoreState: ScoreState,
-) : TickListener, GridUnitNumberAware by mapState {
+) : TickListener, GridSizeAware by mapState {
     companion object {
         private const val ShieldDuration = 10 * 1000
         private const val FrozenDuration = 10 * 1000
@@ -127,8 +126,8 @@ class TankState(
     }
 
     private fun getAvailableSpawnSpot(): Offset? {
-        val allTanksRect = tanks.values.map { Rect(it.offset, Size(1.grid2mpx, 1.grid2mpx)) }
-        val allSpawnRect = mapState.botSpawnPositions.map { Rect(it, Size(1.grid2mpx, 1.grid2mpx)) }.shuffled()
+        val allTanksRect = tanks.values.map { Rect(it.offset, Size(1.cell2mpx, 1.cell2mpx)) }
+        val allSpawnRect = mapState.botSpawnPositions.map { Rect(it, Size(1.cell2mpx, 1.cell2mpx)) }.shuffled()
         // find a spawn spot that doesn't collide with any tanks
         return allSpawnRect.find { spawn -> allTanksRect.none { tank -> tank.overlaps(spawn) } }?.topLeft
     }
@@ -250,7 +249,7 @@ class TankState(
     }
 
     private fun isTankFullOnIce(tank: Tank): Boolean {
-        val iceIndices = IceElement.getIndicesOverlappingRect(tank.pivotBox, mapState.hGridUnitNum)
+        val iceIndices = IceElement.getOverlapIndicesInRect(tank.pivotBox, mapState.hGridSize)
         val allIceIndices = mapState.iceIndexSet
         return iceIndices.all { it in allIceIndices }
     }
@@ -276,13 +275,13 @@ class TankState(
 
         // check collision against map elements
         val checks = mutableListOf<MoveRestriction>()
-        BrickElement.getHitPoint(mapState.bricks, travelPath, movingDirection)
+        BrickElement.getImpactPoint(mapState.bricks, travelPath, movingDirection)
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
-        SteelElement.getHitPoint(mapState.steels, travelPath, movingDirection)
+        SteelElement.getImpactPoint(mapState.steels, travelPath, movingDirection)
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
-        WaterElement.getHitPoint(mapState.waters, travelPath, movingDirection)
+        WaterElement.getImpactPoint(mapState.waters, travelPath, movingDirection)
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
-        EagleElement.getHitPoint(mapState.eagle, travelPath, movingDirection)
+        EagleElement.getImpactPoint(mapState.eagle, travelPath, movingDirection)
             ?.also { checks.add(MoveRestriction(it, movingDirection)) }
 
         // check collision against tanks
@@ -295,14 +294,14 @@ class TankState(
         }
 
         // check collision against map border
-        val mapRect = Rect(offset = Offset.Zero, size = Size(hGridUnitNum.grid2mpx, vGridUnitNum.grid2mpx))
+        val mapRect = Rect(offset = Offset.Zero, size = Size(hGridSize.cell2mpx, vGridSize.cell2mpx))
         if (mapRect.intersect(toRect) != toRect) {
             // going out of bound
             val boundary = when (movingDirection) {
                 Direction.Up -> 0f
-                Direction.Down -> vGridUnitNum.grid2mpx
+                Direction.Down -> vGridSize.cell2mpx
                 Direction.Left -> 0f
-                Direction.Right -> hGridUnitNum.grid2mpx
+                Direction.Right -> hGridSize.cell2mpx
             }
             checks.add(MoveRestriction(boundary, movingDirection))
         }

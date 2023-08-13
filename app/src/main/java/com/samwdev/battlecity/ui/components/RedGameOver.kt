@@ -12,7 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -24,9 +24,10 @@ fun RedGameOver(
     val slidingDuration = 2000
     var up by remember { mutableStateOf(false) }
 
-    val curtainHeightPercentage by animateFloatAsState(
+    val gameOverLayerHeightPercentage by animateFloatAsState(
         targetValue = if (up) 1f else 0f,
-        animationSpec = tween(slidingDuration, easing = LinearEasing)
+        animationSpec = tween(slidingDuration, easing = LinearEasing),
+        label = "game over layer"
     )
 
     val co = rememberCoroutineScope()
@@ -47,10 +48,10 @@ fun RedGameOver(
             .align(Alignment.BottomCenter)
             .background(Color.Transparent)
             .fillMaxWidth()
-            .fillMaxHeight(curtainHeightPercentage),
+            .fillMaxHeight(gameOverLayerHeightPercentage),
             contentAlignment = Alignment.Center,
         ) {
-            PixelText(text = "GAME\nOVER", charHeight = 0.5f.grid2mpx, textColor = Color.Red)
+            PixelText(text = "GAME\nOVER", charHeight = 0.5f.cell2mpx, textColor = Color.Red)
         }
     }
 }

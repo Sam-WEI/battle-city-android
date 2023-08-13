@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.TreeElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
@@ -19,10 +19,10 @@ private val TreeColorLight = Color(129, 208, 0)
 
 @Composable
 fun TreeLayer(trees: Set<TreeElement>) {
-    val gridUnitNumber = LocalGridUnitNumber.current
+    val gridSize = LocalGridSize.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.first.grid2mpx,
-        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+        widthInMapPixel = gridSize.first.cell2mpx,
+        heightInMapPixel = gridSize.second.cell2mpx,
         modifier = Modifier.zIndex(ZIndexTree)
     ) {
         trees.forEach { element ->
@@ -118,7 +118,7 @@ private fun PixelDrawScope.drawTreeElement() {
 @Composable
 fun TreePreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 2) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 2) {
             TreeLayer(trees = setOf(
                 TreeElement.compose(0, 0),
                 TreeElement.compose(0, 1),

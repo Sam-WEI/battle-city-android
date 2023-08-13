@@ -21,7 +21,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.samwdev.battlecity.R
 import com.samwdev.battlecity.core.Direction
 import com.samwdev.battlecity.core.MapPixel
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -33,8 +33,8 @@ import kotlin.math.roundToInt
 fun PixelCanvas(
     modifier: Modifier = Modifier,
     topLeftInMapPixel: Offset = Offset.Zero,
-    widthInMapPixel: MapPixel = 1f.grid2mpx,
-    heightInMapPixel: MapPixel = 1f.grid2mpx,
+    widthInMapPixel: MapPixel = 1f.cell2mpx,
+    heightInMapPixel: MapPixel = 1f.cell2mpx,
     onDraw: PixelDrawScope.() -> Unit
 ) {
     val mpxDp = LocalMapPixelDp.current

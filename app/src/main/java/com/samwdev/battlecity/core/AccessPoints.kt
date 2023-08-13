@@ -20,13 +20,13 @@ private const val ValueNeighborIsObstacle = -5
 
 typealias AccessPoints = Array<Array<Int>>
 
-fun emptyAccessPoints(hGridUnitNum: Int, vGridUnitNum: Int) =
-    Array(vGridUnitNum * 2) { Array(hGridUnitNum * 2) { ValueUninitialized } }
+fun emptyAccessPoints(hGridSize: Int, vGridSize: Int) =
+    Array(vGridSize * 2) { Array(hGridSize * 2) { ValueUninitialized } }
 
-val AccessPoints.hSubGridUnitNum: Int get() = this[0].size
-val AccessPoints.vSubGridUnitNum: Int get() = size
+val AccessPoints.hSubGridSize: Int get() = this[0].size
+val AccessPoints.vSubGridSize: Int get() = size
 
-val AccessPoints.bottomRight: SubGrid get() = SubGrid(vSubGridUnitNum - 1, hSubGridUnitNum - 1)
+val AccessPoints.bottomRight: SubGrid get() = SubGrid(vSubGridSize - 1, hSubGridSize - 1)
 
 /**
  * Return an updated copy
@@ -57,8 +57,8 @@ fun AccessPoints.updated(
 fun AccessPoints.randomAccessiblePoint(maxAttempt: Int = 5): SubGrid {
     var attempt = 0
     while (true) {
-        val row = Random.nextInt(vSubGridUnitNum)
-        val col = Random.nextInt(hSubGridUnitNum)
+        val row = Random.nextInt(vSubGridSize)
+        val col = Random.nextInt(hSubGridSize)
         if (this[row][col] > 0 || ++attempt >= maxAttempt) {
             return SubGrid(row, col)
         }
@@ -100,21 +100,21 @@ private fun AccessPoints.updateInPlace(
                 WaterElement.overlapsAnyElement(
                     waterIndexSet,
                     curr,
-                    hGridUnitNum = hSubGridUnitNum / 2,
+                    hGridSize = hSubGridSize / 2,
                     1,
                     1
                 ) -> ValueObstacleWater
                 SteelElement.overlapsAnyElement(
                     steelIndexSet,
                     curr,
-                    hGridUnitNum = hSubGridUnitNum / 2,
+                    hGridSize = hSubGridSize / 2,
                     1,
                     1
                 ) -> ValueObstacleSteel
                 BrickElement.overlapsAnyElement(
                     brickIndexSet,
                     curr,
-                    hGridUnitNum = hSubGridUnitNum / 2,
+                    hGridSize = hSubGridSize / 2,
                     1,
                     1
                 ) -> ValueObstacleBrick
@@ -142,13 +142,13 @@ value class SubGrid internal constructor(private val packedValue: Int) : Compara
     val subRow: Int get() = packedValue shr 16
     val subCol: Int get() = packedValue and 0xFFFF
 
-    val x: MapPixel get() = (subCol / 2f).grid2mpx
-    val y: MapPixel get() = (subRow / 2f).grid2mpx
+    val x: MapPixel get() = (subCol / 2f).cell2mpx
+    val y: MapPixel get() = (subRow / 2f).cell2mpx
 
     val topLeft: Offset get() = Offset(x, y)
 
     fun isOutOfBound(accessPoints: AccessPoints): Boolean =
-        !(subRow in 0 until accessPoints.vSubGridUnitNum && subCol in 0 until accessPoints.hSubGridUnitNum)
+        !(subRow in 0 until accessPoints.vSubGridSize && subCol in 0 until accessPoints.hSubGridSize)
 
     val neighborUp: SubGrid get() = this - SubGrid(1, 0)
     val neighborDown: SubGrid get() = this + SubGrid(1, 0)
@@ -177,10 +177,10 @@ value class SubGrid internal constructor(private val packedValue: Int) : Compara
 fun SubGrid(subRow: Int, subCol: Int): SubGrid = SubGrid((subRow shl 16) + subCol)
 
 fun SubGrid(offset: Offset): SubGrid = SubGrid(
-    (offset.y / 1f.grid2mpx).toInt() * 2, (offset.x / 1f.grid2mpx).toInt() * 2)
+    (offset.y / 1f.cell2mpx).toInt() * 2, (offset.x / 1f.cell2mpx).toInt() * 2)
 
 val Offset.subGrid: SubGrid get() {
-    val subRow = (y / 0.5f.grid2mpx).toInt()
-    val subCol = (x / 0.5f.grid2mpx).toInt()
+    val subRow = (y / 0.5f.cell2mpx).toInt()
+    val subCol = (x / 0.5f.cell2mpx).toInt()
     return SubGrid(subRow, subCol)
 }

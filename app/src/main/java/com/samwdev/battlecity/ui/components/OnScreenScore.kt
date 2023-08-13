@@ -7,16 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.samwdev.battlecity.core.OnScreenScore
-import com.samwdev.battlecity.core.grid2mpx
-import com.samwdev.battlecity.core.toMpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.CiiFont
 
 @Composable
@@ -28,7 +24,7 @@ fun OnScreenScore(onScreenScore: OnScreenScore) {
         modifier = Modifier.offset(
             onScreenScore.offset.x.mpx2dp,
             onScreenScore.offset.y.mpx2dp
-        ).size(1f.grid2mpx.mpx2dp).zIndex(ZIndexOnScreenScore),
+        ).size(1f.cell2mpx.mpx2dp).zIndex(ZIndexOnScreenScore),
         contentAlignment = Alignment.Center,
     ) {
         Text(

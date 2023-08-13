@@ -19,8 +19,8 @@ data class StageConfig(
 )
 
 data class MapConfig(
-    val hGridUnitNum: Int,
-    val vGridUnitNum: Int,
+    val hGridSize: Int,
+    val vGridSize: Int,
     val trees: Set<TreeElement>,
     val bricks: Set<BrickElement>,
     val steels: Set<SteelElement>,

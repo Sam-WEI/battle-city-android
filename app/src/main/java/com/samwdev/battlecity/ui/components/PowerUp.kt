@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.PowerUpEnum
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
@@ -33,8 +33,8 @@ fun FlashingPowerUp(topLeft: Offset, powerUp: PowerUpEnum) {
 fun PowerUp(topLeft: Offset, powerUp: PowerUpEnum) {
     PixelCanvas(
         topLeftInMapPixel = topLeft,
-        widthInMapPixel = 1f.grid2mpx,
-        heightInMapPixel = 1f.grid2mpx,
+        widthInMapPixel = 1f.cell2mpx,
+        heightInMapPixel = 1f.cell2mpx,
         modifier = Modifier.zIndex(ZIndexPowerUp)
     ) {
         drawHorizontalLine(color = PowerUpColorWhite, topLeft = Offset(1f, 0f), length = 13f)
@@ -260,9 +260,9 @@ private fun PixelDrawScope.drawTimer() {
 @Composable
 private fun PowerUpPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 6) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 6) {
             PowerUpEnum.values().forEachIndexed { index, powerUp ->
-                PowerUp(topLeft = Offset(0f.grid2mpx, index.toFloat().grid2mpx), powerUp)
+                PowerUp(topLeft = Offset(0f.cell2mpx, index.toFloat().cell2mpx), powerUp)
             }
         }
     }

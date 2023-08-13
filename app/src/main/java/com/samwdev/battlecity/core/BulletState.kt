@@ -25,7 +25,7 @@ class BulletState(
     private val tankState: TankState,
     private val explosionState: ExplosionState,
     private val soundState: SoundState,
-) : TickListener, GridUnitNumberAware by mapState {
+) : TickListener, GridSizeAware by mapState {
     private val idGen: AtomicInteger = AtomicInteger(0)
     var friendlyFire = false
 
@@ -123,7 +123,7 @@ class BulletState(
             val impactArea = bullet.getImpactAreaIfHitAt(firstCollision.hitPoint)
 
             // bricks and steels can be destroyed by bullet explosion, so check them regardless of being directly hit
-            val brickIndices = BrickElement.getIndicesOverlappingRect(impactArea, hGridUnitNum, bullet.direction)
+            val brickIndices = BrickElement.getOverlapIndicesInRect(impactArea, hGridSize, bullet.direction)
             val hitAnyBricks = brickIndices.anyRealElements(mapState.bricks)
             if (hitAnyBricks) {
                 if (bullet.side == TankSide.Player) {
@@ -131,7 +131,7 @@ class BulletState(
                 }
                 mapState.destroyBricksIndex(brickIndices.toSet())
             }
-            val steelIndices = SteelElement.getIndicesOverlappingRect(impactArea, hGridUnitNum, bullet.direction)
+            val steelIndices = SteelElement.getOverlapIndicesInRect(impactArea, hGridSize, bullet.direction)
             val hitAnySteels = steelIndices.anyRealElements(mapState.steels)
             if (hitAnySteels) {
                 if (bullet.side == TankSide.Player) {
@@ -182,9 +182,9 @@ class BulletState(
 
     private fun checkCollisionWithBorder() {
         bullets.values.forEach { bullet ->
-            if (bullet.x <= 0 || bullet.x >= hGridUnitNum.grid2mpx || bullet.y <= 0 ||
-                bullet.y >= vGridUnitNum.grid2mpx) {
-                addBulletTrajectoryCollision(HitBorderInfo(bullet, hGridUnitNum, vGridUnitNum))
+            if (bullet.x <= 0 || bullet.x >= hGridSize.cell2mpx || bullet.y <= 0 ||
+                bullet.y >= vGridSize.cell2mpx) {
+                addBulletTrajectoryCollision(HitBorderInfo(bullet, hGridSize, vGridSize))
             }
         }
     }
@@ -230,7 +230,7 @@ class BulletState(
     private fun checkCollisionWithBricks(tick: Tick) {
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
-            BrickElement.getHitPoint(mapState.bricks, trajectory, bullet.direction)?.let {
+            BrickElement.getImpactPoint(mapState.bricks, trajectory, bullet.direction)?.let {
                 addBulletTrajectoryCollision(HitBrickInfo(bullet = bullet, hitPoint = it))
             }
         }
@@ -239,7 +239,7 @@ class BulletState(
     private fun checkCollisionWithSteels(tick: Tick) {
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
-            SteelElement.getHitPoint(mapState.steels, trajectory, bullet.direction)?.let {
+            SteelElement.getImpactPoint(mapState.steels, trajectory, bullet.direction)?.let {
                 addBulletTrajectoryCollision(HitSteelInfo(bullet = bullet, hitPoint = it))
             }
         }
@@ -270,7 +270,7 @@ class BulletState(
     private fun checkCollisionWithEagle(tick: Tick) {
         bullets.values.forEach { bullet ->
             val trajectory = bullet.getTrajectory(tick.delta)
-            EagleElement.getHitPoint(mapState.eagle, trajectory, bullet.direction)?.let {
+            EagleElement.getImpactPoint(mapState.eagle, trajectory, bullet.direction)?.let {
                 addBulletTrajectoryCollision(HitEagleInfo(bullet = bullet, hitPoint = it))
             }
         }
@@ -293,18 +293,18 @@ class BulletState(
     }
 }
 
-private fun Bullet.hitPointIfHitBorder(hGridUnitNum: Int, vGridUnitNum: Int): Offset =
+private fun Bullet.impactPointIfHitBorder(hGridSize: Int, vGridSize: Int): Offset =
     when (direction) {
         Direction.Up -> Offset(center.x, 0f)
-        Direction.Down -> Offset(center.x, vGridUnitNum.grid2mpx)
+        Direction.Down -> Offset(center.x, vGridSize.cell2mpx)
         Direction.Left -> Offset(0f, center.y)
-        Direction.Right -> Offset(hGridUnitNum.grid2mpx, center.y)
+        Direction.Right -> Offset(hGridSize.cell2mpx, center.y)
     }
 
 private sealed class TrajectoryCollisionInfo(open val bullet: Bullet, open val hitPoint: Offset)
 
-private data class HitBorderInfo(override val bullet: Bullet, val hGridUnitNum: Int, val vGridUnitNum: Int) :
-    TrajectoryCollisionInfo(bullet, bullet.hitPointIfHitBorder(hGridUnitNum, vGridUnitNum))
+private data class HitBorderInfo(override val bullet: Bullet, val hGridSize: Int, val vGridSize: Int) :
+    TrajectoryCollisionInfo(bullet, bullet.impactPointIfHitBorder(hGridSize, vGridSize))
 
 private data class HitBrickInfo(override val bullet: Bullet, override val hitPoint: Offset) :
     TrajectoryCollisionInfo(bullet, hitPoint)

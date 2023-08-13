@@ -1,6 +1,7 @@
 package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
@@ -17,7 +18,7 @@ class TickState(tick: Tick = Tick.INITIAL) {
     private var paused = false
 
     private var lastTick: Tick = tick
-    var fps: Int by mutableStateOf(0)
+    var fps: Int by mutableIntStateOf(0)
         private set
 
     private var lastUptime = lastTick.uptimeMillis

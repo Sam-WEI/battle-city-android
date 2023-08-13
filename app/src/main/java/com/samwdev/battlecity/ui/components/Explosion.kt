@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.Explosion
 import com.samwdev.battlecity.core.MapPixel
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
@@ -64,10 +64,10 @@ private fun PixelDrawScope.drawExplosionPattern(pattern: ExplosionUiPattern) {
 @Composable
 fun ExplosionPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 10) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 10) {
             repeat(5) { i ->
                 ExplosionFrame(
-                    center = Offset(5f.grid2mpx, (i * 2 + 1).grid2mpx),
+                    center = Offset(5f.cell2mpx, (i * 2 + 1).cell2mpx),
                     pattern = ExplosionUiPattern.values()[i]
                 )
             }

@@ -1,6 +1,5 @@
 package com.samwdev.battlecity.ui.components
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,8 +15,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.withSaveLayer
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
@@ -46,11 +44,11 @@ fun BrickTitle(vararg texts: String, modifier: Modifier) {
         val textPaint = LocalPixelFontPaint.current
         Grid(
             modifier = modifier.wrapContentSize(),
-            gridUnitNum = hGrid,
+            gridSize = hGrid,
         ) {
             PixelCanvas(
-                widthInMapPixel = hGrid.grid2mpx,
-                heightInMapPixel = vGrid.grid2mpx,
+                widthInMapPixel = hGrid.cell2mpx,
+                heightInMapPixel = vGrid.cell2mpx,
             ) {
                 brickElements.forEach { element ->
                     val offset = element.offsetInMapPixel
@@ -66,13 +64,13 @@ fun BrickTitle(vararg texts: String, modifier: Modifier) {
                     this as PixelDrawScope
                     drawIntoCanvas {
                         it.withSaveLayer(
-                            Rect(Offset.Zero, Size((hGrid / scale).grid2mpx, (vGrid / scale).grid2mpx)),
+                            Rect(Offset.Zero, Size((hGrid / scale).cell2mpx, (vGrid / scale).cell2mpx)),
                             Paint().apply { blendMode = BlendMode.DstIn }
                         ) {
                             texts.forEachIndexed { i, line ->
                                 val x = (maxLen - line.length) / 2f * 2 / scale
                                 val y = i * 1.5f * 2 / scale
-                                drawPixelText(line, Offset(x.grid2mpx, y.grid2mpx), textPaint)
+                                drawPixelText(line, Offset(x.cell2mpx, y.cell2mpx), textPaint)
                             }
                         }
                     }

@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
@@ -17,10 +17,10 @@ import com.samwdev.battlecity.ui.theme.BattleCityTheme
 @Composable
 fun SteelLayer(steels: Set<SteelElement>) {
     val drawIndex = LocalDebugConfig.current.showElementIndex
-    val gridUnitNumber = LocalGridUnitNumber.current
+    val gridSize = LocalGridSize.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.first.grid2mpx,
-        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+        widthInMapPixel = gridSize.first.cell2mpx,
+        heightInMapPixel = gridSize.second.cell2mpx,
     ) {
         steels.forEach { element ->
             val offset = element.offsetInMapPixel
@@ -74,7 +74,7 @@ private fun PixelDrawScope.drawSteelElement(element: SteelElement, drawIndex: Bo
 @Composable
 fun SteelPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 2) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 2) {
             val steels = mutableSetOf<SteelElement>()
             for (r in 0 until 4) {
                 for (c in 0 until 4) {
@@ -82,7 +82,6 @@ fun SteelPreview() {
                 }
             }
             SteelLayer(steels = steels)
-
         }
     }
 }

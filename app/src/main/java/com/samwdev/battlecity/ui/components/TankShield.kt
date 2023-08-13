@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
@@ -23,8 +23,8 @@ fun TankShield(topLeft: Offset) {
 private fun TankShield(topLeft: Offset, frame: Int) {
     PixelCanvas(
         topLeftInMapPixel = topLeft,
-        widthInMapPixel = 1f.grid2mpx,
-        heightInMapPixel = 1f.grid2mpx,
+        widthInMapPixel = 1f.cell2mpx,
+        heightInMapPixel = 1f.cell2mpx,
     ) {
         repeat(4) { i ->
             rotate(
@@ -60,9 +60,9 @@ private fun PixelDrawScope.drawShieldPetal(frame: Int) {
 @Composable
 private fun TankShieldPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(200.dp), gridUnitNum = 2) {
-            TankShield(Offset(0f.grid2mpx, 0f.grid2mpx), 0)
-            TankShield(Offset(0f.grid2mpx, 1f.grid2mpx), 1)
+        Grid(modifier = Modifier.size(200.dp), gridSize = 2) {
+            TankShield(Offset(0f.cell2mpx, 0f.cell2mpx), 0)
+            TankShield(Offset(0f.cell2mpx, 1f.cell2mpx), 1)
         }
     }
 }

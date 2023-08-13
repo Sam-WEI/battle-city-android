@@ -39,7 +39,7 @@ fun Framer(
 
         realFrames.map { n += it; n }
     }
-    var elapsed by remember { mutableStateOf(0L) }
+    var elapsed by remember { mutableLongStateOf(0L) }
 
     val finished by remember(infinite, elapsed, frameAcc) {
         derivedStateOf {

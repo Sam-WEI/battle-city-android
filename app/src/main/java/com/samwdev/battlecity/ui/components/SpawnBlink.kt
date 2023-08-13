@@ -8,7 +8,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
@@ -27,8 +27,8 @@ fun SpawnBlink(topLeft: Offset) {
 fun SpawnBlinkIndex(index: Int, topLeft: Offset) {
     PixelCanvas(
         topLeftInMapPixel = topLeft,
-        widthInMapPixel = 1f.grid2mpx,
-        heightInMapPixel = 1f.grid2mpx,
+        widthInMapPixel = 1f.cell2mpx,
+        heightInMapPixel = 1f.cell2mpx,
     ) {
         when (index) {
             0 -> spawnBlink1()
@@ -73,10 +73,10 @@ fun SpawnBlinkPreview() {
     BattleCityTheme {
         Grid(
             modifier = Modifier.size(500.dp),
-            gridUnitNum = 4,
+            gridSize = 4,
         ) {
             for (i in 0..3) {
-                SpawnBlinkIndex(index = i, topLeft = Offset(0f, i.toFloat().grid2mpx))
+                SpawnBlinkIndex(index = i, topLeft = Offset(0f, i.toFloat().cell2mpx))
             }
         }
     }

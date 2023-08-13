@@ -17,11 +17,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.sp
 import com.samwdev.battlecity.core.Direction
 import com.samwdev.battlecity.core.MapPixel
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val gridUnitNum = 16
+private const val LandingScreenGridSize = 16
 
 enum class LandingScreenMenuItem(val title: String) {
     Player1("1 PLAYER"),
@@ -32,7 +32,7 @@ enum class LandingScreenMenuItem(val title: String) {
 
 @Composable
 fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
-    val fistMenuItemPos = Offset(6.grid2mpx, 9.5f.grid2mpx)
+    val fistMenuItemPos = Offset(6.cell2mpx, 9.5f.cell2mpx)
     var selectedMenuItem: LandingScreenMenuItem by remember { mutableStateOf(LandingScreenMenuItem.Player1) }
     var selected: Boolean by remember { mutableStateOf(false) }
 
@@ -61,24 +61,24 @@ fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
             .fillMaxWidth()
             .aspectRatio(1f)
             .background(Color.Black),
-        gridUnitNum = gridUnitNum,
+        gridSize = LandingScreenGridSize,
     ) {
         PixelText(
             text = "I-    00 HI- 20000",
-            charHeight = 0.5f.grid2mpx,
-            topLeft = Offset(1f.grid2mpx, 1f.grid2mpx)
+            charHeight = 0.5f.cell2mpx,
+            topLeft = Offset(1f.cell2mpx, 1f.cell2mpx)
         )
 
         BrickTitle("BATTLE", "CITY",
             modifier = Modifier
-                .offset(0f.grid2mpx.mpx2dp, 2f.grid2mpx.mpx2dp)
+                .offset(0f.cell2mpx.mpx2dp, 2f.cell2mpx.mpx2dp)
                 .scale(6f / 8f))
 
         LandingScreenMenuItem.values().forEachIndexed { i, menu ->
             PixelText(
                 text = menu.title,
-                charHeight = 0.5f.grid2mpx,
-                topLeft = fistMenuItemPos + Offset(0f, i.grid2mpx),
+                charHeight = 0.5f.cell2mpx,
+                topLeft = fistMenuItemPos + Offset(0f, i.cell2mpx),
                 modifier = Modifier.alpha(if (menuVisibility.getValue(menu)) 1f else 0f)
             ) {
                 if (!selected) {
@@ -90,17 +90,17 @@ fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
 
         PixelText(
             text = "© 1980 1985 NAMCO LTD.",
-            charHeight = 0.5f.grid2mpx,
-            topLeft = Offset(3.grid2mpx, (gridUnitNum - 2).grid2mpx)
+            charHeight = 0.5f.cell2mpx,
+            topLeft = Offset(3.cell2mpx, (LandingScreenGridSize - 2).cell2mpx)
         )
         PixelText(
             text = "  ALL RIGHTS RESERVED",
-            charHeight = 0.5f.grid2mpx,
-            topLeft = Offset(3.grid2mpx, (gridUnitNum - 1).grid2mpx)
+            charHeight = 0.5f.cell2mpx,
+            topLeft = Offset(3.cell2mpx, (LandingScreenGridSize - 1).cell2mpx)
         )
 
         PixelCanvas(
-            topLeftInMapPixel = fistMenuItemPos + Offset((-0.5f).grid2mpx,(-0.3f).grid2mpx + (selectedMenuItem.ordinal).grid2mpx)
+            topLeftInMapPixel = fistMenuItemPos + Offset((-0.5f).cell2mpx,(-0.3f).cell2mpx + (selectedMenuItem.ordinal).cell2mpx)
         ) {
             drawForDirection(Direction.Right) {
                 this as PixelDrawScope

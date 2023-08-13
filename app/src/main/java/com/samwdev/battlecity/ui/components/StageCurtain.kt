@@ -12,7 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.StageConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -34,7 +34,8 @@ fun StageCurtain(
 
     val curtainHeightPercentage by animateFloatAsState(
         targetValue = if (currentClosed) 1f else 0f,
-        animationSpec = tween(curtainSlidingTime, easing = FastOutSlowInEasing)
+        animationSpec = tween(curtainSlidingTime, easing = FastOutSlowInEasing),
+        label = "stage curtain"
     )
 
     val co = rememberCoroutineScope()
@@ -72,7 +73,7 @@ fun StageCurtain(
         if (curtainHeightPercentage > 0.97f) {
             PixelText(
                 text = "STAGE ${stageConfigNext.name}",
-                charHeight = 0.5f.grid2mpx,
+                charHeight = 0.5f.cell2mpx,
                 textColor = Color.Black,
                 modifier = Modifier.align(Alignment.Center))
         }

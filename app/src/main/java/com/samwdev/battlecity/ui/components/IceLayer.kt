@@ -8,17 +8,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.IceElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 
 @Composable
 fun IceLayer(ices: Set<IceElement>) {
-    val gridUnitNumber = LocalGridUnitNumber.current
+    val gridSize = LocalGridSize.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.first.grid2mpx,
-        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+        widthInMapPixel = gridSize.first.cell2mpx,
+        heightInMapPixel = gridSize.second.cell2mpx,
     ) {
         ices.forEach { element ->
             val offset = element.offsetInMapPixel
@@ -80,7 +80,7 @@ private fun PixelDrawScope.drawIceElement() {
 @Composable
 fun IcePreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 3) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 3) {
             IceLayer(ices = setOf(
                 IceElement.compose(0, 0),
                 IceElement.compose(0, 1),

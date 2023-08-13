@@ -184,7 +184,10 @@ private val Offset.steerDirection: Direction? get() {
 @Composable
 fun FireButton(modifier: Modifier = Modifier, onPress: (Boolean) -> Unit) {
     var pressing by remember { mutableStateOf(false) }
-    val color by animateColorAsState(targetValue = if (pressing) Color.DarkGray else Color.Gray)
+    val color by animateColorAsState(
+        targetValue = if (pressing) Color.DarkGray else Color.Gray,
+        label = "fire button",
+    )
 
     Canvas(modifier = modifier.pointerInput(Unit) {
         coroutineScope {

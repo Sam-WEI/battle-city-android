@@ -8,26 +8,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
+import com.samwdev.battlecity.core.MAP_GRID_SIZE
 import com.samwdev.battlecity.core.MapPixel
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 
 
 @Composable
 fun Grid(
     modifier: Modifier,
-    gridUnitNum: Int = MAP_BLOCK_COUNT,
-    hGridUnitNum: Int = gridUnitNum,
-    vGridUnitNum: Int = gridUnitNum,
+    gridSize: Int = MAP_GRID_SIZE,
+    hGridSize: Int = gridSize,
+    vGridSize: Int = gridSize,
     content: @Composable BoxScope.() -> Unit,
 ) {
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val mapPixelInDp = remember(maxWidth) { maxWidth / (hGridUnitNum.grid2mpx) }
+        val mapPixelInDp = remember(maxWidth) { maxWidth / (hGridSize.cell2mpx) }
         CompositionLocalProvider(
             LocalMapPixelDp provides mapPixelInDp,
-            LocalGridUnitNumber provides (hGridUnitNum to vGridUnitNum)
+            LocalGridSize provides (hGridSize to vGridSize)
         ) {
             content()
         }
@@ -47,6 +47,6 @@ val LocalMapPixelDp = staticCompositionLocalOf<Dp> {
 /**
  * Provides dp size for one MapPixel
  */
-val LocalGridUnitNumber = staticCompositionLocalOf<Pair<Int, Int>> {
+val LocalGridSize = staticCompositionLocalOf<Pair<Int, Int>> {
     error("Not in Grid composable or its child composable.")
 }

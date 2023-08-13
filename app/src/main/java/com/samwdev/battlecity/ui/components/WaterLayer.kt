@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.TreeElement
 import com.samwdev.battlecity.entity.WaterElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
@@ -27,10 +27,10 @@ fun WaterLayer(waters: Set<WaterElement>) {
 
 @Composable
 fun WaterLayerFrame(waters: Set<WaterElement>, frame: Int) {
-    val gridUnitNumber = LocalGridUnitNumber.current
+    val gridSize = LocalGridSize.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.first.grid2mpx,
-        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+        widthInMapPixel = gridSize.first.cell2mpx,
+        heightInMapPixel = gridSize.second.cell2mpx,
     ) {
         waters.forEach { element ->
             val offset = element.offsetInMapPixel
@@ -88,7 +88,7 @@ private fun PixelDrawScope.drawWaterElement(frame: Int) {
 @Composable
 private fun WaterPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp, 500.dp), gridUnitNum = 3) {
+        Grid(modifier = Modifier.size(500.dp, 500.dp), gridSize = 3) {
             WaterLayerFrame(waters = setOf(WaterElement.compose(0, 0)), frame = 0)
             WaterLayerFrame(waters = setOf(WaterElement.compose(0, 2)), frame = 1)
         }

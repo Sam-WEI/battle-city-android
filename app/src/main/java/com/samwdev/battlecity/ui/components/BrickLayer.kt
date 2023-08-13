@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
@@ -21,10 +21,10 @@ private val BrickColorDarkBrown = Color(96, 12, 0)
 @Composable
 fun BrickLayer(bricks: Set<BrickElement>) {
     val drawIndex = LocalDebugConfig.current.showElementIndex
-    val gridUnitNumber = LocalGridUnitNumber.current
+    val gridSize = LocalGridSize.current
     PixelCanvas(
-        widthInMapPixel = gridUnitNumber.first.grid2mpx,
-        heightInMapPixel = gridUnitNumber.second.grid2mpx,
+        widthInMapPixel = gridSize.first.cell2mpx,
+        heightInMapPixel = gridSize.second.cell2mpx,
     ) {
         bricks.forEach { element ->
             val offset = element.offsetInMapPixel
@@ -82,7 +82,7 @@ fun PixelDrawScope.drawBrickElement(
 @Composable
 fun BrickPreview() {
     BattleCityTheme {
-        Grid(modifier = Modifier.size(500.dp), gridUnitNum = 4) {
+        Grid(modifier = Modifier.size(500.dp), gridSize = 4) {
             val bricks = mutableSetOf<BrickElement>()
             for (r in 0 until 32) {
                 for (c in 0 until 32) {

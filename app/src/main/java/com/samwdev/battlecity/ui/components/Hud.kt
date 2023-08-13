@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.withSaveLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.MAP_BLOCK_COUNT
-import com.samwdev.battlecity.core.grid2mpx
+import com.samwdev.battlecity.core.MAP_GRID_SIZE
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlin.math.nextUp
 
@@ -38,23 +38,23 @@ fun Hud(
             PlayerInfo(
                 lifeCount,
                 modifier = Modifier
-                    .size(1.5f.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
-                    .offset(x = 0.5f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
+                    .size(1.5f.cell2mpx.mpx2dp, 1.cell2mpx.mpx2dp)
+                    .offset(x = 0.5f.cell2mpx.mpx2dp, y = 0f.mpx2dp)
             )
 
             LevelInfo(
                 level = level,
                 modifier = Modifier
-                    .size(2f.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
-                    .offset(x = 4.5f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
+                    .size(2f.cell2mpx.mpx2dp, 1.cell2mpx.mpx2dp)
+                    .offset(x = 4.5f.cell2mpx.mpx2dp, y = 0f.mpx2dp)
             )
         }
 
         BotIcons(
             botCount,
             modifier = Modifier
-                .size(6.grid2mpx.mpx2dp, 1.grid2mpx.mpx2dp)
-                .offset(x = 7f.grid2mpx.mpx2dp, y = 0f.mpx2dp)
+                .size(6.cell2mpx.mpx2dp, 1.cell2mpx.mpx2dp)
+                .offset(x = 7f.cell2mpx.mpx2dp, y = 0f.mpx2dp)
         )
     }
 }
@@ -65,7 +65,7 @@ fun PlayerInfo(lifeCount: Int, modifier: Modifier) {
         textSize = 8f
     }
     PixelCanvas(modifier) {
-        scale(0.7f, Offset(0f, 0.5f.grid2mpx)) {
+        scale(0.7f, Offset(0f, 0.5f.cell2mpx)) {
             this as PixelDrawScope
             drawPixelText("1P", Offset.Zero, textPaint)
             translate(top = 8f) {
@@ -158,7 +158,7 @@ private fun PixelDrawScope.drawPlayerLifeIcon() {
 private fun LevelInfo(level: String, modifier: Modifier) {
     val textPaint = LocalPixelFontPaint.current
     PixelCanvas(modifier) {
-        scale(0.7f, Offset(0f, 0.5f.grid2mpx)) {
+        scale(0.7f, Offset(0f, 0.5f.cell2mpx)) {
             this as PixelDrawScope
             drawRect(color = Color.Black, topLeft = Offset(0f, 0f), size = Size(2f, 16f))
             drawDiagonalLine(color = ColorOrange, end1 = Offset(2f, 1f), end2 = Offset(15f, 7f))
@@ -166,7 +166,7 @@ private fun LevelInfo(level: String, modifier: Modifier) {
             drawDiagonalLine(color = ColorOrange, end1 = Offset(2f, 3f), end2 = Offset(13f, 8f))
             drawDiagonalLine(color = ColorOrange, end1 = Offset(2f, 4f), end2 = Offset(11f, 8f))
             drawRect(color = ColorOrange, topLeft = Offset(2f, 5f), size = Size(8f, 4f))
-            translate(1f.grid2mpx, 0.5f.grid2mpx) {
+            translate(1f.cell2mpx, 0.5f.cell2mpx) {
                 this as PixelDrawScope
                 drawPixelText(level, Offset.Zero, textPaint)
             }
@@ -178,16 +178,16 @@ private fun LevelInfo(level: String, modifier: Modifier) {
 fun BotIcons(botCount: Int, modifier: Modifier) {
     val rowMax = if (botCount <= 20) 10 else 20
     PixelCanvas(
-        widthInMapPixel = 5f.grid2mpx,
-        heightInMapPixel = 1f.grid2mpx,
+        widthInMapPixel = 5f.cell2mpx,
+        heightInMapPixel = 1f.cell2mpx,
         modifier = modifier,
     ) {
         val topPadding = (4 - (botCount / rowMax.toFloat()).nextUp()) / 4f
-        scale(0.5f, pivot = Offset(0f, topPadding.grid2mpx)) {
+        scale(0.5f, pivot = Offset(0f, topPadding.cell2mpx)) {
             repeat(botCount) { i ->
                 val row = i / rowMax
                 val col = i % rowMax
-                translate(left = col * 0.5f.grid2mpx, top = row * 0.5f.grid2mpx) {
+                translate(left = col * 0.5f.cell2mpx, top = row * 0.5f.cell2mpx) {
                     this as PixelDrawScope
                     drawVerticalLine(
                         color = Color.Black,
@@ -239,7 +239,7 @@ fun HudPreview() {
                 .width(500.dp)
                 .height(200.dp)
                 .background(Color(117, 117, 117)),
-            gridUnitNum = MAP_BLOCK_COUNT
+            gridSize = MAP_GRID_SIZE
         ) {
             Hud(botCount = 20, lifeCount = 3, level = "30")
         }

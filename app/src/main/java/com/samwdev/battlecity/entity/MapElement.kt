@@ -5,14 +5,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
-import com.samwdev.battlecity.core.*
-import com.samwdev.battlecity.ui.components.LocalGridUnitNumber
+import com.samwdev.battlecity.core.Direction
+import com.samwdev.battlecity.core.MapPixel
+import com.samwdev.battlecity.core.SubGrid
+import com.samwdev.battlecity.core.cell2mpx
+import com.samwdev.battlecity.ui.components.LocalGridSize
 
-sealed class MapElement(open val index: Int, open val hGridUnitNum: Int) : MapElementProperties {
+sealed class MapElement(open val index: Int, open val hGridSize: Int) : MapElementProperties {
     val gridPosition: IntOffset
         get() {
-            val row = index / countInOneRow
-            val col = index % countInOneRow
+            val row = index / countInOneMapRow
+            val col = index % countInOneMapRow
             return IntOffset(col, row)
         }
 
@@ -20,112 +23,112 @@ sealed class MapElement(open val index: Int, open val hGridUnitNum: Int) : MapEl
         val (x, y) = gridPosition
         val rowF = y / granularity.toFloat()
         val colF = x / granularity.toFloat()
-        return Offset(colF.grid2mpx, rowF.grid2mpx)
+        return Offset(colF.cell2mpx, rowF.cell2mpx)
     }
 
-    val countInOneRow: Int get() = hGridUnitNum * granularity
+    val countInOneMapRow: Int get() = hGridSize * granularity
 
     val rect: Rect get() = Rect(offset = offsetInMapPixel, size = Size(elementSize, elementSize))
 }
 
 data class BrickElement(
     override val index: Int,
-    override val hGridUnitNum: Int,
-) : MapElement(index, hGridUnitNum), MapElementProperties by BrickElement {
+    override val hGridSize: Int,
+) : MapElement(index, hGridSize), MapElementProperties by BrickElement {
     val patternIndex: Int get() = (gridPosition.x + gridPosition.y) % 2
 
     companion object : MapElementHelper(4) {
-        operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
-            BrickElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+        operator fun invoke(row: Int, col: Int, hGridSize: Int) =
+            BrickElement(getIndex(row, col, hGridSize), hGridSize)
 
         @Composable
         fun compose(row: Int, col: Int): BrickElement {
-            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+            return invoke(row, col, hGridSize = LocalGridSize.current.first)
         }
     }
 }
 
 data class SteelElement(
     override val index: Int,
-    override val hGridUnitNum: Int,
-) : MapElement(index, hGridUnitNum), MapElementProperties by SteelElement {
+    override val hGridSize: Int,
+) : MapElement(index, hGridSize), MapElementProperties by SteelElement {
 
     companion object : MapElementHelper(2) {
         override val strength: Int = 3
-        operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
-            SteelElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+        operator fun invoke(row: Int, col: Int, hGridSize: Int) =
+            SteelElement(getIndex(row, col, hGridSize), hGridSize)
 
         @Composable
         fun compose(row: Int, col: Int): SteelElement {
-            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+            return invoke(row, col, hGridSize = LocalGridSize.current.first)
         }
     }
 }
 
 data class TreeElement(
     override val index: Int,
-    override val hGridUnitNum: Int,
-) : MapElement(index, hGridUnitNum), MapElementProperties by TreeElement {
+    override val hGridSize: Int,
+) : MapElement(index, hGridSize), MapElementProperties by TreeElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
-            TreeElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+        operator fun invoke(row: Int, col: Int, hGridSize: Int) =
+            TreeElement(getIndex(row, col, hGridSize), hGridSize)
 
         @Composable
         fun compose(row: Int, col: Int): TreeElement {
-            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+            return invoke(row, col, hGridSize = LocalGridSize.current.first)
         }
     }
 }
 
 data class WaterElement(
     override val index: Int,
-    override val hGridUnitNum: Int,
-) : MapElement(index, hGridUnitNum), MapElementProperties by WaterElement {
+    override val hGridSize: Int,
+) : MapElement(index, hGridSize), MapElementProperties by WaterElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
-            WaterElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+        operator fun invoke(row: Int, col: Int, hGridSize: Int) =
+            WaterElement(getIndex(row, col, hGridSize), hGridSize)
 
         @Composable
         fun compose(row: Int, col: Int): WaterElement {
-            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+            return invoke(row, col, hGridSize = LocalGridSize.current.first)
         }
     }
 }
 
 data class IceElement(
     override val index: Int,
-    override val hGridUnitNum: Int,
-) : MapElement(index, hGridUnitNum), MapElementProperties by IceElement {
+    override val hGridSize: Int,
+) : MapElement(index, hGridSize), MapElementProperties by IceElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int, hGridUnitNum: Int) =
-            IceElement(getIndex(row, col, hGridUnitNum), hGridUnitNum)
+        operator fun invoke(row: Int, col: Int, hGridSize: Int) =
+            IceElement(getIndex(row, col, hGridSize), hGridSize)
 
         @Composable
         fun compose(row: Int, col: Int): IceElement {
-            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first)
+            return invoke(row, col, hGridSize = LocalGridSize.current.first)
         }
     }
 }
 
 data class EagleElement(
     override val index: Int,
-    override val hGridUnitNum: Int,
+    override val hGridSize: Int,
     val dead: Boolean = false,
-) : MapElement(index, hGridUnitNum), MapElementProperties by EagleElement {
+) : MapElement(index, hGridSize), MapElementProperties by EagleElement {
     companion object : MapElementHelper(1) {
-        operator fun invoke(row: Int, col: Int, hGridUnitNum: Int, destroyed: Boolean = false) =
-            EagleElement(getIndex(row, col, hGridUnitNum), hGridUnitNum, destroyed)
+        operator fun invoke(row: Int, col: Int, hGridSize: Int, destroyed: Boolean = false) =
+            EagleElement(getIndex(row, col, hGridSize), hGridSize, destroyed)
 
         @Composable
         fun compose(row: Int, col: Int, destroyed: Boolean = false): EagleElement {
-            return invoke(row, col, hGridUnitNum = LocalGridUnitNumber.current.first, destroyed = destroyed)
+            return invoke(row, col, hGridSize = LocalGridSize.current.first, destroyed = destroyed)
         }
     }
 }
 
 abstract class MapElementHelper(override val granularity: Int) : MapElementProperties {
-    fun getRectByIndex(index: Int, hGridUnitNum: Int): Rect {
-        val (row, col) = getRowCol(index, hGridUnitNum)
+    fun getRectByIndex(index: Int, hGridSize: Int): Rect {
+        val (row, col) = getRowCol(index, hGridSize)
         return Rect(
             offset = Offset(col * elementSize, row * elementSize),
             size = Size(elementSize, elementSize),
@@ -135,7 +138,7 @@ abstract class MapElementHelper(override val granularity: Int) : MapElementPrope
     fun overlapsAnyElement(
         realElements: Set<Int>,
         subGrid: SubGrid,
-        hGridUnitNum: Int,
+        hGridSize: Int,
         hSpan: Int = 1,
         vSpan: Int = 1
     ): Boolean {
@@ -146,27 +149,28 @@ abstract class MapElementHelper(override val granularity: Int) : MapElementPrope
 
         val rectToCheck = Rect(subGrid.topLeft, Size(hSpan * elementCountInOneSubGridSide * elementSize,
             vSpan * elementCountInOneSubGridSide * elementSize))
-        val indices = getIndicesOverlappingRect(rectToCheck, hGridUnitNum = hGridUnitNum)
+        val indices = getOverlapIndicesInRect(rectToCheck, hGridSize = hGridSize)
         return indices.any { it in realElements }
     }
 
-    fun getIndex(row: Int, col: Int, hGridUnitNum: Int) = row * hGridUnitNum * granularity + col
+    fun getIndex(row: Int, col: Int, hGridSize: Int) = row * hGridSize * granularity + col
 
-    private fun getRowCol(index: Int, hGridUnitNum: Int): Pair<Int, Int> =
-        (hGridUnitNum * granularity).let { countInOneRow -> index / countInOneRow to index % countInOneRow}
+    private fun getRowCol(index: Int, hGridSize: Int): Pair<Int, Int> =
+        (hGridSize * granularity).let { countInOneRow -> index / countInOneRow to index % countInOneRow}
 
-    fun getSubGrid(index: Int, hGridUnitNum: Int): SubGrid {
-        val (row, col) = getRowCol(index, hGridUnitNum)
+    fun getSubGrid(index: Int, hGridSize: Int): SubGrid {
+        val (row, col) = getRowCol(index, hGridSize)
         val subRow = (row / (granularity / 2f)).toInt()
         val subCol = (col / (granularity / 2f)).toInt()
         return SubGrid(subRow, subCol)
     }
 
     /**
-     * This method returns the indices of the elements in the rect regardless of there actually is any elements in the rect.
+     * This method returns the indices of the elements that overlap with the rect
+     * regardless if there actually is any elements in the rect.
      * @param moveDirection determines how the returned items are traversed. First hit items come first.
      */
-    fun getIndicesOverlappingRect(rect: Rect, hGridUnitNum: Int, moveDirection: Direction = Direction.Down): List<Int> {
+    fun getOverlapIndicesInRect(rect: Rect, hGridSize: Int, moveDirection: Direction = Direction.Down): List<Int> {
         val top: MapPixel = rect.top
         val bottom: MapPixel = rect.bottom - 0.1f // exclude the bottom border
         val left: MapPixel = rect.left
@@ -174,8 +178,8 @@ abstract class MapElementHelper(override val granularity: Int) : MapElementPrope
 
         val col1 = (left / elementSize).toInt().coerceAtLeast(0)
         val row1 = (top / elementSize).toInt().coerceAtLeast(0)
-        val col2 = (right / elementSize).toInt().coerceAtMost(hGridUnitNum * granularity - 1)
-        val row2 = (bottom / elementSize).toInt().coerceAtMost(hGridUnitNum * granularity - 1)
+        val col2 = (right / elementSize).toInt().coerceAtMost(hGridSize * granularity - 1)
+        val row2 = (bottom / elementSize).toInt().coerceAtMost(hGridSize * granularity - 1)
 
         val firstDimen: IntProgression
         val secondDimen: IntProgression
@@ -202,45 +206,45 @@ abstract class MapElementHelper(override val granularity: Int) : MapElementPrope
         if (moveDirection.isHorizontal) {
             for (c in firstDimen) {
                 for (r in secondDimen) {
-                    ret.add(getIndex(r, c, hGridUnitNum))
+                    ret.add(getIndex(r, c, hGridSize))
                 }
             }
         } else {
             for (r in firstDimen) {
                 for (c in secondDimen) {
-                    ret.add(getIndex(r, c, hGridUnitNum))
+                    ret.add(getIndex(r, c, hGridSize))
                 }
             }
         }
         return ret
     }
 
-    fun getHitPoint(
+    fun getImpactPoint(
         realElement: MapElement,
         trajectory: Rect,
         direction: Direction,
-    ): Offset? = getHitPoint(setOf(realElement), trajectory, direction)
+    ): Offset? = getImpactPoint(setOf(realElement), trajectory, direction)
 
     /**
      * Get the first actual hit point along the trajectory
      */
-    fun getHitPoint(
+    fun getImpactPoint(
         realElements: Set<MapElement>,
         trajectory: Rect,
         direction: Direction,
     ): Offset? {
         if (realElements.isEmpty()) return null
-        val vGridUnitNum = realElements.first().hGridUnitNum
-        val indicesAlongTrajectory = getIndicesOverlappingRect(trajectory, hGridUnitNum = vGridUnitNum, moveDirection = direction)
+        val vGridSize = realElements.first().hGridSize
+        val indicesAlongTrajectory = getOverlapIndicesInRect(trajectory, hGridSize = vGridSize, moveDirection = direction)
         val realSet = realElements.map { it.index }.toSet()
 
-        // the first matching element is guaranteed to be one of the first hit elements in the direction,
-        // so we can use it to get the hit point's dimension across the bullet flying direction,
-        // the other dimension will be the bullet's center.
-        // e.g, for a bullet flying right, the "left" of the first hit elements shares the x of the hit point,
-        // the bullet center's y is the y of the hit point.
+        // The first matching element is guaranteed to be one of the first hit elements in the direction,
+        // so we can use it to calculate the impact point's coordinate across the bullet's flying direction.
+        // The other dimension of the coordinate will be the bullet's center along the flying direction.
+        // E.g, for a bullet flying right, the "left" of the first hit elements is the x of the impact point,
+        // the bullet center's y is the y of the impact point.
         val firstHitIndex = indicesAlongTrajectory.find { it in realSet } ?: return null
-        val (leftMost, topMost, rightMost, bottomMost) = getRectByIndex(firstHitIndex, vGridUnitNum)
+        val (leftMost, topMost, rightMost, bottomMost) = getRectByIndex(firstHitIndex, vGridSize)
 
         return when (direction) {
             Direction.Up -> {
@@ -263,7 +267,7 @@ interface MapElementProperties {
     /** element count in one grid unit, e.g, 4 for brick, 2 for steel. */
     val granularity: Int
 
-    val elementSize: MapPixel get() = 1.grid2mpx / granularity
+    val elementSize: MapPixel get() = 1.cell2mpx / granularity
 
     /** Bullet power has to be no less than this value to destroy the element */
     val strength: Int get() = 1

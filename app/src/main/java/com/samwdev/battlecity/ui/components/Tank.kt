@@ -7,8 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +38,7 @@ data class TankColorPalette(val light: Color, val medium: Color, val dark: Color
 
 @Composable
 fun Tank(tank: Tank) {
-    var travelDistance by remember { mutableStateOf(0f) }
+    var travelDistance by remember { mutableFloatStateOf(0f) }
     val treadPattern: Int by remember(travelDistance) {
         derivedStateOf {
             // calculate tread pattern based on travel distance, so faster tank looks faster
@@ -54,8 +52,8 @@ fun Tank(tank: Tank) {
         PixelCanvas(
             modifier = Modifier.clipToBounds(),
             topLeftInMapPixel = Offset(tank.pivotBox.left, tank.pivotBox.top),
-            widthInMapPixel = tank.pivotBox.width.grid2mpx,
-            heightInMapPixel = tank.pivotBox.height.grid2mpx
+            widthInMapPixel = tank.pivotBox.width.cell2mpx,
+            heightInMapPixel = tank.pivotBox.height.cell2mpx
         ) {
             drawSquare(Color(0x5599ffff), topLeft = Offset.Zero, side = tank.pivotBox.width)
         }
@@ -136,27 +134,27 @@ private fun TankPreview() {
         CompositionLocalProvider(LocalDebugConfig provides DebugConfig(showPivotBox = true)) {
             Grid(modifier = Modifier
                 .size(500.dp)
-                .background(Color.DarkGray), gridUnitNum = 8) {
+                .background(Color.DarkGray), gridSize = 8) {
                 for (i in 0 until 7) {
                     val x = 3f + 0.2f * i
                     val y = i.toFloat()
                     val tank = Tank(
                         id = 1,
-                        x = x.grid2mpx,
-                        y = y.grid2mpx,
+                        x = x.cell2mpx,
+                        y = y.cell2mpx,
                         facingDirection = Direction.Right,
                         side = TankSide.Player,
                         hp = 1,
                     )
                     Tank(tank)
-                    Text(text = "tank x = $x", Modifier.offset((x + 1).grid2mpx.mpx2dp, y.grid2mpx.mpx2dp))
-                    Text(text = "pivot x = ${tank.pivotBox.left / 1f.grid2mpx}", Modifier.offset((x + 1).grid2mpx.mpx2dp, (y + 0.5f).grid2mpx.mpx2dp))
+                    Text(text = "tank x = $x", Modifier.offset((x + 1).cell2mpx.mpx2dp, y.cell2mpx.mpx2dp))
+                    Text(text = "pivot x = ${tank.pivotBox.left / 1f.cell2mpx}", Modifier.offset((x + 1).cell2mpx.mpx2dp, (y + 0.5f).cell2mpx.mpx2dp))
                 }
                 TankLevel.values().forEachIndexed { index, tankLevel ->
                     Tank(Tank(
                         id = 0,
-                        x = 0f.grid2mpx,
-                        y = index.toFloat().grid2mpx,
+                        x = 0f.cell2mpx,
+                        y = index.toFloat().cell2mpx,
                         side = TankSide.Player,
                         level = tankLevel,
                         hp = 1,
@@ -164,8 +162,8 @@ private fun TankPreview() {
                     )
                     Tank(Tank(
                         id = 0,
-                        x = 1f.grid2mpx,
-                        y = index.toFloat().grid2mpx,
+                        x = 1f.cell2mpx,
+                        y = index.toFloat().cell2mpx,
                         side = TankSide.Bot,
                         level = tankLevel,
                         hp = 1,

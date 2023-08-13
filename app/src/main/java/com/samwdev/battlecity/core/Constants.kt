@@ -1,17 +1,19 @@
 package com.samwdev.battlecity.core
 
-/** stands for the original game's pixel unit */
+/** Unit definition. One MapPixel stands for one original game's pixel */
 typealias MapPixel = Float
 
 const val BULLET_COLLISION_SIZE: MapPixel = 3f
 
-const val MAP_BLOCK_COUNT: Int = 13
+/** Original game's map consists of 13 x 13 square blocks */
+const val MAP_GRID_SIZE: Int = 13
 
-/** The original game pixel count in each block  */
-private const val MAP_PIXEL_IN_EACH_BLOCK: MapPixel = 16f
+/** Length of a square block's side in MapPixel */
+private const val MAP_PIXEL_IN_EACH_GRID_CELL: MapPixel = 16f
 
-const val TANK_MAP_PIXEL: MapPixel = MAP_PIXEL_IN_EACH_BLOCK
+/** Length of a tank's side in MapPixel */
+const val TANK_MAP_PIXEL: MapPixel = MAP_PIXEL_IN_EACH_GRID_CELL
 
 val Float.toMpx: MapPixel get() = this
-val Float.grid2mpx: MapPixel get() = this * MAP_PIXEL_IN_EACH_BLOCK
-val Int.grid2mpx: MapPixel get() = this * MAP_PIXEL_IN_EACH_BLOCK
+val Float.cell2mpx: MapPixel get() = this * MAP_PIXEL_IN_EACH_GRID_CELL
+val Int.cell2mpx: MapPixel get() = this * MAP_PIXEL_IN_EACH_GRID_CELL

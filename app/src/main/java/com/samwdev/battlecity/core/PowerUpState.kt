@@ -58,6 +58,6 @@ data class PowerUp(
     val y: MapPixel,
     val type: PowerUpEnum,
 ) {
-    val rect: Rect get() = Rect(offset, Size(1f.grid2mpx, 1f.grid2mpx))
+    val rect: Rect get() = Rect(offset, Size(1f.cell2mpx, 1f.cell2mpx))
     val offset: Offset get() = Offset(x, y)
 }
