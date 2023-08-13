@@ -1,5 +1,6 @@
 package com.samwdev.battlecity.ui.components
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -14,8 +15,11 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.withSaveLayer
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.grid2mpx
 import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
 fun BrickTitle(vararg texts: String, modifier: Modifier) {
@@ -75,5 +79,13 @@ fun BrickTitle(vararg texts: String, modifier: Modifier) {
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun BrickTitlePreview() {
+    BattleCityTheme {
+        BrickTitle("BATTLE CITY", modifier = Modifier)
     }
 }
