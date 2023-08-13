@@ -102,7 +102,7 @@ fun FullScreenWrapper(content: @Composable BoxScope.() -> Unit) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color.DarkGray),
+            .background(Color(27, 27, 27, 255)),
         contentAlignment = Alignment.Center,
     ) {
         content()
