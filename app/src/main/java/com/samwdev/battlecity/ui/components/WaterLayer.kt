@@ -88,16 +88,9 @@ private fun PixelDrawScope.drawWaterElement(frame: Int) {
 @Composable
 private fun WaterPreview() {
     BattleCityTheme {
-        val waters = setOf(
-            WaterElement.compose(0, 0),
-            WaterElement.compose(0, 1),
-            WaterElement.compose(0, 2),
-        )
-        Grid(modifier = Modifier.size(500.dp, 250.dp), gridUnitNum = 3) {
-            WaterLayerFrame(waters = waters, frame = 0)
-        }
-        Grid(modifier = Modifier.size(500.dp, 250.dp), gridUnitNum = 3) {
-            WaterLayerFrame(waters = waters, frame = 1)
+        Grid(modifier = Modifier.size(500.dp, 500.dp), gridUnitNum = 3) {
+            WaterLayerFrame(waters = setOf(WaterElement.compose(0, 0)), frame = 0)
+            WaterLayerFrame(waters = setOf(WaterElement.compose(0, 2)), frame = 1)
         }
     }
 }
