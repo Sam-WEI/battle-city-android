@@ -316,7 +316,7 @@ class TankState(
             // would collide with nothing
             return toRect
         }
-        return collisionBox.moveUpTo(checks.findMostRestrict())
+        return collisionBox.moveUpTo(checks.getMostRestricted())
     }
 
     private fun checkPowerUpCollision(tank: Tank) {

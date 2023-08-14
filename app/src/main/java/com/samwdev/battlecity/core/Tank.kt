@@ -207,25 +207,25 @@ fun Rect.moveUpTo(moveRestriction: MoveRestriction): Rect {
 }
 
 data class MoveRestriction(val bound: MapPixel, val direction: Direction) {
-    constructor(hitPoint: Offset, direction: Direction) :
-            this (if (direction.isVertical) hitPoint.y else hitPoint.x, direction)
-    constructor(hitRect: Rect, direction: Direction) :
+    constructor(impactPoint: Offset, direction: Direction) :
+            this (if (direction.isVertical) impactPoint.y else impactPoint.x, direction)
+    constructor(intersectRect: Rect, direction: Direction) :
             this (
                 when (direction) {
-                     Direction.Up -> hitRect.bottom
-                     Direction.Down -> hitRect.top
-                     Direction.Left -> hitRect.right
-                     Direction.Right -> hitRect.left
+                     Direction.Up -> intersectRect.bottom
+                     Direction.Down -> intersectRect.top
+                     Direction.Left -> intersectRect.right
+                     Direction.Right -> intersectRect.left
                  }.roundToInt().toFloat(),
                 direction
             )
 }
 
-fun List<MoveRestriction>.findMostRestrict(): MoveRestriction {
+fun List<MoveRestriction>.getMostRestricted(): MoveRestriction {
     require(isNotEmpty())
-    val mostRestrict = when (first().direction) {
+    val most = when (first().direction) {
         Direction.Up, Direction.Left -> this.maxOf { it.bound }
         Direction.Down, Direction.Right -> this.minOf { it.bound }
     }
-    return MoveRestriction(mostRestrict, first().direction)
+    return MoveRestriction(most, first().direction)
 }

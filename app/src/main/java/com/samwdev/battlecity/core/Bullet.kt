@@ -27,26 +27,26 @@ data class Bullet(
     val right: MapPixel = x + BULLET_COLLISION_SIZE
     val bottom: MapPixel = y + BULLET_COLLISION_SIZE
 
-    fun getImpactAreaIfHitAt(hitPoint: Offset): Rect {
+    fun getImpactAreaIfHitAt(impactPoint: Offset): Rect {
         val depth = if (power <= 2) { 1f.cell2mpx / 4 } else { 1f.cell2mpx / 2 }
         val width = 1f.cell2mpx - 1f
         val reflect = 1f.toMpx // the AOE range off of the surface
 
         return when (direction) {
             Direction.Up -> Rect(
-                offset = Offset(hitPoint.x - width / 2 + 1f, hitPoint.y - depth),
+                offset = Offset(impactPoint.x - width / 2 + 1f, impactPoint.y - depth),
                 size = Size(width, depth + reflect)
             )
             Direction.Down -> Rect(
-                offset = Offset(hitPoint.x - width / 2 + 1f, hitPoint.y - reflect),
+                offset = Offset(impactPoint.x - width / 2 + 1f, impactPoint.y - reflect),
                 size = Size(width, depth + reflect)
             )
             Direction.Left -> Rect(
-                offset = Offset(hitPoint.x - depth, hitPoint.y - width / 2 + 1f),
+                offset = Offset(impactPoint.x - depth, impactPoint.y - width / 2 + 1f),
                 size = Size(depth + reflect, width)
             )
             Direction.Right -> Rect(
-                offset = Offset(hitPoint.x - reflect, hitPoint.y - width / 2 + 1f),
+                offset = Offset(impactPoint.x - reflect, impactPoint.y - width / 2 + 1f),
                 size = Size(depth + reflect, width)
             )
         }
