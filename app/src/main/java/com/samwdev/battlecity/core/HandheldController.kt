@@ -18,8 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import com.samwdev.battlecity.utils.VibratorHelper
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -202,5 +204,24 @@ fun FireButton(modifier: Modifier = Modifier, onPress: (Boolean) -> Unit) {
         }
     }) {
         drawCircle(color)
+    }
+}
+
+
+@Preview
+@Composable
+private fun HandheldControllerPreview() {
+    BattleCityTheme {
+        Column(modifier = Modifier.size(500.dp, 500.dp)) {
+            Box {
+                HandheldController(
+                    modifier = Modifier
+                        .padding(horizontal = 30.dp, vertical = 60.dp)
+                        .fillMaxWidth(),
+                    onSteer = {},
+                    onFire = {},
+                )
+            }
+        }
     }
 }
