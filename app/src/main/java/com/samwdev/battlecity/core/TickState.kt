@@ -8,6 +8,7 @@ import androidx.compose.runtime.withFrameMillis
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.roundToInt
 
 class TickState(tick: Tick = Tick.INITIAL) {
@@ -33,7 +34,7 @@ class TickState(tick: Tick = Tick.INITIAL) {
     var maxFps: Int = MAX_FPS
 
     private val _tickFlow: MutableStateFlow<Tick> = MutableStateFlow(Tick.INITIAL)
-    val tickFlow: StateFlow<Tick> = _tickFlow
+    val tickFlow: StateFlow<Tick> = _tickFlow.asStateFlow()
 
     private suspend fun update(now: Long) {
         val delta = now - lastTick.uptimeMillis
