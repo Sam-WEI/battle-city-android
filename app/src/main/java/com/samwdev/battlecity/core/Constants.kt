@@ -5,13 +5,13 @@ typealias MapPixel = Float
 
 const val BULLET_COLLISION_SIZE: MapPixel = 3f
 
-/** Original game's map consists of 13 x 13 square blocks */
+/** Original game's map consists of 13 x 13 square cells */
 const val MAP_GRID_SIZE: Int = 13
 
-/** Length of a square block's side in MapPixel */
+/** Side length of a grid cell in MapPixel */
 private const val MAP_PIXEL_IN_EACH_GRID_CELL: MapPixel = 16f
 
-/** Length of a tank's side in MapPixel */
+/** Side length of a tank in MapPixel */
 const val TANK_MAP_PIXEL: MapPixel = MAP_PIXEL_IN_EACH_GRID_CELL
 
 val Float.toMpx: MapPixel get() = this

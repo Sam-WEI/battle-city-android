@@ -30,24 +30,24 @@ data class Bullet(
     fun getImpactAreaIfHitAt(impactPoint: Offset): Rect {
         val depth = if (power <= 2) { 1f.cell2mpx / 4 } else { 1f.cell2mpx / 2 }
         val width = 1f.cell2mpx - 1f
-        val reflect = 1f.toMpx // the AOE range off of the surface
+        val bounceOff = 1f.toMpx // the AOE bounced off of the impact surface
 
         return when (direction) {
             Direction.Up -> Rect(
                 offset = Offset(impactPoint.x - width / 2 + 1f, impactPoint.y - depth),
-                size = Size(width, depth + reflect)
+                size = Size(width, depth + bounceOff)
             )
             Direction.Down -> Rect(
-                offset = Offset(impactPoint.x - width / 2 + 1f, impactPoint.y - reflect),
-                size = Size(width, depth + reflect)
+                offset = Offset(impactPoint.x - width / 2 + 1f, impactPoint.y - bounceOff),
+                size = Size(width, depth + bounceOff)
             )
             Direction.Left -> Rect(
                 offset = Offset(impactPoint.x - depth, impactPoint.y - width / 2 + 1f),
-                size = Size(depth + reflect, width)
+                size = Size(depth + bounceOff, width)
             )
             Direction.Right -> Rect(
-                offset = Offset(impactPoint.x - reflect, impactPoint.y - width / 2 + 1f),
-                size = Size(depth + reflect, width)
+                offset = Offset(impactPoint.x - bounceOff, impactPoint.y - width / 2 + 1f),
+                size = Size(depth + bounceOff, width)
             )
         }
     }
