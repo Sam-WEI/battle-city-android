@@ -52,6 +52,7 @@ fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
                     delay(100)
                 }
                 onMenuSelect(selectedMenuItem)
+                selected = false
             }
         }
     }
