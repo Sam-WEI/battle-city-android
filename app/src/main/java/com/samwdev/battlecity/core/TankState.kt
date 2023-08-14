@@ -58,7 +58,13 @@ class TankState(
             if (playerTankId == NOT_AN_ID) {
                 return
             }
-            updateTank(playerTankId, getTank(playerTankId).copy(hp = if (value) Int.MAX_VALUE else 1))
+            if (value) {
+                updateTank(playerTankId, getTank(playerTankId).copy(remainingShield = Int.MAX_VALUE))
+                mapState.fortifyBase(Int.MAX_VALUE)
+            } else {
+                updateTank(playerTankId, getTank(playerTankId).copy(remainingShield = 0))
+                mapState.fortifyBase(0)
+            }
         }
 
     override fun onTick(tick: Tick) {

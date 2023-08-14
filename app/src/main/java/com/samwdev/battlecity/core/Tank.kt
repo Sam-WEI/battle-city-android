@@ -93,7 +93,7 @@ fun Tank.hitBy(bullet: Bullet): Tank {
 
 fun Tank.levelUp(): Tank = copy(level = this.level.nextLevel)
 
-fun Tank.shieldOn(duration: Int): Tank = copy(remainingShield = duration)
+fun Tank.shieldOn(duration: Int): Tank = copy(remainingShield = duration.coerceAtLeast(remainingShield))
 
 enum class Direction(val degree: Int) {
     Up(0),

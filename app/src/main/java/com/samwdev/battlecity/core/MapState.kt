@@ -176,8 +176,8 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
         return destroyedSome
     }
 
-    fun fortifyBase() {
-        remainingFortificationTime = FortificationDuration
+    fun fortifyBase(duration: Int = FortificationDuration) {
+        remainingFortificationTime = duration
         wrapEagleWithSteels()
     }
 
