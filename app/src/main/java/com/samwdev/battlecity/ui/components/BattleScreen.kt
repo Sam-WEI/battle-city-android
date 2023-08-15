@@ -21,18 +21,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.core.GameOver
 import com.samwdev.battlecity.core.HandheldController
 import com.samwdev.battlecity.core.NavEvent
-import com.samwdev.battlecity.core.Route
 import com.samwdev.battlecity.core.StageDataLoaded
 
 @Composable
@@ -76,7 +72,7 @@ fun BattleScreen() {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Hud(
                     botCount = battleViewModel.mapState.remainingBot,
-                    lifeCount = battleViewModel.mapState.remainingPlayerLife,
+                    lifeCount = battleViewModel.gameState.player1.remainingLife,
                     level = battleViewModel.mapState.mapName,
                     modifier = Modifier.background(Color(117, 117, 117)),
                 )

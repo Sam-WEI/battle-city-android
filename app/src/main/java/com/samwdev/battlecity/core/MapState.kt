@@ -12,12 +12,15 @@ import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.MapDifficulty
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.entity.SteelElement
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.max
 
-class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
+/**
+ * Keeps track of map states such as remaining bricks, steels, access points and base fortification
+ */
+class MapState(
+    private val gameState: GameState,
+    stageConfig: StageConfig,
+) : TickListener, GridSizeAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationBlinkDuration = 3 * 1000
@@ -31,12 +34,11 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
             Offset(12f.cell2mpx, 0f.cell2mpx),
         )
     }
-    private val _inGameEventFlow = MutableStateFlow<GameStatus>(Playing)
-    val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow.asStateFlow()
 
     private var remainingFortificationTimer: Timer = Timer()
     private val mapConfig = stageConfig.map
 
+    val mapName: String by mutableStateOf(stageConfig.name)
     val botGroups = stageConfig.bots
     val mapDifficulty: MapDifficulty = stageConfig.difficulty // todo default to map config but should bump up after beating all maps
 
@@ -51,12 +53,8 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     override val hGridSize: Int = mapConfig.hGridSize
     override val vGridSize: Int = mapConfig.vGridSize
 
-    val mapName: String by mutableStateOf(stageConfig.name)
-
+    // todo move to battleState
     var remainingBot: Int by mutableIntStateOf(20) // todo factor in difficulty
-        private set
-
-    var remainingPlayerLife: Int by mutableIntStateOf(3)
         private set
 
     var bricks by mutableStateOf(mapConfig.bricks, policy = referentialEqualityPolicy())
@@ -144,7 +142,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
 
         if (scoreboardDelayTimer.isActive) {
             if (scoreboardDelayTimer.tick(tick)) {
-                _inGameEventFlow.value = MapCleared
+                gameState.mapCleared()
             }
         }
 
@@ -209,24 +207,11 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     fun destroyEagle() {
         eagle = eagle.copy(dead = true)
         // todo use a StateFlow
-        _inGameEventFlow.value = GameOver
+        gameState.gameOver()
     }
 
     fun deductRemainingBot() {
         remainingBot = max(remainingBot - 1, 0)
-    }
-
-    fun addPlayerLife() {
-        remainingPlayerLife += 1
-    }
-
-    fun deductPlayerLife(): Boolean {
-        if (remainingPlayerLife == 0) {
-            _inGameEventFlow.value = GameOver
-            return false
-        }
-        remainingPlayerLife -= 1
-        return true
     }
 
     fun mapClear() {

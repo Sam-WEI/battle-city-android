@@ -15,6 +15,7 @@ import com.samwdev.battlecity.entity.WaterElement
 import java.util.concurrent.atomic.AtomicInteger
 
 class TankState(
+    private val gameState: GameState,
     private val soundState: SoundState,
     private val mapState: MapState,
     private val powerUpState: PowerUpState,
@@ -24,7 +25,6 @@ class TankState(
     companion object {
         private const val ShieldDuration = 10 * 1000
         private const val NOT_AN_ID = -1
-
     }
     private var idGen = AtomicInteger(0)
 
@@ -70,11 +70,10 @@ class TankState(
     }
 
     private fun spawnPlayer() {
-        if (!mapState.deductPlayerLife()) {
+        if (!gameState.deductPlayerLife()) {
             return
         }
-        // todo check remaining life or from last map
-        val level = TankLevel.Level3
+        val level = gameState.player1.tankLevel
         Tank(
             id = idGen.incrementAndGet(),
             x = mapState.playerSpawnPosition.x,
@@ -317,13 +316,14 @@ class TankState(
             PowerUpEnum.Star -> {
                 updateTank(tank.id, tank.levelUp())
                 soundState.playSound(SoundEffect.PickUpPowerUp)
+                gameState.levelUp()
             }
             PowerUpEnum.Grenade -> {
                 killAllBots()
                 soundState.playSound(SoundEffect.PickUpPowerUp)
             }
             PowerUpEnum.Tank -> {
-                mapState.addPlayerLife()
+                gameState.addPlayerLife()
                 soundState.playSound(SoundEffect.PickUpLifePowerUp)
             }
             PowerUpEnum.Shovel -> {

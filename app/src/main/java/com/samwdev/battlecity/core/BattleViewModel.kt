@@ -10,7 +10,6 @@ import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.Logger
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +23,8 @@ class BattleViewModel(
 
     private val _navFlow: MutableStateFlow<NavEvent?> = MutableStateFlow(null)
     val navFlow: StateFlow<NavEvent?> = _navFlow.asStateFlow()
+
+    val gameState: GameState = GameState(this)
 
     val mapState: MapState get() = battleState.mapState
     val botState: BotState get() = battleState.botState
@@ -58,7 +59,7 @@ class BattleViewModel(
         val stageConfig = MapParser.parse(json)
         prevStageConfig = currStageConfig
         currStageConfig = stageConfig
-        battleState = BattleState(currStageConfig!!)
+        battleState = BattleState(gameState, currStageConfig!!)
 
         currentGameStatus = StageDataLoaded
     }
@@ -87,7 +88,7 @@ class BattleViewModel(
             }
 
             launch(viewModelScope.coroutineContext) {
-                mapState.inGameEventFlow.collect { event ->
+                gameState.inGameEventFlow.collect { event ->
                     Logger.error("Event: $event")
                     when (event) {
                         GameOver -> {
