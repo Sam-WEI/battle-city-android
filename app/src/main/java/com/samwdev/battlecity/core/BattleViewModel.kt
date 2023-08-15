@@ -96,7 +96,6 @@ class BattleViewModel(
 
                         }
                         MapCleared -> {
-                            delay(3000L)
                             currentGameStatus = MapCleared
                             navigate(NavEvent.Up)
                             navigate(NavEvent.Scoreboard)

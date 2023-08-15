@@ -21,6 +21,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationBlinkDuration = 3 * 1000
+        private const val ScoreboardShowUpDelay = 3 * 1000
 
         private val DefaultPlayerSpawnPosition = Offset(4f.cell2mpx, 12f.cell2mpx)
         private val DefaultBotSpawnPositions = listOf(
@@ -32,13 +33,16 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     private val _inGameEventFlow = MutableStateFlow<GameStatus>(Playing)
     val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow.asStateFlow()
 
-    private var remainingFortificationTime: Int = 0
+    private var remainingFortificationTimer: Timer = Timer()
     private val mapConfig = stageConfig.map
+
     val botGroups = stageConfig.bots
     val mapDifficulty: MapDifficulty = stageConfig.difficulty // todo default to map config but should bump up after beating all maps
 
     val playerSpawnPosition = DefaultPlayerSpawnPosition
     val botSpawnPositions = DefaultBotSpawnPositions
+
+    private var scoreboardDelayTimer: Timer = Timer(ScoreboardShowUpDelay)
 
     override val hGridSize: Int = mapConfig.hGridSize
     override val vGridSize: Int = mapConfig.vGridSize
@@ -119,17 +123,24 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     }
 
     override fun onTick(tick: Tick) {
-        if (remainingFortificationTime > 0) {
-            remainingFortificationTime -= tick.delta
-            if (remainingFortificationTime <= 0) {
+        if (remainingFortificationTimer.isActive) {
+            if (remainingFortificationTimer.tick(tick)) {
                 wrapEagleWithBricks()
-            } else if (remainingFortificationTime < FortificationBlinkDuration) {
-                val blinkFrame = remainingFortificationTime / (FortificationBlinkDuration / 12)
-                if (blinkFrame % 2 == 0) {
-                    wrapEagleWithSteels()
-                } else {
-                    wrapEagleWithBricks()
+            } else {
+                if (remainingFortificationTimer.remainingTime < FortificationBlinkDuration) {
+                    val blinkFrame = remainingFortificationTimer.remainingTime / (FortificationBlinkDuration / 12) // blink 12 times
+                    if (blinkFrame % 2 == 0) {
+                        wrapEagleWithSteels()
+                    } else {
+                        wrapEagleWithBricks()
+                    }
                 }
+            }
+        }
+
+        if (scoreboardDelayTimer.isActive) {
+            if (scoreboardDelayTimer.tick(tick)) {
+                _inGameEventFlow.value = MapCleared
             }
         }
     }
@@ -178,7 +189,9 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     }
 
     fun fortifyBase(duration: Int = FortificationDuration) {
-        remainingFortificationTime = duration
+        remainingFortificationTimer.reset(duration)
+        remainingFortificationTimer.activate()
+        // todo check duration == 0
         wrapEagleWithSteels()
     }
 
@@ -206,7 +219,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     }
 
     fun mapClear() {
-        _inGameEventFlow.value = MapCleared
+        scoreboardDelayTimer.activate()
     }
 
     /**
