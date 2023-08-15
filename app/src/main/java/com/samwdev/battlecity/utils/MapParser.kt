@@ -15,6 +15,8 @@ import com.samwdev.battlecity.entity.StageConfigJson
 import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.TreeElement
 import com.samwdev.battlecity.entity.WaterElement
+import java.io.IOException
+import kotlin.jvm.Throws
 
 object MapParser {
     fun readJsonFile(context: Context, name: String): StageConfigJson {

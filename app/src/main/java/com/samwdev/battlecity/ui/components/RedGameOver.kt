@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RedGameOver(
     modifier: Modifier = Modifier,
-    animComplete: suspend () -> Unit,
+    onAnimationComplete: suspend () -> Unit,
 ) {
     val slidingDuration = 2000
     var up by remember { mutableStateOf(false) }
@@ -36,7 +36,7 @@ fun RedGameOver(
             up = true
             delay(slidingDuration.toLong())
             delay(1000)
-            animComplete()
+            onAnimationComplete()
         }
     }
 

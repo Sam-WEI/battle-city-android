@@ -51,7 +51,7 @@ class MapState(
     override val hGridSize: Int = mapConfig.hGridSize
     override val vGridSize: Int = mapConfig.vGridSize
 
-    var remainingBot: Int by mutableIntStateOf(20) // todo factor in difficulty
+    var remainingBot: Int by mutableIntStateOf(2) // todo factor in difficulty
         private set
 
     var bricks by mutableStateOf(mapConfig.bricks, policy = referentialEqualityPolicy())

@@ -24,12 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.samwdev.battlecity.core.AnimatingGameOver
+import com.samwdev.battlecity.core.BattleResult
 import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.DebugConfig
-import com.samwdev.battlecity.core.GameOver
 import com.samwdev.battlecity.core.HandheldController
-import com.samwdev.battlecity.core.NavEvent
-import com.samwdev.battlecity.core.StageDataLoaded
+import com.samwdev.battlecity.core.StageCurtain
 
 @Composable
 fun BattleScreen() {
@@ -53,7 +53,7 @@ fun BattleScreen() {
         }
     }
 
-    if (battleViewModel.currentGameStatus < StageDataLoaded) return
+    if (battleViewModel.currentGameStatus < StageCurtain) return
 
     SideEffect {
         battleViewModel.tickState.maxFps = battleViewModel.debugConfig.maxFps
@@ -83,17 +83,16 @@ fun BattleScreen() {
 
                     BattleField(battleViewModel.battle, modifier = Modifier.fillMaxWidth())
 
-                    if (battleViewModel.currentGameStatus == StageDataLoaded) {
-                        StageCurtain(
+                    if (battleViewModel.currentGameStatus == StageCurtain) {
+                        AnimatedStageCurtain(
                             stageConfigPrev = battleViewModel.prevStageConfig,
                             stageConfigNext = battleViewModel.currStageConfig!!,
                         ) {
                             battleViewModel.start()
                         }
-                    } else if (battleViewModel.currentGameStatus == GameOver) {
+                    } else if (battleViewModel.currentGameStatus == AnimatingGameOver) {
                         RedGameOver {
-                            battleViewModel.navigate(NavEvent.Up)
-                            battleViewModel.navigate(NavEvent.Scoreboard)
+                            battleViewModel.showScoreboard()
                         }
                     }
                 }

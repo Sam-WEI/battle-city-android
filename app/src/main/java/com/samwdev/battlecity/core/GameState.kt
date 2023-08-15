@@ -16,7 +16,7 @@ class GameState(
     }
     private var scoreboardDelayTimer: Timer = Timer(ScoreboardShowUpDelay)
 
-    private val _inGameEventFlow = MutableStateFlow<GameStatus>(Playing)
+    private val _inGameEventFlow = MutableStateFlow<GameStatus>(InGame)
     val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow.asStateFlow()
 
     var totalScore: Int by mutableIntStateOf(0)
@@ -25,7 +25,7 @@ class GameState(
     var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1))
         private set
 
-    fun update(lastBattle: Battle) {
+    fun updateStats(lastBattle: Battle) {
         totalScore += lastBattle.scoreState.battleScore
     }
 
@@ -35,7 +35,7 @@ class GameState(
 
     fun deductPlayerLife(): Boolean {
         if (player1.remainingLife == 0) {
-            _inGameEventFlow.value = GameOver
+            gameOver()
             return false
         }
         player1 = player1.copy(remainingLife = player1.remainingLife - 1, tankLevel = TankLevel.Level1)
@@ -47,17 +47,22 @@ class GameState(
     }
 
     fun mapCleared() {
-        scoreboardDelayTimer.resetAndActivate()
+        // after map is cleared, wait 3 seconds before displaying scoreboard
+        if (!scoreboardDelayTimer.isActive) {
+            scoreboardDelayTimer.resetAndActivate()
+        }
     }
 
     fun gameOver() {
-        _inGameEventFlow.value = GameOver
+        battleViewModel.setGameResult(BattleResult.Lost)
+//        _inGameEventFlow.value = ScoreboardDisplay
     }
 
     override fun onTick(tick: Tick) {
         if (scoreboardDelayTimer.isActive) {
             if (scoreboardDelayTimer.tick(tick)) {
-                _inGameEventFlow.value = MapCleared
+//                _inGameEventFlow.value = MapCleared
+                battleViewModel.setGameResult(BattleResult.Won)
             }
         }
     }

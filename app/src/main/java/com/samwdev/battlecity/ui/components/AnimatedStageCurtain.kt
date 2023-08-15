@@ -20,35 +20,35 @@ import kotlinx.coroutines.launch
 private val ColorCurtain = Color(117, 117, 117)
 
 @Composable
-fun StageCurtain(
+fun AnimatedStageCurtain(
     stageConfigPrev: StageConfig?,
     stageConfigNext: StageConfig,
     modifier: Modifier = Modifier,
-    curtainDone: suspend () -> Unit,
+    onAnimationComplete: suspend () -> Unit,
 ) {
-    val curtainSlidingDelay = 200/2
-    val curtainSlidingTime = 500 /2
-    val curtainShutTime = 1000 / 2
+    val curtainSlidingDelay = 200L
+    val curtainSlidingTime = 500L
+    val curtainShutTime = 200L
     var currStageConfig by remember { mutableStateOf(stageConfigPrev) }
     var currentClosed by remember { mutableStateOf(false) }
 
     val curtainHeightPercentage by animateFloatAsState(
         targetValue = if (currentClosed) 1f else 0f,
-        animationSpec = tween(curtainSlidingTime, easing = FastOutSlowInEasing),
+        animationSpec = tween(curtainSlidingTime.toInt(), easing = FastOutSlowInEasing),
         label = "stage curtain"
     )
 
     val co = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         co.launch {
-            delay(curtainSlidingDelay.toLong())
+            delay(curtainSlidingDelay)
             currentClosed = true
-            delay(curtainSlidingTime.toLong())
+            delay(curtainSlidingTime)
             currStageConfig = null
-            delay(curtainShutTime.toLong())
+            delay(curtainShutTime)
             currentClosed = false
-            delay(curtainSlidingTime.toLong())
-            curtainDone()
+            delay(curtainSlidingTime)
+            onAnimationComplete()
         }
     }
 

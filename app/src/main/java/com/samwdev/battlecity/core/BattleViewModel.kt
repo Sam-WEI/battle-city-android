@@ -5,15 +5,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.samwdev.battlecity.entity.StageConfig
-import com.samwdev.battlecity.utils.Logger
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class BattleViewModel(
     context: Application,
@@ -23,6 +22,9 @@ class BattleViewModel(
 
     private val _navFlow: MutableStateFlow<NavEvent?> = MutableStateFlow(null)
     val navFlow: StateFlow<NavEvent?> = _navFlow.asStateFlow()
+
+    var paused: Boolean = false
+    var lastBattleResult: BattleResult = BattleResult.Won
 
     val gameState: GameState = GameState(this)
     val mapState: MapState get() = battle.mapState
@@ -37,7 +39,7 @@ class BattleViewModel(
 
     val currentStageName: String? get() = currStageConfig?.name
 
-    var currentGameStatus: GameStatus by mutableStateOf(Initial)
+    var currentGameStatus: GameStatus by mutableStateOf(StageCurtain)
         private set
     var prevStageConfig: StageConfig? = null
         private set
@@ -52,82 +54,112 @@ class BattleViewModel(
         showWaypoints = true,
     ))
 
-    fun loadStageData(stageName: String) {
-        if (currentGameStatus != Initial && currentGameStatus != MapCleared) return
-        val json = MapParser.readJsonFile(getApplication(), stageName)
+    fun loadStage(stageName: String) {
+//        if (currentGameStatus != LoadingStage) return
+        currentGameStatus = StageCurtain
+        val json = try {
+            MapParser.readJsonFile(getApplication(), stageName)
+        } catch (e: IOException) {
+            navigate(NavEvent.Landing)
+            return
+        }
         val stageConfig = MapParser.parse(json)
         prevStageConfig = currStageConfig
         currStageConfig = stageConfig
         battle = Battle(gameState, currStageConfig!!)
 
-        currentGameStatus = StageDataLoaded
+        navigate(NavEvent.BattleScreen)
     }
 
-    fun goToNextStage() {
-        currentGameStatus = Initial
+    private fun goToNextStage() {
         val nextStageName = (currentStageName!!.toInt() + 1).toString()
-        navigate(NavEvent.BattleScreen(nextStageName))
+        loadStage(nextStageName)
     }
 
     fun navigate(navEvent: NavEvent) {
         _navFlow.value = navEvent
     }
 
-    fun loadStageData() {
-//        val json = MapParser.readJsonFile(getApplication(), currentStageName!!)
-//        val stageConfig = MapParser.parse(json)
-//        currentGameStatus = StageDataLoaded
-    }
-
     suspend fun start() {
         coroutineScope {
             launch {
+                currentGameStatus = InGame
                 battle.startBattle()
-                currentGameStatus = Playing
             }
 
-            launch(viewModelScope.coroutineContext) {
-                gameState.inGameEventFlow.collect { event ->
-                    Logger.error("Event: $event")
-                    when (event) {
-                        GameOver -> {
-//                            battleState.pause()
-                            currentGameStatus = GameOver
+//            launch(viewModelScope.coroutineContext) {
+//                gameState.inGameEventFlow.collect { event ->
+//                    Logger.error("Event: $event")
+//                    when (event) {
+//                        GameOver -> {
+////                            battleState.pause()
+//                            gameState.update(battle)
+//                            currentGameStatus = GameOver
+//
+//                        }
+//                        MapCleared -> {
+//                            gameState.update(battle)
+//                            currentGameStatus = MapCleared
+//                            navigate(NavEvent.Up)
+//                            navigate(NavEvent.Scoreboard)
+//                        }
+//
+//                        else -> {}
+//                    }
+//                }
+//            }
+        }
+    }
 
-                        }
-                        MapCleared -> {
-                            currentGameStatus = MapCleared
-                            navigate(NavEvent.Up)
-                            navigate(NavEvent.Scoreboard)
-                        }
+    fun setGameResult(result: BattleResult) {
+        gameState.updateStats(battle)
+        lastBattleResult = result
+        when (result) {
+            BattleResult.Won -> {
+                showScoreboard()
+            }
+            BattleResult.Lost -> {
+                // wait for the animation to finish and then the it will go to Scoreboard screen at the end of animation
+                currentGameStatus = AnimatingGameOver
+            }
+        }
+    }
 
-                        else -> {}
-                    }
-                }
+    fun showScoreboard() {
+        currentGameStatus = ScoreboardDisplay
+        navigate(NavEvent.Up)
+        navigate(NavEvent.Scoreboard)
+    }
+
+    fun scoreboardCompleted() {
+        when (lastBattleResult) {
+            BattleResult.Won -> {
+                currentGameStatus = StageCurtain
+                goToNextStage()
+            }
+            BattleResult.Lost -> {
+                navigate(NavEvent.Landing)
             }
         }
     }
 
     fun resume() {
         battle.resume()
-        currentGameStatus = Playing
     }
 
     fun pause() {
         battle.pause()
-        currentGameStatus = Paused
     }
 }
 
 sealed class GameStatus(val index: Int) {
     operator fun compareTo(other: GameStatus) = index - other.index
 }
-object Initial : GameStatus(0)
-//data class StageSelected(val stageName: String) : GameStatus()
-object StageDataLoaded : GameStatus(1)
-//object SwitchingStage : GameStatus(2)
-object Paused : GameStatus(3)
-object Playing : GameStatus(4)
+object StageCurtain : GameStatus(1)
+object InGame : GameStatus(4)
+object AnimatingGameOver : GameStatus(5)
+object ScoreboardDisplay : GameStatus(10)
 
-object MapCleared : GameStatus(5)
-object GameOver : GameStatus(5)
+enum class BattleResult {
+    Won, Lost
+}

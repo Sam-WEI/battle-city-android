@@ -5,19 +5,19 @@ import com.samwdev.battlecity.BuildConfig
 
 object Logger {
     fun debug(msg: String) {
-        systemLog(Log.DEBUG, msg)
+        Log.d(null, msg)
     }
 
     fun info(msg: String) {
-        systemLog(Log.INFO, msg)
+        Log.i(null, msg)
     }
 
     fun warn(msg: String) {
-        systemLog(Log.WARN, msg)
+        Log.w(null, msg)
     }
 
     fun error(msg: String) {
-        systemLog(Log.ERROR, msg)
+        Log.e(null, msg)
     }
 
     private fun systemLog(level: Int, msg: String) {

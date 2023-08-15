@@ -1,7 +1,5 @@
 package com.samwdev.battlecity.ui.components
 
-import android.app.Application
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -14,23 +12,15 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.*
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.savedstate.SavedStateRegistryOwner
-import com.samwdev.battlecity.core.AppState
+import androidx.navigation.navArgument
 import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.NavEvent
 import com.samwdev.battlecity.core.Route
-import com.samwdev.battlecity.core.rememberAppState
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 
 @Composable
@@ -50,7 +40,7 @@ fun BattleCityApp() {
     }
 
     BattleCityTheme {
-        CompositionLocalProvider(LocalBattleViewModel provides viewModel()) {
+        CompositionLocalProvider(LocalBattleViewModel provides battleViewModel) {
             NavHost(
                 navController = navController,
                 startDestination = Route.Landing,
@@ -60,7 +50,7 @@ fun BattleCityApp() {
                         LandingScreen { menuItem ->
                             when (menuItem) {
                                 LandingScreenMenuItem.Player1, LandingScreenMenuItem.Player2 -> {
-                                    battleViewModel.navigate(NavEvent.BattleScreen("24"))
+                                    battleViewModel.loadStage("1")
                                 }
                                 LandingScreenMenuItem.Stages -> {
                                     battleViewModel.navigate(NavEvent.MapSelection)
@@ -73,28 +63,33 @@ fun BattleCityApp() {
                     }
                 }
                 composable(
-                    route = "${Route.BattleScreen}/{${Route.Key.StageName}}",
-                    arguments = listOf(navArgument(Route.Key.StageName) { type = NavType.StringType })
-                ) { backStackEntry ->
-                    val stageName = backStackEntry.arguments?.getString(Route.Key.StageName)!!
-                    // the framework runs this block several times. Use LaunchedEffect to make it run only once.
-                    LaunchedEffect(stageName) {
-                        battleViewModel.loadStageData(stageName)
-                    }
+                    route = Route.BattleScreen,
+                ) {
                     BattleScreen()
                 }
+//                composable(
+//                    route = "${Route.BattleScreen}/{${Route.Key.StageName}}",
+//                    arguments = listOf(navArgument(Route.Key.StageName) { type = NavType.StringType })
+//                ) { backStackEntry ->
+//                    val stageName = backStackEntry.arguments?.getString(Route.Key.StageName)!!
+//                    // the framework runs this block several times. Use LaunchedEffect to make it run only once.
+//                    LaunchedEffect(stageName) {
+//                        battleViewModel.loadStage(stageName)
+//                    }
+//                    BattleScreen()
+//                }
                 composable(
                     route = Route.MapSelection,
-                ) { backStackEntry ->
+                ) {
                     FullScreenWrapper {
                         MapSelectionScreen {
-                            battleViewModel.navigate(NavEvent.BattleScreen(it.name))
+                            battleViewModel.loadStage(it.name)
                         }
                     }
                 }
                 composable(
                     route = Route.Scoreboard,
-                ) { backStackEntry ->
+                ) {
                     FullScreenWrapper {
                         ScoreboardScreen()
                     }

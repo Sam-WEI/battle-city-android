@@ -25,8 +25,7 @@ fun ScoreboardScreen() {
     val battleViewModel: BattleViewModel = LocalBattleViewModel.current
     val data: ScoreboardData = battleViewModel.scoreState.collectScoreboardData()
     ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!) {
-        battleViewModel.gameState
-        battleViewModel.goToNextStage()
+        battleViewModel.scoreboardCompleted()
     }
 }
 
