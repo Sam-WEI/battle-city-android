@@ -24,7 +24,6 @@ class MapState(
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationBlinkDuration = 3 * 1000
-        private const val ScoreboardShowUpDelay = 3 * 1000
         private const val FrozenDuration = 10 * 1000
 
         private val DefaultPlayerSpawnPosition = Offset(4f.cell2mpx, 12f.cell2mpx)
@@ -45,7 +44,6 @@ class MapState(
     val playerSpawnPosition = DefaultPlayerSpawnPosition
     val botSpawnPositions = DefaultBotSpawnPositions
 
-    private var scoreboardDelayTimer: Timer = Timer(ScoreboardShowUpDelay)
     private var botsFrozenTimer: Timer = Timer(FrozenDuration)
 
     val areBotsFrozen: Boolean get() = botsFrozenTimer.isActive
@@ -53,7 +51,6 @@ class MapState(
     override val hGridSize: Int = mapConfig.hGridSize
     override val vGridSize: Int = mapConfig.vGridSize
 
-    // todo move to battleState
     var remainingBot: Int by mutableIntStateOf(20) // todo factor in difficulty
         private set
 
@@ -139,13 +136,6 @@ class MapState(
                 }
             }
         }
-
-        if (scoreboardDelayTimer.isActive) {
-            if (scoreboardDelayTimer.tick(tick)) {
-                gameState.mapCleared()
-            }
-        }
-
         if (botsFrozenTimer.isActive) {
             botsFrozenTimer.tick(tick)
         }
@@ -206,7 +196,6 @@ class MapState(
 
     fun destroyEagle() {
         eagle = eagle.copy(dead = true)
-        // todo use a StateFlow
         gameState.gameOver()
     }
 
@@ -215,7 +204,7 @@ class MapState(
     }
 
     fun mapClear() {
-        scoreboardDelayTimer.activate()
+        gameState.mapCleared()
     }
 
     /**

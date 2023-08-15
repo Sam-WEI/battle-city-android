@@ -2,10 +2,9 @@ package com.samwdev.battlecity.core
 
 import com.samwdev.battlecity.entity.StageConfig
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class BattleState(
+class Battle(
     private val gameState: GameState,
     stageConfig: StageConfig,
 ) {
@@ -34,6 +33,7 @@ class BattleState(
                     botState.onTick(tick)
                     tankState.onTick(tick)
                     explosionState.onTick(tick)
+                    gameState.onTick(tick)
                 }
             }
             launch {

@@ -10,7 +10,11 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class GameState(
     private val battleViewModel: BattleViewModel,
-) {
+) : TickListener {
+    companion object {
+        private const val ScoreboardShowUpDelay = 3 * 1000
+    }
+    private var scoreboardDelayTimer: Timer = Timer(ScoreboardShowUpDelay)
 
     private val _inGameEventFlow = MutableStateFlow<GameStatus>(Playing)
     val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow.asStateFlow()
@@ -21,8 +25,8 @@ class GameState(
     var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1))
         private set
 
-    fun update(lastBattleState: BattleState) {
-        totalScore += lastBattleState.scoreState.generateScoreboardData().totalScore
+    fun update(lastBattle: Battle) {
+        totalScore += lastBattle.scoreState.generateScoreboardData().totalScore
     }
 
     fun addPlayerLife() {
@@ -43,11 +47,19 @@ class GameState(
     }
 
     fun mapCleared() {
-
+        scoreboardDelayTimer.resetAndActivate()
     }
 
     fun gameOver() {
         _inGameEventFlow.value = GameOver
+    }
+
+    override fun onTick(tick: Tick) {
+        if (scoreboardDelayTimer.isActive) {
+            if (scoreboardDelayTimer.tick(tick)) {
+                _inGameEventFlow.value = MapCleared
+            }
+        }
     }
 }
 

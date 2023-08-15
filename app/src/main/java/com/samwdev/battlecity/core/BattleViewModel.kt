@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class BattleViewModel(
     context: Application,
 ) : AndroidViewModel(context) {
-    lateinit var battleState: BattleState
+    lateinit var battle: Battle
         private set
 
     private val _navFlow: MutableStateFlow<NavEvent?> = MutableStateFlow(null)
@@ -26,15 +26,15 @@ class BattleViewModel(
 
     val gameState: GameState = GameState(this)
 
-    val mapState: MapState get() = battleState.mapState
-    val botState: BotState get() = battleState.botState
-    val tickState: TickState get() = battleState.tickState
-    val scoreState: ScoreState get() = battleState.scoreState
-    val bulletState: BulletState get() = battleState.bulletState
-    val tankState: TankState get() = battleState.tankState
-    val explosionState: ExplosionState get() = battleState.explosionState
-    val powerUpState: PowerUpState get() = battleState.powerUpState
-    val handheldControllerState: HandheldControllerState get() = battleState.handheldControllerState
+    val mapState: MapState get() = battle.mapState
+    val botState: BotState get() = battle.botState
+    val tickState: TickState get() = battle.tickState
+    val scoreState: ScoreState get() = battle.scoreState
+    val bulletState: BulletState get() = battle.bulletState
+    val tankState: TankState get() = battle.tankState
+    val explosionState: ExplosionState get() = battle.explosionState
+    val powerUpState: PowerUpState get() = battle.powerUpState
+    val handheldControllerState: HandheldControllerState get() = battle.handheldControllerState
 
     val currentStageName: String? get() = currStageConfig?.name
 
@@ -59,7 +59,7 @@ class BattleViewModel(
         val stageConfig = MapParser.parse(json)
         prevStageConfig = currStageConfig
         currStageConfig = stageConfig
-        battleState = BattleState(gameState, currStageConfig!!)
+        battle = Battle(gameState, currStageConfig!!)
 
         currentGameStatus = StageDataLoaded
     }
@@ -83,7 +83,7 @@ class BattleViewModel(
     suspend fun start() {
         coroutineScope {
             launch {
-                battleState.startBattle()
+                battle.startBattle()
                 currentGameStatus = Playing
             }
 
@@ -110,12 +110,12 @@ class BattleViewModel(
     }
 
     fun resume() {
-        battleState.resume()
+        battle.resume()
         currentGameStatus = Playing
     }
 
     fun pause() {
-        battleState.pause()
+        battle.pause()
         currentGameStatus = Paused
     }
 }

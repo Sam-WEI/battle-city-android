@@ -81,7 +81,7 @@ fun BattleScreen() {
                     .fillMaxWidth()
                     .aspectRatio(1f)) {
 
-                    BattleField(battleViewModel.battleState, modifier = Modifier.fillMaxWidth())
+                    BattleField(battleViewModel.battle, modifier = Modifier.fillMaxWidth())
 
                     if (battleViewModel.currentGameStatus == StageDataLoaded) {
                         StageCurtain(
