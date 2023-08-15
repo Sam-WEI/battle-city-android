@@ -13,12 +13,11 @@ class Battle(
     val explosionState = ExplosionState()
     val handheldControllerState = HandheldControllerState()
     val scoreState = ScoreState()
-
     val mapState: MapState = MapState(gameState, stageConfig)
     val powerUpState: PowerUpState = PowerUpState(mapState)
     val tankState: TankState = TankState(gameState, soundState, mapState, powerUpState, explosionState, scoreState)
     val bulletState: BulletState = BulletState(mapState, tankState, explosionState, soundState)
-    val botState: BotState = BotState(tankState, bulletState, mapState)
+    val botState: BotState = BotState(tankState, bulletState, mapState, gameState)
     val tankController: TankController = TankController(tankState, bulletState, handheldControllerState)
 
     suspend fun startBattle() {

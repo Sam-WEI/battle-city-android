@@ -6,6 +6,7 @@ class BotState(
     private val tankState: TankState,
     private val bulletState: BulletState,
     private val mapState: MapState,
+    private val gameState: GameState,
 ) : TickListener {
     var maxBot: Int = 4
     var bots: Map<TankId, AiTankController> by mutableStateOf(mapOf())
@@ -35,7 +36,7 @@ class BotState(
         }
         clearDeadBots()
         if (bots.isEmpty() && noBotsLeft) {
-            mapState.mapClear()
+            gameState.mapCleared()
         }
 
         bots.values.forEach { controller ->

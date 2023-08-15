@@ -203,10 +203,6 @@ class MapState(
         remainingBot = max(remainingBot - 1, 0)
     }
 
-    fun mapClear() {
-        gameState.mapCleared()
-    }
-
     /**
      * To refresh all access points, use default values.
      * @param spreadFrom pass null to refresh from bottom right

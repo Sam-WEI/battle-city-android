@@ -11,7 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger
 typealias ScoreId = Int
 
 class ScoreState : TickListener {
-    private var scoreSum: Int = 0
+    var battleScore: Int = 0
+        private set
     private val tankKillCount = mutableMapOf<TankLevel, Int>()
 
     private val idGen: AtomicInteger = AtomicInteger(0)
@@ -52,9 +53,9 @@ class ScoreState : TickListener {
         ))
     }
 
-    fun generateScoreboardData(): ScoreboardData {
+    fun collectScoreboardData(): ScoreboardData {
         return ScoreboardData(
-            scoreSum,
+            battleScore,
             tankKillCount.apply {
                 TankLevel.values().forEach { getOrPut(it) { 0 } }
             }.toSortedMap()
@@ -65,7 +66,7 @@ class ScoreState : TickListener {
         onScreenScores = onScreenScores.toMutableMap().apply {
             put(idGen.incrementAndGet(), onScreenScore)
         }
-        scoreSum += onScreenScore.score
+        battleScore += onScreenScore.score
     }
 }
 

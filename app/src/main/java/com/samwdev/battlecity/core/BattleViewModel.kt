@@ -25,7 +25,6 @@ class BattleViewModel(
     val navFlow: StateFlow<NavEvent?> = _navFlow.asStateFlow()
 
     val gameState: GameState = GameState(this)
-
     val mapState: MapState get() = battle.mapState
     val botState: BotState get() = battle.botState
     val tickState: TickState get() = battle.tickState

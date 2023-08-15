@@ -26,7 +26,7 @@ class GameState(
         private set
 
     fun update(lastBattle: Battle) {
-        totalScore += lastBattle.scoreState.generateScoreboardData().totalScore
+        totalScore += lastBattle.scoreState.battleScore
     }
 
     fun addPlayerLife() {

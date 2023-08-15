@@ -10,11 +10,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.samwdev.battlecity.core.*
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.delay
@@ -26,8 +23,9 @@ private val ColorOrange = Color(241, 176, 96)
 @Composable
 fun ScoreboardScreen() {
     val battleViewModel: BattleViewModel = LocalBattleViewModel.current
-    val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
+    val data: ScoreboardData = battleViewModel.scoreState.collectScoreboardData()
     ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!) {
+        battleViewModel.gameState
         battleViewModel.goToNextStage()
     }
 }
