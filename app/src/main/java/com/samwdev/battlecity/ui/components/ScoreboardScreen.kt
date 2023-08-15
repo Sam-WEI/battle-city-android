@@ -25,9 +25,7 @@ private val ColorOrange = Color(241, 176, 96)
 
 @Composable
 fun ScoreboardScreen() {
-    val battleViewModel: BattleViewModel = viewModel(
-        viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner, // todo
-    )
+    val battleViewModel: BattleViewModel = LocalBattleViewModel.current
     val data: ScoreboardData = battleViewModel.scoreState.generateScoreboardData()
     ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!) {
         battleViewModel.goToNextStage()

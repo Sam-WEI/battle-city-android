@@ -31,12 +31,13 @@ import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.core.GameOver
 import com.samwdev.battlecity.core.HandheldController
+import com.samwdev.battlecity.core.NavEvent
 import com.samwdev.battlecity.core.Route
 import com.samwdev.battlecity.core.StageDataLoaded
 
 @Composable
 fun BattleScreen() {
-    val battleViewModel: BattleViewModel = viewModel(viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner)
+    val battleViewModel: BattleViewModel = LocalBattleViewModel.current
 
     val backCallback = remember {
         object : OnBackPressedCallback(true) {
@@ -95,8 +96,8 @@ fun BattleScreen() {
                         }
                     } else if (battleViewModel.currentGameStatus == GameOver) {
                         RedGameOver {
-                            battleViewModel.appState.navController.navigateUp()
-                            battleViewModel.appState.navController.navigate(Route.Scoreboard)
+                            battleViewModel.navigate(NavEvent.Up)
+                            battleViewModel.navigate(NavEvent.Scoreboard)
                         }
                     }
                 }

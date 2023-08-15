@@ -5,24 +5,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.Logger
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class BattleViewModel(
     context: Application,
-    val appState: AppState,
-    private val savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(context) {
-
     lateinit var battleState: BattleState
         private set
+
+    private val _navFlow: MutableStateFlow<NavEvent?> = MutableStateFlow(null)
+    val navFlow: StateFlow<NavEvent?> = _navFlow.asStateFlow()
 
     val mapState: MapState get() = battleState.mapState
     val botState: BotState get() = battleState.botState
@@ -65,8 +66,11 @@ class BattleViewModel(
     fun goToNextStage() {
         currentGameStatus = Initial
         val nextStageName = (currentStageName!!.toInt() + 1).toString()
-        appState.navController.navigateUp()
-        appState.navController.navigate("${Route.BattleScreen}/$nextStageName")
+        navigate(NavEvent.BattleScreen(nextStageName))
+    }
+
+    fun navigate(navEvent: NavEvent) {
+        _navFlow.value = navEvent
     }
 
     fun loadStageData() {
@@ -94,8 +98,8 @@ class BattleViewModel(
                         MapCleared -> {
                             delay(3000L)
                             currentGameStatus = MapCleared
-                            appState.navController.navigateUp()
-                            appState.navController.navigate(Route.Scoreboard)
+                            navigate(NavEvent.Up)
+                            navigate(NavEvent.Scoreboard)
                         }
 
                         else -> {}

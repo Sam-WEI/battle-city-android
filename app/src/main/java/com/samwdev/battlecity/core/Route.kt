@@ -11,3 +11,13 @@ object Route {
         const val StageName = "stage_id"
     }
 }
+
+sealed interface NavEvent {
+    object Up : NavEvent
+    abstract class Routed(val route: String) : NavEvent
+    object Landing : Routed(Route.Landing)
+    object MapSelection : Routed(Route.MapSelection)
+    object Scoreboard : Routed(Route.Scoreboard)
+    object GameOver : Routed(Route.GameOver)
+    data class BattleScreen(val stageName: String) : Routed("${Route.BattleScreen}/$stageName")
+}

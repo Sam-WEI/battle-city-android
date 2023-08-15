@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         soundPlayer = SoundPlayer.INSTANCE
-        lifecycleScope.launchWhenStarted { soundPlayer.init(this@MainActivity) }
+        lifecycleScope.launchWhenStarted { soundPlayer.init(this@MainActivity) } // todo
         lifecycleScope.launchWhenResumed { soundPlayer.resume() }
         setContent {
             BattleCityApp()

@@ -19,7 +19,7 @@ import kotlin.math.max
 class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
-        private const val FortificationTimeoutDuration = 3 * 1000
+        private const val FortificationBlinkDuration = 3 * 1000
 
         private val DefaultPlayerSpawnPosition = Offset(4f.cell2mpx, 12f.cell2mpx)
         private val DefaultBotSpawnPositions = listOf(
@@ -122,8 +122,8 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
             remainingFortificationTime -= tick.delta
             if (remainingFortificationTime <= 0) {
                 wrapEagleWithBricks()
-            } else if (remainingFortificationTime < FortificationTimeoutDuration) {
-                val blinkFrame = remainingFortificationTime / (FortificationTimeoutDuration / 12)
+            } else if (remainingFortificationTime < FortificationBlinkDuration) {
+                val blinkFrame = remainingFortificationTime / (FortificationBlinkDuration / 12)
                 if (blinkFrame % 2 == 0) {
                     wrapEagleWithSteels()
                 } else {
@@ -144,10 +144,10 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
         val destroyedSome = newCount != oldCount
         if (destroyedSome) {
             indices.asSequence().filter { it in oldBrickIndex }
-                .map { BrickElement.getSubGrid(it, hGridSize) } // todo call ext method when Google fixes java.lang.NoSuchMethodError
+                .map { BrickElement.getSubGrid(it) }
                 .toSet() // remove dup
                 .forEach { subGrid ->
-                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid, hGridSize) // todo call ext method when Google fixes java.lang.NoSuchMethodError
+                    val cleared = !BrickElement.overlapsAnyElement(newBrickIndex, subGrid)
                     if (cleared) {
                         // Only re-calc when an entire sub grid (a quarter block) is cleared. (a quarter block contains up to 4 brick elements)
                         // For performance purposes, use a depth of 10 for the calculation.

@@ -1,11 +1,8 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.*
-
-@Composable
-fun rememberSoundState() : SoundState {
-    return remember { SoundState() }
-}
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 class SoundState : TickListener {
     private val soundPlayer: SoundPlayer = SoundPlayer.INSTANCE
