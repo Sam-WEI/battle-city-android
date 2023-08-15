@@ -2,15 +2,6 @@ package com.samwdev.battlecity.core
 
 import androidx.compose.runtime.*
 
-@Composable
-fun rememberBotState(
-    tankState: TankState,
-    bulletState: BulletState,
-    mapState: MapState,
-) = remember {
-    BotState(tankState = tankState, bulletState = bulletState, mapState = mapState)
-}
-
 class BotState(
     private val tankState: TankState,
     private val bulletState: BulletState,

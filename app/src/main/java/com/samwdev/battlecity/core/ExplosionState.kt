@@ -5,14 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import com.samwdev.battlecity.ui.components.ExplosionUiPattern
 import java.util.concurrent.atomic.AtomicInteger
 
-
-@Composable
-fun rememberExplosionState(): ExplosionState {
-    return remember {
-        ExplosionState()
-    }
-}
-
 typealias ExplosionId = Int
 
 class ExplosionState : TickListener {

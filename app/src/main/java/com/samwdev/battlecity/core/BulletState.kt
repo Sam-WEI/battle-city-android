@@ -1,6 +1,8 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import com.samwdev.battlecity.entity.BrickElement
@@ -9,16 +11,6 @@ import com.samwdev.battlecity.entity.SteelElement
 import com.samwdev.battlecity.entity.anyRealElements
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToLong
-
-@Composable
-fun rememberBulletState(
-    mapState: MapState,
-    tankState: TankState,
-    explosionState: ExplosionState,
-    soundState: SoundState,
-): BulletState {
-    return remember { BulletState(mapState, tankState, explosionState, soundState) }
-}
 
 class BulletState(
     private val mapState: MapState,

@@ -9,11 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 typealias PowerUpId = Int
 
-@Composable
-fun rememberPowerUpState(
-    mapState: MapState
-) = remember { PowerUpState(mapState) }
-
 class PowerUpState(
     private val mapState: MapState,
 ) {

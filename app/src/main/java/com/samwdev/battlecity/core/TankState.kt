@@ -1,24 +1,18 @@
 package com.samwdev.battlecity.core
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import com.samwdev.battlecity.entity.*
+import com.samwdev.battlecity.entity.BrickElement
+import com.samwdev.battlecity.entity.EagleElement
+import com.samwdev.battlecity.entity.IceElement
+import com.samwdev.battlecity.entity.PowerUpEnum
+import com.samwdev.battlecity.entity.SteelElement
+import com.samwdev.battlecity.entity.WaterElement
 import java.util.concurrent.atomic.AtomicInteger
-
-@Composable
-fun rememberTankState(
-    explosionState: ExplosionState,
-    soundState: SoundState,
-    powerUpState: PowerUpState,
-    mapState: MapState,
-    scoreState: ScoreState
-): TankState {
-    return remember {
-        TankState(soundState, mapState, powerUpState, explosionState, scoreState)
-    }
-}
 
 class TankState(
     private val soundState: SoundState,
