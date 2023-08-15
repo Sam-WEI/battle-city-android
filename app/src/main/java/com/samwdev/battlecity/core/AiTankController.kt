@@ -40,7 +40,7 @@ class AiTankController(
             return
         }
 
-        if (tankState.remainingBotFrozenTime > 0) {
+        if (mapState.areBotsFrozen) {
             tankState.stopTank(tank.id)
             return
         }

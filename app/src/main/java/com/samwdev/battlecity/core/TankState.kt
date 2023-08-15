@@ -23,7 +23,6 @@ class TankState(
 ) : TickListener, GridSizeAware by mapState {
     companion object {
         private const val ShieldDuration = 10 * 1000
-        private const val FrozenDuration = 10 * 1000
         private const val NOT_AN_ID = -1
 
     }
@@ -33,10 +32,6 @@ class TankState(
         private set
 
     val aliveTanks: Sequence<Tank> get() = tanks.values.asSequence().filter { it.isAlive }
-
-    // todo move to a proper place
-    var remainingBotFrozenTime: Int = 0
-        private set
 
     var playerTankId: TankId = NOT_AN_ID
         private set
@@ -56,10 +51,6 @@ class TankState(
         }
 
     override fun onTick(tick: Tick) {
-        if (remainingBotFrozenTime > 0) {
-            remainingBotFrozenTime -= tick.delta
-        }
-
         tanks = tanks.mapValues { (_, tank) ->
             val updatedTank = updateTankTimers(tank, tick.delta)
             updateTankMovement(updatedTank, tick.delta)
@@ -340,7 +331,7 @@ class TankState(
                 soundState.playSound(SoundEffect.PickUpPowerUp)
             }
             PowerUpEnum.Timer -> {
-                remainingBotFrozenTime = FrozenDuration
+                mapState.freezeBots()
                 soundState.playSound(SoundEffect.PickUpPowerUp)
             }
         }

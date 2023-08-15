@@ -31,4 +31,9 @@ class Timer(timeInMs: Int = 0) {
     fun activate() {
         isActive = true
     }
+
+    fun resetAndActivate(time: Int = timeConfig) {
+        reset(time)
+        activate()
+    }
 }

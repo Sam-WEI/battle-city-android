@@ -22,6 +22,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationBlinkDuration = 3 * 1000
         private const val ScoreboardShowUpDelay = 3 * 1000
+        private const val FrozenDuration = 10 * 1000
 
         private val DefaultPlayerSpawnPosition = Offset(4f.cell2mpx, 12f.cell2mpx)
         private val DefaultBotSpawnPositions = listOf(
@@ -43,6 +44,9 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     val botSpawnPositions = DefaultBotSpawnPositions
 
     private var scoreboardDelayTimer: Timer = Timer(ScoreboardShowUpDelay)
+    private var botsFrozenTimer: Timer = Timer(FrozenDuration)
+
+    val areBotsFrozen: Boolean get() = botsFrozenTimer.isActive
 
     override val hGridSize: Int = mapConfig.hGridSize
     override val vGridSize: Int = mapConfig.vGridSize
@@ -143,6 +147,10 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
                 _inGameEventFlow.value = MapCleared
             }
         }
+
+        if (botsFrozenTimer.isActive) {
+            botsFrozenTimer.tick(tick)
+        }
     }
 
     fun destroyBricksIndex(indices: Set<Int>): Boolean {
@@ -189,10 +197,13 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
     }
 
     fun fortifyBase(duration: Int = FortificationDuration) {
-        remainingFortificationTimer.reset(duration)
-        remainingFortificationTimer.activate()
+        remainingFortificationTimer.resetAndActivate(duration)
         // todo check duration == 0
         wrapEagleWithSteels()
+    }
+
+    fun freezeBots() {
+        botsFrozenTimer.resetAndActivate()
     }
 
     fun destroyEagle() {
