@@ -24,13 +24,7 @@ class TankState(
     companion object {
         private const val ShieldDuration = 10 * 1000
         private const val FrozenDuration = 10 * 1000
-
         private const val NOT_AN_ID = -1
-        // todo to confirm this works as expected
-//        fun Saver() = Saver<TankState, Map<TankId, Tank>>(
-//            save = { it.tanks },
-//            restore = { TankState().apply { tanks = it } }
-//        )
 
     }
     private var idGen = AtomicInteger(0)
@@ -357,6 +351,7 @@ class TankState(
     }
 }
 
+// todo
 sealed class TankEvent
 data class MoveTankEvent(val tankId: TankId, val direction: Direction) : TankEvent()
 data class StopTankEvent(val tankId: TankId) : TankEvent()

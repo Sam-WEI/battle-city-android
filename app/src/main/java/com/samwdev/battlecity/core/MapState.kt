@@ -14,6 +14,7 @@ import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.entity.SteelElement
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.max
 
 class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
@@ -29,7 +30,7 @@ class MapState(stageConfig: StageConfig) : TickListener, GridSizeAware {
         )
     }
     private val _inGameEventFlow = MutableStateFlow<GameStatus>(Playing)
-    val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow
+    val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow.asStateFlow()
 
     private var remainingFortificationTime: Int = 0
     private val mapConfig = stageConfig.map
