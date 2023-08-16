@@ -26,6 +26,7 @@ import com.samwdev.battlecity.core.levelUp
 import com.samwdev.battlecity.core.move
 import com.samwdev.battlecity.core.moveTo
 import com.samwdev.battlecity.core.moveUpTo
+import com.samwdev.battlecity.core.plugin.TankPluginManager
 import com.samwdev.battlecity.core.releaseGas
 import com.samwdev.battlecity.core.shieldOn
 import com.samwdev.battlecity.core.speedDown
@@ -64,17 +65,21 @@ class TankState(
     var whoIsYourDaddy: Boolean = false
         set(value) {
             field = value
-            if (playerTankId == NOT_AN_ID) {
-                return
-            }
-            if (value) {
-                updateTank(playerTankId, getTank(playerTankId).copy(remainingShield = Int.MAX_VALUE))
-                mapState.fortifyBase(Int.MAX_VALUE)
-            } else {
-                updateTank(playerTankId, getTank(playerTankId).copy(remainingShield = 0))
-                mapState.fortifyBase(-1)
+            mapState.fortifyBase(if (value) Int.MAX_VALUE else -1)
+        }
+
+    val tankPlugins: TankPluginManager = TankPluginManager().apply {
+        onPluginAdded = { p ->
+            tanks = tanks.mapValues { (_, tank) ->
+                p.transform(tank)
             }
         }
+        onPluginRemoved = { p ->
+            tanks = tanks.mapValues { (_, tank) ->
+                p.detransform(tank)
+            }
+        }
+    }
 
     override fun onTick(tick: Tick) {
         tanks = tanks.mapValues { (_, tank) ->
@@ -91,7 +96,8 @@ class TankState(
 
     private fun addTank(id: TankId, tank: Tank) {
         tanks = tanks.toMutableMap().apply {
-            put(id, tank)
+            val finalTank = tankPlugins.transform(tank)
+            put(id, finalTank)
         }
     }
 

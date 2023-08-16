@@ -21,7 +21,7 @@ class GameState(
 ) : TickListener() {
     companion object {
         private const val ScoreboardShowUpDelay = 3 * 1000
-        private const val InitialLife = 1
+        private const val InitialLife = 3
     }
 
     var totalScore: Int by mutableIntStateOf(0)

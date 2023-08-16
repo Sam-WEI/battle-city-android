@@ -1,5 +1,6 @@
 package com.samwdev.battlecity.core
 
+import com.samwdev.battlecity.core.plugin.WhoIsYourDaddyPlugin
 import com.samwdev.battlecity.core.state.BotState
 import com.samwdev.battlecity.core.state.BulletState
 import com.samwdev.battlecity.core.state.ExplosionState
@@ -67,5 +68,10 @@ fun Battle.plugInDebugConfig(debugConfig: DebugConfig) {
         tickState.fixTickDelta(debugConfig.tickDelta)
     } else {
         tickState.cancelFixTickDelta()
+    }
+    if (debugConfig.whoIsYourDaddy) {
+        tankState.tankPlugins.addPlugin(WhoIsYourDaddyPlugin())
+    } else {
+        tankState.tankPlugins.removePlugin("WhoIsYourDaddy")
     }
 }
