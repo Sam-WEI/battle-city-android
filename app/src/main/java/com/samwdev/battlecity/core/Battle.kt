@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class Battle(
-    private val gameState: GameState,
+    gameState: GameState,
     stageConfig: StageConfig,
 ) {
     val tickState = TickState()
@@ -45,5 +45,17 @@ class Battle(
 
     fun pause() {
         tickState.pause(true)
+    }
+}
+
+fun Battle.plugInDebugConfig(debugConfig: DebugConfig) {
+    tickState.maxFps = debugConfig.maxFps
+    botState.maxBot = debugConfig.maxBot
+    bulletState.friendlyFire = debugConfig.friendlyFire
+    tankState.whoIsYourDaddy = debugConfig.whoIsYourDaddy
+    if (debugConfig.fixTickDelta) {
+        tickState.fixTickDelta(debugConfig.tickDelta)
+    } else {
+        tickState.cancelFixTickDelta()
     }
 }

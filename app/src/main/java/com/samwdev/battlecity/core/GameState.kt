@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class GameState(
-    private val battleViewModel: BattleViewModel,
+    private val battleViewModel: BattleViewModel, // todo remove dep on the ViewModel
 ) : TickListener() {
     companion object {
         private const val ScoreboardShowUpDelay = 3 * 1000

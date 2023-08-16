@@ -31,6 +31,7 @@ import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.core.HandheldController
 import com.samwdev.battlecity.core.StageCurtain
+import com.samwdev.battlecity.core.plugInDebugConfig
 
 @Composable
 fun BattleScreen() {
@@ -57,15 +58,7 @@ fun BattleScreen() {
     if (battleViewModel.currentUIStatus < StageCurtain) return
 
     LaunchedEffect(battleViewModel.debugConfig) {
-        battleViewModel.tickState.maxFps = battleViewModel.debugConfig.maxFps
-        battleViewModel.botState.maxBot = battleViewModel.debugConfig.maxBot
-        battleViewModel.bulletState.friendlyFire = battleViewModel.debugConfig.friendlyFire
-        battleViewModel.tankState.whoIsYourDaddy = battleViewModel.debugConfig.whoIsYourDaddy
-        if (battleViewModel.debugConfig.fixTickDelta) {
-            battleViewModel.tickState.fixTickDelta(battleViewModel.debugConfig.tickDelta)
-        } else {
-            battleViewModel.tickState.cancelFixTickDelta()
-        }
+        battleViewModel.battle.plugInDebugConfig(battleViewModel.debugConfig)
     }
 
     CompositionLocalProvider(LocalDebugConfig provides battleViewModel.debugConfig) {

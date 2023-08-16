@@ -66,6 +66,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
         prevStageConfig = currStageConfig
         currStageConfig = stageConfig
         battle = Battle(gameState, currStageConfig!!)
+        battle.plugInDebugConfig(debugConfig)
 
         navigate(NavEvent.BattleScreen)
     }
