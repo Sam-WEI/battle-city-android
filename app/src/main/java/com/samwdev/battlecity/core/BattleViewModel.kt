@@ -15,18 +15,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class BattleViewModel(
-    context: Application,
-) : AndroidViewModel(context) {
+class BattleViewModel(context: Application) : AndroidViewModel(context) {
     lateinit var battle: Battle
         private set
 
     private val _navFlow: MutableStateFlow<NavEvent?> = MutableStateFlow(null)
     val navFlow: StateFlow<NavEvent?> = _navFlow.asStateFlow()
 
-    var tickerJob: Job? = null
+    private var tickerJob: Job? = null
     var paused: Boolean = false
-    var lastBattleResult: BattleResult = BattleResult.Won
 
     val gameState: GameState = GameState(this)
     val mapState: MapState get() = battle.mapState
@@ -92,14 +89,13 @@ class BattleViewModel(
 
     fun setGameResult(result: BattleResult) {
         gameState.updateAfterBattle(battle)
-        lastBattleResult = result
         when (result) {
             BattleResult.Won -> {
                 showScoreboard()
             }
             BattleResult.Lost -> {
                 // wait for the animation to finish and then the it will go to Scoreboard screen at the end of animation
-                currentGameStatus = AnimatingGameOver
+                currentGameStatus = TransitionToScoreboard
             }
         }
     }
@@ -112,7 +108,7 @@ class BattleViewModel(
     }
 
     fun scoreboardCompleted() {
-        when (lastBattleResult) {
+        when (requireNotNull(gameState.lastBattleResult)) {
             BattleResult.Won -> {
                 currentGameStatus = StageCurtain
                 goToNextStage()
@@ -137,7 +133,7 @@ sealed class GameStatus(val index: Int) {
 }
 object StageCurtain : GameStatus(1)
 object InGame : GameStatus(4)
-object AnimatingGameOver : GameStatus(5)
+object TransitionToScoreboard : GameStatus(5)
 object ScoreboardDisplay : GameStatus(10)
 
 enum class BattleResult {

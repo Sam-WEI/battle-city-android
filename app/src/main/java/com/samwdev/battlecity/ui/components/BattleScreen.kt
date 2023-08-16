@@ -24,8 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.samwdev.battlecity.core.AnimatingGameOver
-import com.samwdev.battlecity.core.BattleResult
+import com.samwdev.battlecity.core.TransitionToScoreboard
 import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.core.HandheldController
@@ -90,7 +89,7 @@ fun BattleScreen() {
                         ) {
                             battleViewModel.start()
                         }
-                    } else if (battleViewModel.currentGameStatus == AnimatingGameOver) {
+                    } else if (battleViewModel.currentGameStatus == TransitionToScoreboard) {
                         RedGameOver {
                             battleViewModel.showScoreboard()
                         }

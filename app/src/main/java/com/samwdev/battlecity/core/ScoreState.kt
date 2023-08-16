@@ -53,8 +53,8 @@ class ScoreState : TickListener() {
         ))
     }
 
-    fun collectScoreboardData(): ScoreboardData {
-        return ScoreboardData(
+    fun collectBattleScoreData(): BattleScoreData {
+        return BattleScoreData(
             battleScore,
             tankKillCount.apply {
                 TankLevel.values().forEach { getOrPut(it) { 0 } }
@@ -70,8 +70,8 @@ class ScoreState : TickListener() {
     }
 }
 
-data class ScoreboardData(
-    val totalScore: Int,
+data class BattleScoreData(
+    val battleScore: Int,
     val killCount: Map<TankLevel, Int>,
 ) : Serializable
 

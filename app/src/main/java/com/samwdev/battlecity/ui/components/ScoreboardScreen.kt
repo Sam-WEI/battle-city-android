@@ -1,8 +1,26 @@
 package com.samwdev.battlecity.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
@@ -12,7 +30,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.*
+import com.samwdev.battlecity.core.BattleViewModel
+import com.samwdev.battlecity.core.BattleScoreData
+import com.samwdev.battlecity.core.SoundEffect
+import com.samwdev.battlecity.core.SoundPlayer
+import com.samwdev.battlecity.core.TankLevel
+import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,47 +46,50 @@ private val ColorOrange = Color(241, 176, 96)
 @Composable
 fun ScoreboardScreen() {
     val battleViewModel: BattleViewModel = LocalBattleViewModel.current
-    val data: ScoreboardData = battleViewModel.scoreState.collectScoreboardData()
-    ScoreboardScreen(data = data, stageName = battleViewModel.currentStageName!!) {
+    val data: BattleScoreData = battleViewModel.scoreState.collectBattleScoreData()
+    ScoreboardScreen(
+        totalScore = battleViewModel.gameState.totalScore,
+        battleScore = data,
+        stageName = battleViewModel.currentStageName!!
+    ) {
         battleViewModel.scoreboardCompleted()
     }
 }
 
 @Composable
-private fun ScoreboardScreen(data: ScoreboardData, stageName: String, doneDisplaying: () -> Unit) {
-    val frameList = remember(data) {
-        var lastFrameData = ScoreDisplayData(totalScore = data.totalScore)
-        val frames = mutableListOf(ScoreDisplayFrame(lastFrameData, 500))
-        data.killCount.entries.forEach { (lvl, num) ->
-            repeat(num + 1) { i ->
-                val score = when (lvl) {
-                    TankLevel.Level1 -> lastFrameData.copy(level1Num = i)
-                    TankLevel.Level2 -> lastFrameData.copy(level2Num = i)
-                    TankLevel.Level3 -> lastFrameData.copy(level3Num = i)
-                    TankLevel.Level4 -> lastFrameData.copy(level4Num = i)
+private fun ScoreboardScreen(totalScore: Int, battleScore: BattleScoreData, stageName: String, doneDisplaying: () -> Unit) {
+    val frameList = remember(battleScore) {
+        var lastFrame = ScoreDisplayFrameNumbers(battleScore.battleScore)
+        val frames = mutableListOf<ScoreDisplayFrame>()
+        frames.add(ScoreDisplayFrame(lastFrame, 500)) // little pause
+        battleScore.killCount.entries.forEach { (lvl, num) ->
+            for(i in 0..num) {
+                val frame = when (lvl) {
+                    TankLevel.Level1 -> lastFrame.copy(level1Num = i)
+                    TankLevel.Level2 -> lastFrame.copy(level2Num = i)
+                    TankLevel.Level3 -> lastFrame.copy(level3Num = i)
+                    TankLevel.Level4 -> lastFrame.copy(level4Num = i)
                 }
-                if (num == 0) {
-                    frames.add(ScoreDisplayFrame(score, 100))
-                } else if (i > 0) {
-                    frames.add(ScoreDisplayFrame(score, 150, SoundEffect.ScoreboardTick))
-                }
-                lastFrameData = score
+                frames.add(ScoreDisplayFrame(frame, 150, SoundEffect.ScoreboardTick))
+                lastFrame = frame
             }
-            frames.add(ScoreDisplayFrame(lastFrameData, 500))
+            frames.add(ScoreDisplayFrame(lastFrame, 500))
         }
         frames.add(ScoreDisplayFrame(
-            lastFrameData.copy(totalNum = data.killCount.values.sum()), 0)
+            lastFrame.copy(totalNum = battleScore.killCount.values.sum()), 0)
         ) // total
         frames.toList()
     }
 
-    var displayScoreData by remember { mutableStateOf(ScoreDisplayData(totalScore = 20000)) }
+    var frameData by remember {
+        mutableStateOf(ScoreDisplayFrameNumbers(battleScore.battleScore))
+    }
 
     val coroutine = rememberCoroutineScope()
-    LaunchedEffect(data) {
+    LaunchedEffect(battleScore) {
         coroutine.launch {
             frameList.forEach { (score, delay, soundEffect) ->
-                displayScoreData = score
+                frameData = score
                 soundEffect?.let { SoundPlayer.INSTANCE.play(it) }
                 delay(delay)
             }
@@ -71,11 +97,11 @@ private fun ScoreboardScreen(data: ScoreboardData, stageName: String, doneDispla
             doneDisplaying()
         }
     }
-    ScoreboardDataFrame(displayScoreData, stageName)
+    ScoreboardDataFrame(totalScore, frameData, stageName)
 }
 
 @Composable
-private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String) {
+private fun ScoreboardDataFrame(totalScore: Int, frameData: ScoreDisplayFrameNumbers, stageName: String) {
     Grid(
         gridSize = 15,
         modifier = Modifier
@@ -102,7 +128,7 @@ private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String
             Row(Modifier.weight(1f, true),
                 horizontalArrangement = Arrangement.Start) {
                 PixelText(
-                    text = "   20000",
+                    text = "   $totalScore",
                     charHeight = 0.5f.cell2mpx,
                     topLeft = Offset.Zero,
                     textColor = ColorOrange,
@@ -122,12 +148,12 @@ private fun ScoreboardDataFrame(displayData: ScoreDisplayData, stageName: String
                 topLeft = Offset.Zero,
             )
         }
-        DynamicBody(displayData)
+        DynamicBody(frameData)
     }
 }
 
 @Composable
-private fun DynamicBody(displayData: ScoreDisplayData) {
+private fun DynamicBody(displayData: ScoreDisplayFrameNumbers) {
     Row(
         Modifier
             .offset(y = 3.cell2mpx.mpx2dp)
@@ -226,7 +252,7 @@ private fun DynamicBody(displayData: ScoreDisplayData) {
 }
 
 @Composable
-private fun PlayerInfo(displayData: ScoreDisplayData, modifier: Modifier) {
+private fun PlayerInfo(displayData: ScoreDisplayFrameNumbers, modifier: Modifier) {
     Column(modifier, horizontalAlignment = Alignment.End) {
         PixelText(
             text = "I-PLAYER",
@@ -235,7 +261,7 @@ private fun PlayerInfo(displayData: ScoreDisplayData, modifier: Modifier) {
             textColor = ColorRed
         )
         PixelText(
-            text = displayData.totalScore.toString(),
+            text = displayData.battleScore.toString(),
             charHeight = 0.5f.cell2mpx,
             modifier = Modifier.height(1f.cell2mpx.mpx2dp),
             textColor = ColorOrange
@@ -268,13 +294,13 @@ private fun PlayerInfo(displayData: ScoreDisplayData, modifier: Modifier) {
 }
 
 private data class ScoreDisplayFrame(
-    val data: ScoreDisplayData,
+    val data: ScoreDisplayFrameNumbers,
     val delay: Long,
     val soundEffect: SoundEffect? = null,
 )
 
-private data class ScoreDisplayData(
-    val totalScore: Int,
+private data class ScoreDisplayFrameNumbers(
+    val battleScore: Int,
     val level1Num: Int? = null,
     val level2Num: Int? = null,
     val level3Num: Int? = null,
@@ -300,8 +326,9 @@ private fun ScoreboardScreenPreview() {
     BattleCityTheme {
         Box(modifier = Modifier.size(500.dp)) {
             ScoreboardDataFrame(
-                ScoreDisplayData(
-                    totalScore = 2000,
+                12321,
+                ScoreDisplayFrameNumbers(
+                    battleScore = 5555,
                     level1Num = 1,
                     level2Num = 3,
                     level3Num = 3,
