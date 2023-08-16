@@ -83,6 +83,8 @@ class BattleViewModel(
 
     fun start() {
         currentGameStatus = InGame
+        gameState.gameStarted = true
+
         tickerJob = viewModelScope.launch {
             battle.startBattle()
         }

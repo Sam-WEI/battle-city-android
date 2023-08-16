@@ -10,17 +10,27 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class GameState(
     private val battleViewModel: BattleViewModel,
-) : TickListener {
+) : TickListener() {
     companion object {
         private const val ScoreboardShowUpDelay = 3 * 1000
     }
+
+    var totalScore: Int by mutableIntStateOf(0)
+        private set
+
+    var gameStarted = false
+        set(value) {
+            field = value
+            lastBattleResult = null
+        }
+
+    var lastBattleResult: BattleResult? = null
+        private set
+
     private var scoreboardDelayTimer: Timer = Timer(ScoreboardShowUpDelay)
 
     private val _inGameEventFlow = MutableStateFlow<GameStatus>(InGame)
     val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow.asStateFlow()
-
-    var totalScore: Int by mutableIntStateOf(0)
-        private set
 
     var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1))
         private set
@@ -36,7 +46,7 @@ class GameState(
 
     fun deductPlayerLife(): Boolean {
         if (player1.remainingLife == 0) {
-            gameOver()
+            setGameResult(BattleResult.Lost)
             return false
         }
         player1 = player1.copy(remainingLife = player1.remainingLife - 1, tankLevel = TankLevel.Level1)
@@ -47,15 +57,14 @@ class GameState(
         player1 = player1.copy(tankLevel = player1.tankLevel.nextLevel)
     }
 
-    fun mapCleared() {
-        // after map is cleared, wait 3 seconds before displaying scoreboard
-        if (!scoreboardDelayTimer.isActive) {
+    fun setGameResult(battleResult: BattleResult) {
+        if (lastBattleResult == null) {
+            gameStarted = false
+            lastBattleResult = battleResult
+
+            // after map is cleared, wait 3 seconds before displaying scoreboard
             scoreboardDelayTimer.resetAndActivate()
         }
-    }
-
-    fun gameOver() {
-        battleViewModel.setGameResult(BattleResult.Lost)
     }
 
     override fun onTick(tick: Tick) {

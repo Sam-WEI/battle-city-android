@@ -21,7 +21,7 @@ class TankState(
     private val powerUpState: PowerUpState,
     private val explosionState: ExplosionState,
     private val scoreState: ScoreState,
-) : TickListener, GridSizeAware by mapState {
+) : TickListener(), GridSizeAware by mapState {
     companion object {
         private const val ShieldDuration = 10 * 1000
         private const val NOT_AN_ID = -1

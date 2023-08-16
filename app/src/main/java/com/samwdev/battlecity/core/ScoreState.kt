@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 typealias ScoreId = Int
 
-class ScoreState : TickListener {
+class ScoreState : TickListener() {
     var battleScore: Int = 0
         private set
     private val tankKillCount = mutableMapOf<TankLevel, Int>()

@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 typealias ExplosionId = Int
 
-class ExplosionState : TickListener {
+class ExplosionState : TickListener() {
     private val idGen = AtomicInteger()
 
     var explosions by mutableStateOf<Map<ExplosionId, Explosion>>(mapOf())

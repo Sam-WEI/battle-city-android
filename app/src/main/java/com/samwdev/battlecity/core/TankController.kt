@@ -4,7 +4,7 @@ class TankController(
     private val tankState: TankState,
     private val bulletState: BulletState,
     private val handheldControllerState: HandheldControllerState,
-) : TickListener {
+) : TickListener() {
     private val tankId: TankId get() = tankState.playerTankId
 
     override fun onTick(tick: Tick) {

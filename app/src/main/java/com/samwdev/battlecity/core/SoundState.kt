@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-class SoundState : TickListener {
+class SoundState : TickListener() {
     private val soundPlayer: SoundPlayer = SoundPlayer.INSTANCE
 
     private var soundToPlay by mutableStateOf<Set<SoundEffect>>(setOf())

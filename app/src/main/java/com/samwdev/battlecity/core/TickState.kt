@@ -18,6 +18,8 @@ class TickState(tick: Tick = Tick.INITIAL) {
         const val MAX_FPS = 120
     }
 
+    private val tickListeners: MutableList<TickListener> = mutableListOf()
+
     private var paused = false
 
     private var lastTick: Tick = tick
@@ -57,11 +59,21 @@ class TickState(tick: Tick = Tick.INITIAL) {
         }
     }
 
+    fun addListener(tickListener: TickListener) {
+        tickListeners.add(tickListener)
+    }
+
     suspend fun start() = withContext(AndroidUiDispatcher.Main) {
         launch {
             while (isActive) {
                 val now = withFrameMillis { it }
                 update(now)
+            }
+        }
+
+        launch {
+            tickFlow.collect { tick ->
+                tickListeners.forEach { it.onTickInternal(tick) }
             }
         }
     }

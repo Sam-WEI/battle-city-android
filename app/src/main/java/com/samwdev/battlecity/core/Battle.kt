@@ -21,20 +21,19 @@ class Battle(
     val botState: BotState = BotState(tankState, bulletState, mapState, gameState)
     val tankController: TankController = TankController(tankState, bulletState, handheldControllerState)
 
+    init {
+        tickState.addListener(mapState)
+        tickState.addListener(soundState)
+        tickState.addListener(scoreState)
+        tickState.addListener(tankController)
+        tickState.addListener(bulletState)
+        tickState.addListener(botState)
+        tickState.addListener( tankState)
+        tickState.addListener(explosionState)
+        tickState.addListener(gameState)
+    }
+
     suspend fun startBattle(): Unit = withContext(Dispatchers.Default) {
-        launch {
-            tickState.tickFlow.collect { tick ->
-                mapState.onTick(tick)
-                soundState.onTick(tick)
-                scoreState.onTick(tick)
-                tankController.onTick(tick)
-                bulletState.onTick(tick)
-                botState.onTick(tick)
-                tankState.onTick(tick)
-                explosionState.onTick(tick)
-                gameState.onTick(tick)
-            }
-        }
         launch {
             tickState.start()
         }

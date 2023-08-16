@@ -17,7 +17,7 @@ class BulletState(
     private val tankState: TankState,
     private val explosionState: ExplosionState,
     private val soundState: SoundState,
-) : TickListener, GridSizeAware by mapState {
+) : TickListener(), GridSizeAware by mapState {
     private val idGen: AtomicInteger = AtomicInteger(0)
     var friendlyFire = false
 
@@ -42,7 +42,10 @@ class BulletState(
         checkCollisionWithBricks(tick)
         checkCollisionWithSteels(tick)
         checkCollisionWithTanks(tick)
-        checkCollisionWithEagle(tick)
+
+        if (!mapState.eagle.dead) {
+            checkCollisionWithEagle(tick)
+        }
 
         handleTrajectoryCollisionInfo()
     }

@@ -13,7 +13,7 @@ class AiTankController(
     private val tankState: TankState,
     private val bulletState: BulletState, // todo move out?
     private val mapState: MapState,
-) : TickListener {
+) : TickListener() {
     var currentWaypoint: List<SubGrid> by mutableStateOf(listOf(), referentialEqualityPolicy())
         private set
     private var lastTankPivotTopLeft: Offset? = null

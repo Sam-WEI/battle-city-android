@@ -20,7 +20,7 @@ import kotlin.math.max
 class MapState(
     private val gameState: GameState,
     stageConfig: StageConfig,
-) : TickListener, GridSizeAware {
+) : TickListener(), GridSizeAware {
     companion object {
         private const val FortificationDuration = 18 * 1000
         private const val FortificationBlinkDuration = 3 * 1000
@@ -199,7 +199,7 @@ class MapState(
 
     fun destroyEagle() {
         eagle = eagle.copy(dead = true)
-        gameState.gameOver()
+        gameState.setGameResult(BattleResult.Lost)
     }
 
     fun deductRemainingBot() {
