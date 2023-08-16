@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.platform.AndroidUiDispatcher
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
@@ -57,9 +57,9 @@ class TickState(tick: Tick = Tick.INITIAL) {
         }
     }
 
-    suspend fun start(): Job = withContext(AndroidUiDispatcher.Main) {
+    suspend fun start() = withContext(AndroidUiDispatcher.Main) {
         launch {
-            while (true) {
+            while (isActive) {
                 val now = withFrameMillis { it }
                 update(now)
             }

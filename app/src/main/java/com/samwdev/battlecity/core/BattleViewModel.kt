@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.MapParser
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +24,7 @@ class BattleViewModel(
     private val _navFlow: MutableStateFlow<NavEvent?> = MutableStateFlow(null)
     val navFlow: StateFlow<NavEvent?> = _navFlow.asStateFlow()
 
+    var tickerJob: Job? = null
     var paused: Boolean = false
     var lastBattleResult: BattleResult = BattleResult.Won
 
@@ -80,8 +82,8 @@ class BattleViewModel(
     }
 
     fun start() {
-        viewModelScope.launch {
-            currentGameStatus = InGame
+        currentGameStatus = InGame
+        tickerJob = viewModelScope.launch {
             battle.startBattle()
         }
     }
@@ -101,6 +103,7 @@ class BattleViewModel(
     }
 
     fun showScoreboard() {
+        tickerJob?.cancel()
         currentGameStatus = ScoreboardDisplay
         navigate(NavEvent.Up)
         navigate(NavEvent.Scoreboard)
