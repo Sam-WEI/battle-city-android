@@ -25,8 +25,9 @@ class GameState(
     var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1))
         private set
 
-    fun updateStats(lastBattle: Battle) {
+    fun updateAfterBattle(lastBattle: Battle) {
         totalScore += lastBattle.scoreState.battleScore
+        addPlayerLife() // compensate the spawn cost for next map
     }
 
     fun addPlayerLife() {
@@ -55,13 +56,11 @@ class GameState(
 
     fun gameOver() {
         battleViewModel.setGameResult(BattleResult.Lost)
-//        _inGameEventFlow.value = ScoreboardDisplay
     }
 
     override fun onTick(tick: Tick) {
         if (scoreboardDelayTimer.isActive) {
             if (scoreboardDelayTimer.tick(tick)) {
-//                _inGameEventFlow.value = MapCleared
                 battleViewModel.setGameResult(BattleResult.Won)
             }
         }

@@ -89,7 +89,7 @@ class BattleViewModel(
     }
 
     fun setGameResult(result: BattleResult) {
-        gameState.updateStats(battle)
+        gameState.updateAfterBattle(battle)
         lastBattleResult = result
         when (result) {
             BattleResult.Won -> {
