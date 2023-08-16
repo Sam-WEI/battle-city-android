@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.core
 
+import com.samwdev.battlecity.core.state.TickState
+
 data class DebugConfig(
     val showFps: Boolean = false,
     val showElementIndex: Boolean = false,

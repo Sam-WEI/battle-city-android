@@ -1,9 +1,17 @@
-package com.samwdev.battlecity.core
+package com.samwdev.battlecity.core.state
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.samwdev.battlecity.core.Battle
+import com.samwdev.battlecity.core.BattleResult
+import com.samwdev.battlecity.core.BattleViewModel
+import com.samwdev.battlecity.core.InGame
+import com.samwdev.battlecity.core.TankLevel
+import com.samwdev.battlecity.core.TickListener
+import com.samwdev.battlecity.core.Timer
+import com.samwdev.battlecity.core.UIStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

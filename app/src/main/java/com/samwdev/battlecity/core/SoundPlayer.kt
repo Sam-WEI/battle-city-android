@@ -5,46 +5,51 @@ import android.media.AudioAttributes
 import android.media.SoundPool
 import androidx.annotation.RawRes
 import com.samwdev.battlecity.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SoundPlayer private constructor() {
     private val soundIdMap = mutableMapOf<SoundEffect, Int>()
-    private lateinit var soundPool: SoundPool
+    private var soundPool: SoundPool? = null
 
     companion object {
         val INSTANCE = SoundPlayer()
     }
 
-    fun init(context: Context) {
-        soundPool = SoundPool.Builder()
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .build()
-            )
-            .setMaxStreams(5)
-            .build()
+    suspend fun init(context: Context) {
+        withContext(Dispatchers.IO) {
+            soundPool = SoundPool.Builder()
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_GAME)
+                        .build()
+                )
+                .setMaxStreams(5)
+                .build()
 
-        SoundEffect.values().forEach {
-            val soundId = soundPool.load(context.applicationContext, it.resId, 1)
-            soundIdMap[it] = soundId
+            SoundEffect.values().forEach {
+                val soundId = soundPool!!.load(context.applicationContext, it.resId, 1)
+                soundIdMap[it] = soundId
+            }
         }
     }
 
     fun play(soundEffect: SoundEffect) {
-        val streamId = soundPool.play(soundIdMap.getValue(soundEffect), 1f, 1f, 0, 0, 1f)
+        val streamId = soundPool?.play(soundIdMap.getValue(soundEffect), 1f, 1f, 0, 0, 1f)
     }
 
     fun pause() {
-        soundPool.autoPause()
+        soundPool?.autoPause()
     }
 
     fun resume() {
-        soundPool.autoResume()
+        soundPool?.autoResume()
     }
 
     fun release() {
-        soundPool.release()
+        soundPool?.release()
     }
 }
 

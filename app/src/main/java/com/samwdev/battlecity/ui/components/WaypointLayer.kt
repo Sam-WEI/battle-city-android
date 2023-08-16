@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import com.samwdev.battlecity.core.BotState
+import com.samwdev.battlecity.core.state.BotState
 import com.samwdev.battlecity.core.SubGrid
 import com.samwdev.battlecity.core.cell2mpx
 

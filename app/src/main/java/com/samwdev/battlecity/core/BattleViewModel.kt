@@ -6,6 +6,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.samwdev.battlecity.core.state.BotState
+import com.samwdev.battlecity.core.state.BulletState
+import com.samwdev.battlecity.core.state.ExplosionState
+import com.samwdev.battlecity.core.state.GameState
+import com.samwdev.battlecity.core.state.MapState
+import com.samwdev.battlecity.core.state.PowerUpState
+import com.samwdev.battlecity.core.state.ScoreState
+import com.samwdev.battlecity.core.state.TankState
+import com.samwdev.battlecity.core.state.TickState
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.MapParser
 import kotlinx.coroutines.Job

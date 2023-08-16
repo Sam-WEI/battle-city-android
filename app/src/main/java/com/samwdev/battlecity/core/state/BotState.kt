@@ -1,6 +1,11 @@
-package com.samwdev.battlecity.core
+package com.samwdev.battlecity.core.state
 
 import androidx.compose.runtime.*
+import com.samwdev.battlecity.core.AiTankController
+import com.samwdev.battlecity.core.BattleResult
+import com.samwdev.battlecity.core.TankId
+import com.samwdev.battlecity.core.TankLevel
+import com.samwdev.battlecity.core.TickListener
 
 class BotState(
     private val tankState: TankState,

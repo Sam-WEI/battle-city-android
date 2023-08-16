@@ -1,8 +1,8 @@
 package com.samwdev.battlecity.ui.components
 
 import androidx.compose.runtime.*
-import com.samwdev.battlecity.core.Tick
-import com.samwdev.battlecity.core.TickState
+import com.samwdev.battlecity.core.state.Tick
+import com.samwdev.battlecity.core.state.TickState
 
 
 @Composable

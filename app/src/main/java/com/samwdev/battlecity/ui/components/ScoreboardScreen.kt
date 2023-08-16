@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.samwdev.battlecity.core.BattleViewModel
-import com.samwdev.battlecity.core.BattleScoreData
+import com.samwdev.battlecity.core.state.BattleScoreData
 import com.samwdev.battlecity.core.SoundEffect
 import com.samwdev.battlecity.core.SoundPlayer
 import com.samwdev.battlecity.core.TankLevel

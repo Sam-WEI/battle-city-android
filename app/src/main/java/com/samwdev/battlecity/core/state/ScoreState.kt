@@ -1,10 +1,13 @@
-package com.samwdev.battlecity.core
+package com.samwdev.battlecity.core.state
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import com.samwdev.battlecity.core.TankLevel
+import com.samwdev.battlecity.core.TickListener
+import com.samwdev.battlecity.core.killScore
 import java.io.Serializable
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -34,7 +37,8 @@ class ScoreState : TickListener() {
 
     fun kill(level: TankLevel, offset: Offset) {
         tankKillCount[level] = (tankKillCount[level] ?: 0) + 1
-        addNewOnScreenScore(OnScreenScore(
+        addNewOnScreenScore(
+            OnScreenScore(
             id = idGen.get(),
             offset = offset,
             remainingDelay = 500,
@@ -44,7 +48,8 @@ class ScoreState : TickListener() {
     }
 
     fun pickUpPowerUp(offset: Offset) {
-        addNewOnScreenScore(OnScreenScore(
+        addNewOnScreenScore(
+            OnScreenScore(
             id = idGen.get(),
             offset = offset,
             remainingDelay = 0,

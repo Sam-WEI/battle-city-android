@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.samwdev.battlecity.core.OnScreenScore
+import com.samwdev.battlecity.core.state.OnScreenScore
 import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.CiiFont
 

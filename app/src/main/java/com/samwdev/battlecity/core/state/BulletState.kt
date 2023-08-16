@@ -1,10 +1,21 @@
-package com.samwdev.battlecity.core
+package com.samwdev.battlecity.core.state
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import com.samwdev.battlecity.core.Bullet
+import com.samwdev.battlecity.core.BulletId
+import com.samwdev.battlecity.core.Direction
+import com.samwdev.battlecity.core.GridSizeAware
+import com.samwdev.battlecity.core.SoundEffect
+import com.samwdev.battlecity.core.Tank
+import com.samwdev.battlecity.core.TankId
+import com.samwdev.battlecity.core.TankSide
+import com.samwdev.battlecity.core.TickListener
+import com.samwdev.battlecity.core.cell2mpx
+import com.samwdev.battlecity.core.hitBy
 import com.samwdev.battlecity.entity.BrickElement
 import com.samwdev.battlecity.entity.EagleElement
 import com.samwdev.battlecity.entity.SteelElement

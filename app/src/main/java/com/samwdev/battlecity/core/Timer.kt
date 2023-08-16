@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.core
 
+import com.samwdev.battlecity.core.state.Tick
+
 class Timer(timeInMs: Int = 0) {
     private var timeConfig = timeInMs
 

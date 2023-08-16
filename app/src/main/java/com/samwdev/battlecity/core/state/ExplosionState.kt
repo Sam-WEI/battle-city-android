@@ -1,7 +1,8 @@
-package com.samwdev.battlecity.core
+package com.samwdev.battlecity.core.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
+import com.samwdev.battlecity.core.TickListener
 import com.samwdev.battlecity.ui.components.ExplosionUiPattern
 import java.util.concurrent.atomic.AtomicInteger
 

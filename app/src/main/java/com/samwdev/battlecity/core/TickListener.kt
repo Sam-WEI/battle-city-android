@@ -1,5 +1,7 @@
 package com.samwdev.battlecity.core
 
+import com.samwdev.battlecity.core.state.Tick
+
 abstract class TickListener {
     private var active = true
 

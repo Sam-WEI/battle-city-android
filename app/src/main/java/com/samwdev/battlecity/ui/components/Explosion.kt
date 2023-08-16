@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.samwdev.battlecity.core.Explosion
+import com.samwdev.battlecity.core.state.Explosion
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.cell2mpx
 import com.samwdev.battlecity.ui.theme.BattleCityTheme

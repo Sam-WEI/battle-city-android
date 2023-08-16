@@ -1,4 +1,4 @@
-package com.samwdev.battlecity.core
+package com.samwdev.battlecity.core.state
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,6 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import com.samwdev.battlecity.core.MapPixel
+import com.samwdev.battlecity.core.cell2mpx
+import com.samwdev.battlecity.core.randomAccessiblePoint
 import com.samwdev.battlecity.entity.PowerUpEnum
 import java.util.concurrent.atomic.AtomicInteger
 

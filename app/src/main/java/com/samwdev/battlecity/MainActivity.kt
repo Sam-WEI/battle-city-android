@@ -19,25 +19,27 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         soundPlayer = SoundPlayer.INSTANCE
-        lifecycleScope.launchWhenStarted { soundPlayer.init(this@MainActivity) } // todo
-        lifecycleScope.launchWhenResumed { soundPlayer.resume() }
+        lifecycleScope.launch {
+            soundPlayer.init(this@MainActivity)
+        }
         setContent {
             BattleCityApp()
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        lifecycleScope.launch {
-            soundPlayer.pause()
-        }
+    override fun onResume() {
+        super.onResume()
+        soundPlayer.resume()
     }
 
-    override fun onStop() {
-        super.onStop()
-        lifecycleScope.launch {
-            soundPlayer.release()
-        }
+    override fun onPause() {
+        super.onPause()
+        soundPlayer.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        soundPlayer.release()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

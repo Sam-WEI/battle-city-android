@@ -1,5 +1,9 @@
 package com.samwdev.battlecity.core
 
+import com.samwdev.battlecity.core.state.BulletState
+import com.samwdev.battlecity.core.state.TankState
+import com.samwdev.battlecity.core.state.Tick
+
 class TankController(
     private val tankState: TankState,
     private val bulletState: BulletState,
