@@ -1,8 +1,12 @@
 package com.samwdev.battlecity.core
 
+import androidx.compose.ui.platform.AndroidUiDispatcher
 import com.samwdev.battlecity.entity.StageConfig
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Battle(
     private val gameState: GameState,
@@ -21,7 +25,7 @@ class Battle(
     val tankController: TankController = TankController(tankState, bulletState, handheldControllerState)
 
     suspend fun startBattle() {
-        coroutineScope {
+        withContext(Dispatchers.Default) {
             launch {
                 tickState.tickFlow.collect { tick ->
                     mapState.onTick(tick)
@@ -35,9 +39,7 @@ class Battle(
                     gameState.onTick(tick)
                 }
             }
-            launch {
-                tickState.start()
-            }
+            tickState.start()
         }
     }
 

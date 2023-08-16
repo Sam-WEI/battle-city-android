@@ -38,9 +38,9 @@ fun AnimatedStageCurtain(
         label = "stage curtain"
     )
 
-    val co = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        co.launch {
+        coroutineScope.launch {
             delay(curtainSlidingDelay)
             currentClosed = true
             delay(curtainSlidingTime)

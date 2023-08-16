@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.samwdev.battlecity.entity.StageConfig
 import com.samwdev.battlecity.utils.MapParser
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,7 +55,6 @@ class BattleViewModel(
     ))
 
     fun loadStage(stageName: String) {
-//        if (currentGameStatus != LoadingStage) return
         currentGameStatus = StageCurtain
         val json = try {
             MapParser.readJsonFile(getApplication(), stageName)
@@ -80,34 +79,10 @@ class BattleViewModel(
         _navFlow.value = navEvent
     }
 
-    suspend fun start() {
-        coroutineScope {
-            launch {
-                currentGameStatus = InGame
-                battle.startBattle()
-            }
-
-//            launch(viewModelScope.coroutineContext) {
-//                gameState.inGameEventFlow.collect { event ->
-//                    Logger.error("Event: $event")
-//                    when (event) {
-//                        GameOver -> {
-////                            battleState.pause()
-//                            gameState.update(battle)
-//                            currentGameStatus = GameOver
-//
-//                        }
-//                        MapCleared -> {
-//                            gameState.update(battle)
-//                            currentGameStatus = MapCleared
-//                            navigate(NavEvent.Up)
-//                            navigate(NavEvent.Scoreboard)
-//                        }
-//
-//                        else -> {}
-//                    }
-//                }
-//            }
+    fun start() {
+        viewModelScope.launch {
+            currentGameStatus = InGame
+            battle.startBattle()
         }
     }
 

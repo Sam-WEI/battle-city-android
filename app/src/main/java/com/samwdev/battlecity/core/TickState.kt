@@ -4,10 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
-import kotlinx.coroutines.coroutineScope
+import androidx.compose.ui.platform.AndroidUiDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 class TickState(tick: Tick = Tick.INITIAL) {
@@ -54,10 +57,12 @@ class TickState(tick: Tick = Tick.INITIAL) {
         }
     }
 
-    suspend fun start(): Unit = coroutineScope {
-        while (true) {
-            val now = withFrameMillis { it }
-            update(now)
+    suspend fun start(): Job = withContext(AndroidUiDispatcher.Main) {
+        launch {
+            while (true) {
+                val now = withFrameMillis { it }
+                update(now)
+            }
         }
     }
 
