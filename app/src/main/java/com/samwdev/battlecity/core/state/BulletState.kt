@@ -150,8 +150,10 @@ class BulletState(
 
             if (impactArea.overlaps(mapState.eagle.rect)) {
                 // can be either a direct hit or an AOE impact.
-                mapState.destroyEagle()
-                soundState.playSound(SoundEffect.ExplosionPlayer)
+                if (!mapState.eagle.dead) {
+                    soundState.playSound(SoundEffect.ExplosionPlayer)
+                    mapState.destroyEagle()
+                }
             }
             // todo check if impact area affects tanks
 
