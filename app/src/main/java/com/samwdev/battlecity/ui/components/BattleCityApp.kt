@@ -50,7 +50,7 @@ fun BattleCityApp() {
                         LandingScreen { menuItem ->
                             when (menuItem) {
                                 LandingScreenMenuItem.Player1, LandingScreenMenuItem.Player2 -> {
-                                    battleViewModel.loadStage("1")
+                                    battleViewModel.loadStage("1", true)
                                 }
                                 LandingScreenMenuItem.Stages -> {
                                     battleViewModel.navigate(NavEvent.MapSelection)
@@ -83,7 +83,7 @@ fun BattleCityApp() {
                 ) {
                     FullScreenWrapper {
                         MapSelectionScreen {
-                            battleViewModel.loadStage(it.name)
+                            battleViewModel.loadStage(it.name, true)
                         }
                     }
                 }

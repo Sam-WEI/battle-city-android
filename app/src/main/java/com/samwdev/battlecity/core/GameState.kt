@@ -13,6 +13,7 @@ class GameState(
 ) : TickListener() {
     companion object {
         private const val ScoreboardShowUpDelay = 3 * 1000
+        private const val InitialLife = 1
     }
 
     var totalScore: Int by mutableIntStateOf(0)
@@ -32,7 +33,7 @@ class GameState(
     private val _inGameEventFlow = MutableStateFlow<UIStatus>(InGame)
     val inGameEventFlow: StateFlow<UIStatus> = _inGameEventFlow.asStateFlow()
 
-    var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1, false))
+    var player1: PlayerData by mutableStateOf(PlayerData(InitialLife, TankLevel.Level1, false))
         private set
 
     fun updateAfterBattle(lastBattle: Battle) {
@@ -49,7 +50,7 @@ class GameState(
             player1 = player1.copy(carriedOverLife = false)
             return true
         }
-        if (player1.remainingLife == 0) {
+        if (player1.remainingLife <= 0) {
             setGameResult(BattleResult.Lost)
             return false
         }
@@ -70,6 +71,11 @@ class GameState(
             // after map is cleared, wait 3 seconds before displaying scoreboard
             scoreboardDelayTimer.resetAndActivate()
         }
+    }
+
+    fun resetGameState() {
+        totalScore = 0
+        player1 = PlayerData(InitialLife, TankLevel.Level1, false)
     }
 
     override fun onTick(tick: Tick) {

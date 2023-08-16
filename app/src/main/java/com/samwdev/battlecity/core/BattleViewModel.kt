@@ -54,7 +54,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
         showWaypoints = true,
     ))
 
-    fun loadStage(stageName: String) {
+    fun loadStage(stageName: String, startOver: Boolean = false) {
         currentUIStatus = StageCurtain
         val json = try {
             MapParser.readJsonFile(getApplication(), stageName)
@@ -67,6 +67,9 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
         currStageConfig = stageConfig
         battle = Battle(gameState, currStageConfig!!)
         battle.plugInDebugConfig(debugConfig)
+        if (startOver) {
+            gameState.resetGameState()
+        }
 
         navigate(NavEvent.BattleScreen)
     }
