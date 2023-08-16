@@ -24,13 +24,13 @@ class GameState(
             lastBattleResult = null
         }
 
-    var lastBattleResult: BattleResult? = null
+    var lastBattleResult: BattleResult? by mutableStateOf(null)
         private set
 
     private var scoreboardDelayTimer: Timer = Timer(ScoreboardShowUpDelay)
 
-    private val _inGameEventFlow = MutableStateFlow<GameStatus>(InGame)
-    val inGameEventFlow: StateFlow<GameStatus> = _inGameEventFlow.asStateFlow()
+    private val _inGameEventFlow = MutableStateFlow<UIStatus>(InGame)
+    val inGameEventFlow: StateFlow<UIStatus> = _inGameEventFlow.asStateFlow()
 
     var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1))
         private set
@@ -61,7 +61,8 @@ class GameState(
         if (lastBattleResult == null) {
             gameStarted = false
             lastBattleResult = battleResult
-
+            updateAfterBattle(battleViewModel.battle)
+            battleViewModel.setUiStatusToTransitionToScoreboard()
             // after map is cleared, wait 3 seconds before displaying scoreboard
             scoreboardDelayTimer.resetAndActivate()
         }
@@ -70,7 +71,7 @@ class GameState(
     override fun onTick(tick: Tick) {
         if (scoreboardDelayTimer.isActive) {
             if (scoreboardDelayTimer.tick(tick)) {
-                battleViewModel.setGameResult(BattleResult.Won)
+                battleViewModel.showScoreboard()
             }
         }
     }

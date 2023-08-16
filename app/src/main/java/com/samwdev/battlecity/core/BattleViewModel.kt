@@ -26,6 +26,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
     var paused: Boolean = false
 
     val gameState: GameState = GameState(this)
+
     val mapState: MapState get() = battle.mapState
     val botState: BotState get() = battle.botState
     val tickState: TickState get() = battle.tickState
@@ -38,7 +39,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
 
     val currentStageName: String? get() = currStageConfig?.name
 
-    var currentGameStatus: GameStatus by mutableStateOf(StageCurtain)
+    var currentUIStatus: UIStatus by mutableStateOf(StageCurtain)
         private set
     var prevStageConfig: StageConfig? = null
         private set
@@ -54,7 +55,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
     ))
 
     fun loadStage(stageName: String) {
-        currentGameStatus = StageCurtain
+        currentUIStatus = StageCurtain
         val json = try {
             MapParser.readJsonFile(getApplication(), stageName)
         } catch (e: IOException) {
@@ -79,7 +80,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
     }
 
     fun start() {
-        currentGameStatus = InGame
+        currentUIStatus = InGame
         gameState.gameStarted = true
 
         tickerJob = viewModelScope.launch {
@@ -87,22 +88,13 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
         }
     }
 
-    fun setGameResult(result: BattleResult) {
-        gameState.updateAfterBattle(battle)
-        when (result) {
-            BattleResult.Won -> {
-                showScoreboard()
-            }
-            BattleResult.Lost -> {
-                // wait for the animation to finish and then the it will go to Scoreboard screen at the end of animation
-                currentGameStatus = TransitionToScoreboard
-            }
-        }
+    fun setUiStatusToTransitionToScoreboard() {
+        currentUIStatus = TransitionToScoreboard
     }
 
     fun showScoreboard() {
         tickerJob?.cancel()
-        currentGameStatus = ScoreboardDisplay
+        currentUIStatus = ScoreboardDisplay
         navigate(NavEvent.Up)
         navigate(NavEvent.Scoreboard)
     }
@@ -110,7 +102,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
     fun scoreboardCompleted() {
         when (requireNotNull(gameState.lastBattleResult)) {
             BattleResult.Won -> {
-                currentGameStatus = StageCurtain
+                currentUIStatus = StageCurtain
                 goToNextStage()
             }
             BattleResult.Lost -> {
@@ -128,13 +120,13 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
     }
 }
 
-sealed class GameStatus(val index: Int) {
-    operator fun compareTo(other: GameStatus) = index - other.index
+sealed class UIStatus(val index: Int) {
+    operator fun compareTo(other: UIStatus) = index - other.index
 }
-object StageCurtain : GameStatus(1)
-object InGame : GameStatus(4)
-object TransitionToScoreboard : GameStatus(5)
-object ScoreboardDisplay : GameStatus(10)
+object StageCurtain : UIStatus(1)
+object InGame : UIStatus(4)
+object TransitionToScoreboard : UIStatus(5)
+object ScoreboardDisplay : UIStatus(10)
 
 enum class BattleResult {
     Won, Lost

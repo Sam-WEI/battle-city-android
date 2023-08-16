@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.samwdev.battlecity.core.BattleResult
 import com.samwdev.battlecity.core.TransitionToScoreboard
 import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.DebugConfig
@@ -52,7 +53,7 @@ fun BattleScreen() {
         }
     }
 
-    if (battleViewModel.currentGameStatus < StageCurtain) return
+    if (battleViewModel.currentUIStatus < StageCurtain) return
 
     SideEffect {
         battleViewModel.tickState.maxFps = battleViewModel.debugConfig.maxFps
@@ -82,14 +83,15 @@ fun BattleScreen() {
 
                     BattleField(battleViewModel.battle, modifier = Modifier.fillMaxWidth())
 
-                    if (battleViewModel.currentGameStatus == StageCurtain) {
+                    if (battleViewModel.currentUIStatus == StageCurtain) {
                         AnimatedStageCurtain(
                             stageConfigPrev = battleViewModel.prevStageConfig,
                             stageConfigNext = battleViewModel.currStageConfig!!,
                         ) {
                             battleViewModel.start()
                         }
-                    } else if (battleViewModel.currentGameStatus == TransitionToScoreboard) {
+                    } else if (battleViewModel.currentUIStatus == TransitionToScoreboard
+                        && battleViewModel.gameState.lastBattleResult == BattleResult.Lost) {
                         RedGameOver {
                             battleViewModel.showScoreboard()
                         }

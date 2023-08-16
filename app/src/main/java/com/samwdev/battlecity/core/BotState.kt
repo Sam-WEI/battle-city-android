@@ -38,7 +38,7 @@ class BotState(
         clearDeadBots()
 
         if (bots.isEmpty() && noBotsLeft) {
-            gameState.setGameResult(BattleResult.Lost)
+            gameState.setGameResult(BattleResult.Won)
             deactivate()
         }
 
