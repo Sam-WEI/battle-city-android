@@ -185,9 +185,12 @@ class MapState(
     }
 
     fun fortifyBase(duration: Int = FortificationDuration) {
-        remainingFortificationTimer.resetAndActivate(duration)
-        // todo check duration == 0
-        wrapEagleWithSteels()
+        if (duration >= 0) {
+            remainingFortificationTimer.resetAndActivate(duration)
+            wrapEagleWithSteels()
+        } else {
+            wrapEagleWithBricks()
+        }
     }
 
     fun freezeBots() {

@@ -20,8 +20,10 @@ class Timer(timeInMs: Int = 0) {
         }
         val beforeTick = remainingTime
         remainingTime -= tick.delta
-        return (beforeTick >= 0 && remainingTime < 0)
-            .also { if (it) isActive = false }
+        if (remainingTime < 0) {
+            isActive = false
+        }
+        return beforeTick >= 0 && remainingTime < 0
     }
 
     fun reset(time: Int = timeConfig) {

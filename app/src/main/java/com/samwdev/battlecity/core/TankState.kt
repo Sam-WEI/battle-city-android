@@ -46,7 +46,7 @@ class TankState(
                 mapState.fortifyBase(Int.MAX_VALUE)
             } else {
                 updateTank(playerTankId, getTank(playerTankId).copy(remainingShield = 0))
-                mapState.fortifyBase(0)
+                mapState.fortifyBase(-1)
             }
         }
 
