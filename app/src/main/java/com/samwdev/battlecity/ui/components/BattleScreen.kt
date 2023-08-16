@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
@@ -55,7 +56,7 @@ fun BattleScreen() {
 
     if (battleViewModel.currentUIStatus < StageCurtain) return
 
-    SideEffect {
+    LaunchedEffect(battleViewModel.debugConfig) {
         battleViewModel.tickState.maxFps = battleViewModel.debugConfig.maxFps
         battleViewModel.botState.maxBot = battleViewModel.debugConfig.maxBot
         battleViewModel.bulletState.friendlyFire = battleViewModel.debugConfig.friendlyFire

@@ -32,12 +32,12 @@ class GameState(
     private val _inGameEventFlow = MutableStateFlow<UIStatus>(InGame)
     val inGameEventFlow: StateFlow<UIStatus> = _inGameEventFlow.asStateFlow()
 
-    var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1))
+    var player1: PlayerData by mutableStateOf(PlayerData(3, TankLevel.Level1, false))
         private set
 
     fun updateAfterBattle(lastBattle: Battle) {
         totalScore += lastBattle.scoreState.battleScore
-        addPlayerLife() // compensate the spawn cost for next map
+        player1 = player1.copy(carriedOverLife = true)
     }
 
     fun addPlayerLife() {
@@ -45,6 +45,10 @@ class GameState(
     }
 
     fun deductPlayerLife(): Boolean {
+        if (player1.carriedOverLife) {
+            player1 = player1.copy(carriedOverLife = false)
+            return true
+        }
         if (player1.remainingLife == 0) {
             setGameResult(BattleResult.Lost)
             return false
@@ -80,4 +84,5 @@ class GameState(
 data class PlayerData(
     val remainingLife: Int,
     val tankLevel: TankLevel,
+    val carriedOverLife: Boolean,
 )
