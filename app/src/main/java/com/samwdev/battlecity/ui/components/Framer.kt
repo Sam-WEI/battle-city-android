@@ -4,9 +4,6 @@ import androidx.compose.runtime.*
 import com.samwdev.battlecity.core.Tick
 import com.samwdev.battlecity.core.TickState
 
-val LocalTick = compositionLocalOf<Tick> {
-    error("Error.")
-}
 
 @Composable
 fun TickAware(tickState: TickState, content: @Composable () -> Unit) {
@@ -16,7 +13,7 @@ fun TickAware(tickState: TickState, content: @Composable () -> Unit) {
     }
 }
 
-val LocalFramer = compositionLocalOf<Int> {
+val LocalTick = compositionLocalOf<Tick> {
     error("Error.")
 }
 
@@ -74,4 +71,8 @@ fun Framer(
     CompositionLocalProvider(LocalFramer provides currFrame) {
         content()
     }
+}
+
+val LocalFramer = compositionLocalOf<Int> {
+    error("Error.")
 }
