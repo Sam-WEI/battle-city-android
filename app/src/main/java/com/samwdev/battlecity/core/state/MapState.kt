@@ -61,7 +61,7 @@ class MapState(
     override val hGridSize: Int = mapConfig.hGridSize
     override val vGridSize: Int = mapConfig.vGridSize
 
-    var remainingBot: Int by mutableIntStateOf(2) // todo factor in difficulty
+    var remainingBot: Int by mutableIntStateOf(20) // todo factor in difficulty
         private set
 
     var bricks by mutableStateOf(mapConfig.bricks, policy = referentialEqualityPolicy())
@@ -195,7 +195,7 @@ class MapState(
     }
 
     fun fortifyBase(duration: Int = FortificationDuration) {
-        if (duration >= 0) {
+        if (duration >= 0 && duration > remainingFortificationTimer.remainingTime) {
             remainingFortificationTimer.resetAndActivate(duration)
             wrapEagleWithSteels()
         } else {
