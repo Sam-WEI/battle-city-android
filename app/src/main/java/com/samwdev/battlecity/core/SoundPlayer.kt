@@ -26,7 +26,7 @@ class SoundPlayer private constructor() {
                         .setUsage(AudioAttributes.USAGE_GAME)
                         .build()
                 )
-                .setMaxStreams(5)
+                .setMaxStreams(20)
                 .build()
 
             SoundEffect.values().forEach {
@@ -67,4 +67,5 @@ enum class SoundEffect(@RawRes val resId: Int) {
     ScoreboardTick(R.raw.scoreboard_tick),
     DriveOnIce(R.raw.drive_on_ice),
     PickUpLifePowerUp(R.raw.pick_up_life_power_up),
+    StageStart(R.raw.stage_start),
 }

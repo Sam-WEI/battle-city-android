@@ -30,8 +30,11 @@ import com.samwdev.battlecity.core.TransitionToScoreboard
 import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.DebugConfig
 import com.samwdev.battlecity.core.HandheldController
+import com.samwdev.battlecity.core.SoundEffect
+import com.samwdev.battlecity.core.SoundPlayer
 import com.samwdev.battlecity.core.StageCurtain
 import com.samwdev.battlecity.core.plugInDebugConfig
+import kotlinx.coroutines.delay
 
 @Composable
 fun BattleScreen() {
@@ -78,6 +81,10 @@ fun BattleScreen() {
                     BattleField(battleViewModel.battle, modifier = Modifier.fillMaxWidth())
 
                     if (battleViewModel.currentUIStatus == StageCurtain) {
+                        LaunchedEffect(battleViewModel.currentStageName) {
+                            delay(300)
+                            SoundPlayer.INSTANCE.play(SoundEffect.StageStart)
+                        }
                         AnimatedStageCurtain(
                             stageConfigPrev = battleViewModel.prevStageConfig,
                             stageConfigNext = battleViewModel.currStageConfig!!,
