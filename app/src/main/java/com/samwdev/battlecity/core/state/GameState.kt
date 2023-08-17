@@ -44,9 +44,8 @@ class GameState(
     var player1: PlayerData by mutableStateOf(PlayerData(InitialLife, TankLevel.Level1, false))
         private set
 
-    fun updateAfterBattle(lastBattle: Battle) {
+    private fun updateScoreAfterBattle(lastBattle: Battle) {
         totalScore += lastBattle.scoreState.battleScore
-        player1 = player1.copy(carriedOverLife = true)
     }
 
     fun addPlayerLife() {
@@ -72,9 +71,12 @@ class GameState(
 
     fun setGameResult(battleResult: BattleResult) {
         if (lastBattleResult == null) {
+            if (battleResult == BattleResult.Won) {
+                player1 = player1.copy(carriedOverLife = true)
+            }
             gameStarted = false
             lastBattleResult = battleResult
-            updateAfterBattle(battleViewModel.battle)
+            updateScoreAfterBattle(battleViewModel.battle)
             battleViewModel.setUiStatusToTransitionToScoreboard()
             // after map is cleared, wait 3 seconds before displaying scoreboard
             scoreboardDelayTimer.resetAndActivate()

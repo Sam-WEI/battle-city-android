@@ -157,6 +157,7 @@ class TankState(
 
     private fun killAllBots(explosion: Boolean = true) {
         val killedBots = tanks.values.filter { it.side == TankSide.Bot && !it.isSpawning }.map {
+            scoreState.kill(it.level, it.offset)
             if (explosion) {
                 explosionState.spawnExplosion(it.center, ExplosionAnimationBig)
             }
