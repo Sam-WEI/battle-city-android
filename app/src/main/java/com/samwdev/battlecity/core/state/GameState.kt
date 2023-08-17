@@ -84,7 +84,6 @@ class GameState(
     }
 
     fun resetGameState() {
-        totalScore = 0
         player1 = PlayerData(InitialLife, TankLevel.Level1, false)
     }
 

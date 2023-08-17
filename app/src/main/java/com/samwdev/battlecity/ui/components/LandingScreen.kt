@@ -32,6 +32,7 @@ enum class LandingScreenMenuItem(val title: String) {
 
 @Composable
 fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
+    val viewModel = LocalBattleViewModel.current
     val fistMenuItemPos = Offset(6.cell2mpx, 9.5f.cell2mpx)
     var selectedMenuItem: LandingScreenMenuItem by remember { mutableStateOf(LandingScreenMenuItem.Player1) }
     var selected: Boolean by remember { mutableStateOf(false) }
@@ -65,7 +66,7 @@ fun LandingScreen(onMenuSelect: (LandingScreenMenuItem) -> Unit) {
         gridSize = LandingScreenGridSize,
     ) {
         PixelText(
-            text = "I-    00 HI- 20000",
+            text = "I-    00 HI- ${viewModel.gameState.totalScore}",
             charHeight = 0.5f.cell2mpx,
             topLeft = Offset(1f.cell2mpx, 1f.cell2mpx)
         )

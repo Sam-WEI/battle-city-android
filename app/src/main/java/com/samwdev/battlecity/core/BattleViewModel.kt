@@ -60,7 +60,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
         showPivotBox = false,
         maxBot = 4,
         showAccessPoints = false,
-        showWaypoints = true,
+        showWaypoints = false,
     ))
 
     fun loadStage(stageName: String, startOver: Boolean = false) {
