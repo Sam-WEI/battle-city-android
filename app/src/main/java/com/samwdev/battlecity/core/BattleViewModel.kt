@@ -125,10 +125,12 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
     }
 
     fun resume() {
+        SoundPlayer.INSTANCE.play(SoundEffect.Pause)
         battle.resume()
     }
 
     fun pause() {
+        SoundPlayer.INSTANCE.play(SoundEffect.Pause)
         battle.pause()
     }
 }
