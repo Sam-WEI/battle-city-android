@@ -19,5 +19,5 @@ sealed interface NavEvent {
     object MapSelection : Routed(Route.MapSelection)
     object Scoreboard : Routed(Route.Scoreboard)
     object BattleScreen : Routed(Route.BattleScreen)
-    data class BattleScreenForStage(val stageName: String) : Routed("${Route.BattleScreen}/$stageName")
+    object GameOver : Routed(Route.GameOver)
 }

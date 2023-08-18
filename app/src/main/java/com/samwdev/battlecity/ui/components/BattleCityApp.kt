@@ -13,11 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.samwdev.battlecity.core.BattleViewModel
 import com.samwdev.battlecity.core.NavEvent
 import com.samwdev.battlecity.core.Route
@@ -65,19 +63,10 @@ fun BattleCityApp() {
                 composable(
                     route = Route.BattleScreen,
                 ) {
-                    BattleScreen()
+                    FullScreenWrapper {
+                        BattleScreen()
+                    }
                 }
-//                composable(
-//                    route = "${Route.BattleScreen}/{${Route.Key.StageName}}",
-//                    arguments = listOf(navArgument(Route.Key.StageName) { type = NavType.StringType })
-//                ) { backStackEntry ->
-//                    val stageName = backStackEntry.arguments?.getString(Route.Key.StageName)!!
-//                    // the framework runs this block several times. Use LaunchedEffect to make it run only once.
-//                    LaunchedEffect(stageName) {
-//                        battleViewModel.loadStage(stageName)
-//                    }
-//                    BattleScreen()
-//                }
                 composable(
                     route = Route.MapSelection,
                 ) {
@@ -115,20 +104,3 @@ fun FullScreenWrapper(content: @Composable BoxScope.() -> Unit) {
 }
 
 val LocalBattleViewModel = staticCompositionLocalOf<BattleViewModel> { error("Not provided") }
-
-// todo
-//@Composable
-//fun provideBattleViewModel(appState: AppState): BattleViewModelFactory {
-//    return BattleViewModelFactory(LocalContext.current.applicationContext, appState, LocalSavedStateRegistryOwner.current)
-//}
-//
-//class BattleViewModelFactory(
-//    private val context: Context,
-//    private val appState: AppState,
-//    owner: SavedStateRegistryOwner,
-//) : AbstractSavedStateViewModelFactory(owner, null) {
-//    @Suppress("UNCHECKED_CAST")
-//    override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-//        return BattleViewModel(context as Application) as T
-//    }
-//}

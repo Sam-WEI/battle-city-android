@@ -39,7 +39,7 @@ class Battle(
         tickState.addListener(tankController)
         tickState.addListener(bulletState)
         tickState.addListener(botState)
-        tickState.addListener( tankState)
+        tickState.addListener(tankState)
         tickState.addListener(explosionState)
         tickState.addListener(gameState)
     }
