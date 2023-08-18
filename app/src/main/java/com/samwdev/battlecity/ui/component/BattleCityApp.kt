@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,11 +33,12 @@ fun BattleCityApp() {
     val navController = rememberNavController()
     val battleViewModel: BattleViewModel = viewModel()
 
-    val nextNav = battleViewModel.navFlow.collectAsState().value
+    val nextNav by battleViewModel.navFlow.collectAsState()
     LaunchedEffect(nextNav) {
         when (nextNav) {
             NavEvent.Up -> navController.navigateUp()
-            is NavEvent.Routed -> navController.navigate(nextNav.route) {
+            is NavEvent.Routed -> navController.navigate((nextNav as NavEvent.Routed).route) {
+                popUpTo(Route.Landing)
                 launchSingleTop = true
             }
             null -> {}

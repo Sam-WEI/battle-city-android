@@ -25,10 +25,25 @@ val Typography = Typography(
         fontSize = 16.sp
     ),
 
+    headlineSmall = TextStyle(
+        fontFamily = Ps2pFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 15.sp,
+        background = Color.Transparent,
+    ),
+
+    bodyMedium = TextStyle(
+        fontFamily = Ps2pFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 11.sp,
+        background = Color.Transparent,
+        lineHeight = 18.sp,
+    ),
+
     labelLarge = TextStyle(
         fontFamily = Ps2pFont,
         fontWeight = FontWeight.Normal,
         fontSize = 11.sp,
-        background = Color.Magenta,
+        background = Color.Transparent,
     ),
 )

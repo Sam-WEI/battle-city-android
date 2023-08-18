@@ -133,6 +133,10 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
         SoundPlayer.INSTANCE.play(SoundEffect.Pause)
         battle.pause()
     }
+
+    fun exit() {
+        tickerJob?.cancel()
+    }
 }
 
 sealed class UIStatus(val index: Int) {
