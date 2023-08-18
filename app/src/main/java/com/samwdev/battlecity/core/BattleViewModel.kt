@@ -119,7 +119,7 @@ class BattleViewModel(context: Application) : AndroidViewModel(context) {
                 goToNextStage()
             }
             BattleResult.Lost -> {
-                navigate(NavEvent.Landing)
+                navigate(NavEvent.GameOver)
             }
         }
     }

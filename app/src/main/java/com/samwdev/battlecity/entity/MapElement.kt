@@ -9,7 +9,7 @@ import com.samwdev.battlecity.core.Direction
 import com.samwdev.battlecity.core.MapPixel
 import com.samwdev.battlecity.core.SubGrid
 import com.samwdev.battlecity.core.cell2mpx
-import com.samwdev.battlecity.ui.components.LocalGridSize
+import com.samwdev.battlecity.ui.component.LocalGridSize
 
 sealed class MapElement(open val index: Int, open val hGridSize: Int) : MapElementProperties {
     val gridPosition: IntOffset

@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import com.samwdev.battlecity.core.SoundPlayer
-import com.samwdev.battlecity.ui.components.BattleCityApp
+import com.samwdev.battlecity.ui.component.BattleCityApp
 import com.samwdev.battlecity.ui.theme.BattleCityTheme
 import kotlinx.coroutines.launch
 
