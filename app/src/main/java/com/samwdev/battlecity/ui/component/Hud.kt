@@ -11,6 +11,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
@@ -103,29 +105,29 @@ private fun PixelDrawScope.drawPlayerLifeIcon() {
         topLeft = Offset(2f, 0f),
         length = 3f,
     )
-//    translate(left = 0.5f, top = 0.5f) {
-//        drawPath(
-//            Path().apply {
-//                moveTo(1f, 3f)
-//                lineTo(2f, 3f)
-//                lineTo(2f, 2f)
-//                lineTo(4f, 2f)
-//                lineTo(4f, 3f)
-//                lineTo(5f, 3f)
-//                lineTo(5f, 5f)
-//                lineTo(4f, 5f)
-//                lineTo(4f, 6f)
-//                lineTo(2f, 6f)
-//                lineTo(2f, 5f)
-//                lineTo(1f, 5f)
-//                close()
-//            },
-//            color = ColorOrange,
-//            style = Stroke(width = 1f),
-//        )
-//    }
+    translate(left = 0.5f, top = 0.5f) {
+        drawPath(
+            Path().apply {
+                moveTo(1f, 3f)
+                lineTo(2f, 3f)
+                lineTo(2f, 2f)
+                lineTo(4f, 2f)
+                lineTo(4f, 3f)
+                lineTo(5f, 3f)
+                lineTo(5f, 5f)
+                lineTo(4f, 5f)
+                lineTo(4f, 6f)
+                lineTo(2f, 6f)
+                lineTo(2f, 5f)
+                lineTo(1f, 5f)
+                close()
+            },
+            color = ColorOrange,
+            style = Stroke(width = 1f),
+        )
+    }
 
-    drawRect(
+/*    drawRect(
         color = ColorOrange,
         topLeft = Offset(2f, 2f),
         size = Size(3f, 5f),
@@ -144,14 +146,15 @@ private fun PixelDrawScope.drawPlayerLifeIcon() {
             drawRect(Color.White, Offset(2f, 4f), Size(3f, 1f))
         }
 
+        // todo this makes the entire top HUD disappear since Android 14
         it.withSaveLayer(
             Rect(Offset(2f, 3f), Size(3f, 3f)),
-            Paint().apply { blendMode = BlendMode.DstAtop }
+            Paint().apply { blendMode = BlendMode.DstOut }
         ) {
             // todo make the cross transparent
             drawRect(Color.Gray, Offset(2f, 3f), Size(3f, 3f))
         }
-    }
+    }*/
 }
 
 @Composable
