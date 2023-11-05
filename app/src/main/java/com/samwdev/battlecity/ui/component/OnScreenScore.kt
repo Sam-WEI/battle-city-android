@@ -24,8 +24,10 @@ fun OnScreenScore(onScreenScore: OnScreenScore) {
         modifier = Modifier.offset(
             onScreenScore.offset.x.mpx2dp,
             onScreenScore.offset.y.mpx2dp
-        ).size(1f.cell2mpx.mpx2dp).zIndex(ZIndexOnScreenScore),
-        contentAlignment = Alignment.Center,
+        )
+            .size(2f.cell2mpx.mpx2dp, 1f.cell2mpx.mpx2dp)
+            .zIndex(ZIndexOnScreenScore),
+        contentAlignment = Alignment.CenterStart,
     ) {
         Text(
             text = onScreenScore.score.toString(),
